@@ -1,0 +1,115 @@
+# DP: Author: Kazuhiro Inaoka
+# DP: Fixed FAIL gcc.dg/2004013-1.c.
+Index: gcc-h8300-hms-3.4.6/gcc/config/m32r/m32r.c
+===================================================================
+--- gcc-h8300-hms-3.4.6.orig/gcc/config/m32r/m32r.c	2011-06-08 23:53:30.000000000 +0200
++++ gcc-h8300-hms-3.4.6/gcc/config/m32r/m32r.c	2011-06-08 23:55:28.000000000 +0200
+@@ -1028,6 +1028,20 @@
+ 	{
+ 	case EQ:
+ 	  if (GET_CODE (y) == CONST_INT
++	      && UINT16_P (INTVAL (y))		/* Reg equal to small const.  */
++	      && y != const0_rtx)
++	    {
++	      rtx tmp = gen_reg_rtx (SImode);		
++	      
++	      emit_insn (gen_xorsi3 (tmp, x, GEN_INT (INTVAL (y))));
++	      x = tmp;
++	      y = const0_rtx;
++	    }
++#if 0
++ /*
++  * Removed for miss optimizing at simplify_relational_operation().
++  */
++	  else if (GET_CODE (y) == CONST_INT
+ 	      && CMP_INT16_P (INTVAL (y))		/* Reg equal to small const.  */
+ 	      && y != const0_rtx)
+ 	    {
+@@ -1037,6 +1051,7 @@
+ 	      x = tmp;
+ 	      y = const0_rtx;
+ 	    }
++#endif
+ 	  else if (CONSTANT_P (y))			/* Reg equal to const.  */
+ 	    {
+ 	      rtx tmp = force_reg (GET_MODE (x), y);
+@@ -1151,6 +1166,20 @@
+       /* Reg/smallconst equal comparison.  */
+       if (compare_code == EQ
+ 	  && GET_CODE (y) == CONST_INT
++	  && UINT16_P (INTVAL (y)))
++	{
++	  rtx tmp = gen_reg_rtx (SImode);
++
++	  emit_insn (gen_xorsi3 (tmp, x, GEN_INT (INTVAL (y))));
++	  return gen_rtx (code, CCmode, tmp, const0_rtx);
++	}
++      
++#if 0
++ /*
++  * Removed for miss optimizing at simplify_relational_operation().
++  */
++      if (compare_code == EQ
++	  && GET_CODE (y) == CONST_INT
+ 	  && CMP_INT16_P (INTVAL (y)))
+ 	{
+ 	  rtx tmp = gen_reg_rtx (SImode);
+@@ -1158,6 +1187,7 @@
+ 	  emit_insn (gen_addsi3 (tmp, x, GEN_INT (-INTVAL (y))));
+ 	  return gen_rtx (code, CCmode, tmp, const0_rtx);
+ 	}
++#endif
+       
+       /* Reg/const equal comparison.  */
+       if (compare_code == EQ
+Index: gcc-h8300-hms-3.4.6/gcc/config/m32r/m32r.md
+===================================================================
+--- gcc-h8300-hms-3.4.6.orig/gcc/config/m32r/m32r.md	2011-06-08 23:53:30.000000000 +0200
++++ gcc-h8300-hms-3.4.6/gcc/config/m32r/m32r.md	2011-06-08 23:55:06.000000000 +0200
+@@ -1691,7 +1691,7 @@
+       DONE;
+     }
+ 
+-  if (! reg_or_eq_int16_operand (op2, mode))
++  if (! reg_or_uint16_operand (op2, mode))
+     op2 = force_reg (mode, op2);
+ 
+   emit_insn (gen_seq_insn (op0, op1, op2));
+@@ -1753,7 +1753,7 @@
+ (define_insn "seq_insn"
+   [(set (match_operand:SI 0 "register_operand" "=r,r,??r,r")
+ 	(eq:SI (match_operand:SI 1 "register_operand" "r,r,r,r")
+-	       (match_operand:SI 2 "reg_or_eq_int16_operand" "r,r,r,PK")))
++	       (match_operand:SI 2 "reg_or_uint16_operand" "r,r,r,K")))
+    (clobber (reg:CC 17))
+    (clobber (match_scratch:SI 3 "=1,2,&r,r"))]
+   "TARGET_M32R"
+@@ -1764,7 +1764,7 @@
+ (define_split
+   [(set (match_operand:SI 0 "register_operand" "")
+ 	(eq:SI (match_operand:SI 1 "register_operand" "")
+-	       (match_operand:SI 2 "reg_or_eq_int16_operand" "")))
++	       (match_operand:SI 2 "reg_or_uint16_operand" "")))
+    (clobber (reg:CC 17))
+    (clobber (match_scratch:SI 3 ""))]
+   "TARGET_M32R && reload_completed"
+@@ -1792,10 +1792,15 @@
+       op1 = op3;
+     }
+ 
+-  if (GET_CODE (op2) == CONST_INT && (value = INTVAL (op2)) != 0
+-      && CMP_INT16_P (value))
+-    emit_insn (gen_addsi3 (op3, op1, GEN_INT (-value)));
+-  else
++/*
++ * Removed for miss optimizing at simplify_relational_operation().
++ *
++ *  if (GET_CODE (op2) == CONST_INT && (value = INTVAL (op2)) != 0
++ *      && !(GET_CODE (op1) == REG && REG_POINTER (op1))
++ *      && CMP_INT16_P (value))
++ *    emit_insn (gen_addsi3 (op3, op1, GEN_INT (-value)));
++ *  else
++ */
+     emit_insn (gen_xorsi3 (op3, op1, op2));
+ 
+   emit_insn (gen_cmp_ltusi_insn (op3, GEN_INT (1)));

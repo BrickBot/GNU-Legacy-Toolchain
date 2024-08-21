@@ -1,0 +1,15 @@
+# DP: fix doxygen syntax error in header that causes segfaults with some
+# DP: versions
+Index: gcc-h8300-hms-3.4.6/libstdc++-v3/include/bits/basic_string.h
+===================================================================
+--- gcc-h8300-hms-3.4.6.orig/libstdc++-v3/include/bits/basic_string.h	2005-04-25 13:02:01.000000000 +0200
++++ gcc-h8300-hms-3.4.6/libstdc++-v3/include/bits/basic_string.h	2011-06-08 23:53:18.000000000 +0200
+@@ -248,7 +248,7 @@
+       // Data Members (public):
+       // NB: This is an unsigned type, and thus represents the maximum
+       // size that the allocator can hold.
+-      /// @var
++      /// @var  static const size_type npos
+       /// Value returned by various member functions when they fail.
+       static const size_type	npos = static_cast<size_type>(-1);
+ 

@@ -1,0 +1,13 @@
+# DP: Author: NIIBE Yutaka <gniibe@fsij.org>
+# DP: Status: experimental, only tested for Debian m32r
+Index: gcc-h8300-hms-3.4.6/gcc/config/m32r/t-linux
+===================================================================
+--- gcc-h8300-hms-3.4.6.orig/gcc/config/m32r/t-linux	2011-06-08 23:54:56.000000000 +0200
++++ gcc-h8300-hms-3.4.6/gcc/config/m32r/t-linux	2011-06-08 23:55:00.000000000 +0200
+@@ -48,3 +48,6 @@
+ LIB2ADDEH = $(srcdir)/unwind-dw2.c $(srcdir)/unwind-dw2-fde-glibc.c \
+   $(srcdir)/unwind-sjlj.c $(srcdir)/gthr-gnat.c $(srcdir)/unwind-c.c
+ LIB2ADDEHDEP = unwind.inc unwind-dw2-fde.h unwind-dw2-fde.c gthr-gnat.c
++
++# We're GNU system, where GNU C library is native C library.
++CROSS_SYSTEM_HEADER_DIR = $(gcc_tooldir)/include

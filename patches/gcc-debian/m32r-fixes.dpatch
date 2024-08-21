@@ -1,0 +1,74 @@
+# DP: fix for shared libgcc
+Index: gcc-h8300-hms-3.4.6/gcc/config.gcc
+===================================================================
+--- gcc-h8300-hms-3.4.6.orig/gcc/config.gcc	2011-06-08 23:53:26.000000000 +0200
++++ gcc-h8300-hms-3.4.6/gcc/config.gcc	2011-06-08 23:55:31.000000000 +0200
+@@ -1325,7 +1325,7 @@
+ m32r-*-linux*)
+ 	tm_file="dbxelf.h elfos.h svr4.h linux.h ${tm_file} m32r/linux.h"
+ 	extra_parts="crtbegin.o crtbeginS.o crtend.o crtendS.o"
+-	tmake_file="m32r/t-linux"
++	tmake_file="t-slibgcc-elf-ver m32r/t-linux"
+ 	gnu_ld=yes
+ 	use_fixproto=yes
+ 	if test x$enable_threads = xyes; then
+@@ -1335,7 +1335,7 @@
+ m32rle-*-linux*)
+ 	tm_file="dbxelf.h elfos.h svr4.h linux.h m32r/little.h ${tm_file} m32r/linux.h"
+ 	extra_parts="crtbegin.o crtbeginS.o crtend.o crtendS.o"
+-	tmake_file="m32r/t-linux"
++	tmake_file="t-slibgcc-elf-ver m32r/t-linux"
+ 	gnu_ld=yes
+ 	use_fixproto=yes
+ 	if test x$enable_threads = xyes; then
+Index: gcc-h8300-hms-3.4.6/gcc/config/m32r/t-linux
+===================================================================
+--- gcc-h8300-hms-3.4.6.orig/gcc/config/m32r/t-linux	2003-12-31 11:33:02.000000000 +0100
++++ gcc-h8300-hms-3.4.6/gcc/config/m32r/t-linux	2011-06-08 23:55:32.000000000 +0200
+@@ -23,7 +23,6 @@
+ # to produce a shared library, but since we don't know ahead of time when
+ # we will be doing that, we just always use -fpic when compiling the
+ # routines in initfini.c.
+-# -fpic currently isn't supported for the m32r.
+ 
+ CRTSTUFF_T_CFLAGS_S = -fPIC
+ 
+@@ -40,3 +39,12 @@
+ CROSS_LIBGCC1 =
+ LIBGCC1_TEST =
+ 
++# Override t-slibgcc-elf-ver to export some libgcc symbols with
++# the symbol versions that glibc used.
++SHLIB_MAPFILES += $(srcdir)/libgcc-std.ver \
++	$(srcdir)/config/m32r/libgcc-glibc.ver
++
++# Use unwind-dw2-fde-glibc
++LIB2ADDEH = $(srcdir)/unwind-dw2.c $(srcdir)/unwind-dw2-fde-glibc.c \
++  $(srcdir)/unwind-sjlj.c $(srcdir)/gthr-gnat.c $(srcdir)/unwind-c.c
++LIB2ADDEHDEP = unwind.inc unwind-dw2-fde.h unwind-dw2-fde.c gthr-gnat.c
+Index: gcc-h8300-hms-3.4.6/gcc/config/m32r/libgcc-glibc.ver
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ gcc-h8300-hms-3.4.6/gcc/config/m32r/libgcc-glibc.ver	2011-06-08 23:54:56.000000000 +0200
+@@ -0,0 +1,21 @@
++# In order to work around the very problems that force us to now generally
++# create a libgcc.so, glibc reexported a number of routines from libgcc.a.
++# By now choosing the same version tags for these specific routines, we
++# maintain enough binary compatibility to allow future versions of glibc
++# to defer implementation of these routines to libgcc.so via DT_AUXILIARY.
++
++# Note that we cannot use the default libgcc-glibc.ver file on m32r,
++# because GLIBC_2.0 does not exist on this architecture, as the first 
++# ever glibc release on the platform was GLIBC_2.3.
++
++%inherit GCC_3.0 GLIBC_2.3
++GLIBC_2.3 {
++  __register_frame
++  __register_frame_table
++  __deregister_frame
++  __register_frame_info
++  __deregister_frame_info
++  __frame_state_for
++  __register_frame_info_table
++}
++

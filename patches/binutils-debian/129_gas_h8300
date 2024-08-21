@@ -1,0 +1,19 @@
+#! /bin/sh /usr/share/dpatch/dpatch-run
+## 129_gas_h8300.dpatch
+##
+## DP: Description: On 64bit archs unsigned != unsigned long
+## DP: Author: Michael Tautschnig <tautschn@model.in.tum.de>
+## DP: Upstream status: N/A
+
+diff -urN binutils-h8300-hms-2.16.1.old/gas/config/tc-h8300.c binutils-h8300-hms-2.16.1/gas/config/tc-h8300.c
+--- binutils-h8300-hms-2.16.1.old/gas/config/tc-h8300.c	2005-02-23 13:28:04.000000000 +0100
++++ binutils-h8300-hms-2.16.1/gas/config/tc-h8300.c	2006-11-23 21:47:59.000000000 +0100
+@@ -529,7 +529,7 @@
+ constant_fits_width_p (struct h8_op *operand, unsigned int width)
+ {
+   return ((operand->exp.X_add_number & ~width) == 0
+-	  || (operand->exp.X_add_number | width) == (unsigned)(~0));
++	  || (operand->exp.X_add_number | width) == (unsigned long)(~0));
+ }
+ 
+ static int

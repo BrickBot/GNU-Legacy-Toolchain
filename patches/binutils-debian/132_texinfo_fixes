@@ -1,0 +1,309 @@
+Description: <short summary of the patch>
+ TODO: Put a short summary on the line above and replace this paragraph
+ with a longer explanation of this change. Complete the meta-information
+ with other relevant fields (see below for details). To make it easier, the
+ information below has been extracted from the changelog. Adjust it or drop
+ it.
+ .
+ binutils-h8300-hms (2.16.1-9) unstable; urgency=low
+ .
+   * Updated standards version to 3.9.4 (no changes)
+   * Use package source format v3 instead of dpatch
+   * Use as-minimal-as-possible rules file using dh
+Author: Michael Tautschnig <mt@debian.org>
+
+---
+The information above should follow the Patch Tagging Guidelines, please
+checkout http://dep.debian.net/deps/dep3/ to learn about the format. Here
+are templates for supplementary fields that you might want to add:
+
+Origin: <vendor|upstream|other>, <url of original patch>
+Bug: <url in upstream bugtracker>
+Bug-Debian: http://bugs.debian.org/<bugnumber>
+Bug-Ubuntu: https://launchpad.net/bugs/<bugnumber>
+Forwarded: <no|not-needed|url proving that it has been forwarded>
+Reviewed-By: <name and email of someone who approved the patch>
+Last-Update: <YYYY-MM-DD>
+
+--- binutils-h8300-hms-2.16.1.orig/bfd/doc/bfd.info-1
++++ binutils-h8300-hms-2.16.1/bfd/doc/bfd.info-1
+@@ -1,5 +1,4 @@
+-This is ../.././bfd/doc/bfd.info, produced by makeinfo version 4.7 from
+-../.././bfd/doc/bfd.texinfo.
++This is ../../../bfd/doc/bfd.info, produced by makeinfo version 4.13 from ../../../bfd/doc/bfd.texinfo.
+ 
+ START-INFO-DIR-ENTRY
+ * Bfd: (bfd).                   The Binary File Descriptor library.
+@@ -12,8 +11,8 @@ END-INFO-DIR-ENTRY
+    Permission is granted to copy, distribute and/or modify this document
+      under the terms of the GNU Free Documentation License, Version 1.1
+      or any later version published by the Free Software Foundation;
+-   with no Invariant Sections, with no Front-Cover Texts, and with no
+-    Back-Cover Texts.  A copy of the license is included in the
++  with no Invariant Sections, with no Front-Cover Texts, and with no
++  Back-Cover Texts.  A copy of the license is included in the
+ section entitled "GNU Free Documentation License".
+ 
+ 
+@@ -6395,9 +6394,9 @@ The linker proper will call the `_bfd_li
+ each object file or archive which is to be linked (typically these are
+ the files named on the command line, but some may also come from the
+ linker script).  The entry point is responsible for examining the file.
+-For an object file, BFD must add any relevant symbol information to
+-the hash table.  For an archive, BFD must determine which elements of
+-the archive should be used and adding them to the link.
++For an object file, BFD must add any relevant symbol information to the
++hash table.  For an archive, BFD must determine which elements of the
++archive should be used and adding them to the link.
+ 
+    The a.out version of this entry point is
+ `NAME(aout,link_add_symbols)'.
+@@ -7719,12 +7718,10 @@ Coff relocations are easily transformed
+ 
+ File: bfd.info,  Node: elf,  Next: mmo,  Prev: coff,  Up: BFD back ends
+ 
+-3.3
+-===
+-
+-ELF backends
++3.3 ELF backends
++================
+ 
+-   BFD support for ELF formats is being worked on.  Currently, the best
++BFD support for ELF formats is being worked on.  Currently, the best
+ supported back ends are for sparc and i386 (running svr4 or Solaris 2).
+ 
+    Documentation of the internals of the support code still needs to be
+--- binutils-h8300-hms-2.16.1.orig/bfd/doc/bfd.info-2
++++ binutils-h8300-hms-2.16.1/bfd/doc/bfd.info-2
+@@ -1,5 +1,4 @@
+-This is ../.././bfd/doc/bfd.info, produced by makeinfo version 4.7 from
+-../.././bfd/doc/bfd.texinfo.
++This is ../../../bfd/doc/bfd.info, produced by makeinfo version 4.13 from ../../../bfd/doc/bfd.texinfo.
+ 
+ START-INFO-DIR-ENTRY
+ * Bfd: (bfd).                   The Binary File Descriptor library.
+@@ -12,8 +11,8 @@ END-INFO-DIR-ENTRY
+    Permission is granted to copy, distribute and/or modify this document
+      under the terms of the GNU Free Documentation License, Version 1.1
+      or any later version published by the Free Software Foundation;
+-   with no Invariant Sections, with no Front-Cover Texts, and with no
+-    Back-Cover Texts.  A copy of the license is included in the
++  with no Invariant Sections, with no Front-Cover Texts, and with no
++  Back-Cover Texts.  A copy of the license is included in the
+ section entitled "GNU Free Documentation License".
+ 
+ 
+@@ -296,20 +295,19 @@ Appendix A GNU Free Documentation Licens
+      H. Include an unaltered copy of this License.
+      I. Preserve the section entitled "History", and its title, and add
+      to    it an item stating at least the title, year, new authors, and
+-       publisher of the Modified Version as given on the Title Page.
+-     If    there is no section entitled "History" in the Document,
+-     create one    stating the title, year, authors, and publisher of
+-     the Document as    given on its Title Page, then add an item
++       publisher of the Modified Version as given on the Title Page.  If
++       there is no section entitled "History" in the Document, create
++     one    stating the title, year, authors, and publisher of the
++     Document as    given on its Title Page, then add an item
+      describing the Modified    Version as stated in the previous
+      sentence.
+      J. Preserve the network location, if any, given in the Document for
+-       public access to a Transparent copy of the Document, and
+-     likewise    the network locations given in the Document for
+-     previous versions    it was based on.  These may be placed in the
+-     "History" section.     You may omit a network location for a work
+-     that was published at    least four years before the Document
+-     itself, or if the original    publisher of the version it refers
+-     to gives permission.
++       public access to a Transparent copy of the Document, and likewise
++       the network locations given in the Document for previous versions
++       it was based on.  These may be placed in the "History" section.
++       You may omit a network location for a work that was published at
++       least four years before the Document itself, or if the original
++      publisher of the version it refers to gives permission.
+      K. In any section entitled "Acknowledgements" or "Dedications",
+      preserve the section's title, and preserve in the section all the
+       substance and tone of each of the contributor acknowledgements
+@@ -559,7 +557,7 @@ Index
+ * bfd_default_reloc_type_lookup:         howto manager.      (line 1704)
+ * bfd_default_scan:                      Architectures.      (line  471)
+ * bfd_default_set_arch_mach:             Architectures.      (line  418)
+-* bfd_elf_find_section:                  elf.                (line   15)
++* bfd_elf_find_section:                  elf.                (line   13)
+ * bfd_errmsg:                            BFD front end.      (line  243)
+ * bfd_fdopenr:                           Opening and Closing.
+                                                              (line   22)
+--- binutils-h8300-hms-2.16.1.orig/bfd/doc/bfd.info
++++ binutils-h8300-hms-2.16.1/bfd/doc/bfd.info
+@@ -1,5 +1,4 @@
+-This is ../.././bfd/doc/bfd.info, produced by makeinfo version 4.7 from
+-../.././bfd/doc/bfd.texinfo.
++This is ../../../bfd/doc/bfd.info, produced by makeinfo version 4.13 from ../../../bfd/doc/bfd.texinfo.
+ 
+ START-INFO-DIR-ENTRY
+ * Bfd: (bfd).                   The Binary File Descriptor library.
+@@ -12,14 +11,14 @@ END-INFO-DIR-ENTRY
+    Permission is granted to copy, distribute and/or modify this document
+      under the terms of the GNU Free Documentation License, Version 1.1
+      or any later version published by the Free Software Foundation;
+-   with no Invariant Sections, with no Front-Cover Texts, and with no
+-    Back-Cover Texts.  A copy of the license is included in the
++  with no Invariant Sections, with no Front-Cover Texts, and with no
++  Back-Cover Texts.  A copy of the license is included in the
+ section entitled "GNU Free Documentation License".
+ 
+ 
+ Indirect:
+ bfd.info-1: 724
+-bfd.info-2: 298309
++bfd.info-2: 298318
+ 
+ Tag Table:
+ (Indirect)
+@@ -79,11 +78,11 @@ Node: What to Put Where256046
+ Node: aout256184
+ Node: coff262435
+ Node: elf287111
+-Node: mmo287965
+-Node: File layout288893
+-Node: Symbol-table294540
+-Node: mmo section mapping298309
+-Node: GNU Free Documentation License301961
+-Node: Index321681
++Node: mmo287974
++Node: File layout288902
++Node: Symbol-table294549
++Node: mmo section mapping298318
++Node: GNU Free Documentation License301970
++Node: Index321678
+ 
+ End Tag Table
+--- binutils-h8300-hms-2.16.1.orig/bfd/doc/elf.texi
++++ binutils-h8300-hms-2.16.1/bfd/doc/elf.texi
+@@ -1,5 +1,4 @@
+-@section 
+-ELF backends
++@section ELF backends
+ 
+ BFD support for ELF formats is being worked on.
+ Currently, the best supported back ends are for sparc and i386
+@@ -10,7 +9,7 @@ to be written.  The code is changing qui
+ haven't bothered yet.
+ 
+ @findex bfd_elf_find_section
+-@subsubsection @code{bfd_elf_find_section}
++@subsection @code{bfd_elf_find_section}
+ @strong{Synopsis}
+ @example
+ struct elf_internal_shdr *bfd_elf_find_section (bfd *abfd, char *name);
+--- binutils-h8300-hms-2.16.1.orig/bfd/doc/archive.texi
++++ binutils-h8300-hms-2.16.1/bfd/doc/archive.texi
+@@ -51,7 +51,7 @@ of a restriction.
+ Archives are supported in BFD in @code{archive.c}.
+ 
+ @findex bfd_get_next_mapent
+-@subsubsection @code{bfd_get_next_mapent}
++@subsection @code{bfd_get_next_mapent}
+ @strong{Synopsis}
+ @example
+ symindex bfd_get_next_mapent
+--- binutils-h8300-hms-2.16.1.orig/bfd/doc/bfdt.texi
++++ binutils-h8300-hms-2.16.1/bfd/doc/bfdt.texi
+@@ -306,7 +306,7 @@ bfd_error_handler_type bfd_get_error_han
+ @strong{Description}@*
+ Return the BFD error handler function.
+ 
+-@section Symbols
++@subsection Symbols
+ 
+ 
+ @findex bfd_get_reloc_upper_bound
+--- binutils-h8300-hms-2.16.1.orig/bfd/doc/cache.texi
++++ binutils-h8300-hms-2.16.1/bfd/doc/cache.texi
+@@ -1,4 +1,4 @@
+-@section File caching
++@subsection File caching
+ The file caching mechanism is embedded within BFD and allows
+ the application to open as many BFDs as it wants without
+ regard to the underlying operating system's file descriptor
+--- binutils-h8300-hms-2.16.1.orig/bfd/doc/core.texi
++++ binutils-h8300-hms-2.16.1/bfd/doc/core.texi
+@@ -1,4 +1,4 @@
+-@section Core files
++@subsection Core files
+ 
+ 
+ @strong{Description}@*
+--- binutils-h8300-hms-2.16.1.orig/bfd/doc/init.texi
++++ binutils-h8300-hms-2.16.1/bfd/doc/init.texi
+@@ -1,4 +1,4 @@
+-@section Initialization
++@subsection Initialization
+ These are the functions that handle initializing a BFD.
+ 
+ @findex bfd_init
+--- binutils-h8300-hms-2.16.1.orig/bfd/doc/libbfd.texi
++++ binutils-h8300-hms-2.16.1/bfd/doc/libbfd.texi
+@@ -1,4 +1,4 @@
+-@section Internal functions
++@subsection Internal functions
+ 
+ 
+ @strong{Description}@*
+--- binutils-h8300-hms-2.16.1.orig/bfd/doc/reloc.texi
++++ binutils-h8300-hms-2.16.1/bfd/doc/reloc.texi
+@@ -492,7 +492,7 @@ know what the target machine might call
+ using this bit of code.
+ 
+ @findex bfd_reloc_code_type
+-@subsubsection @code{bfd_reloc_code_type}
++@subsection @code{bfd_reloc_code_type}
+ @strong{Description}@*
+ The insides of a reloc code.  The idea is that, eventually, there
+ will be one enumerator for every type of relocation we ever do.
+--- binutils-h8300-hms-2.16.1.orig/bfd/doc/format.texi
++++ binutils-h8300-hms-2.16.1/bfd/doc/format.texi
+@@ -1,4 +1,4 @@
+-@section File formats
++@subsection File formats
+ A format is a BFD concept of high level file contents type. The
+ formats supported by BFD are:
+ 
+--- binutils-h8300-hms-2.16.1.orig/bfd/doc/opncls.texi
++++ binutils-h8300-hms-2.16.1/bfd/doc/opncls.texi
+@@ -1,4 +1,4 @@
+-@section Opening and closing BFDs
++@subsection Opening and closing BFDs
+ 
+ 
+ @findex bfd_openr
+--- binutils-h8300-hms-2.16.1.orig/ld/ld.texinfo
++++ binutils-h8300-hms-2.16.1/ld/ld.texinfo
+@@ -1589,7 +1589,7 @@ the linker script being used by the link
+ 
+ @kindex --version-script=@var{version-scriptfile}
+ @cindex version script, symbol versions
+-@itemx --version-script=@var{version-scriptfile}
++@item --version-script=@var{version-scriptfile}
+ Specify the name of a version script to the linker.  This is typically
+ used when creating shared libraries to specify additional information
+ about the version hierarchy for the library being created.  This option
+@@ -6256,7 +6256,7 @@ If you have more than one @code{SECT} st
+ @printindex cp
+ 
+ @tex
+-% I think something like @colophon should be in texinfo.  In the
++% I think something like <at>colophon should be in texinfo.  In the
+ % meantime:
+ \long\def\colophon{\hbox to0pt{}\vfill
+ \centerline{The body of this manual is set in}
+@@ -6267,7 +6267,7 @@ If you have more than one @code{SECT} st
+ \centerline{{\sl\fontname\tensl\/}}
+ \centerline{are used for emphasis.}\vfill}
+ \page\colophon
+-% Blame: doc@cygnus.com, 28mar91.
++% Blame: doc<at>cygnus.com, 28mar91.
+ @end tex
+ 
+ 

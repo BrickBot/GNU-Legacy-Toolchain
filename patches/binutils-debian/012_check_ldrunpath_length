@@ -1,0 +1,28 @@
+#!/bin/sh -e
+## 012_check_ldrunpath_length.dpatch by Chris Chimelis <chris@debian.org>
+##
+## All lines beginning with `## DP:' are a description of the patch.
+## DP: Only generate an RPATH entry if LD_RUN_PATH is not empty, for
+## DP: cases where -rpath isn't specified. (#151024)
+
+diff -urNad binutils-2.16/ld/emultempl/elf32.em /tmp/dpep.u3SQkH/binutils-2.16/ld/emultempl/elf32.em
+--- binutils-2.16/ld/emultempl/elf32.em	2005-04-13 19:59:07.000000000 +0200
++++ /tmp/dpep.u3SQkH/binutils-2.16/ld/emultempl/elf32.em	2005-05-06 19:18:08.236669718 +0200
+@@ -885,6 +885,8 @@
+ 	      && command_line.rpath == NULL)
+ 	    {
+ 	      lib_path = (const char *) getenv ("LD_RUN_PATH");
++	      if ((lib_path) && (strlen (lib_path) == 0))
++		lib_path = NULL;
+ 	      if (gld${EMULATION_NAME}_search_needed (lib_path, &n,
+ 						      force))
+ 		break;
+@@ -1059,6 +1061,8 @@
+   rpath = command_line.rpath;
+   if (rpath == NULL)
+     rpath = (const char *) getenv ("LD_RUN_PATH");
++  if ((rpath) && (strlen (rpath) == 0))
++      rpath = NULL;
+   if (! (bfd_elf_size_dynamic_sections
+ 	 (output_bfd, command_line.soname, rpath,
+ 	  command_line.filter_shlib,

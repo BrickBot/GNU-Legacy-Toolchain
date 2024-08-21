@@ -1,0 +1,20 @@
+#!/bin/sh -e
+## 121_i386_x86_64_biarch.dpatch
+##
+## All lines beginning with `## DP:' are a description of the patch.
+## DP: Description: Identify this version of binutils as being from Debian.
+## DP: Author: Jeff Bailey <jbailey@ubuntu.com>
+## DP: Upstream status: N/A
+## DP: Date: ??
+
+--- binutils/ld/emulparams/elf_x86_64.sh	2005-08-06 01:21:24.709639856 +0000
++++ binutils/ld/emulparams/elf_x86_64.sh	2005-08-06 01:22:30.127694800 +0000
+@@ -24,7 +24,7 @@
+ # Linux modify the default library search path to first include
+ # a 64-bit specific directory.
+ case "$target" in
+-  x86_64*-linux*)
++  x86_64*-linux* | i[3-7]86*-linux*)
+     case "$EMULATION_NAME" in
+       *64*) LIBPATH_SUFFIX=64 ;;
+     esac

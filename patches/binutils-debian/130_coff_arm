@@ -1,0 +1,36 @@
+#! /bin/sh /usr/share/dpatch/dpatch-run
+## 130_coff_arm.dpatch 
+##
+## DP: Description: Fix alignment error on ARM
+## DP: Author: Michael Tautschnig <tautschn@model.in.tum.de>
+## DP: Upstream status: A revised version of this patch is included in binutils/HEAD
+
+--- binutils-h8300-hms-2.16.1.orig/include/coff/external.h
++++ binutils-h8300-hms-2.16.1/include/coff/external.h
+@@ -50,7 +50,7 @@
+     char entry[4];	/* entry pt.				*/
+     char text_start[4];	/* base of text used for this file 	*/
+     char data_start[4];	/* base of data used for this file 	*/
+-  }
++  } __attribute__((packed))
+ AOUTHDR;
+ 
+ #define AOUTHDRSZ 28
+@@ -150,7 +150,7 @@
+   char e_type[2];
+   char e_sclass[1];
+   char e_numaux[1];
+-};
++} __attribute__((packed));
+ 
+ #define	SYMENT	struct external_syment
+ #define	SYMESZ	18	
+@@ -242,7 +242,7 @@
+     char x_tvlen[2];	/* length of .tv */
+     char x_tvran[2][2];	/* tv range */
+   } x_tv;		/* info about .tv section (in auxent of symbol .tv)) */
+-};
++} __attribute__((packed));
+ 
+ #define	AUXENT	union external_auxent
+ #define	AUXESZ	18

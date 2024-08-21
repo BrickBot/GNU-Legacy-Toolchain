@@ -1,0 +1,18 @@
+#!/bin/sh -e
+## 014_gprof_manpage_fix.dpatch by Chris Chimelis <chris@debian.org>
+##
+## All lines beginning with `## DP:' are a description of the patch.
+## DP: Don't mention monitor(3) which doesn't exist in Debian. (#160654)
+
+diff -urNad /home/james/debian/packages/binutils/binutils-2.14.90.0.6/gprof/gprof.texi binutils-2.14.90.0.6/gprof/gprof.texi
+--- /home/james/debian/packages/binutils/binutils-2.14.90.0.6/gprof/gprof.texi	2002-08-02 01:49:32.000000000 +0100
++++ binutils-2.14.90.0.6/gprof/gprof.texi	2003-09-10 22:42:37.000000000 +0100
+@@ -181,7 +181,7 @@
+ @c man end
+ 
+ @c man begin SEEALSO
+-monitor(3), profil(2), cc(1), prof(1), and the Info entry for @file{gprof}.
++profil(2), cc(1), prof(1), and the Info entry for @file{gprof}.
+ 
+ ``An Execution Profiler for Modular Programs'',
+ by S. Graham, P. Kessler, M. McKusick;

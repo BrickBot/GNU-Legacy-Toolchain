@@ -1,0 +1,14 @@
+# DP: build protoize/unprotoize binaries
+Index: gcc-h8300-hms-3.4.6/gcc/Makefile.in
+===================================================================
+--- gcc-h8300-hms-3.4.6.orig/gcc/Makefile.in	2011-06-08 23:53:11.000000000 +0200
++++ gcc-h8300-hms-3.4.6/gcc/Makefile.in	2011-06-08 23:53:28.000000000 +0200
+@@ -121,7 +121,7 @@
+ 
+ # Selection of languages to be made.
+ CONFIG_LANGUAGES = @all_languages@
+-LANGUAGES = c gcov$(exeext) gcov-dump$(exeext) $(CONFIG_LANGUAGES)
++LANGUAGES = c proto gcov$(exeext) gcov-dump$(exeext) $(CONFIG_LANGUAGES)
+ 
+ # Selection of languages to be made during stage1 build.
+ BOOT_LANGUAGES = c @all_boot_languages@

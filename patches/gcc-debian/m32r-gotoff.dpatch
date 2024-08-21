@@ -1,0 +1,58 @@
+# DP: Bug fix of static variable access with GOTOFF
+Index: gcc-h8300-hms-3.4.6/gcc/config/m32r/m32r.c
+===================================================================
+--- gcc-h8300-hms-3.4.6.orig/gcc/config/m32r/m32r.c	2005-12-17 19:35:56.000000000 +0100
++++ gcc-h8300-hms-3.4.6/gcc/config/m32r/m32r.c	2011-06-08 23:55:30.000000000 +0200
+@@ -2204,6 +2204,15 @@
+       else
+         address = reg;
+ 
++      current_function_uses_pic_offset_table = 1;
++      if (GET_CODE (orig) == LABEL_REF
++          || GET_CODE (orig) == SYMBOL_REF && SYMBOL_REF_LOCAL_P (orig))
++        {
++          emit_insn (gen_gotoff_load_addr (reg, orig));
++          emit_insn (gen_addsi3 (reg, reg, pic_offset_table_rtx));
++          return reg;
++        }
++
+       emit_insn (gen_pic_load_addr (address, orig));
+ 
+       emit_insn (gen_addsi3 (address, address, pic_offset_table_rtx));
+@@ -2211,7 +2220,6 @@
+ 
+       RTX_UNCHANGING_P (pic_ref) = 1;
+       insn = emit_move_insn (reg, pic_ref);
+-      current_function_uses_pic_offset_table = 1;
+ #if 0
+       /* Put a REG_EQUAL note on this insn, so that it can be optimized
+          by loop.  */
+Index: gcc-h8300-hms-3.4.6/gcc/config/m32r/m32r.md
+===================================================================
+--- gcc-h8300-hms-3.4.6.orig/gcc/config/m32r/m32r.md	2005-05-24 11:43:42.000000000 +0200
++++ gcc-h8300-hms-3.4.6/gcc/config/m32r/m32r.md	2011-06-08 23:55:30.000000000 +0200
+@@ -31,7 +31,8 @@
+   [(UNSPEC_LOAD_SDA_BASE	2)
+    (UNSPEC_SET_CBIT		3)
+    (UNSPEC_PIC_LOAD_ADDR	4)
+-   (UNSPEC_GET_PC		5)])
++   (UNSPEC_GET_PC		5)
++   (UNSPEC_GOTOFF		6)])
+ 
+ ;; Insn type.  Used to default other attribute values.
+ (define_attr "type"
+@@ -2713,6 +2714,14 @@
+   "ld24 %0,%#%1"
+   [(set_attr "type" "int4")])
+ 
++(define_insn "gotoff_load_addr"
++  [(set (match_operand:SI 0 "register_operand" "=r")
++        (unspec:SI [(match_operand 1 "" "")] UNSPEC_GOTOFF))]
++  "flag_pic"
++  "seth %0,%#shigh(%1@GOTOFF)\;add3 %0,%0,low(%1@GOTOFF)"
++  [(set_attr "type" 	"int4")
++   (set_attr "length"	"8")])
++
+ ;; Load program counter insns.
+ 
+ (define_insn "get_pc"

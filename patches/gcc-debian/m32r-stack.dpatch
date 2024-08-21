@@ -1,0 +1,17 @@
+# DP: Author: NIIBE Yutaka
+# DP: Status: Not yet in CVS
+# DP: Stack protection support
+2004-11-12  NIIBE Yutaka  <gniibe@fsij.org>
+
+	* config/m32r/linux.h (TARGET_ASM_FILE_END): Defined for stack
+	protection.
+
+Index: gcc-h8300-hms-3.4.6/gcc/config/m32r/linux.h
+===================================================================
+--- gcc-h8300-hms-3.4.6.orig/gcc/config/m32r/linux.h	2003-12-31 11:33:02.000000000 +0100
++++ gcc-h8300-hms-3.4.6/gcc/config/m32r/linux.h	2011-06-08 23:55:31.000000000 +0200
+@@ -102,3 +102,4 @@
+                                                                                 
+ #define TARGET_OS_CPP_BUILTINS() LINUX_TARGET_OS_CPP_BUILTINS()
+ 
++#define TARGET_ASM_FILE_END file_end_indicate_exec_stack

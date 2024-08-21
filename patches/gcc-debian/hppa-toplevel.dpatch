@@ -1,0 +1,31 @@
+# DP: For hppa-linux enable libgcj and dependent libs in the toplevel directory
+Index: gcc-h8300-hms-3.4.6/configure.in
+===================================================================
+--- gcc-h8300-hms-3.4.6.orig/configure.in	2011-06-08 23:53:06.000000000 +0200
++++ gcc-h8300-hms-3.4.6/configure.in	2011-06-08 23:53:23.000000000 +0200
+@@ -488,8 +488,9 @@
+     # headers, crt*.o, etc., all of which are needed by these.
+     noconfigdirs="$noconfigdirs target-zlib"
+     ;;
++  parisc*-*-linux* | hppa*-*-linux*)
++    ;;
+   hppa*-*-*elf* | \
+-  parisc*-*-linux* | hppa*-*-linux* | \
+   hppa*-*-lites* | \
+   hppa*-*-openbsd* | \
+   hppa*64*-*-*)
+Index: gcc-h8300-hms-3.4.6/configure
+===================================================================
+--- gcc-h8300-hms-3.4.6.orig/configure	2005-03-08 18:31:40.000000000 +0100
++++ gcc-h8300-hms-3.4.6/configure	2011-06-08 23:53:23.000000000 +0200
+@@ -1250,8 +1250,9 @@
+     # headers, crt*.o, etc., all of which are needed by these.
+     noconfigdirs="$noconfigdirs target-zlib"
+     ;;
++  parisc*-*-linux* | hppa*-*-linux*)
++    ;;
+   hppa*-*-*elf* | \
+-  parisc*-*-linux* | hppa*-*-linux* | \
+   hppa*-*-lites* | \
+   hppa*-*-openbsd* | \
+   hppa*64*-*-*)

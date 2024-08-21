@@ -1,0 +1,80 @@
+#! /bin/sh /usr/share/dpatch/dpatch-run
+## 128_ln_s_makefiles.dpatch
+##
+## DP: Description: Use $(LN_S) instead of hardcoded ln for linking 
+## DP: between /usr/bin and /usr/h8300-hitachi-coff/bin
+## DP: Author: Michael Tautschnig <tautschn@model.in.tum.de>
+## DP: Upstream status: N/A
+
+diff -urN binutils-h8300-hms-2.16.1/binutils/Makefile.am binutils-h8300-hms-2.16.1.patched/binutils/Makefile.am
+--- binutils-h8300-hms-2.16.1/binutils/Makefile.am	2005-02-22 13:57:26.000000000 +0100
++++ binutils-h8300-hms-2.16.1.patched/binutils/Makefile.am	2006-10-30 01:01:24.000000000 +0100
+@@ -352,7 +352,7 @@
+ 	    k=`echo $$j | sed '$(transform)'`; \
+ 	    if [ "$(bindir)/$$k" != "$(tooldir)/bin/$$j" ]; then \
+ 	      rm -f $(DESTDIR)$(tooldir)/bin/$$j$(EXEEXT); \
+-	      ln $(DESTDIR)$(bindir)/$$k$(EXEEXT) $(DESTDIR)$(tooldir)/bin/$$j$(EXEEXT) >/dev/null 2>/dev/null \
++	      $(LN_S) ../../bin/$$k$(EXEEXT) $(DESTDIR)$(tooldir)/bin/$$j$(EXEEXT) >/dev/null 2>/dev/null \
+ 		|| $(LIBTOOL) --mode=install $(INSTALL_PROGRAM) $$i$(EXEEXT) $(DESTDIR)$(tooldir)/bin/$$j$(EXEEXT); \
+ 	    fi; \
+ 	  else true; \
+diff -urN binutils-h8300-hms-2.16.1/binutils/Makefile.in binutils-h8300-hms-2.16.1.patched/binutils/Makefile.in
+--- binutils-h8300-hms-2.16.1/binutils/Makefile.in	2005-02-22 13:57:27.000000000 +0100
++++ binutils-h8300-hms-2.16.1.patched/binutils/Makefile.in	2006-10-30 01:01:35.000000000 +0100
+@@ -1091,7 +1091,7 @@
+ 	    k=`echo $$j | sed '$(transform)'`; \
+ 	    if [ "$(bindir)/$$k" != "$(tooldir)/bin/$$j" ]; then \
+ 	      rm -f $(DESTDIR)$(tooldir)/bin/$$j$(EXEEXT); \
+-	      ln $(DESTDIR)$(bindir)/$$k$(EXEEXT) $(DESTDIR)$(tooldir)/bin/$$j$(EXEEXT) >/dev/null 2>/dev/null \
++	      $(LN_S) ../../bin/$$k$(EXEEXT) $(DESTDIR)$(tooldir)/bin/$$j$(EXEEXT) >/dev/null 2>/dev/null \
+ 		|| $(LIBTOOL) --mode=install $(INSTALL_PROGRAM) $$i$(EXEEXT) $(DESTDIR)$(tooldir)/bin/$$j$(EXEEXT); \
+ 	    fi; \
+ 	  else true; \
+diff -urN binutils-h8300-hms-2.16.1/gas/Makefile.am binutils-h8300-hms-2.16.1.patched/gas/Makefile.am
+--- binutils-h8300-hms-2.16.1/gas/Makefile.am	2005-03-22 16:31:44.000000000 +0100
++++ binutils-h8300-hms-2.16.1.patched/gas/Makefile.am	2006-10-30 01:00:59.000000000 +0100
+@@ -711,7 +711,7 @@
+ 	n=`echo as | sed '$(transform)'`; \
+ 	if [ "$(bindir)/$$n$(EXEEXT)" != "$(tooldir)/bin/as$(EXEEXT)" ]; then \
+ 	  rm -f $(DESTDIR)$(tooldir)/bin/as$(EXEEXT); \
+-	  ln $(DESTDIR)$(bindir)/$$n$(EXEEXT) $(DESTDIR)$(tooldir)/bin/as$(EXEEXT) >/dev/null 2>/dev/null \
++	  $(LN_S) ../../bin/$$n$(EXEEXT) $(DESTDIR)$(tooldir)/bin/as$(EXEEXT) >/dev/null 2>/dev/null \
+ 	    || $(LIBTOOL) --mode=install $(INSTALL_PROGRAM) as-new$(EXEEXT) $(DESTDIR)$(tooldir)/bin/as$(EXEEXT); \
+ 	else \
+ 	  true ; \
+diff -urN binutils-h8300-hms-2.16.1/gas/Makefile.in binutils-h8300-hms-2.16.1.patched/gas/Makefile.in
+--- binutils-h8300-hms-2.16.1/gas/Makefile.in	2005-04-29 15:57:16.000000000 +0200
++++ binutils-h8300-hms-2.16.1.patched/gas/Makefile.in	2006-10-30 01:01:11.000000000 +0100
+@@ -3115,7 +3115,7 @@
+ 	n=`echo as | sed '$(transform)'`; \
+ 	if [ "$(bindir)/$$n$(EXEEXT)" != "$(tooldir)/bin/as$(EXEEXT)" ]; then \
+ 	  rm -f $(DESTDIR)$(tooldir)/bin/as$(EXEEXT); \
+-	  ln $(DESTDIR)$(bindir)/$$n$(EXEEXT) $(DESTDIR)$(tooldir)/bin/as$(EXEEXT) >/dev/null 2>/dev/null \
++	  $(LN_S) ../../bin/$$n$(EXEEXT) $(DESTDIR)$(tooldir)/bin/as$(EXEEXT) >/dev/null 2>/dev/null \
+ 	    || $(LIBTOOL) --mode=install $(INSTALL_PROGRAM) as-new$(EXEEXT) $(DESTDIR)$(tooldir)/bin/as$(EXEEXT); \
+ 	else \
+ 	  true ; \
+diff -urN binutils-h8300-hms-2.16.1/ld/Makefile.am binutils-h8300-hms-2.16.1.patched/ld/Makefile.am
+--- binutils-h8300-hms-2.16.1/ld/Makefile.am	2005-01-20 20:37:49.000000000 +0100
++++ binutils-h8300-hms-2.16.1.patched/ld/Makefile.am	2006-10-30 00:59:43.000000000 +0100
+@@ -1671,7 +1671,7 @@
+ 	n=`echo ld | sed '$(transform)'`; \
+ 	if [ "$(bindir)/$$n$(EXEEXT)" != "$(tooldir)/bin/ld$(EXEEXT)" ]; then \
+ 	  rm -f $(DESTDIR)$(tooldir)/bin/ld$(EXEEXT); \
+-	  ln $(DESTDIR)$(bindir)/$$n$(EXEEXT) $(DESTDIR)$(tooldir)/bin/ld$(EXEEXT) >/dev/null 2>/dev/null \
++	  $(LN_S) ../../bin/$$n$(EXEEXT) $(DESTDIR)$(tooldir)/bin/ld$(EXEEXT) >/dev/null 2>/dev/null \
+ 	  || $(LIBTOOL) --mode=install $(INSTALL_PROGRAM) ld-new$(EXEEXT) $(DESTDIR)$(tooldir)/bin/ld$(EXEEXT); \
+ 	fi
+ 
+diff -urN binutils-h8300-hms-2.16.1/ld/Makefile.in binutils-h8300-hms-2.16.1.patched/ld/Makefile.in
+--- binutils-h8300-hms-2.16.1/ld/Makefile.in	2005-01-23 06:36:37.000000000 +0100
++++ binutils-h8300-hms-2.16.1.patched/ld/Makefile.in	2006-10-30 01:00:17.000000000 +0100
+@@ -2388,7 +2388,7 @@
+ 	n=`echo ld | sed '$(transform)'`; \
+ 	if [ "$(bindir)/$$n$(EXEEXT)" != "$(tooldir)/bin/ld$(EXEEXT)" ]; then \
+ 	  rm -f $(DESTDIR)$(tooldir)/bin/ld$(EXEEXT); \
+-	  ln $(DESTDIR)$(bindir)/$$n$(EXEEXT) $(DESTDIR)$(tooldir)/bin/ld$(EXEEXT) >/dev/null 2>/dev/null \
++	  $(LN_S) ../../bin/$$n$(EXEEXT) $(DESTDIR)$(tooldir)/bin/ld$(EXEEXT) >/dev/null 2>/dev/null \
+ 	  || $(LIBTOOL) --mode=install $(INSTALL_PROGRAM) ld-new$(EXEEXT) $(DESTDIR)$(tooldir)/bin/ld$(EXEEXT); \
+ 	fi
+ 

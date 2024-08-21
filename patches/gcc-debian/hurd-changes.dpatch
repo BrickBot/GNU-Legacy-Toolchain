@@ -1,0 +1,27 @@
+# DP: Traditional GNU systems don't have a /usr directory.  However, Debian
+# DP: systems do, and we support both having a /usr -> . symlink, and having a
+# DP: /usr directory like the other ports.  So this patch should NOT go
+# DP: upstream.
+Index: gcc-h8300-hms-3.4.6/gcc/config/gnu.h
+===================================================================
+--- gcc-h8300-hms-3.4.6.orig/gcc/config/gnu.h	2003-11-29 04:08:13.000000000 +0100
++++ gcc-h8300-hms-3.4.6/gcc/config/gnu.h	2011-06-08 23:53:29.000000000 +0200
+@@ -10,7 +10,8 @@
+ 
+ /* Standard include directory.  In GNU, "/usr" is a four-letter word.  */
+ #undef STANDARD_INCLUDE_DIR
+-#define STANDARD_INCLUDE_DIR "/include"
++/* Overridden for Debian GNU/Hurd (hurd-i386).  */
++#define STANDARD_INCLUDE_DIR "/usr/include"
+ 
+ /* Implicit library calls should use memcpy, not bcopy, etc.  */
+ #undef TARGET_MEM_FUNCTIONS
+Index: gcc-h8300-hms-3.4.6/gcc/config/t-gnu
+===================================================================
+--- gcc-h8300-hms-3.4.6.orig/gcc/config/t-gnu	2004-01-10 07:40:24.000000000 +0100
++++ gcc-h8300-hms-3.4.6/gcc/config/t-gnu	2011-06-08 23:53:29.000000000 +0200
+@@ -1,2 +1,3 @@
+ # In GNU, "/usr" is a four-letter word.
+-NATIVE_SYSTEM_HEADER_DIR = /include
++# Overridden for Debian GNU/Hurd (hurd-i386)
++NATIVE_SYSTEM_HEADER_DIR = /usr/include

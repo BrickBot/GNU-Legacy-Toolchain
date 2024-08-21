@@ -1,0 +1,18 @@
+# DP: #212912
+# DP: on alpha-linux, make -mieee default and add -mieee-disable switch
+# DP: to turn default off
+Index: gcc-h8300-hms-3.4.6/gcc/config/alpha/alpha.c
+===================================================================
+--- gcc-h8300-hms-3.4.6.orig/gcc/config/alpha/alpha.c	2005-06-04 21:27:26.000000000 +0200
++++ gcc-h8300-hms-3.4.6/gcc/config/alpha/alpha.c	2011-06-08 23:55:09.000000000 +0200
+@@ -225,6 +225,10 @@
+     { 0, 0, 0 }
+   };
+                   
++  /* If not -ffinite-math-only, enable -mieee*/
++  if (!flag_finite_math_only)
++    target_flags |= MASK_IEEE|MASK_IEEE_CONFORMANT;
++
+   /* Unicos/Mk doesn't have shared libraries.  */
+   if (TARGET_ABI_UNICOSMK && flag_pic)
+     {

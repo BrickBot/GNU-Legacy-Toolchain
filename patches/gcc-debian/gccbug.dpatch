@@ -1,0 +1,14 @@
+# DP: Use sensible-editor instead of vi as fallback editor
+Index: gcc-h8300-hms-3.4.6/gcc/gccbug.in
+===================================================================
+--- gcc-h8300-hms-3.4.6.orig/gcc/gccbug.in	2004-06-15 04:43:16.000000000 +0200
++++ gcc-h8300-hms-3.4.6/gcc/gccbug.in	2011-06-08 23:55:46.000000000 +0200
+@@ -134,7 +134,7 @@
+ # If they don't have a preferred editor set, then use
+ if [ -z "$VISUAL" ]; then
+   if [ -z "$EDITOR" ]; then
+-    EDIT=vi
++    EDIT=/usr/bin/sensible-editor
+   else
+     EDIT="$EDITOR"
+   fi

@@ -1,0 +1,33 @@
+Description: Abort on invalid header
+ .
+ binutils-h8300-hms (2.16.1-10) unstable; urgency=low
+ .
+   * Updated standards version to 3.9.5 (no changes)
+   * Merged remaining Ubuntu changes
+   * Add a safety check to guard against invalid files (Closes: #729274)
+Author: Michael Tautschnig <mt@debian.org>
+Bug-Debian: http://bugs.debian.org/729274
+
+---
+The information above should follow the Patch Tagging Guidelines, please
+checkout http://dep.debian.net/deps/dep3/ to learn about the format. Here
+are templates for supplementary fields that you might want to add:
+
+Origin: <vendor|upstream|other>, <url of original patch>
+Bug: <url in upstream bugtracker>
+Bug-Debian: http://bugs.debian.org/<bugnumber>
+Bug-Ubuntu: https://launchpad.net/bugs/<bugnumber>
+Forwarded: <no|not-needed|url proving that it has been forwarded>
+Reviewed-By: <name and email of someone who approved the patch>
+Last-Update: <YYYY-MM-DD>
+
+--- binutils-h8300-hms-2.16.1.orig/bfd/tekhex.c
++++ binutils-h8300-hms-2.16.1/bfd/tekhex.c
+@@ -330,6 +330,7 @@ getsym (dstp, srcp)
+   char *src = *srcp;
+   unsigned int i;
+   unsigned int len = hex_value(*src++);
++  if(len>=16) abort();
+ 
+   if (len == 0)
+     len = 16;
