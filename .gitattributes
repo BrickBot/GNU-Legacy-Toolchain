@@ -1,0 +1,2 @@
+# Do not automatically change line endings of files detected as text.
+* -text
