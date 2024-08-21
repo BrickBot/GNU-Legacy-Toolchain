@@ -39,43 +39,25 @@ namespace __gnu_cxx
     
     __asm__ __volatile__
       ("/* Inline exchange & add */\n\t"
-       "1:\n\t"
        ".set	push\n\t"
-#if _MIPS_SIM == _ABIO32
        ".set	mips2\n\t"
-#endif
-       "ll	%0,%3\n\t"
-       "addu	%1,%4,%0\n\t"
-       "sc	%1,%2\n\t"
+       ".set	noreorder\n\t"
+       ".set	nomacro\n"
+       "1:\tll	%0,(%2)\n\t"
+       "addu	%1,%3,%0\n\t"
+       "sc	%1,(%2)\n\t"
+       ".set	reorder\n\t"
+       "beqzl	%1,1b\n\t"
        ".set	pop\n\t"
-       "beqz	%1,1b\n\t"
-       "/* End exchange & add */"
-       : "=&r"(__result), "=&r"(__tmp), "=m"(*__mem)
-       : "m" (*__mem), "r"(__val));
-    
+       "/* End exchange & add */\n"
+       : "=&r"(__result), "=&r"(__tmp), "+r"(__mem)
+       : "r"(__val)
+       : "memory");
+
     return __result;
   }
   
   void
-  __attribute__ ((__unused__))
   __atomic_add(volatile _Atomic_word* __mem, int __val)
-  {
-    _Atomic_word __result;
-    
-    __asm__ __volatile__
-      ("/* Inline atomic add */\n\t"
-       "1:\n\t"
-       ".set	push\n\t"
-#if _MIPS_SIM == _ABIO32
-       ".set	mips2\n\t"
-#endif
-       "ll	%0,%2\n\t"
-       "addu	%0,%3,%0\n\t"
-       "sc	%0,%1\n\t"
-       ".set	pop\n\t"
-       "beqz	%0,1b\n\t"
-       "/* End atomic add */"
-       : "=&r"(__result), "=m"(*__mem)
-     : "m" (*__mem), "r"(__val));
-  }
+  { __exchange_and_add(__mem, __val); }
 } // namespace __gnu_cxx

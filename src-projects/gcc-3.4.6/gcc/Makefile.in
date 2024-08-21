@@ -121,7 +121,7 @@ SUBDIRS =@subdirs@
 
 # Selection of languages to be made.
 CONFIG_LANGUAGES = @all_languages@
-LANGUAGES = c gcov$(exeext) gcov-dump$(exeext) $(CONFIG_LANGUAGES)
+LANGUAGES = c proto gcov$(exeext) gcov-dump$(exeext) $(CONFIG_LANGUAGES)
 
 # Selection of languages to be made during stage1 build.
 BOOT_LANGUAGES = c @all_boot_languages@
@@ -2337,6 +2337,7 @@ min-insn-modes.o: min-insn-modes.c $(BCONFIG_H) $(SYSTEM_H) $(MACHMODE_H)
 intl.o: intl.c $(CONFIG_H) $(SYSTEM_H) coretypes.h $(TM_H) intl.h Makefile
 	$(CC) $(ALL_CFLAGS) $(ALL_CPPFLAGS) $(INCLUDES) \
 	  -DLOCALEDIR=\"$(localedir)\" \
+	  -DPACKAGE=\"$(PACKAGE)\" \
 	  -c $(srcdir)/intl.c $(OUTPUT_OPTION)
 
 #
@@ -3848,7 +3849,7 @@ XGETTEXT = @XGETTEXT@
 GMSGFMT = @GMSGFMT@
 MSGMERGE = msgmerge
 
-PACKAGE = @PACKAGE@
+PACKAGE = $(shell echo @PACKAGE@|sed '$(program_transform_name)')
 CATALOGS = @CATALOGS@
 
 .PHONY: build- install- build-po install-po update-po

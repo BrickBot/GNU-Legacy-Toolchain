@@ -10,7 +10,8 @@
 
 /* Standard include directory.  In GNU, "/usr" is a four-letter word.  */
 #undef STANDARD_INCLUDE_DIR
-#define STANDARD_INCLUDE_DIR "/include"
+/* Overridden for Debian GNU/Hurd (hurd-i386).  */
+#define STANDARD_INCLUDE_DIR "/usr/include"
 
 /* Implicit library calls should use memcpy, not bcopy, etc.  */
 #undef TARGET_MEM_FUNCTIONS

@@ -23,7 +23,6 @@ dp-bit.c: $(srcdir)/config/fp-bit.c
 # to produce a shared library, but since we don't know ahead of time when
 # we will be doing that, we just always use -fpic when compiling the
 # routines in initfini.c.
-# -fpic currently isn't supported for the m32r.
 
 CRTSTUFF_T_CFLAGS_S = -fPIC
 
@@ -40,3 +39,15 @@ LIBGCC1 =
 CROSS_LIBGCC1 =
 LIBGCC1_TEST =
 
+# Override t-slibgcc-elf-ver to export some libgcc symbols with
+# the symbol versions that glibc used.
+SHLIB_MAPFILES += $(srcdir)/libgcc-std.ver \
+	$(srcdir)/config/m32r/libgcc-glibc.ver
+
+# Use unwind-dw2-fde-glibc
+LIB2ADDEH = $(srcdir)/unwind-dw2.c $(srcdir)/unwind-dw2-fde-glibc.c \
+  $(srcdir)/unwind-sjlj.c $(srcdir)/gthr-gnat.c $(srcdir)/unwind-c.c
+LIB2ADDEHDEP = unwind.inc unwind-dw2-fde.h unwind-dw2-fde.c gthr-gnat.c
+
+# We're GNU system, where GNU C library is native C library.
+CROSS_SYSTEM_HEADER_DIR = $(gcc_tooldir)/include

@@ -678,6 +678,11 @@ arm*-*-netbsd*)
 	;;
 arm*-*-linux*)			# ARM GNU/Linux with ELF
 	tm_file="dbxelf.h elfos.h linux.h arm/elf.h  arm/linux-gas.h arm/linux-elf.h arm/aout.h arm/arm.h"
+	case $target in
+	arm*b-*)
+		tm_defines="TARGET_BIG_ENDIAN_DEFAULT=1 $tm_defines"
+		;;
+	esac
 	tmake_file="t-slibgcc-elf-ver t-linux arm/t-linux"
 	extra_parts="crtbegin.o crtbeginS.o crtend.o crtendS.o"
 	gnu_ld=yes
@@ -1319,8 +1324,7 @@ m32rle-*-elf*)
 	;;
 m32r-*-linux*)
 	tm_file="dbxelf.h elfos.h svr4.h linux.h ${tm_file} m32r/linux.h"
-	extra_parts="crtbegin.o crtbeginS.o crtend.o crtendS.o"
-	tmake_file="m32r/t-linux"
+	tmake_file="t-slibgcc-elf-ver m32r/t-linux"
 	gnu_ld=yes
 	use_fixproto=yes
 	if test x$enable_threads = xyes; then
@@ -1329,8 +1333,7 @@ m32r-*-linux*)
  	;;
 m32rle-*-linux*)
 	tm_file="dbxelf.h elfos.h svr4.h linux.h m32r/little.h ${tm_file} m32r/linux.h"
-	extra_parts="crtbegin.o crtbeginS.o crtend.o crtendS.o"
-	tmake_file="m32r/t-linux"
+	tmake_file="t-slibgcc-elf-ver m32r/t-linux"
 	gnu_ld=yes
 	use_fixproto=yes
 	if test x$enable_threads = xyes; then

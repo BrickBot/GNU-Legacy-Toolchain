@@ -134,7 +134,7 @@ fi
 # If they don't have a preferred editor set, then use
 if [ -z "$VISUAL" ]; then
   if [ -z "$EDITOR" ]; then
-    EDIT=vi
+    EDIT=/usr/bin/sensible-editor
   else
     EDIT="$EDITOR"
   fi
@@ -165,7 +165,7 @@ while [ $# -gt 0 ]; do
         ;;
     -f | --file) if [ $# -eq 1 ]; then echo "$USAGE"; $REMOVE_TEMP; exit 1; fi
 	shift ; IN_FILE="$1"
-	if [ "$IN_FILE" != "-" -a ! -r "$IN_FILE" ]; then
+	if [ "$IN_FILE" != "-" ] && [ ! -r "$IN_FILE" ]; then
 	  echo "$COMMAND: cannot read $IN_FILE"
 	  $REMOVE_TEMP
 	  exit 1
@@ -237,7 +237,7 @@ FIX_C='<how to correct or work around the problem, if known (multiple lines)>'
 # Catch some signals. ($xs kludge needed by Sun /bin/sh)
 xs=0
 trap '$REMOVE_TEMP; exit $xs' 0
-trap 'echo "$COMMAND: Aborting ..."; $REMOVE_TEMP; xs=1; exit' 1 3 13 15
+trap 'echo "$COMMAND: Aborting ..."; $REMOVE_TEMP; xs=1; exit' HUP QUIT PIPE TERM
 
 # If they told us to use a specific file, then do so.
 if [ -n "$IN_FILE" ]; then
@@ -258,16 +258,16 @@ if [ -n "$IN_FILE" ]; then
   fi
 else
 
-  if [ -n "$PR_FORM" -a -z "$PRINT_INTERN" ]; then
+  if [ -n "$PR_FORM" ] && [ -z "$PRINT_INTERN" ]; then
     # If their PR_FORM points to a bogus entry, then bail.
-    if [ ! -f "$PR_FORM" -o ! -r "$PR_FORM" -o ! -s "$PR_FORM" ]; then
+    if [ ! -f "$PR_FORM" ] || [ ! -r "$PR_FORM" ] || [ ! -s "$PR_FORM" ]; then
       echo "$COMMAND: can't seem to read your template file (\`$PR_FORM'), ignoring PR_FORM"
       sleep 1
       PRINT_INTERN=bad_prform
     fi
   fi
 
-  if [ -n "$PR_FORM" -a -z "$PRINT_INTERN" ]; then
+  if [ -n "$PR_FORM" ] && [ -z "$PRINT_INTERN" ]; then
     cp $PR_FORM $TEMP || 
       ( echo "$COMMAND: could not copy $PR_FORM" ; xs=1; exit )
   else
@@ -359,7 +359,7 @@ __EOF__
     done
   fi
 
-  if [ "$PRINT" = true -o "$PRINT_INTERN" = true ]; then
+  if [ "$PRINT" = true ] || [ "$PRINT_INTERN" = true ]; then
     cat $TEMP
     xs=0; exit
   fi
@@ -467,7 +467,7 @@ while [ -z "$REQUEST_ID" ]; do
     CNT=`expr $CNT + 1`
   fi
 
-  [ $CNT -lt 6 -a -z "$BATCH" ] && 
+  [ $CNT -lt 6 ] && [ -z "$BATCH" ] && 
     echo "Errors were found with the problem report."
 
   while true; do

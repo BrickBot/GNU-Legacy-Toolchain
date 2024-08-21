@@ -41,8 +41,8 @@ gcc_init_libintl (void)
   setlocale (LC_ALL, "");
 #endif
 
-  (void) bindtextdomain ("gcc", LOCALEDIR);
-  (void) textdomain ("gcc");
+  (void) bindtextdomain (PACKAGE, LOCALEDIR);
+  (void) textdomain (PACKAGE);
 }
 
 #if defined HAVE_WCHAR_H && defined HAVE_WORKING_MBSTOWCS && defined HAVE_WCSWIDTH

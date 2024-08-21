@@ -155,7 +155,6 @@ libgcj="target-libffi \
 target_libraries="target-libiberty \
 		target-libgloss \
 		target-newlib \
-		target-libstdc++-v3 \
 		target-libf2c \
 		${libgcj} \
 		target-libobjc"
@@ -489,8 +488,9 @@ case "${target}" in
     # headers, crt*.o, etc., all of which are needed by these.
     noconfigdirs="$noconfigdirs target-zlib"
     ;;
+  parisc*-*-linux* | hppa*-*-linux*)
+    ;;
   hppa*-*-*elf* | \
-  parisc*-*-linux* | hppa*-*-linux* | \
   hppa*-*-lites* | \
   hppa*-*-openbsd* | \
   hppa*64*-*-*)

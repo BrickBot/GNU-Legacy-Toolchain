@@ -94,13 +94,13 @@ extern int target_flags;
 
 /* Macros used in the machine description to test the flags.  */
 
-/* configure can arrange to make this 2, to force a 486.  */
+/* configure can arrange to make this 1, to force a 486.  */
 
 #ifndef TARGET_CPU_DEFAULT
 #ifdef TARGET_64BIT_DEFAULT
 #define TARGET_CPU_DEFAULT TARGET_CPU_DEFAULT_k8
 #else
-#define TARGET_CPU_DEFAULT 0
+#define TARGET_CPU_DEFAULT TARGET_CPU_DEFAULT_i486
 #endif
 #endif
 

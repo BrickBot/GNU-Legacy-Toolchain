@@ -1028,6 +1028,20 @@ gen_compare (enum rtx_code code, rtx x, rtx y, int need_compare)
 	{
 	case EQ:
 	  if (GET_CODE (y) == CONST_INT
+	      && UINT16_P (INTVAL (y))		/* Reg equal to small const.  */
+	      && y != const0_rtx)
+	    {
+	      rtx tmp = gen_reg_rtx (SImode);		
+	      
+	      emit_insn (gen_xorsi3 (tmp, x, GEN_INT (INTVAL (y))));
+	      x = tmp;
+	      y = const0_rtx;
+	    }
+#if 0
+ /*
+  * Removed for miss optimizing at simplify_relational_operation().
+  */
+	  else if (GET_CODE (y) == CONST_INT
 	      && CMP_INT16_P (INTVAL (y))		/* Reg equal to small const.  */
 	      && y != const0_rtx)
 	    {
@@ -1037,6 +1051,7 @@ gen_compare (enum rtx_code code, rtx x, rtx y, int need_compare)
 	      x = tmp;
 	      y = const0_rtx;
 	    }
+#endif
 	  else if (CONSTANT_P (y))			/* Reg equal to const.  */
 	    {
 	      rtx tmp = force_reg (GET_MODE (x), y);
@@ -1151,6 +1166,20 @@ gen_compare (enum rtx_code code, rtx x, rtx y, int need_compare)
       /* Reg/smallconst equal comparison.  */
       if (compare_code == EQ
 	  && GET_CODE (y) == CONST_INT
+	  && UINT16_P (INTVAL (y)))
+	{
+	  rtx tmp = gen_reg_rtx (SImode);
+
+	  emit_insn (gen_xorsi3 (tmp, x, GEN_INT (INTVAL (y))));
+	  return gen_rtx (code, CCmode, tmp, const0_rtx);
+	}
+      
+#if 0
+ /*
+  * Removed for miss optimizing at simplify_relational_operation().
+  */
+      if (compare_code == EQ
+	  && GET_CODE (y) == CONST_INT
 	  && CMP_INT16_P (INTVAL (y)))
 	{
 	  rtx tmp = gen_reg_rtx (SImode);
@@ -1158,6 +1187,7 @@ gen_compare (enum rtx_code code, rtx x, rtx y, int need_compare)
 	  emit_insn (gen_addsi3 (tmp, x, GEN_INT (-INTVAL (y))));
 	  return gen_rtx (code, CCmode, tmp, const0_rtx);
 	}
+#endif
       
       /* Reg/const equal comparison.  */
       if (compare_code == EQ
@@ -2087,8 +2117,16 @@ m32r_output_function_epilogue (FILE * file, HOST_WIDE_INT size ATTRIBUTE_UNUSED)
 	  else if (reg_offset < 32768)
 	    fprintf (file, "\tadd3 %s,%s,%s%d\n",
 		     sp_str, sp_str, IMMEDIATE_PREFIX, reg_offset);
-	  else
+	  else if (reg_offset <= 0xffffff)
 	    fprintf (file, "\tld24 %s,%s%d\n\tadd %s,%s\n",
+		     reg_names[PROLOGUE_TMP_REGNUM],
+		     IMMEDIATE_PREFIX, reg_offset,
+		     sp_str, reg_names[PROLOGUE_TMP_REGNUM]);
+	  else
+	    fprintf (file, "\tseth %s,%shigh(%d)\n\tor3 %s,%s,%slow(%d)\n\tadd %s,%s\n",
+		     reg_names[PROLOGUE_TMP_REGNUM],
+		     IMMEDIATE_PREFIX, reg_offset,
+		     reg_names[PROLOGUE_TMP_REGNUM],
 		     reg_names[PROLOGUE_TMP_REGNUM],
 		     IMMEDIATE_PREFIX, reg_offset,
 		     sp_str, reg_names[PROLOGUE_TMP_REGNUM]);
@@ -2102,10 +2140,20 @@ m32r_output_function_epilogue (FILE * file, HOST_WIDE_INT size ATTRIBUTE_UNUSED)
 	  else if (reg_offset < 32768)
 	    fprintf (file, "\tadd3 %s,%s,%s%d\n",
 		     sp_str, fp_str, IMMEDIATE_PREFIX, reg_offset);
-	  else
-	    fprintf (file, "\tld24 %s,%s%d\n\tadd %s,%s\n",
+	  else if (reg_offset <= 0xffffff)
+	    fprintf (file, "\tld24 %s,%s%d\n\tadd %s,%s\n\tmv %s,%s\n",
 		     reg_names[PROLOGUE_TMP_REGNUM],
 		     IMMEDIATE_PREFIX, reg_offset,
+		     reg_names[PROLOGUE_TMP_REGNUM], fp_str,
+		     sp_str, reg_names[PROLOGUE_TMP_REGNUM]);
+	  else
+	    fprintf (file, "\tseth %s,%shigh(%d)\nor3 %s,%s,%slow(%d)\n\tadd %s,%s\n\tmv %s,%s\n",
+		     reg_names[PROLOGUE_TMP_REGNUM],
+		     IMMEDIATE_PREFIX, reg_offset,
+		     reg_names[PROLOGUE_TMP_REGNUM],
+		     reg_names[PROLOGUE_TMP_REGNUM],
+		     IMMEDIATE_PREFIX, reg_offset,
+		     reg_names[PROLOGUE_TMP_REGNUM], fp_str,
 		     sp_str, reg_names[PROLOGUE_TMP_REGNUM]);
 	}
       else
@@ -2127,8 +2175,26 @@ m32r_output_function_epilogue (FILE * file, HOST_WIDE_INT size ATTRIBUTE_UNUSED)
 
       /* Remove varargs area if present.  */
       if (current_frame_info.pretend_size != 0)
-	fprintf (file, "\taddi %s,%s%d\n",
-		 sp_str, IMMEDIATE_PREFIX, current_frame_info.pretend_size);
+        if (current_frame_info.pretend_size < 128)
+	  fprintf (file, "\taddi %s,%s%d\n",
+		     sp_str, IMMEDIATE_PREFIX, current_frame_info.pretend_size);
+        else if (current_frame_info.pretend_size < 32768)
+	  fprintf (file, "\tadd3 %s,%s,%s%d\n",
+		   sp_str, sp_str, IMMEDIATE_PREFIX,
+		   current_frame_info.pretend_size);
+        else if (current_frame_info.pretend_size <= 0xffffff)
+	  fprintf (file, "\tld24 %s,%s%d\n\tadd %s,%s\n",
+		   reg_names[PROLOGUE_TMP_REGNUM],
+		   IMMEDIATE_PREFIX, current_frame_info.pretend_size,
+		   sp_str, reg_names[PROLOGUE_TMP_REGNUM]);
+        else
+	  fprintf (file, "\tseth %s,%shigh(%d)\n\tor3 %s,%s,%slow(%d)\n\tadd %s,%s\n",
+		   reg_names[PROLOGUE_TMP_REGNUM],
+		   IMMEDIATE_PREFIX, current_frame_info.pretend_size,
+		   reg_names[PROLOGUE_TMP_REGNUM],
+		   reg_names[PROLOGUE_TMP_REGNUM],
+		   IMMEDIATE_PREFIX, current_frame_info.pretend_size,
+		   sp_str, reg_names[PROLOGUE_TMP_REGNUM]);
 	
       /* Emit the return instruction.  */
       if (M32R_INTERRUPT_P (fn_type))
@@ -2204,6 +2270,15 @@ m32r_legitimize_pic_address (rtx orig, rtx reg)
       else
         address = reg;
 
+      current_function_uses_pic_offset_table = 1;
+      if (GET_CODE (orig) == LABEL_REF
+          || GET_CODE (orig) == SYMBOL_REF && SYMBOL_REF_LOCAL_P (orig))
+        {
+          emit_insn (gen_gotoff_load_addr (reg, orig));
+          emit_insn (gen_addsi3 (reg, reg, pic_offset_table_rtx));
+          return reg;
+        }
+
       emit_insn (gen_pic_load_addr (address, orig));
 
       emit_insn (gen_addsi3 (address, address, pic_offset_table_rtx));
@@ -2211,7 +2286,6 @@ m32r_legitimize_pic_address (rtx orig, rtx reg)
 
       RTX_UNCHANGING_P (pic_ref) = 1;
       insn = emit_move_insn (reg, pic_ref);
-      current_function_uses_pic_offset_table = 1;
 #if 0
       /* Put a REG_EQUAL note on this insn, so that it can be optimized
          by loop.  */

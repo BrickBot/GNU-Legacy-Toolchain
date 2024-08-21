@@ -225,6 +225,10 @@ override_options (void)
     { 0, 0, 0 }
   };
                   
+  /* If not -ffinite-math-only, enable -mieee*/
+  if (!flag_finite_math_only)
+    target_flags |= MASK_IEEE|MASK_IEEE_CONFORMANT;
+
   /* Unicos/Mk doesn't have shared libraries.  */
   if (TARGET_ABI_UNICOSMK && flag_pic)
     {

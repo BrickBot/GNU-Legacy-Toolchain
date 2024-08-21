@@ -1,2 +1,3 @@
 # In GNU, "/usr" is a four-letter word.
-NATIVE_SYSTEM_HEADER_DIR = /include
+# Overridden for Debian GNU/Hurd (hurd-i386)
+NATIVE_SYSTEM_HEADER_DIR = /usr/include
