@@ -1,2 +1,2 @@
-# H8/300 COFF Toolchain
+# H8/300 COFF (HMS) Toolchain
 A cross-toolchain targeting Hitachi H8/300 processors with the COFF (or, colloquially, HMS) format, including binutils, gcc, gpc, gdb, and newlib.
