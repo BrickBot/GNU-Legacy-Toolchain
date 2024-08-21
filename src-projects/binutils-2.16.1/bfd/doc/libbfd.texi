@@ -1,4 +1,4 @@
-@section Internal functions
+@subsection Internal functions
 
 
 @strong{Description}@*

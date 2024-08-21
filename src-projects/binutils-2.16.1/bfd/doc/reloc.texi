@@ -492,7 +492,7 @@ know what the target machine might call it, it can find out by
 using this bit of code.
 
 @findex bfd_reloc_code_type
-@subsubsection @code{bfd_reloc_code_type}
+@subsection @code{bfd_reloc_code_type}
 @strong{Description}@*
 The insides of a reloc code.  The idea is that, eventually, there
 will be one enumerator for every type of relocation we ever do.

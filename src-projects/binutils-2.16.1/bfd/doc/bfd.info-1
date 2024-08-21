@@ -1,5 +1,4 @@
-This is ../.././bfd/doc/bfd.info, produced by makeinfo version 4.7 from
-../.././bfd/doc/bfd.texinfo.
+This is ../../../bfd/doc/bfd.info, produced by makeinfo version 4.13 from ../../../bfd/doc/bfd.texinfo.
 
 START-INFO-DIR-ENTRY
 * Bfd: (bfd).                   The Binary File Descriptor library.
@@ -12,8 +11,8 @@ END-INFO-DIR-ENTRY
    Permission is granted to copy, distribute and/or modify this document
      under the terms of the GNU Free Documentation License, Version 1.1
      or any later version published by the Free Software Foundation;
-   with no Invariant Sections, with no Front-Cover Texts, and with no
-    Back-Cover Texts.  A copy of the license is included in the
+  with no Invariant Sections, with no Front-Cover Texts, and with no
+  Back-Cover Texts.  A copy of the license is included in the
 section entitled "GNU Free Documentation License".
 
 
@@ -6395,9 +6394,9 @@ The linker proper will call the `_bfd_link_add_symbols' entry point for
 each object file or archive which is to be linked (typically these are
 the files named on the command line, but some may also come from the
 linker script).  The entry point is responsible for examining the file.
-For an object file, BFD must add any relevant symbol information to
-the hash table.  For an archive, BFD must determine which elements of
-the archive should be used and adding them to the link.
+For an object file, BFD must add any relevant symbol information to the
+hash table.  For an archive, BFD must determine which elements of the
+archive should be used and adding them to the link.
 
    The a.out version of this entry point is
 `NAME(aout,link_add_symbols)'.
@@ -7719,12 +7718,10 @@ Coff relocations are easily transformed into the internal BFD form
 
 File: bfd.info,  Node: elf,  Next: mmo,  Prev: coff,  Up: BFD back ends
 
-3.3
-===
+3.3 ELF backends
+================
 
-ELF backends
-
-   BFD support for ELF formats is being worked on.  Currently, the best
+BFD support for ELF formats is being worked on.  Currently, the best
 supported back ends are for sparc and i386 (running svr4 or Solaris 2).
 
    Documentation of the internals of the support code still needs to be

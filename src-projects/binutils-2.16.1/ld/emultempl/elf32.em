@@ -885,6 +885,8 @@ cat >>e${EMULATION_NAME}.c <<EOF
 	      && command_line.rpath == NULL)
 	    {
 	      lib_path = (const char *) getenv ("LD_RUN_PATH");
+	      if ((lib_path) && (strlen (lib_path) == 0))
+		lib_path = NULL;
 	      if (gld${EMULATION_NAME}_search_needed (lib_path, &n,
 						      force))
 		break;
@@ -1059,6 +1061,8 @@ gld${EMULATION_NAME}_before_allocation (void)
   rpath = command_line.rpath;
   if (rpath == NULL)
     rpath = (const char *) getenv ("LD_RUN_PATH");
+  if ((rpath) && (strlen (rpath) == 0))
+      rpath = NULL;
   if (! (bfd_elf_size_dynamic_sections
 	 (output_bfd, command_line.soname, rpath,
 	  command_line.filter_shlib,

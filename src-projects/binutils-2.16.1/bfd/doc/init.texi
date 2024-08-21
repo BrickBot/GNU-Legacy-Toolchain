@@ -1,4 +1,4 @@
-@section Initialization
+@subsection Initialization
 These are the functions that handle initializing a BFD.
 
 @findex bfd_init

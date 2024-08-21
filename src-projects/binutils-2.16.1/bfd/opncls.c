@@ -150,6 +150,13 @@ bfd_openr (const char *filename, const char *target)
 {
   bfd *nbfd;
   const bfd_target *target_vec;
+  struct stat s;
+
+  if (stat (filename, &s) == 0)
+    if (S_ISDIR(s.st_mode)) {
+      bfd_set_error (bfd_error_file_not_recognized);
+      return NULL;
+    }
 
   nbfd = _bfd_new_bfd ();
   if (nbfd == NULL)

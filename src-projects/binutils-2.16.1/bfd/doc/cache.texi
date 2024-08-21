@@ -1,4 +1,4 @@
-@section File caching
+@subsection File caching
 The file caching mechanism is embedded within BFD and allows
 the application to open as many BFDs as it wants without
 regard to the underlying operating system's file descriptor

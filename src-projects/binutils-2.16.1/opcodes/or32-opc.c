@@ -979,7 +979,7 @@ or32_print_register (param_ch, encoding, insn)
 {
   int regnum = or32_extract(param_ch, encoding, insn);
   
-  sprintf (disassembled, "%sr%d", disassembled, regnum);
+  sprintf (disassembled + strlen(disassembled), "r%d", regnum);
 }
 
 /* Print immediate. Used only by print_insn.  */
@@ -997,12 +997,12 @@ or32_print_immediate (param_ch, encoding, insn)
   if (letter_signed (param_ch))
     {
       if (imm < 0)
-        sprintf (disassembled, "%s%d", disassembled, imm);
+        sprintf (disassembled + strlen(disassembled), "%d", imm);
       else
-        sprintf (disassembled, "%s0x%x", disassembled, imm);
+        sprintf (disassembled + strlen(disassembled), "0x%x", imm);
     }
   else
-    sprintf (disassembled, "%s%#x", disassembled, imm);
+    sprintf (disassembled + strlen(disassembled), "%#x", imm);
 }
 
 /* Disassemble one instruction from insn to disassemble.
@@ -1036,14 +1036,14 @@ disassemble_insn (insn)
               if (strchr (opcode->encoding, *s))
                 or32_print_immediate (*s, opcode->encoding, insn);
               else
-                sprintf (disassembled, "%s%c", disassembled, *s);
+                sprintf (disassembled + strlen(disassembled), "%c", *s);
             }
         }
     }
   else
     {
       /* This used to be %8x for binutils.  */
-      sprintf (disassembled, "%s.word 0x%08lx", disassembled, insn);
+      sprintf (disassembled + strlen(disassembled), ".word 0x%08lx", insn);
     }
 
   return insn_len (insn);

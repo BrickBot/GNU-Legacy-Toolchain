@@ -50,7 +50,7 @@ typedef struct external_aouthdr
     char entry[4];	/* entry pt.				*/
     char text_start[4];	/* base of text used for this file 	*/
     char data_start[4];	/* base of data used for this file 	*/
-  }
+  } __attribute__((packed))
 AOUTHDR;
 
 #define AOUTHDRSZ 28
@@ -150,7 +150,7 @@ struct external_syment
   char e_type[2];
   char e_sclass[1];
   char e_numaux[1];
-};
+} __attribute__((packed));
 
 #define	SYMENT	struct external_syment
 #define	SYMESZ	18	
@@ -242,7 +242,7 @@ union external_auxent
     char x_tvlen[2];	/* length of .tv */
     char x_tvran[2][2];	/* tv range */
   } x_tv;		/* info about .tv section (in auxent of symbol .tv)) */
-};
+} __attribute__((packed));
 
 #define	AUXENT	union external_auxent
 #define	AUXESZ	18

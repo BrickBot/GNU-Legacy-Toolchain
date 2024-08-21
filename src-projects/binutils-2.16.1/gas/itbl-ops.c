@@ -620,14 +620,14 @@ itbl_disassemble (char *s, unsigned long insn)
 	  if (r)
 	    strcat (s, r->name);
 	  else
-	    sprintf (s, "%s$%lu", s, value);
+	    sprintf (s + strlen(s), "$%lu", value);
 	  break;
 	case e_addr:
 	  /* Use assembler's symbol table to find symbol.  */
 	  /* FIXME!! Do we need this?  If so, what about relocs??  */
 	  /* If not a symbol, fall through to IMMED.  */
 	case e_immed:
-	  sprintf (s, "%s0x%lx", s, value);
+	  sprintf (s + strlen(s), "0x%lx", value);
 	  break;
 	default:
 	  return 0;		/* error; invalid field spec */

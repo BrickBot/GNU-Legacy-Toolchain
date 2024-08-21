@@ -306,7 +306,7 @@ bfd_error_handler_type bfd_get_error_handler (void);
 @strong{Description}@*
 Return the BFD error handler function.
 
-@section Symbols
+@subsection Symbols
 
 
 @findex bfd_get_reloc_upper_bound

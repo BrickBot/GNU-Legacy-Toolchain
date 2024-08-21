@@ -1589,7 +1589,7 @@ the linker script being used by the linker.
 
 @kindex --version-script=@var{version-scriptfile}
 @cindex version script, symbol versions
-@itemx --version-script=@var{version-scriptfile}
+@item --version-script=@var{version-scriptfile}
 Specify the name of a version script to the linker.  This is typically
 used when creating shared libraries to specify additional information
 about the version hierarchy for the library being created.  This option
@@ -6256,7 +6256,7 @@ If you have more than one @code{SECT} statement for the same
 @printindex cp
 
 @tex
-% I think something like @colophon should be in texinfo.  In the
+% I think something like <at>colophon should be in texinfo.  In the
 % meantime:
 \long\def\colophon{\hbox to0pt{}\vfill
 \centerline{The body of this manual is set in}
@@ -6267,7 +6267,7 @@ If you have more than one @code{SECT} statement for the same
 \centerline{{\sl\fontname\tensl\/}}
 \centerline{are used for emphasis.}\vfill}
 \page\colophon
-% Blame: doc@cygnus.com, 28mar91.
+% Blame: doc<at>cygnus.com, 28mar91.
 @end tex
 
 

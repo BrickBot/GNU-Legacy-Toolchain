@@ -1,4 +1,4 @@
-@section File formats
+@subsection File formats
 A format is a BFD concept of high level file contents type. The
 formats supported by BFD are:
 
