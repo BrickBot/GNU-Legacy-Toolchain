@@ -3887,6 +3887,18 @@ print_version (FILE *file, const char *indent)
 #ifndef __VERSION__
 #define __VERSION__ "[?]"
 #endif
+#ifdef GPC
+  extern const char *lang_version_string;
+  fnotice (file,
+#ifdef __GNUC__
+	   "%s%s%s version %s%s (%s)\n%s\tcompiled by GNU C version %s.\n"
+#else
+	   "%s%s%s version %s%s (%s) compiled by CC.\n"
+#endif
+	   , indent, *indent != 0 ? " " : "",
+	   lang_hooks.name, lang_version_string, version_string, TARGET_NAME,
+	   indent, __VERSION__);
+#else
   fnotice (file,
 #ifdef __GNUC__
 	   "%s%s%s version %s (%s)\n%s\tcompiled by GNU C version %s.\n"
@@ -3896,6 +3908,7 @@ print_version (FILE *file, const char *indent)
 	   , indent, *indent != 0 ? " " : "",
 	   lang_hooks.name, version_string, TARGET_NAME,
 	   indent, __VERSION__);
+#endif
   fnotice (file, "%s%sGGC heuristics: --param ggc-min-expand=%d --param ggc-min-heapsize=%d\n",
 	   indent, *indent != 0 ? " " : "",
 	   PARAM_VALUE (GGC_MIN_EXPAND), PARAM_VALUE (GGC_MIN_HEAPSIZE));

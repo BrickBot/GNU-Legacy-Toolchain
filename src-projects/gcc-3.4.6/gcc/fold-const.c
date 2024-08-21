@@ -19,6 +19,9 @@ along with GCC; see the file COPYING.  If not, write to the Free
 Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 02111-1307, USA.  */
 
+
+/* @@ PATCHED FOR GPC @@ */
+
 /*@@ This file should be rewritten to use an arbitrary precision
   @@ representation for "struct tree_int_cst" and "struct tree_real_cst".
   @@ Perhaps the routines could also be used for bc/dc, and made a lib.
@@ -225,6 +228,17 @@ force_fit_type (tree t, int overflow)
 	    && TYPE_IS_SIZETYPE (TREE_TYPE (t))))
     return overflow;
 
+#ifdef GPC
+  /* Sign extension for unsigned types (sizetype) seems quite wrong.
+     Though the previous comment says otherwise, but according to the
+     GCC ChangeLog entry of 2000-10-20, I suppose it was meant only
+     to allow for overflows, not to sign extension, for sizetypes.
+     The problem shows, e.g., when converting a bitsizetype to
+     sizetype where the value doesn't fit in ssizetype. -- Frank */
+  if (!TREE_UNSIGNED (TREE_TYPE (t)))
+  {
+#endif
+
   /* If the value's sign bit is set, extend the sign.  */
   if (prec != 2 * HOST_BITS_PER_WIDE_INT
       && (prec > HOST_BITS_PER_WIDE_INT
@@ -246,6 +260,10 @@ force_fit_type (tree t, int overflow)
 	    TREE_INT_CST_LOW (t) |= ((unsigned HOST_WIDE_INT) (-1) << prec);
 	}
     }
+
+#ifdef GPC
+  }
+#endif
 
   /* Return nonzero if signed overflow occurred.  */
   return
@@ -1343,10 +1361,14 @@ int_const_binop (enum tree_code code, tree arg1, tree arg2, int notrunc)
     }
 
   TREE_OVERFLOW (t)
+#ifndef GPC
     = ((notrunc
 	? (!uns || is_sizetype) && overflow
 	: (force_fit_type (t, (!uns || is_sizetype) && overflow)
 	   && ! no_overflow))
+#else /* GPC */
+	  = ((notrunc ? overflow : force_fit_type (t, overflow))
+#endif /* GPC */
        | TREE_OVERFLOW (arg1)
        | TREE_OVERFLOW (arg2));
 

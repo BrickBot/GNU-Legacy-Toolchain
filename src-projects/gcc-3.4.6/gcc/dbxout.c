@@ -1011,13 +1011,17 @@ dbxout_type_methods (tree type)
   tree type_encoding;
   tree fndecl;
   tree last;
+#ifndef GPC
   char formatted_type_identifier_length[16];
   int type_identifier_length;
+#endif
 
   if (methods == NULL_TREE)
     return;
 
+#ifndef GPC
   type_encoding = DECL_NAME (TYPE_NAME (type));
+#endif
 
 #if 0
   /* C++: Template classes break some assumptions made by this code about
@@ -1037,9 +1041,11 @@ dbxout_type_methods (tree type)
   }
 #endif
 
+#ifndef GPC
   type_identifier_length = IDENTIFIER_LENGTH (type_encoding);
 
   sprintf (formatted_type_identifier_length, "%d", type_identifier_length);
+#endif
 
   if (TREE_CODE (methods) != TREE_VEC)
     fndecl = methods;
@@ -1470,7 +1476,7 @@ dbxout_type (tree type, int full)
 	  fputs ("@s", asmfile);
 	  CHARS (2);
 	  print_wide_int (BITS_PER_UNIT * int_size_in_bytes (type));
-	  fputs (";-20;", asmfile);
+	  fputs (";-20", asmfile);
 	  CHARS (4);
 	}
       else
@@ -1492,7 +1498,7 @@ dbxout_type (tree type, int full)
 	  fputs ("@s", asmfile);
 	  CHARS (2);
 	  print_wide_int (BITS_PER_UNIT * int_size_in_bytes (type));
-	  fputs (";-16;", asmfile);
+	  fputs (";-16", asmfile);
 	  CHARS (4);
 	}
       else /* Define as enumeral type (False, True) */

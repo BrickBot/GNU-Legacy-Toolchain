@@ -20,6 +20,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 02111-1307, USA.  */
 
 
+/* @@ PATCHED FOR GPC 20070903 @@ */
+
 #include "config.h"
 #include "system.h"
 #include "coretypes.h"
@@ -58,6 +60,20 @@ unsigned int set_alignment = 0;
    allocated in Pmode, not ptr_mode.   Set only by internal_reference_types
    called only by a front end.  */
 static int reference_types_internal = 0;
+
+#ifdef GPC
+/* The word size of a bitstring or (power-)set value, in bits.
+   Must be non-zero.
+   May be overridden by front-ends.  */
+unsigned int set_word_size = BITS_PER_UNIT;
+
+/* If non-zero, bits in (power-)sets start with the highest bit.
+   May be overridden by front-ends.
+   In order to be backward-compatible, the Chill frontend should
+   initialize this to BYTES_BIG_ENDIAN.  */
+unsigned int set_words_big_endian = 0;
+
+#endif /* GPC */
 
 static void finalize_record_size (record_layout_info);
 static void finalize_type_size (tree);
@@ -1654,7 +1670,11 @@ layout_type (tree type)
 
 		if (maxvalue - minvalue == 1
 		    && (maxvalue == 1 || maxvalue == 0))
+#ifndef GPC
 		  element_size = integer_one_node;
+#else /* GPC */
+		  element_size = bitsize_int(1);
+#endif /* GPC */
 	      }
 
 	    /* If neither bound is a constant and sizetype is signed, make
@@ -1759,6 +1779,7 @@ layout_type (tree type)
 	abort ();
       else
 	{
+#ifndef GPC
 #ifndef SET_WORD_SIZE
 #define SET_WORD_SIZE BITS_PER_WORD
 #endif
@@ -1777,9 +1798,47 @@ layout_type (tree type)
 
 	  TYPE_SIZE (type) = bitsize_int (rounded_size);
 	  TYPE_SIZE_UNIT (type) = size_int (rounded_size / BITS_PER_UNIT);
+#else /* GPC */
+	  int alignment = set_alignment ? set_alignment : set_word_size;
+	  tree lower_bound = convert (sbitsizetype, 
+			TYPE_MIN_VALUE (TYPE_DOMAIN (type))); 
+	  tree upper_bound = convert (sbitsizetype,
+			TYPE_MAX_VALUE (TYPE_DOMAIN (type))); 
+	  tree size_in_bits, rounded_size;
+	  if (set_alignment)
+            {
+              lower_bound = round_down (lower_bound, alignment);
+            }
+	  size_in_bits = size_binop (PLUS_EXPR,
+				size_binop (MINUS_EXPR,
+					upper_bound,
+					lower_bound),
+				sbitsize_int(1));
+          rounded_size = round_up (size_in_bits, alignment);
+				
+	  if ( TREE_INT_CST_HIGH (rounded_size) 
+		|| TREE_INT_CST_LOW (rounded_size) > (unsigned) alignment) 
+	    {
+		TYPE_MODE (type) = BLKmode;
+	    }
+	  else 
+	    {
+		TYPE_MODE (type) = mode_for_size (alignment, MODE_INT, 1);
+	    } 
+
+	  TYPE_SIZE (type) = convert (bitsizetype, rounded_size);
+	  TYPE_SIZE_UNIT (type) = convert (sizetype, 
+				size_binop ( CEIL_DIV_EXPR,
+					rounded_size, 
+					sbitsize_int (BITS_PER_UNIT)));
+#endif /* GPC */
 	  TYPE_ALIGN (type) = alignment;
 	  TYPE_USER_ALIGN (type) = 0;
+#ifndef GPC
 	  TYPE_PRECISION (type) = size_in_bits;
+#else /* GPC */
+	  TYPE_PRECISION (type) = TREE_INT_CST_LOW (size_in_bits);
+#endif /* GPC */
 	}
       break;
 

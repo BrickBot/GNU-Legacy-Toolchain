@@ -61,3 +61,6 @@ Patches not marked with strikethrough have been applied here (unapplied patches 
 * ~~configure-update~~
 * ~~debian-changes-1:3.4.6+dfsg-1~~
 * fix_ftbs.diff
+
+The GNU Pascal Compiler (GPC) patches most applicable to this particular GCC version were also applied.
+* gcc-3.4.4.diff

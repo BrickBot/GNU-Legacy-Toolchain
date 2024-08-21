@@ -8636,6 +8636,9 @@ loc_descriptor_from_tree (tree loc, int addressp)
     case VIEW_CONVERT_EXPR:
     case SAVE_EXPR:
     case MODIFY_EXPR:
+#ifdef GPC
+    case UNSAVE_EXPR:
+#endif
       return loc_descriptor_from_tree (TREE_OPERAND (loc, 0), addressp);
 
     case COMPONENT_REF:
@@ -8693,7 +8696,7 @@ loc_descriptor_from_tree (tree loc, int addressp)
 	rtx rtl = lookup_constant_def (loc);
 	enum machine_mode mode;
 
-	if (GET_CODE (rtl) != MEM)
+	if (!rtl || GET_CODE (rtl) != MEM)
 	  return 0;
 	mode = GET_MODE (rtl);
 	rtl = XEXP (rtl, 0);
@@ -8838,6 +8841,15 @@ loc_descriptor_from_tree (tree loc, int addressp)
       add_loc_descr (&ret, new_loc_descr (op, 0, 0));
       break;
 
+#ifdef GPC
+    case MIN_EXPR:
+      loc = build (COND_EXPR, TREE_TYPE (loc),
+		   build (GT_EXPR, integer_type_node,
+			  TREE_OPERAND (loc, 0), TREE_OPERAND (loc, 1)),
+		   TREE_OPERAND (loc, 1), TREE_OPERAND (loc, 0));
+      goto cond_expr;
+#endif
+
     case MAX_EXPR:
       loc = build (COND_EXPR, TREE_TYPE (loc),
 		   build (LT_EXPR, integer_type_node,
@@ -8847,6 +8859,9 @@ loc_descriptor_from_tree (tree loc, int addressp)
       /* ... fall through ...  */
 
     case COND_EXPR:
+#ifdef GPC
+    cond_expr:
+#endif
       {
 	dw_loc_descr_ref lhs
 	  = loc_descriptor_from_tree (TREE_OPERAND (loc, 1), 0);
@@ -8876,6 +8891,18 @@ loc_descriptor_from_tree (tree loc, int addressp)
 	jump_node->dw_loc_oprnd1.v.val_loc = tmp;
       }
       break;
+
+#ifdef GPC
+    case REAL_CST:
+    case FLOAT_EXPR:
+    case RDIV_EXPR:
+    case STRING_CST:
+      /* In Pascal it's possible for array bounds to contain floating point
+         expressions (e.g., p/test/emil11c.pas). I don't know if it's
+         possible to represent them in dwarf2, but it doesn't seem terribly
+         important since this occurs quite rarely. -- Frank */
+      return 0;
+#endif
 
     case EXPR_WITH_FILE_LOCATION:
       return loc_descriptor_from_tree (EXPR_WFL_NODE (loc), addressp);

@@ -770,8 +770,8 @@ static const char *cc1_options =
 "%{pg:%{fomit-frame-pointer:%e-pg and -fomit-frame-pointer are incompatible}}\
  %1 %{!Q:-quiet} -dumpbase %B %{d*} %{m*} %{a*}\
  %{c|S:%{o*:-auxbase-strip %*}%{!o*:-auxbase %b}}%{!c:%{!S:-auxbase %b}}\
- %{g*} %{O*} %{W*&pedantic*} %{w} %{std*&ansi&trigraphs}\
- %{v:-version} %{pg:-p} %{p} %{f*} %{undef}\
+ %{g*} %{O*} %{f*&W*&pedantic*&w} %{std*&ansi&trigraphs}\
+ %{v:-version} %{pg:-p} %{p} %{undef}\
  %{Qn:-fno-ident} %{--help:--help}\
  %{--target-help:--target-help}\
  %{!fsyntax-only:%{S:%W{o*}%{!o*:-o %b.s}}}\

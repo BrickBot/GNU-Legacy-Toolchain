@@ -1341,6 +1341,30 @@ copy_insn_list (rtx insns, struct inline_remap *map, rtx static_chain_value)
     {
       rtx copy, pattern, set;
 
+#ifdef GPC
+      /* CALL_PLACEHOLDERs within inline functions seem to cause
+         trouble in Pascal (fjf709.pas). References to formal
+         parameters of the inline function might get confused. So
+         replace the CALL_PLACEHOLDER by the normal calling code
+         here, at the cost of avoiding this particular combination
+         of optimizations (inlining and tail recursion/sibling
+         calls) -- though I'm not actually sure if it should be done
+         at all; the C frontend also seems to do only inlining in a
+         similar situation, and this might be good enough already.
+
+         I don't understand all the backend does here, and I'm not
+         even sure if the real bug is in the fontend or backend, or
+         whether this is a fix or a work-around ... -- Frank */
+      if (GET_CODE (insn) == CALL_INSN
+          && GET_CODE (PATTERN (insn)) == CALL_PLACEHOLDER)
+        {
+          rtx tmp = PREV_INSN (insn);
+          replace_call_placeholder (insn, sibcall_use_normal);
+          insn = tmp;
+          continue;
+        }
+#endif
+
       map->orig_asm_operands_vector = 0;
 
       switch (GET_CODE (insn))

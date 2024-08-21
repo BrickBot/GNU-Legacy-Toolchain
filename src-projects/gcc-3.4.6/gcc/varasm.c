@@ -3608,7 +3608,11 @@ initializer_constant_valid_p (tree value, tree endtype)
 	/* Allow conversions to struct or union types if the value
 	   inside is okay.  */
 	if (TREE_CODE (dest_type) == RECORD_TYPE
-	    || TREE_CODE (dest_type) == UNION_TYPE)
+	    || TREE_CODE (dest_type) == UNION_TYPE
+#ifdef GPC
+            || TREE_CODE (dest_type) == ARRAY_TYPE
+#endif
+           )	
 	  return initializer_constant_valid_p (src, endtype);
       }
       break;

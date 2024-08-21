@@ -4215,7 +4215,12 @@ emit_library_call_value_1 (int retval, rtx orgfun, rtx value,
       /* Handle calls that pass values in multiple non-contiguous
 	 locations.  The PA64 has examples of this for library calls.  */
       if (reg != 0 && GET_CODE (reg) == PARALLEL)
-	emit_group_load (reg, val, NULL_TREE, GET_MODE_SIZE (GET_MODE (val)));
+        {
+          int valsize = GET_MODE_SIZE (GET_MODE (val));
+          if (valsize == 0 && GET_MODE (val) == VOIDmode)
+              valsize = GET_MODE_SIZE (GET_MODE (reg));
+          emit_group_load (reg, val, NULL_TREE, valsize);
+        }
       else if (reg != 0 && partial == 0)
 	emit_move_insn (reg, val);
 

@@ -38,6 +38,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA
    This function changes the DECL_RTL to be a stack slot instead of a reg
    then scans all the RTL instructions so far generated to correct them.  */
 
+/* @@ PATCHED FOR GPC @@ */
+
 #include "config.h"
 #include "system.h"
 #include "coretypes.h"
@@ -7004,8 +7006,13 @@ expand_function_end (void)
       tramp = round_trampoline_addr (XEXP (tramp, 0));
 #ifdef TRAMPOLINE_TEMPLATE
       blktramp = replace_equiv_address (initial_trampoline, tramp);
+#ifndef GPC
       emit_block_move (blktramp, initial_trampoline,
 		       GEN_INT (TRAMPOLINE_SIZE), BLOCK_OP_NORMAL);
+#else
+      emit_block_move (blktramp, initial_trampoline,
+                       GEN_INT (TRAMPOLINE_SIZE), BLOCK_OP_NO_LIBCALL);
+#endif
 #endif
       trampolines_created = 1;
       INITIALIZE_TRAMPOLINE (tramp, XEXP (DECL_RTL (function), 0), context);

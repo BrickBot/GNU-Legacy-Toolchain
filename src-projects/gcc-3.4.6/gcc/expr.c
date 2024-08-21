@@ -19,6 +19,9 @@ along with GCC; see the file COPYING.  If not, write to the Free
 Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 02111-1307, USA.  */
 
+
+/* @@ PATCHED FOR GPC @@ */
+
 #include "config.h"
 #include "system.h"
 #include "coretypes.h"
@@ -5078,13 +5081,36 @@ store_constructor (tree exp, rtx target, int cleared, HOST_WIDE_INT size)
 	  return;
 	}
 
+#ifndef GPC
       domain_min = convert (sizetype, TYPE_MIN_VALUE (domain));
       domain_max = convert (sizetype, TYPE_MAX_VALUE (domain));
-      bitlength = size_binop (PLUS_EXPR,
-			      size_diffop (domain_max, domain_min),
-			      ssize_int (1));
+#else /* GPC */
+      domain_min = convert (sbitsizetype, TYPE_MIN_VALUE (domain));
+      domain_max = convert (sbitsizetype, TYPE_MAX_VALUE (domain));
 
+      /* Align the set.  */
+      if (set_alignment)
+        domain_min = size_binop (BIT_AND_EXPR, domain_min, sbitsize_int (-(int) set_alignment));
+
+#endif /* GPC */
+      bitlength = size_binop (PLUS_EXPR,
+			      size_binop (MINUS_EXPR, domain_max, domain_min),
+#ifndef GPC
+			      ssize_int (1));
+#else /* GPC */
+			      sbitsize_int (1));
+#endif /* GPC */
+
+#ifdef GPC
+      if (TREE_INT_CST_HIGH (bitlength)) {
+        error ("set size too big for host integers");
+        return;
+      }
+#endif /* GPC */
       nbits = tree_low_cst (bitlength, 1);
+#ifdef GPC
+      bitlength = convert (sizetype, bitlength);
+#endif /* GPC */
 
       /* For "small" sets, or "medium-sized" (up to 32 bytes) sets that
 	 are "complicated" (more than one range), initialize (the
@@ -5092,7 +5118,9 @@ store_constructor (tree exp, rtx target, int cleared, HOST_WIDE_INT size)
       if (GET_MODE (target) != BLKmode || nbits <= 2 * BITS_PER_WORD
 	  || (nbytes <= 32 && TREE_CHAIN (elt) != NULL_TREE))
 	{
+#ifndef GPC
 	  unsigned int set_word_size = TYPE_ALIGN (TREE_TYPE (exp));
+#endif /* not GPC */
 	  enum machine_mode mode = mode_for_size (set_word_size, MODE_INT, 1);
 	  char *bit_buffer = alloca (nbits);
 	  HOST_WIDE_INT word = 0;
@@ -5105,10 +5133,14 @@ store_constructor (tree exp, rtx target, int cleared, HOST_WIDE_INT size)
 	    {
 	      if (bit_buffer[ibit])
 		{
+#ifndef GPC
 		  if (BYTES_BIG_ENDIAN)
-		    word |= (1 << (set_word_size - 1 - bit_pos));
+#else /* GPC */
+		  if (set_words_big_endian)
+#endif /* GPC */
+		    word |= (((HOST_WIDE_INT)1) << (set_word_size - 1 - bit_pos));
 		  else
-		    word |= 1 << bit_pos;
+		    word |= ((HOST_WIDE_INT)1) << bit_pos;
 		}
 
 	      bit_pos++;  ibit++;
@@ -5140,6 +5172,11 @@ store_constructor (tree exp, rtx target, int cleared, HOST_WIDE_INT size)
 	    }
 	}
       else if (!cleared)
+   /* GPC expects bits outside the range to be cleared. (fjf1010.pas)
+      Though this check might be "dead" in this GCC version since it only
+      applies to single ranges with constant bounds, and those are apparently
+      always stored as constants anyway, not initialized via `__setbits'. */
+#ifndef GPC
 	/* Don't bother clearing storage if the set is all ones.  */
 	if (TREE_CHAIN (elt) != NULL_TREE
 	    || (TREE_PURPOSE (elt) == NULL_TREE
@@ -5149,6 +5186,7 @@ store_constructor (tree exp, rtx target, int cleared, HOST_WIDE_INT size)
 		   || (tree_low_cst (TREE_VALUE (elt), 0)
 		       - tree_low_cst (TREE_PURPOSE (elt), 0) + 1
 		       != (HOST_WIDE_INT) nbits))))
+#endif
 	  clear_storage (target, expr_size (exp));
 
       for (; elt != NULL_TREE; elt = TREE_CHAIN (elt))
@@ -5170,13 +5208,23 @@ store_constructor (tree exp, rtx target, int cleared, HOST_WIDE_INT size)
 	      endbit = startbit;
 	    }
 
+#ifndef GPC
 	  startbit = convert (sizetype, startbit);
 	  endbit = convert (sizetype, endbit);
+#endif /* not GPC */
 	  if (! integer_zerop (domain_min))
 	    {
+#ifdef GPC
+	      startbit = convert (sbitsizetype, startbit);
+	      endbit = convert (sbitsizetype, endbit);
+#endif /* GPC */
 	      startbit = size_binop (MINUS_EXPR, startbit, domain_min);
 	      endbit = size_binop (MINUS_EXPR, endbit, domain_min);
 	    }
+#ifdef GPC
+	  startbit = convert (sizetype, startbit);
+	  endbit = convert (sizetype, endbit);
+#endif /* GPC */
 	  startbit_rtx = expand_expr (startbit, NULL_RTX, MEM,
 				      EXPAND_CONST_ADDRESS);
 	  endbit_rtx = expand_expr (endbit, NULL_RTX, MEM,
@@ -5542,8 +5590,18 @@ get_inner_reference (tree exp, HOST_WIDE_INT *pbitsize,
 	     index, then convert to sizetype and multiply by the size of the
 	     array element.  */
 	  if (low_bound != 0 && ! integer_zerop (low_bound))
+#ifdef GPC
+	    /* I think that address arithmetic should always be done on sizetype or
+	       its variants -- for Pascal signed seems to be the correct choice (and
+	       generates slightly better code). -- Waldek */
+	    index = convert (sizetype, convert (bitsizetype,
+	              size_binop (MINUS_EXPR,
+	                convert (sbitsizetype, index),
+	                convert (sbitsizetype, low_bound))));
+#else
 	    index = fold (build (MINUS_EXPR, TREE_TYPE (index),
 				 index, low_bound));
+#endif
 
 	  /* If the index has a self-referential type, pass it to a
 	     WITH_RECORD_EXPR; if the component size is, pass our
