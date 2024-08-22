@@ -1,3 +1,6 @@
+# Repository-Specific Files and Folders
+build/
+
 # Prerequisites
 *.d
 
@@ -7,7 +10,7 @@
 *.obj
 *.elf
 
-# Linker output
+# Linker Output
 *.ilk
 *.map
 *.exp
@@ -22,7 +25,7 @@
 *.la
 *.lo
 
-# Shared objects (inc. Windows DLLs)
+# Shared Objects (inc. Windows DLLs)
 *.dll
 *.so
 *.so.*
@@ -36,7 +39,7 @@
 *.x86_64
 *.hex
 
-# Debug files
+# Debug Files
 *.dSYM/
 *.su
 *.idb

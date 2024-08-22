@@ -8,6 +8,81 @@ Repository Creation Notes
 
 ### Sources
 
+Why GCC 3.4.6?
+* H8/300 was supported for the duration of the full GCC version series
+* Source code has been suppored by Debian package maintainers with maintance patches (gcc-h8300 package)
+* GPC integration is less robust in GCC 4
+* Created smaller binaries compared to the same builds created using GCC 4
+  + Especially important on memory-constrained devices such as the LEGO MindStorms RCX
+
+
+### Combined Folder Composition
+The following were soft-linked in to create the combined source folder:
+
+Folders from GCC
+* boehm-gc
+* config
+* fastjar
+* gcc
+* include
+* intl
+* libf2c
+* libffi
+* libjava
+* libobjc
+* libstdc++-v3
+* zlib
+
+Folders from BinUtils
+* bfd
+* binutils
+* cgen
+* cpu
+* etc
+* gas
+* gprof
+* ld
+* libiberty
+* opcodes
+* texinfo
+
+Folders from GDB
+* gdb
+* libdecnumber
+* readline
+* sim
+
+Folders from NewLib
+* libgloss
+* newlib
+
+Folders from GPC
+* p -> gcc/p
+
+Files from GCC
+* config.guess
+* config.if
+* config.rpath
+* config.sub
+* config-ml.in
+* configure
+* configure.in
+* install-sh
+* libtool.m4
+* ltcf-c.sh
+* ltcf-cxx.sh
+* ltcf-gcj.sh
+* ltconfig
+* ltmain.sh
+* Makefile.def
+* Makefile.in
+* Makefile.tpl
+* missing
+* mkinstalldirs
+* move-if-change
+* symlink-tree
+* ylwrap
+
 
 ### Patches
 The following patches were applied.
