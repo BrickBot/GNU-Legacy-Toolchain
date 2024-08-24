@@ -45,11 +45,13 @@ jobs:
     - name: Configure the build for a gcc+binutils H8/300 cross-compiler
       run:  |
         cd $BUILD_PATH_H8300_GCC
+        echo "Current working directory: $PWD"
         ../../src-combined/configure --enable-languages=c,c++  --target=h8300-hitachi-coff  $COMMON_GCC_CONFIG_ARGS  $COMMON_CONFIG_ARGS
 
     - name: Execute the build for a gcc+binutils H8/300 cross-compiler
       run:  |
         cd $BUILD_PATH_H8300_GCC
+        echo "Current working directory: $PWD"
         make $COMMON_MAKE_ARGS
 
 
@@ -76,43 +78,48 @@ jobs:
     - name: Configure the build for an H8/300 GDB
       run:  |
         cd $BUILD_PATH_H8300_GDB
+        echo "Current working directory: $PWD"
         ../../src-projects/gdb-7.12.1/configure --target=h8300-hitachi-coff  $COMMON_CONFIG_ARGS
 
     - name: Execute the build for an H8/300 GDB
       run:  |
         cd $BUILD_PATH_H8300_GDB
+        echo "Current working directory: $PWD"
         make $COMMON_MAKE_ARGS
 
 
-  build_cross_lib_job:
-    name:     Build NewLib for the H8/300
-    runs-on:  ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ ubuntu-latest ]
-    
-    steps:
-    - name: Get latest from version control
-      uses: actions/checkout@v4
-
-    - name: Update build environment
-      run:  sudo apt-get --assume-yes update
-
-    - name: Install build dependencies
-      run:  sudo apt-get --assume-yes install $BUILD_DEPENDS
-
-    - name: Setup the build folders for an H8/300 NewLib
-      run:  mkdir -p $BUILD_PATH_H8300_LIB
-
-    - name: Configure the build for an H8/300 NewLib
-      run:  |
-        cd $BUILD_PATH_H8300_LIB
-        ../../src-projects/newlib-1.20.0/configure --target=h8300-hitachi-coff  $COMMON_CONFIG_ARGS
-
-    - name: Execute the build for an H8/300 NewLib
-      run:  |
-        cd $BUILD_PATH_H8300_LIB
-        make $COMMON_MAKE_ARGS
+# Requires cross-compiler to be available
+#  build_cross_lib_job:
+#    name:     Build NewLib for the H8/300
+#    runs-on:  ${{ matrix.os }}
+#    strategy:
+#      matrix:
+#        os: [ ubuntu-latest ]
+#    
+#    steps:
+#    - name: Get latest from version control
+#      uses: actions/checkout@v4
+#
+#    - name: Update build environment
+#      run:  sudo apt-get --assume-yes update
+#
+#    - name: Install build dependencies
+#      run:  sudo apt-get --assume-yes install $BUILD_DEPENDS
+#
+#    - name: Setup the build folders for an H8/300 NewLib
+#      run:  mkdir -p $BUILD_PATH_H8300_LIB
+#
+#    - name: Configure the build for an H8/300 NewLib
+#      run:  |
+#        cd $BUILD_PATH_H8300_LIB
+#        echo "Current working directory: $PWD"
+#        ../../src-projects/newlib-1.20.0/configure --target=h8300-hitachi-coff  $COMMON_CONFIG_ARGS
+#
+#    - name: Execute the build for an H8/300 NewLib
+#      run:  |
+#        cd $BUILD_PATH_H8300_LIB
+#        echo "Current working directory: $PWD"
+#        make $COMMON_MAKE_ARGS
 
 
   build_cross_gpc_job:
@@ -138,11 +145,13 @@ jobs:
     - name: Configure the build for a gcc+binutils+gpc H8/300 cross-compiler
       run:  |
         cd $BUILD_PATH_H8300_GPC
+        echo "Current working directory: $PWD"
         ../../src-combined/configure --enable-languages=c,c++,pascal  --target=h8300-hitachi-coff  $COMMON_GCC_CONFIG_ARGS  $COMMON_CONFIG_ARGS
 
     - name: Execute the build for a gcc+binutils+gpc H8/300 cross-compiler
       run:  |
         cd $BUILD_PATH_H8300_GPC
+        echo "Current working directory: $PWD"
         make $COMMON_MAKE_ARGS
 
 
@@ -169,11 +178,13 @@ jobs:
     - name: Configure the build for a gcc+binutils+gpc compiler
       run:  |
         cd $BUILD_PATH_GPC
+        echo "Current working directory: $PWD"
         ../../src-combined/configure --enable-languages=c,c++,pascal  $COMMON_GCC_CONFIG_ARGS  $COMMON_CONFIG_ARGS
 
     - name: Execute the build for a gcc+binutils+gpc compiler
       run:  |
         cd $BUILD_PATH_GPC
+        echo "Current working directory: $PWD"
         make $COMMON_MAKE_ARGS
 
 
