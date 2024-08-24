@@ -42,40 +42,40 @@ jobs:
       run:  mkdir -p $BUILD_PATH_H8300_GCC
 
     - name: Configure the build for a gcc+binutils H8/300 cross-compiler
-      run:  cd $BUILD_PATH_H8300_GCC && ../../src-combined/configure --enable-languages=c,c++  --target=h8300-hitachi-coff  $COMMON_GCC_CONFIG_ARGS
+      run:  cd $BUILD_PATH_H8300_GCC && $PWD && ../../src-combined/configure --enable-languages=c,c++  --target=h8300-hitachi-coff  $COMMON_GCC_CONFIG_ARGS
 
     - name: Execute the build for a gcc+binutils H8/300 cross-compiler
-      run:  cd $BUILD_PATH_H8300_GCC && make $COMMON_MAKE_ARGS
+      run:  cd $BUILD_PATH_H8300_GCC && $PWD && make $COMMON_MAKE_ARGS
 
 
     - name: Setup the build folders for an H8/300 GDB
       run:  mkdir -p $BUILD_PATH_H8300_GDB
 
     - name: Configure the build for an H8/300 GDB
-      run:  cd $BUILD_PATH_H8300_GDB && ../../src-projects/gdb-7.12.1/configure --target=h8300-hitachi-coff  COMMON_CONFIG_ARGS
+      run:  cd $BUILD_PATH_H8300_GDB && $PWD && ../../src-projects/gdb-7.12.1/configure --target=h8300-hitachi-coff  COMMON_CONFIG_ARGS
 
     - name: Execute the build for an H8/300 GDB
-      run:  cd $BUILD_PATH_H8300_GDB && make $COMMON_MAKE_ARGS
+      run:  cd $BUILD_PATH_H8300_GDB && $PWD && make $COMMON_MAKE_ARGS
 
 
     - name: Setup the build folders for an H8/300 NewLib
       run:  mkdir -p $BUILD_PATH_H8300_LIB
 
     - name: Configure the build for an H8/300 NewLib
-      run:  cd $BUILD_PATH_H8300_LIB && ../../src-projects/newlib-1.20.0/configure --target=h8300-hitachi-coff  COMMON_CONFIG_ARGS
+      run:  cd $BUILD_PATH_H8300_LIB && $PWD && ../../src-projects/newlib-1.20.0/configure --target=h8300-hitachi-coff  COMMON_CONFIG_ARGS
 
     - name: Execute the build for an H8/300 NewLib
-      run:  cd $BUILD_PATH_H8300_LIB && make $COMMON_MAKE_ARGS
+      run:  cd $BUILD_PATH_H8300_LIB && $PWD && make $COMMON_MAKE_ARGS
 
 
     - name: Setup the build folders for a gcc+binutils+gpc H8/300 cross-compiler
       run:  mkdir -p $BUILD_PATH_H8300_GPC
 
     - name: Configure the build for a gcc+binutils+gpc H8/300 cross-compiler
-      run:  cd $BUILD_PATH_H8300_GPC && ../../src-combined/configure --enable-languages=c,c++,pascal  --target=h8300-hitachi-coff  $COMMON_GCC_CONFIG_ARGS
+      run:  cd $BUILD_PATH_H8300_GPC && $PWD && ../../src-combined/configure --enable-languages=c,c++,pascal  --target=h8300-hitachi-coff  $COMMON_GCC_CONFIG_ARGS
 
     - name: Execute the build for a gcc+binutils+gpc H8/300 cross-compiler
-      run:  cd $BUILD_PATH_H8300_GPC && make $COMMON_MAKE_ARGS
+      run:  cd $BUILD_PATH_H8300_GPC && $PWD && make $COMMON_MAKE_ARGS
       continue-on-error: true
 
 
@@ -83,11 +83,10 @@ jobs:
       run:  mkdir -p $BUILD_PATH_GPC
 
     - name: Configure the build for a gcc+binutils+gpc compiler
-      run:  cd $BUILD_PATH_GPC && ../../src-combined/configure --enable-languages=c,c++,pascal  $COMMON_GCC_CONFIG_ARGS
+      run:  cd $BUILD_PATH_GPC && $PWD && ../../src-combined/configure --enable-languages=c,c++,pascal  $COMMON_GCC_CONFIG_ARGS
 
     - name: Execute the build for a gcc+binutils+gpc compiler
-      run:  cd $BUILD_PATH_GPC && make $COMMON_MAKE_ARGS
-      continue-on-error: true
+      run:  cd $BUILD_PATH_GPC && $PWD && make $COMMON_MAKE_ARGS
 
 
 
