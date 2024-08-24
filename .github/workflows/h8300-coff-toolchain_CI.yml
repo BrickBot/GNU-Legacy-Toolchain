@@ -42,10 +42,17 @@ jobs:
       run:  mkdir -p $BUILD_PATH_H8300_GCC
 
     - name: Configure the build for a gcc+binutils H8/300 cross-compiler
-      run:  cd $BUILD_PATH_H8300_GCC && ls -l && $PWD && ../../src-combined/configure --enable-languages=c,c++  --target=h8300-hitachi-coff  $COMMON_GCC_CONFIG_ARGS
+      run:  |
+        ls -l
+        cd $BUILD_PATH_H8300_GCC
+        $PWD
+        ../../src-combined/configure --enable-languages=c,c++  --target=h8300-hitachi-coff  $COMMON_GCC_CONFIG_ARGS
 
     - name: Execute the build for a gcc+binutils H8/300 cross-compiler
-      run:  cd $BUILD_PATH_H8300_GCC && $PWD && make $COMMON_MAKE_ARGS
+      run:  |
+        cd $BUILD_PATH_H8300_GCC
+        $PWD
+        make $COMMON_MAKE_ARGS
 
 
     - name: Setup the build folders for an H8/300 GDB
