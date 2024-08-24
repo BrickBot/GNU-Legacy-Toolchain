@@ -104,6 +104,7 @@ Files from GCC
 
 The following were not able to be linked in as part of teh combined sources folder
 without also introducing build issues (these can build separately, though):
+
 Folders from GDB
 * gdb
 * libdecnumber
@@ -122,7 +123,7 @@ The following patches were applied.
 #### Binutils
 Debian provides a [binutils-h8300-hms](https://packages.debian.org/source/stable/binutils-h8300-hms) package
 based on binutils 2.16.1 that includes several patch updates in the debian.tar.xz archive file available on that page.
-From the `patches/series file` in that archive (c.f. [release versions here](https://sources.debian.org/src/binutils-h8300-hms/2.16.1/debian/patches/series/)),
+From the `patches/series` file in that archive (c.f. [release versions here](https://sources.debian.org/src/binutils-h8300-hms/2.16.1/debian/patches/series/)),
 available Debian patches include those lised below.
 Patches not marked with strikethrough have been applied here (unapplied patches are more Debian specific).
 * ~~000_print_debian_version~~
@@ -143,7 +144,7 @@ Patches not marked with strikethrough have been applied here (unapplied patches 
 #### GCC
 Debian provides a [gcc-h8300-hms](https://packages.debian.org/source/stable/gcc-h8300-hms) package
 based on gcc 3.4.6 that includes several patch updates in the debian.tar.xz archive file available on that page.
-From the `patches/series file` in that archive (c.f. [release versions here](https://sources.debian.org/src/gcc-h8300-hms/3.4.6/debian/patches/series/)),
+From the `patches/series` file in that archive (c.f. [release versions here](https://sources.debian.org/src/gcc-h8300-hms/3.4.6/debian/patches/series/)),
 available Debian patches include those lised below.
 Patches not marked with strikethrough have been applied here (unapplied patches are more Debian specific).
 * 000_no_libstdc++-v3
