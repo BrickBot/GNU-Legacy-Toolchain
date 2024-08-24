@@ -11,9 +11,9 @@ env:
   BUILD_DEPENDS: gettext   libncurses-dev libexpat1-dev   libisl-dev texinfo bison flex python3-dev  autoconf libtool dejagnu procps libncurses5-dev 
   
   COMMON_CONFIG_ARGS: --prefix=/usr/local/rcx
-  COMMON_GCC_CONFIG_ARGS: --with-gnu-as --with-gnu-ld --disable-multilib --disable-nls --enable-target-optspace
+  COMMON_GCC_CONFIG_ARGS: --with-gnu-as --with-gnu-ld --disable-multilib --enable-target-optspace
   # Unfortunately, these older source package releases will not build without disabling Fortify
-  COMMON_MAKE_ARGS:   CPPFLAGS=-U_FORTIFY_SOURCE
+  COMMON_MAKE_ARGS:   --jobs=1  CPPFLAGS=-U_FORTIFY_SOURCE
 
   BUILD_PATH_H8300_GCC: build/gcc+binutils-h8300
   BUILD_PATH_H8300_GDB: build/gdb-h8300
