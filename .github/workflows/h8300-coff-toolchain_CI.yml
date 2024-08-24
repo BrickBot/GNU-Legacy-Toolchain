@@ -8,7 +8,7 @@ on:
     branches: [ master ]
 
 env:
-  BUILD_DEPENDS: gettext   libncurses-dev libexpat1-dev   texinfo libisl-dev
+  BUILD_DEPENDS: gettext   libncurses-dev libexpat1-dev   texinfo libisl-dev flex
   
   COMMON_CONFIG_ARGS: --prefix=/usr/local/rcx
   COMMON_GCC_CONFIG_ARGS: --with-gnu-as --with-gnu-ld --disable-multilib --enable-target-optspace
@@ -47,6 +47,72 @@ jobs:
         cd $BUILD_PATH_H8300_GCC
         echo "Current working directory: $PWD"
         ../../src-combined/configure --enable-languages=c,c++  --target=h8300-hitachi-coff  $COMMON_GCC_CONFIG_ARGS  $COMMON_CONFIG_ARGS
+
+    - name: Execute the build for a gcc+binutils H8/300 cross-compiler
+      run:  |
+        cd $BUILD_PATH_H8300_GCC
+        echo "Current working directory: $PWD"
+        make $COMMON_MAKE_ARGS
+
+
+  build_cross_gcj_job:
+    name:     Build a gcc + binutils + gcj cross-compiler for the H8/300
+    runs-on:  ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ ubuntu-latest ]
+    
+    steps:
+    - name: Get latest from version control
+      uses: actions/checkout@v4
+
+    - name: Update build environment
+      run:  sudo apt-get --assume-yes update
+
+    - name: Install build dependencies
+      run:  sudo apt-get --assume-yes install $BUILD_DEPENDS
+
+    - name: Setup the build folders for a gcc+binutils H8/300 cross-compiler
+      run:  mkdir -p $BUILD_PATH_H8300_GCC
+
+    - name: Configure the build for a gcc+binutils H8/300 cross-compiler
+      run:  |
+        cd $BUILD_PATH_H8300_GCC
+        echo "Current working directory: $PWD"
+        ../../src-combined/configure --enable-languages=c,c++,java  --target=h8300-hitachi-coff  $COMMON_GCC_CONFIG_ARGS  $COMMON_CONFIG_ARGS
+
+    - name: Execute the build for a gcc+binutils H8/300 cross-compiler
+      run:  |
+        cd $BUILD_PATH_H8300_GCC
+        echo "Current working directory: $PWD"
+        make $COMMON_MAKE_ARGS
+
+
+  build_cross_ada_job:
+    name:     Build a gcc + binutils + ada cross-compiler for the H8/300
+    runs-on:  ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ ubuntu-latest ]
+    
+    steps:
+    - name: Get latest from version control
+      uses: actions/checkout@v4
+
+    - name: Update build environment
+      run:  sudo apt-get --assume-yes update
+
+    - name: Install build dependencies
+      run:  sudo apt-get --assume-yes install $BUILD_DEPENDS
+
+    - name: Setup the build folders for a gcc+binutils H8/300 cross-compiler
+      run:  mkdir -p $BUILD_PATH_H8300_GCC
+
+    - name: Configure the build for a gcc+binutils H8/300 cross-compiler
+      run:  |
+        cd $BUILD_PATH_H8300_GCC
+        echo "Current working directory: $PWD"
+        ../../src-combined/configure --enable-languages=c,c++,ada  --target=h8300-hitachi-coff  $COMMON_GCC_CONFIG_ARGS  $COMMON_CONFIG_ARGS
 
     - name: Execute the build for a gcc+binutils H8/300 cross-compiler
       run:  |
