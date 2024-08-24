@@ -35,7 +35,7 @@ jobs:
       run:  sudo apt-get --assume-yes update
 
     - name: Install build dependencies
-      run:  sudo apt-get --assume-yes install gettext   libncurses-dev expat-dev   texinfo libisl-dev
+      run:  sudo apt-get --assume-yes install gettext   libncurses-dev libexpat1-dev   texinfo libisl-dev
 
 
     - name: Setup the build folders for a gcc+binutils H8/300 cross-compiler
