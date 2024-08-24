@@ -52,6 +52,7 @@ jobs:
       run:  |
         cd $BUILD_PATH_H8300_GCC
         echo "Current working directory: $PWD"
+        touch ../../src-projects/gcc-3.4.6/gcc/c-parse.c  # Try to prevent from being regenerated during build
         make $COMMON_MAKE_ARGS
 
 
@@ -85,6 +86,7 @@ jobs:
       run:  |
         cd $BUILD_PATH_H8300_GCC
         echo "Current working directory: $PWD"
+        touch ../../src-projects/gcc-3.4.6/gcc/c-parse.c  # Try to prevent from being regenerated during build
         make $COMMON_MAKE_ARGS
 
 
@@ -118,6 +120,7 @@ jobs:
       run:  |
         cd $BUILD_PATH_H8300_GCC
         echo "Current working directory: $PWD"
+        touch ../../src-projects/gcc-3.4.6/gcc/c-parse.c  # Try to prevent from being regenerated during build
         make $COMMON_MAKE_ARGS
 
 
@@ -151,6 +154,7 @@ jobs:
       run:  |
         cd $BUILD_PATH_H8300_GPC
         echo "Current working directory: $PWD"
+        touch ../../src-projects/gcc-3.4.6/gcc/c-parse.c  # Try to prevent from being regenerated during build
         make $COMMON_MAKE_ARGS
 
 
@@ -251,6 +255,7 @@ jobs:
       run:  |
         cd $BUILD_PATH_GPC
         echo "Current working directory: $PWD"
+        touch ../../src-projects/gcc-3.4.6/gcc/c-parse.c  # Try to prevent from being regenerated during build
         make $COMMON_MAKE_ARGS
 
 
