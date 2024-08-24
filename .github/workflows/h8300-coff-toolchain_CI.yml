@@ -13,7 +13,7 @@ env:
   COMMON_CONFIG_ARGS: --prefix=/usr/local/rcx
   COMMON_GCC_CONFIG_ARGS: --with-gnu-as --with-gnu-ld --disable-multilib --enable-target-optspace
   # Unfortunately, these older source package releases will not build without disabling Fortify
-  COMMON_MAKE_ARGS:   CPPFLAGS=-U_FORTIFY_SOURCE
+  COMMON_MAKE_ARGS:   CPPFLAGS=-U_FORTIFY_SOURCE   LDFLAGS="--copy-dt-needed-entries --no-as-needed"
 
   BUILD_PATH_H8300_GCC: build/gcc+binutils-h8300
   BUILD_PATH_H8300_GDB: build/gdb-h8300
