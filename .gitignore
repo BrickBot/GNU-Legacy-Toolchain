@@ -1,5 +1,6 @@
 # Repository-Specific Files and Folders
 build/
+src-packages/
 
 # Prerequisites
 *.d

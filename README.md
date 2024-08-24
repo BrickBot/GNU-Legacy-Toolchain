@@ -7,6 +7,11 @@ Repository Creation Notes
 -------------------------
 
 ### Sources
+* BinUtils 2.16.1 – note lack of support for h8300-*-coff in gas/configure.tgt in later versions
+* GCC 4.4.7 – note lack of support for h8300-*-coff (covered by the "h8300-*-*" case) in libgcc/config.host in later versions
+* GPC – note the included README files
+* GDB 7.12.1 – note lack of support for h8300-*-*-coff (covered by the "h8300-*-*-*" case) in bfd/config.bfd in later versions
+* NewLib 1.20.0 – later versions fail to build if targeting h8300-*-coff
 
 Why GCC 3.4.6?
 * H8/300 was supported for the duration of the full GCC version series
@@ -17,7 +22,30 @@ Why GCC 3.4.6?
 
 
 ### Combined Folder Composition
-The following were soft-linked in to create the combined source folder:
+Several folders are duplicated across the various project comprising the toolchain.
+Unfortunately, given the differing ages of the various releases,
+it does not seem that they can be readily combined into a single build.
+
+Taking libiberty from binutils and the combining the gcc and binutils builds does seem to work,
+which at least eliminates the complications that would otherwise arise from having to build
+gcc and binutils separately.
+
+| Folder    | gcc | binutils | gdb | newlib |
+| --------- | --- | -------- | --- | ------ |
+| bfd       |     |  ×       |  ×  |        |
+| cpu       |     |  ×       |  ×  |        |
+| etc       |     |  ×       |  ×  |  ×     |
+| include   |  ×  |  ×       |  ×  |        |
+| libiberty |  ×  |  ×       |  ×  |        |
+| opcodes   |     |  ×       |  ×  |        |
+| texinfo   |     |  ×       |  ×  |  ×     |
+| zlib      |  ×  |          |  ×  |        |
+
+
+
+
+The following were soft-linked in to create the combined source folder `src-combined`,
+which is then used as the source folder for builds:
 
 Folders from GCC
 * boehm-gc
@@ -45,16 +73,6 @@ Folders from BinUtils
 * libiberty
 * opcodes
 * texinfo
-
-Folders from GDB
-* gdb
-* libdecnumber
-* readline
-* sim
-
-Folders from NewLib
-* libgloss
-* newlib
 
 Folders from GPC
 * p -> gcc/p
@@ -84,11 +102,28 @@ Files from GCC
 * ylwrap
 
 
+The following were not able to be linked in as part of teh combined sources folder
+without also introducing build issues (these can build separately, though):
+Folders from GDB
+* gdb
+* libdecnumber
+* readline
+* sim
+
+Folders from NewLib
+* libgloss
+* newlib
+
+
+
 ### Patches
 The following patches were applied.
 
 #### Binutils
-Available Debian patches include those lised below (from the Debian source archive patches/series file).
+Debian provides a [binutils-h8300-hms](https://packages.debian.org/source/stable/binutils-h8300-hms) package
+based on binutils 2.16.1 that includes several patch updates in the debian.tar.xz archive file available on that page.
+From the `patches/series file` in that archive (c.f. [release versions here](https://sources.debian.org/src/binutils-h8300-hms/2.16.1/debian/patches/series/)),
+available Debian patches include those lised below.
 Patches not marked with strikethrough have been applied here (unapplied patches are more Debian specific).
 * ~~000_print_debian_version~~
 * 002_gprof_profile_arcs
@@ -106,7 +141,10 @@ Patches not marked with strikethrough have been applied here (unapplied patches 
 
 
 #### GCC
-Available Debian patches include those lised below (from the Debian source archive patches/series file).
+Debian provides a [gcc-h8300-hms](https://packages.debian.org/source/stable/gcc-h8300-hms) package
+based on gcc 3.4.6 that includes several patch updates in the debian.tar.xz archive file available on that page.
+From the `patches/series file` in that archive (c.f. [release versions here](https://sources.debian.org/src/gcc-h8300-hms/3.4.6/debian/patches/series/)),
+available Debian patches include those lised below.
 Patches not marked with strikethrough have been applied here (unapplied patches are more Debian specific).
 * 000_no_libstdc++-v3
 * 001_h8300_64bit
