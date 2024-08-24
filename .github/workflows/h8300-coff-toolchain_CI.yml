@@ -39,7 +39,6 @@ jobs:
     - name: Install build dependencies
       run:  sudo apt-get --assume-yes install $BUILD_DEPENDS
 
-
     - name: Setup the build folders for a gcc+binutils H8/300 cross-compiler
       run:  mkdir -p $BUILD_PATH_H8300_GCC
 
@@ -61,6 +60,7 @@ jobs:
       matrix:
         os: [ ubuntu-latest ]
     
+    steps:
     - name: Get latest from version control
       uses: actions/checkout@v4
 
@@ -91,6 +91,7 @@ jobs:
       matrix:
         os: [ ubuntu-latest ]
     
+    steps:
     - name: Get latest from version control
       uses: actions/checkout@v4
 
@@ -121,6 +122,7 @@ jobs:
       matrix:
         os: [ ubuntu-latest ]
     
+    steps:
     - name: Get latest from version control
       uses: actions/checkout@v4
 
@@ -151,6 +153,7 @@ jobs:
       matrix:
         os: [ ubuntu-latest ]
     
+    steps:
     - name: Get latest from version control
       uses: actions/checkout@v4
 
