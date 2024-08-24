@@ -118,6 +118,12 @@ JCFDUMP_OBJS = java/jcf-dump.o java/jcf-io.o java/jcf-depend.o java/jcf-path.o \
 
 JVGENMAIN_OBJS = java/jvgenmain.o java/mangle_name.o errors.o
 
+# TODO:  Eliminate the need for GCJ_LDFLAGS
+# Address build issues that are a result of platform toolchain changes
+# https://askubuntu.com/a/194220
+# https://wiki.ubuntu.com/NattyNarwhal/ToolchainTransition#What_to_Look_For
+GCJ_LDFLAGS = --as-needed and --no-copy-dt-needed-entries
+
 # Use loose warnings for this front end.
 java-warn = $(WERROR)
 # String length warnings
@@ -125,7 +131,7 @@ jvspec.o-warn = -Wno-error
 
 jc1$(exeext): $(JAVA_OBJS) $(BACKEND) $(LIBDEPS)
 	rm -f $@
-	$(CC) $(ALL_CFLAGS) $(LDFLAGS) -o $@ \
+	$(CC) $(ALL_CFLAGS) $(LDFLAGS) $(GCJ_LDFLAGS) -o $@ \
 		$(JAVA_OBJS) $(BACKEND) $(ZLIB) $(LIBICONV) $(LIBS)
 
 gcjh$(exeext): $(GCJH_OBJS) $(LIBDEPS)
