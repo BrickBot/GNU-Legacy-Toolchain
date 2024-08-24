@@ -85,7 +85,7 @@ jobs:
       run:  |
         cd $BUILD_PATH_H8300_GCC
         echo "Current working directory: $PWD"
-        make $COMMON_MAKE_ARGS
+        make $COMMON_MAKE_ARGS  CFLAGS="--no-as-needed"
 
 
   build_cross_ada_job:
