@@ -1,0 +1,128 @@
+name: brickOS-bibo CI
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+env:
+  COMMON_CONFIG_ARGS: --prefix=/usr/local/rcx
+  COMMON_GCC_CONFIG_ARGS: --with-gnu-as --with-gnu-ld --disable-multilib --enable-target-optspace $COMMON_CONFIG_ARGS
+  # Unfortunately, these older source package releases will not build without disabling Fortify
+  COMMON_MAKE_ARGS:   CPPFLAGS=-U_FORTIFY_SOURCE
+
+  BUILD_PATH_H8300_GCC: build/gcc+binutils-h8300
+  BUILD_PATH_H8300_GDB: build/gdb-h8300
+  BUILD_PATH_H8300_LIB: build/newlib-h8300
+  BUILD_PATH_H8300_GPC: build/gcc+binutils+gpc-h8300 
+  BUILD_PATH_GPC: build/gcc+binutils+gpc-h8300 
+
+jobs:
+  build:
+
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ ubuntu-latest ]
+    
+    steps:
+    - name: Get latest from version control
+      uses: actions/checkout@v4
+
+    - name: Update build environment
+      run:  sudo apt-get --assume-yes update
+
+    - name: Install build dependencies
+      run:  sudo apt-get --assume-yes install gettext   libncurses-dev expat-dev   texinfo libisl-dev
+
+
+    - name: Setup the build folders for a gcc+binutils H8/300 cross-compiler
+      run:  mkdir -p $BUILD_PATH_H8300_GCC
+
+    - name: Configure the build for a gcc+binutils H8/300 cross-compiler
+      run:  cd $BUILD_PATH_H8300_GCC && ../../src-combined/configure --enable-languages=c,c++  --target=h8300-hitachi-coff  $COMMON_GCC_CONFIG_ARGS
+
+    - name: Execute the build for a gcc+binutils H8/300 cross-compiler
+      run:  cd $BUILD_PATH_H8300_GCC && make $COMMON_MAKE_ARGS
+
+
+    - name: Setup the build folders for an H8/300 GDB
+      run:  mkdir -p $BUILD_PATH_H8300_GDB
+
+    - name: Configure the build for an H8/300 GDB
+      run:  cd $BUILD_PATH_H8300_GDB && ../../src-projects/gdb-7.12.1/configure --target=h8300-hitachi-coff  COMMON_CONFIG_ARGS
+
+    - name: Execute the build for an H8/300 GDB
+      run:  cd $BUILD_PATH_H8300_GDB && make $COMMON_MAKE_ARGS
+
+
+    - name: Setup the build folders for an H8/300 NewLib
+      run:  mkdir -p $BUILD_PATH_H8300_LIB
+
+    - name: Configure the build for an H8/300 NewLib
+      run:  cd $BUILD_PATH_H8300_LIB && ../../src-projects/newlib-1.20.0/configure --target=h8300-hitachi-coff  COMMON_CONFIG_ARGS
+
+    - name: Execute the build for an H8/300 NewLib
+      run:  cd $BUILD_PATH_H8300_LIB && make $COMMON_MAKE_ARGS
+
+
+    - name: Setup the build folders for a gcc+binutils+gpc H8/300 cross-compiler
+      run:  mkdir -p $BUILD_PATH_H8300_GPC
+
+    - name: Configure the build for a gcc+binutils+gpc H8/300 cross-compiler
+      run:  cd $BUILD_PATH_H8300_GPC && ../../src-combined/configure --enable-languages=c,c++,pascal  --target=h8300-hitachi-coff  $COMMON_GCC_CONFIG_ARGS
+
+    - name: Execute the build for a gcc+binutils+gpc H8/300 cross-compiler
+      run:  cd $BUILD_PATH_H8300_GPC && make $COMMON_MAKE_ARGS
+      continue-on-error: true
+
+
+    - name: Setup the build folders for a gcc+binutils+gpc compiler
+      run:  mkdir -p $BUILD_PATH_GPC
+
+    - name: Configure the build for a gcc+binutils+gpc compiler
+      run:  cd $BUILD_PATH_GPC && ../../src-combined/configure --enable-languages=c,c++,pascal  $COMMON_GCC_CONFIG_ARGS
+
+    - name: Execute the build for a gcc+binutils+gpc compiler
+      run:  cd $BUILD_PATH_GPC && make $COMMON_MAKE_ARGS
+      continue-on-error: true
+
+
+
+#    - name: Test-run a host installation
+#      run:  make DESTDIR=$(pwd)/build/destdir install
+
+#    # Before archiving, tar the host installation output to preserve file permission
+#    # c.f. https://github.com/actions/upload-artifact?tab=readme-ov-file#permission-loss
+#    # To avoid including a "." or other unwanted directory, c.f. https://stackoverflow.com/a/39530409
+#    - name: Tar the host installation snapshot to preserve file permissions
+#      run:  find build/destdir/ -printf "%P\n" | tar --verbose --create --file build/install.tar --no-recursion --directory=build/destdir/ --files-from=-
+#
+#    - name: Archive the host installation snapshot tar file
+#      uses: actions/upload-artifact@v4
+#      with:
+#        name: brickOS-bibo_install_[runner~${{ matrix.os }}]_run${{ github.run_id }}.${{ github.run_number }}.${{ github.run_attempt }}
+#        path: build/install.tar
+#
+#    - name: Prepare the firmware and program images for archiving
+#      run:  cp --preserve kernel/*.srec kernel/*.coff  demo/
+#
+#    - name: Archive the firmware image
+#      uses: actions/upload-artifact@v4
+#      with:
+#        name: brickOS-bibo_firmware_[runner~${{ matrix.os }}]_run${{ github.run_id }}.${{ github.run_number }}.${{ github.run_attempt }}
+#        path: |
+#          kernel/*.srec
+#          kernel/*.coff
+#
+#    - name: Archive the demo program files
+#      uses: actions/upload-artifact@v4
+#      with:
+#        name: brickOS-bibo_firmware+programs_[runner~${{ matrix.os }}]_run${{ github.run_id }}.${{ github.run_number }}.${{ github.run_attempt }}
+#        path: |
+#          demo/**/*.srec
+#          demo/**/*.coff
+#          demo/**/*.lx
+#          demo/**/*.a
