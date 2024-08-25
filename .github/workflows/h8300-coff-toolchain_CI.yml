@@ -69,7 +69,7 @@ jobs:
     runs-on:  ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ ubuntu-latest ]
+        os: [ ubuntu-latest, ubuntu-20.04 ]
     
     steps:
     - name: Get latest from version control
@@ -195,7 +195,7 @@ jobs:
     runs-on:  ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ ubuntu-latest ]
+        os: [ ubuntu-latest, ubuntu-20.04 ]
     
     steps:
     - name: Get latest from version control
