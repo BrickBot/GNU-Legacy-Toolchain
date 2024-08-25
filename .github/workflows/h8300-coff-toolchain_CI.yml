@@ -97,7 +97,7 @@ jobs:
       run:  |
         cd $BUILD_PATH_H8300_GCC
         echo "Current working directory: $PWD"
-        ../../src-combined/configure --enable-languages=objc  --target=h8300-hitachi-coff  $COMMON_GCC_CONFIG_ARGS  $COMMON_CONFIG_ARGS
+        ../../src-combined/configure --enable-languages=c,c++,objc  --target=h8300-hitachi-coff  $COMMON_GCC_CONFIG_ARGS  $COMMON_CONFIG_ARGS
 
     - name: Execute the build for a gcc+binutils+objc H8/300 cross-compiler
       run:  |
