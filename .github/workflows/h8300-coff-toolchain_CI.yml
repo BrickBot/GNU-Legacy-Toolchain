@@ -23,7 +23,7 @@ env:
 
 jobs:
   build_cross_gcc_job:
-    name:     Build a gcc + binutils cross-compiler for the H8/300
+    name:     Build gcc+binutils+ada cross-compiler for the H8/300
     runs-on:  ${{ matrix.os }}
     strategy:
       matrix:
@@ -48,16 +48,58 @@ jobs:
     - name: Install build dependencies
       run:  sudo apt-get --assume-yes install $BUILD_DEPENDS
 
-    - name: Setup the build folders for a gcc+binutils H8/300 cross-compiler
+    - name: Setup the build folders for an H8/300 cross-compiler
       run:  mkdir -p $BUILD_PATH_H8300_GCC
 
-    - name: Configure the build for a gcc+binutils H8/300 cross-compiler
+    - name: Configure the build for an H8/300 cross-compiler
       run:  |
         cd $BUILD_PATH_H8300_GCC
         echo "Current working directory: $PWD"
-        ../../src-combined/configure --enable-languages=c,c++  --target=h8300-hitachi-coff  $COMMON_GCC_CONFIG_ARGS  $COMMON_CONFIG_ARGS
+        ../../src-combined/configure --enable-languages=c,c++,ada  --target=h8300-hitachi-coff  $COMMON_GCC_CONFIG_ARGS  $COMMON_CONFIG_ARGS
 
-    - name: Execute the build for a gcc+binutils H8/300 cross-compiler
+    - name: Execute the build for an H8/300 cross-compiler
+      run:  |
+        cd $BUILD_PATH_H8300_GCC
+        echo "Current working directory: $PWD"
+        make $COMMON_MAKE_ARGS
+
+
+  build_cross_objc_job:
+    name:     Build gcc+binutils+objc cross-compiler for the H8/300
+    runs-on:  ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ ubuntu-latest ]
+    
+    steps:
+    - name: Get latest from version control
+      uses: actions/checkout@v4
+      with:
+        # git-restore-mtime-bare uses the ref log to find the correct timestamp
+        # for each file. This requires a full git history. The default value (1)
+        # creates a shallow checkout.
+        fetch-depth: 0
+
+      # Fix timestamps (needed to prevent gcc/c-parse.c from sometimes being regenerated during build)
+    - name: Restore source timestamps
+      uses: chetan/git-restore-mtime-action@v2
+
+    - name: Update build environment
+      run:  sudo apt-get --assume-yes update
+
+    - name: Install build dependencies
+      run:  sudo apt-get --assume-yes install $BUILD_DEPENDS
+
+    - name: Setup the build folders for a gcc+binutils+objc H8/300 cross-compiler
+      run:  mkdir -p $BUILD_PATH_H8300_GCC
+
+    - name: Configure the build for a gcc+binutils+objc H8/300 cross-compiler
+      run:  |
+        cd $BUILD_PATH_H8300_GCC
+        echo "Current working directory: $PWD"
+        ../../src-combined/configure --enable-languages=objc  --target=h8300-hitachi-coff  $COMMON_GCC_CONFIG_ARGS  $COMMON_CONFIG_ARGS
+
+    - name: Execute the build for a gcc+binutils+objc H8/300 cross-compiler
       run:  |
         cd $BUILD_PATH_H8300_GCC
         echo "Current working directory: $PWD"
@@ -65,7 +107,7 @@ jobs:
 
 
   build_cross_gcj_job:
-    name:     Build a gcc + binutils + gcj cross-compiler for the H8/300
+    name:     Build gcc+binutils+gcj cross-compiler for the H8/300
     runs-on:  ${{ matrix.os }}
     strategy:
       matrix:
@@ -106,50 +148,8 @@ jobs:
         make $COMMON_MAKE_ARGS
 
 
-  build_cross_ada_job:
-    name:     Build a gcc + binutils + ada cross-compiler for the H8/300
-    runs-on:  ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ ubuntu-latest ]
-    
-    steps:
-    - name: Get latest from version control
-      uses: actions/checkout@v4
-      with:
-        # git-restore-mtime-bare uses the ref log to find the correct timestamp
-        # for each file. This requires a full git history. The default value (1)
-        # creates a shallow checkout.
-        fetch-depth: 0
-
-      # Fix timestamps (needed to prevent gcc/c-parse.c from sometimes being regenerated during build)
-    - name: Restore source timestamps
-      uses: chetan/git-restore-mtime-action@v2
-
-    - name: Update build environment
-      run:  sudo apt-get --assume-yes update
-
-    - name: Install build dependencies
-      run:  sudo apt-get --assume-yes install $BUILD_DEPENDS
-
-    - name: Setup the build folders for a gcc+binutils+ada H8/300 cross-compiler
-      run:  mkdir -p $BUILD_PATH_H8300_GCC
-
-    - name: Configure the build for a gcc+binutils+ada H8/300 cross-compiler
-      run:  |
-        cd $BUILD_PATH_H8300_GCC
-        echo "Current working directory: $PWD"
-        ../../src-combined/configure --enable-languages=c,c++,ada  --target=h8300-hitachi-coff  $COMMON_GCC_CONFIG_ARGS  $COMMON_CONFIG_ARGS
-
-    - name: Execute the build for a gcc+binutils+ada H8/300 cross-compiler
-      run:  |
-        cd $BUILD_PATH_H8300_GCC
-        echo "Current working directory: $PWD"
-        make $COMMON_MAKE_ARGS
-
-
   build_cross_gpc_job:
-    name:     Build a gcc + binutils + gpc cross-compiler for the H8/300
+    name:     Build gcc+binutils+gpc cross-compiler for the H8/300
     runs-on:  ${{ matrix.os }}
     strategy:
       matrix:
