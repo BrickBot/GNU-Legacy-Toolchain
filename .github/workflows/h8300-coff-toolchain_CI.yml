@@ -243,6 +243,15 @@ jobs:
 #    steps:
 #    - name: Get latest from version control
 #      uses: actions/checkout@v4
+#      with:
+#        # git-restore-mtime-bare uses the ref log to find the correct timestamp
+#        # for each file. This requires a full git history. The default value (1)
+#        # creates a shallow checkout.
+#        fetch-depth: 0
+#
+#      # Fix timestamps (needed to prevent gcc/c-parse.c from sometimes being regenerated during build)
+#    - name: Restore source timestamps
+#      uses: chetan/git-restore-mtime-action@v2
 #
 #    - name: Update build environment
 #      run:  sudo apt-get --assume-yes update
@@ -276,6 +285,15 @@ jobs:
     steps:
     - name: Get latest from version control
       uses: actions/checkout@v4
+      with:
+        # git-restore-mtime-bare uses the ref log to find the correct timestamp
+        # for each file. This requires a full git history. The default value (1)
+        # creates a shallow checkout.
+        fetch-depth: 0
+
+      # Fix timestamps
+    - name: Restore source timestamps
+      uses: chetan/git-restore-mtime-action@v2
 
     - name: Update build environment
       run:  sudo apt-get --assume-yes update
@@ -296,7 +314,6 @@ jobs:
       run:  |
         cd $BUILD_PATH_GPC
         echo "Current working directory: $PWD"
-        touch ../../src-projects/gcc-3.4.6/gcc/c-parse.c  # Try to prevent from being regenerated during build
         make $COMMON_MAKE_ARGS
 
 
