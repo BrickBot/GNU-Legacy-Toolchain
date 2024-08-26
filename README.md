@@ -6,19 +6,27 @@ A cross-toolchain targeting Hitachi H8/300 processors with the COFF (or, colloqu
 Repository Creation Notes
 -------------------------
 
-### Sources
-* BinUtils 2.16.1 – note lack of support for h8300-*-coff in gas/configure.tgt in later versions
-* GCC 4.4.7 – note lack of support for h8300-*-coff (covered by the "h8300-*-*" case) in libgcc/config.host in later versions
+### Sources Versions Used
+Last known versions to include support for h8300-*-coff
+* BinUtils 2.16.1
+  + Note lack of support for h8300-*-coff in gas/configure.tgt in later versions
+* GCC 3.4.6
+  + Last supported version is actually the GCC 4.4 series – note lack of support for h8300-*-coff (covered by the "h8300-*-*" case) in libgcc/config.host in later versions
+  + So why GCC 3.4.6?
+    - H8/300 was supported for the duration of the full GCC version series
+    - Source code has been suppored by Debian package maintainers with maintance patches (gcc-h8300 package)
+    - GPC integration is less robust in GCC 4
+    - Created smaller binaries compared to the same builds created using GCC 4
+      * Especially important on memory-constrained devices such as the LEGO MindStorms RCX
+  + Resources
+    - [Installation configuration documentation](https://web.archive.org/web/20041013092023/https://gcc.gnu.org/install/configure.html)
+    - [Manual](https://gcc.gnu.org/onlinedocs/gcc-3.4.6/gcc/)
 * GPC – note the included README files
 * GDB 7.12.1 – note lack of support for h8300-*-*-coff (covered by the "h8300-*-*-*" case) in bfd/config.bfd in later versions
-* NewLib 1.20.0 – later versions fail to build if targeting h8300-*-coff
+* NewLib 1.19.0
+  + Version 1.20.0 introduces incompatibilities with the binutil's version of libiberty (c.f. [gcc list](https://gcc-patches.gcc.gnu.narkive.com/zeSeZ9N8/newlib-vs-libiberty-mismatch-breaks-build-re-patch-export-psignal-on-all-platforms#post1))
+  + Versions 2.0 and later fail to build if targeting h8300-*-coff
 
-Why GCC 3.4.6?
-* H8/300 was supported for the duration of the full GCC version series
-* Source code has been suppored by Debian package maintainers with maintance patches (gcc-h8300 package)
-* GPC integration is less robust in GCC 4
-* Created smaller binaries compared to the same builds created using GCC 4
-  + Especially important on memory-constrained devices such as the LEGO MindStorms RCX
 
 
 ### Combined Folder Composition
@@ -30,16 +38,16 @@ Taking libiberty from binutils and the combining the gcc and binutils builds doe
 which at least eliminates the complications that would otherwise arise from having to build
 gcc and binutils separately.
 
-| Folder    | gcc | binutils | gdb | newlib |
-| --------- | --- | -------- | --- | ------ |
-| bfd       |     |  ×       |  ×  |        |
-| cpu       |     |  ×       |  ×  |        |
-| etc       |     |  ×       |  ×  |  ×     |
-| include   |  ×  |  ×       |  ×  |        |
-| libiberty |  ×  |  ×       |  ×  |        |
-| opcodes   |     |  ×       |  ×  |        |
-| texinfo   |     |  ×       |  ×  |  ×     |
-| zlib      |  ×  |          |  ×  |        |
+| Folder    | gcc | binutils | newlib | gdb |
+| --------- | --- | -------- | ------ | --- |
+| bfd       |     |  ×       |        |  ×  |
+| cpu       |     |  ×       |        |  ×  |
+| etc       |     |  ×       |  ×     |  ×  |
+| include   |  ×  |  ×       |        |  ×  |
+| libiberty |  ×  |  ×       |        |  ×  |
+| opcodes   |     |  ×       |        |  ×  |
+| texinfo   |     |  ×       |  ×     |  ×  |
+| zlib      |  ×  |          |        |  ×  |
 
 
 

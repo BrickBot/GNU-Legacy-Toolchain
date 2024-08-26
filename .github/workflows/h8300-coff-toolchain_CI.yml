@@ -11,7 +11,7 @@ env:
   BUILD_DEPENDS: gettext   libncurses-dev libexpat1-dev   libisl-dev texinfo bison flex python3-dev  autoconf libtool dejagnu procps libncurses5-dev 
   
   COMMON_CONFIG_ARGS: --prefix=/usr/local/rcx
-  COMMON_GCC_CONFIG_ARGS: --with-gnu-as --with-gnu-ld --disable-multilib --enable-target-optspace
+  COMMON_GCC_CONFIG_ARGS: --with-gnu-as --with-gnu-ld --with-newlib --disable-libssp --disable-multilib --enable-target-optspace
   # Unfortunately, these older source package releases will not build without disabling Fortify
   COMMON_MAKE_ARGS:   CPPFLAGS=-U_FORTIFY_SOURCE
 
@@ -23,7 +23,7 @@ env:
 
 jobs:
   build_cross_gcc_job:
-    name:     Build gcc+binutils+ada cross-compiler for the H8/300
+    name:     Build gcc+binutils+newlib+ada+f77+objc cross-compiler for the H8/300
     runs-on:  ${{ matrix.os }}
     strategy:
       matrix:
@@ -55,7 +55,7 @@ jobs:
       run:  |
         cd $BUILD_PATH_H8300_GCC
         echo "Current working directory: $PWD"
-        ../../src-combined/configure --enable-languages=c,c++,ada  --target=h8300-hitachi-coff  $COMMON_GCC_CONFIG_ARGS  $COMMON_CONFIG_ARGS
+        ../../src-combined/configure --enable-languages=c,c++,ada,f77,objc  --target=h8300-hitachi-coff  $COMMON_GCC_CONFIG_ARGS  $COMMON_CONFIG_ARGS
 
     - name: Execute the build for an H8/300 cross-compiler
       run:  |
@@ -64,50 +64,8 @@ jobs:
         make $COMMON_MAKE_ARGS
 
 
-  build_cross_objc_job:
-    name:     Build gcc+binutils+objc cross-compiler for the H8/300
-    runs-on:  ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ ubuntu-latest ]
-    
-    steps:
-    - name: Get latest from version control
-      uses: actions/checkout@v4
-      with:
-        # git-restore-mtime-bare uses the ref log to find the correct timestamp
-        # for each file. This requires a full git history. The default value (1)
-        # creates a shallow checkout.
-        fetch-depth: 0
-
-      # Fix timestamps (needed to prevent gcc/c-parse.c from sometimes being regenerated during build)
-    - name: Restore source timestamps
-      uses: chetan/git-restore-mtime-action@v2
-
-    - name: Update build environment
-      run:  sudo apt-get --assume-yes update
-
-    - name: Install build dependencies
-      run:  sudo apt-get --assume-yes install $BUILD_DEPENDS
-
-    - name: Setup the build folders for a gcc+binutils+objc H8/300 cross-compiler
-      run:  mkdir -p $BUILD_PATH_H8300_GCC
-
-    - name: Configure the build for a gcc+binutils+objc H8/300 cross-compiler
-      run:  |
-        cd $BUILD_PATH_H8300_GCC
-        echo "Current working directory: $PWD"
-        ../../src-combined/configure --enable-languages=c,c++,objc  --target=h8300-hitachi-coff  $COMMON_GCC_CONFIG_ARGS  $COMMON_CONFIG_ARGS
-
-    - name: Execute the build for a gcc+binutils+objc H8/300 cross-compiler
-      run:  |
-        cd $BUILD_PATH_H8300_GCC
-        echo "Current working directory: $PWD"
-        make $COMMON_MAKE_ARGS
-
-
   build_cross_gcj_job:
-    name:     Build gcc+binutils+gcj cross-compiler for the H8/300
+    name:     Build GCJ cross-compiler for the H8/300
     runs-on:  ${{ matrix.os }}
     strategy:
       matrix:
@@ -149,7 +107,7 @@ jobs:
 
 
   build_cross_gpc_job:
-    name:     Build gcc+binutils+gpc cross-compiler for the H8/300
+    name:     Build GPC cross-compiler for the H8/300
     runs-on:  ${{ matrix.os }}
     strategy:
       matrix:
@@ -232,51 +190,8 @@ jobs:
         make $COMMON_MAKE_ARGS
 
 
-# Requires cross-compiler to be available
-#  build_cross_lib_job:
-#    name:     Build NewLib for the H8/300
-#    runs-on:  ${{ matrix.os }}
-#    strategy:
-#      matrix:
-#        os: [ ubuntu-latest ]
-#    
-#    steps:
-#    - name: Get latest from version control
-#      uses: actions/checkout@v4
-#      with:
-#        # git-restore-mtime-bare uses the ref log to find the correct timestamp
-#        # for each file. This requires a full git history. The default value (1)
-#        # creates a shallow checkout.
-#        fetch-depth: 0
-#
-#      # Fix timestamps (needed to prevent gcc/c-parse.c from sometimes being regenerated during build)
-#    - name: Restore source timestamps
-#      uses: chetan/git-restore-mtime-action@v2
-#
-#    - name: Update build environment
-#      run:  sudo apt-get --assume-yes update
-#
-#    - name: Install build dependencies
-#      run:  sudo apt-get --assume-yes install $BUILD_DEPENDS
-#
-#    - name: Setup the build folders for an H8/300 NewLib
-#      run:  mkdir -p $BUILD_PATH_H8300_LIB
-#
-#    - name: Configure the build for an H8/300 NewLib
-#      run:  |
-#        cd $BUILD_PATH_H8300_LIB
-#        echo "Current working directory: $PWD"
-#        ../../src-projects/newlib-1.20.0/configure --target=h8300-hitachi-coff  $COMMON_CONFIG_ARGS
-#
-#    - name: Execute the build for an H8/300 NewLib
-#      run:  |
-#        cd $BUILD_PATH_H8300_LIB
-#        echo "Current working directory: $PWD"
-#        make $COMMON_MAKE_ARGS
-
-
   build_gpc_job:
-    name:     Build a gcc + binutils + gpc compiler for the H8/300
+    name:     Build a GPC compiler (non-cross-compiling)
     runs-on:  ${{ matrix.os }}
     strategy:
       matrix:
