@@ -181,7 +181,7 @@ jobs:
       run:  |
         cd $BUILD_PATH_H8300_GDB
         echo "Current working directory: $PWD"
-        ../../src-projects/gdb-7.12.1/configure --target=h8300-hitachi-coff  $COMMON_CONFIG_ARGS
+        ../../src-projects/gdb-7.12.1/configure --without-python --target=h8300-hitachi-coff  $COMMON_CONFIG_ARGS
 
     - name: Execute the build for an H8/300 GDB
       run:  |
