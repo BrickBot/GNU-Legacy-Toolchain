@@ -148,48 +148,6 @@ jobs:
         make $COMMON_MAKE_ARGS
 
 
-  build_cross_gdb_job:
-    name:     Build GDB for the H8/300
-    runs-on:  ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ ubuntu-latest ]
-    
-    steps:
-    - name: Get latest from version control
-      uses: actions/checkout@v4
-      with:
-        # git-restore-mtime-bare uses the ref log to find the correct timestamp
-        # for each file. This requires a full git history. The default value (1)
-        # creates a shallow checkout.
-        fetch-depth: 0
-
-      # Fix timestamps (needed to prevent gcc/c-parse.c from sometimes being regenerated during build)
-    - name: Restore source timestamps
-      uses: chetan/git-restore-mtime-action@v2
-
-    - name: Update build environment
-      run:  sudo apt-get --assume-yes update
-
-    - name: Install build dependencies
-      run:  sudo apt-get --assume-yes install $BUILD_DEPENDS
-
-    - name: Setup the build folders for an H8/300 GDB
-      run:  mkdir -p $BUILD_PATH_H8300_GDB
-
-    - name: Configure the build for an H8/300 GDB
-      run:  |
-        cd $BUILD_PATH_H8300_GDB
-        echo "Current working directory: $PWD"
-        ../../src-projects/gdb-7.12.1/configure --without-python --target=h8300-hitachi-coff  $COMMON_CONFIG_ARGS
-
-    - name: Execute the build for an H8/300 GDB
-      run:  |
-        cd $BUILD_PATH_H8300_GDB
-        echo "Current working directory: $PWD"
-        make CXXFLAGS='-D_GLIBCXX_USE_CXX11_ABI=0 -std=c++98' $COMMON_MAKE_ARGS
-
-
   build_gpc_job:
     name:     Build a GPC compiler (non-cross-compiling)
     runs-on:  ${{ matrix.os }}
@@ -230,6 +188,48 @@ jobs:
         cd $BUILD_PATH_GPC
         echo "Current working directory: $PWD"
         make $COMMON_MAKE_ARGS
+
+
+  build_cross_gdb_job:
+    name:     Build GDB for the H8/300
+    runs-on:  ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ ubuntu-latest ]
+    
+    steps:
+    - name: Get latest from version control
+      uses: actions/checkout@v4
+      with:
+        # git-restore-mtime-bare uses the ref log to find the correct timestamp
+        # for each file. This requires a full git history. The default value (1)
+        # creates a shallow checkout.
+        fetch-depth: 0
+
+      # Fix timestamps (needed to prevent gcc/c-parse.c from sometimes being regenerated during build)
+    - name: Restore source timestamps
+      uses: chetan/git-restore-mtime-action@v2
+
+    - name: Update build environment
+      run:  sudo apt-get --assume-yes update
+
+    - name: Install build dependencies
+      run:  sudo apt-get --assume-yes install $BUILD_DEPENDS
+
+    - name: Setup the build folders for an H8/300 GDB
+      run:  mkdir -p $BUILD_PATH_H8300_GDB
+
+    - name: Configure the build for an H8/300 GDB
+      run:  |
+        cd $BUILD_PATH_H8300_GDB
+        echo "Current working directory: $PWD"
+        ../../src-projects/gdb-7.12.1/configure --without-python --target=h8300-hitachi-coff  $COMMON_CONFIG_ARGS
+
+    - name: Execute the build for an H8/300 GDB
+      run:  |
+        cd $BUILD_PATH_H8300_GDB
+        echo "Current working directory: $PWD"
+        make CXXFLAGS='-D_GLIBCXX_USE_CXX11_ABI=0 -std=c++98' $COMMON_MAKE_ARGS
 
 
 
