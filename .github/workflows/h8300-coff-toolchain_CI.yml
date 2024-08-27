@@ -139,7 +139,7 @@ jobs:
       run:  |
         cd $BUILD_PATH_H8300_GPC
         echo "Current working directory: $PWD"
-        ../../src-combined/configure --enable-languages=c,c++,pascal  --target=h8300-hitachi-coff  $COMMON_GCC_CONFIG_ARGS  $COMMON_CONFIG_ARGS
+        ../../src-combined/configure --enable-languages=c,c++,pascal --target=h8300-hitachi-coff  $COMMON_GCC_CONFIG_ARGS  $COMMON_CONFIG_ARGS
 
     - name: Execute the build for a gcc+binutils+gpc H8/300 cross-compiler
       run:  |
@@ -181,13 +181,13 @@ jobs:
       run:  |
         cd $BUILD_PATH_H8300_GDB
         echo "Current working directory: $PWD"
-        ../../src-projects/gdb-7.12.1/configure --disable-nls --target=h8300-hitachi-coff  $COMMON_CONFIG_ARGS
+        ../../src-projects/gdb-7.12.1/configure --target=h8300-hitachi-coff  $COMMON_CONFIG_ARGS
 
     - name: Execute the build for an H8/300 GDB
       run:  |
         cd $BUILD_PATH_H8300_GDB
         echo "Current working directory: $PWD"
-        make $COMMON_MAKE_ARGS
+        make CXXFLAGS=-D_GLIBCXX_USE_CXX11_ABI=0 $COMMON_MAKE_ARGS
 
 
   build_gpc_job:
