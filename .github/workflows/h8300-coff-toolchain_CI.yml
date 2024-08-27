@@ -13,7 +13,7 @@ env:
   COMMON_CONFIG_ARGS: --prefix=/usr/local/rcx
   COMMON_GCC_CONFIG_ARGS: --with-gnu-as --with-gnu-ld --with-newlib --disable-libssp --disable-multilib --enable-target-optspace
   # Unfortunately, these older source package releases will not build without disabling Fortify
-  COMMON_MAKE_ARGS:   CPPFLAGS=-U_FORTIFY_SOURCE
+  COMMON_MAKE_ARGS:   CFLAGS=-U_FORTIFY_SOURCE
 
   BUILD_PATH_H8300_GCC: build/gcc+binutils-h8300
   BUILD_PATH_H8300_GDB: build/gdb-h8300
@@ -187,7 +187,7 @@ jobs:
       run:  |
         cd $BUILD_PATH_H8300_GDB
         echo "Current working directory: $PWD"
-        make CXXFLAGS=-D_GLIBCXX_USE_CXX11_ABI=0 $COMMON_MAKE_ARGS
+        make CXXFLAGS='-D_GLIBCXX_USE_CXX11_ABI=0 -std=c++98' $COMMON_MAKE_ARGS
 
 
   build_gpc_job:
