@@ -13,7 +13,7 @@ env:
   COMMON_CONFIG_ARGS: --prefix=/usr/local/rcx
   COMMON_GCC_CONFIG_ARGS: --with-gnu-as --with-gnu-ld --with-newlib --disable-libssp --disable-multilib --enable-target-optspace
   # Unfortunately, these older source package releases will not build without disabling Fortify
-  COMMON_MAKE_ARGS:   CFLAGS=-U_FORTIFY_SOURCE
+  COMMON_MAKE_ARGS:   CPPFLAGS=-U_FORTIFY_SOURCE
 
   BUILD_PATH_H8300_GCC: build/gcc+binutils-h8300
   BUILD_PATH_H8300_GDB: build/gdb-h8300
@@ -181,7 +181,7 @@ jobs:
       run:  |
         cd $BUILD_PATH_H8300_GDB
         echo "Current working directory: $PWD"
-        ../../src-projects/gdb-7.12.1/configure --target=h8300-hitachi-coff  $COMMON_CONFIG_ARGS
+        ../../src-projects/gdb-7.12.1/configure --without-python --target=h8300-hitachi-coff  $COMMON_CONFIG_ARGS
 
     - name: Execute the build for an H8/300 GDB
       run:  |
