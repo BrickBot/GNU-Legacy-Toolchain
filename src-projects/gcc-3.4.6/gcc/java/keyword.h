@@ -30,10 +30,7 @@ struct java_keyword { const char *const name; const int token; };
 #ifdef __GNUC__
 __inline
 #endif
-static unsigned int hash (const char *, unsigned int);
-#ifdef __GNUC__
-__inline
-#endif
+unsigned int hash (const char *, unsigned int);
 const struct java_keyword *java_keyword (const char *, unsigned int);
 
 #define TOTAL_KEYWORDS 52
@@ -98,9 +95,6 @@ hash (const char *str, unsigned int len)
   return hval + asso_values[(unsigned char)str[len - 1]];
 }
 
-#ifdef __GNUC__
-__inline
-#endif
 const struct java_keyword *
 java_keyword (const char *str, unsigned int len)
 {
