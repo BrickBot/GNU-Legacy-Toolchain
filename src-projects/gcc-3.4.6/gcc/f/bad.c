@@ -375,7 +375,7 @@ ffebad_finish (void)
   unsigned char c;
   unsigned const char *s;
   const char *fn;
-  static char buf[1024];
+  static char buf[1025];
   int bufi;
   int index;
 

@@ -653,7 +653,7 @@ pr_enum_type (void *p, const char *tag, const char **names,
 
 	  if (values[i] != val)
 	    {
-	      char ab[20];
+	      char ab[21];
 
 	      print_vma (values[i], ab, FALSE, FALSE);
 	      if (! append_type (info, " = ")
@@ -777,7 +777,7 @@ static bfd_boolean
 pr_range_type (void *p, bfd_signed_vma lower, bfd_signed_vma upper)
 {
   struct pr_handle *info = (struct pr_handle *) p;
-  char abl[20], abu[20];
+  char abl[21], abu[21];
 
   assert (info->stack != NULL);
 
@@ -802,7 +802,7 @@ pr_array_type (void *p, bfd_signed_vma lower, bfd_signed_vma upper,
 {
   struct pr_handle *info = (struct pr_handle *) p;
   char *range_type;
-  char abl[20], abu[20], ab[50];
+  char abl[21], abu[21], ab[52];
 
   range_type = pop_type (info);
   if (range_type == NULL)
@@ -1121,7 +1121,7 @@ pr_struct_field (void *p, const char *name, bfd_vma bitpos, bfd_vma bitsize,
 		 enum debug_visibility visibility)
 {
   struct pr_handle *info = (struct pr_handle *) p;
-  char ab[20];
+  char ab[21];
   char *t;
 
   if (! substitute_type (info, name))
@@ -1305,7 +1305,7 @@ pr_class_baseclass (void *p, bfd_vma bitpos, bfd_boolean virtual,
   struct pr_handle *info = (struct pr_handle *) p;
   char *t;
   const char *prefix;
-  char ab[20];
+  char ab[21];
   char *s, *l, *n;
 
   assert (info->stack != NULL && info->stack->next != NULL);
@@ -1465,7 +1465,7 @@ pr_class_method_variant (void *p, const char *physname,
     return FALSE;
   if (context || voffset != 0)
     {
-      char ab[20];
+      char ab[21];
 
       if (context)
 	{
@@ -1668,7 +1668,7 @@ static bfd_boolean
 pr_int_constant (void *p, const char *name, bfd_vma val)
 {
   struct pr_handle *info = (struct pr_handle *) p;
-  char ab[20];
+  char ab[21];
 
   indent (info);
   print_vma (val, ab, FALSE, FALSE);
@@ -1695,7 +1695,7 @@ pr_typed_constant (void *p, const char *name, bfd_vma val)
 {
   struct pr_handle *info = (struct pr_handle *) p;
   char *t;
-  char ab[20];
+  char ab[21];
 
   t = pop_type (info);
   if (t == NULL)
@@ -1718,7 +1718,7 @@ pr_variable (void *p, const char *name, enum debug_var_kind kind,
 {
   struct pr_handle *info = (struct pr_handle *) p;
   char *t;
-  char ab[20];
+  char ab[21];
 
   if (! substitute_type (info, name))
     return FALSE;
@@ -1781,7 +1781,7 @@ pr_function_parameter (void *p, const char *name,
 {
   struct pr_handle *info = (struct pr_handle *) p;
   char *t;
-  char ab[20];
+  char ab[21];
 
   if (kind == DEBUG_PARM_REFERENCE
       || kind == DEBUG_PARM_REF_REG)
@@ -1819,7 +1819,7 @@ static bfd_boolean
 pr_start_block (void *p, bfd_vma addr)
 {
   struct pr_handle *info = (struct pr_handle *) p;
-  char ab[20];
+  char ab[21];
 
   if (info->parameter > 0)
     {
@@ -1857,7 +1857,7 @@ static bfd_boolean
 pr_end_block (void *p, bfd_vma addr)
 {
   struct pr_handle *info = (struct pr_handle *) p;
-  char ab[20];
+  char ab[21];
 
   info->indent -= 2;
 
@@ -1965,7 +1965,7 @@ tg_enum_type (void *p, const char *tag, const char **names,
   struct pr_handle *info = (struct pr_handle *) p;
   unsigned int i;
   const char *name;
-  char ab[20];
+  char ab[21];
 
   if (! pr_enum_type (p, tag, names, values))
     return FALSE;
@@ -2477,7 +2477,7 @@ static bfd_boolean
 tg_int_constant (void *p, const char *name, bfd_vma val)
 {
   struct pr_handle *info = (struct pr_handle *) p;
-  char ab[20];
+  char ab[21];
 
   indent (info);
   print_vma (val, ab, FALSE, FALSE);
@@ -2506,7 +2506,7 @@ tg_typed_constant (void *p, const char *name, bfd_vma val)
 {
   struct pr_handle *info = (struct pr_handle *) p;
   char *t;
-  char ab[20];
+  char ab[21];
 
   t = pop_type (info);
   if (t == NULL)
@@ -2704,7 +2704,7 @@ static bfd_boolean
 tg_start_block (void *p, bfd_vma addr)
 {
   struct pr_handle *info = (struct pr_handle *) p;
-  char ab[20], kind, *partof;
+  char ab[21], kind, *partof;
   char *t;
   bfd_boolean local;
 

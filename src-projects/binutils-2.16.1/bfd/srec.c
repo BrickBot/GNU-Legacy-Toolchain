@@ -289,7 +289,7 @@ srec_bad_byte (abfd, lineno, c, error)
     }
   else
     {
-      char buf[10];
+      char buf[13];
 
       if (! ISPRINT (c))
 	sprintf (buf, "\\%03o", (unsigned int) c);

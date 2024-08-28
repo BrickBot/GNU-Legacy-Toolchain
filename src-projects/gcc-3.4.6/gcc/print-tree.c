@@ -667,7 +667,7 @@ print_node (FILE *file, const char *prefix, tree node, int indent)
 	case VECTOR_CST:
 	  {
 	    tree vals = TREE_VECTOR_CST_ELTS (node);
-	    char buf[10];
+	    char buf[16];
 	    tree link;
 	    int i;
 
@@ -722,7 +722,7 @@ print_node (FILE *file, const char *prefix, tree node, int indent)
 	  for (i = 0; i < len; i++)
 	    if (TREE_VEC_ELT (node, i))
 	      {
-		char temp[10];
+		char temp[15];
 		sprintf (temp, "elt %d", i);
 		indent_to (file, indent + 4);
 		print_node_brief (file, temp, TREE_VEC_ELT (node, i), 0);

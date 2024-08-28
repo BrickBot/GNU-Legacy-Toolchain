@@ -41,11 +41,11 @@
 
 struct ar_hdr {
   char ar_name[16];		/* name of this member */
-  char ar_date[12];		/* file mtime */
-  char ar_uid[6];		/* owner uid; printed as decimal */
-  char ar_gid[6];		/* owner gid; printed as decimal */
-  char ar_mode[8];		/* file mode, printed as octal   */
-  char ar_size[10];		/* file size, printed as decimal */
+  char ar_date[21];		/* file mtime */
+  char ar_uid[11];		/* owner uid; printed as decimal */
+  char ar_gid[11];		/* owner gid; printed as decimal */
+  char ar_mode[12];		/* file mode, printed as octal   */
+  char ar_size[21];		/* file size, printed as decimal */
   char ar_fmag[2];		/* should contain ARFMAG */
 };
 
