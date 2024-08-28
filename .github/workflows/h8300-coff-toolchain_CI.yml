@@ -10,10 +10,12 @@ on:
 env:
   BUILD_DEPENDS: gettext   libncurses-dev libexpat1-dev   libisl-dev texinfo bison flex python3-dev  autoconf libtool dejagnu procps libncurses5-dev 
   
+  # If these older source package releases will not build without disabling Fortify and/or run without buffer overflow errors,
+  #    then "make CPPFLAGS=-U_FORTIFY_SOURCE" might be necessary
+  #    Passing that to this older configure might not work, as should otherwise seem doable per
+  #    the link https://www.gnu.org/software/automake/manual/html_node/Flag-Variables-Ordering.html
   CROSS_TARGET: --target=h8300-hitachi-coff
   COMMON_CONFIG_ARGS: --prefix=/usr/local/brickbot
-  # Unfortunately, these older source package releases will not build without disabling Fortify, so CPPFLAGS=-U_FORTIFY_SOURCE is necessary
-  # https://www.gnu.org/software/automake/manual/html_node/Flag-Variables-Ordering.html
   COMMON_GCC_CONFIG_ARGS: --with-gnu-as --with-gnu-ld --with-newlib --disable-libssp --disable-multilib --enable-target-optspace
 
   BUILD_PATH_H8300_GCC: build/gcc+binutils-h8300
