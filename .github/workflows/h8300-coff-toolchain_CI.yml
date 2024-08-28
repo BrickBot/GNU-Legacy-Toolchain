@@ -13,7 +13,7 @@ env:
   CROSS_TARGET: --target=h8300-hitachi-coff
   COMMON_CONFIG_ARGS: --prefix=/usr/local/brickbot
   # Unfortunately, these older source package releases will not build without disabling Fortify, so CPPFLAGS=-U_FORTIFY_SOURCE is necessary
-  COMMON_GCC_CONFIG_ARGS: CPPFLAGS=-U_FORTIFY_SOURCE --with-gnu-as --with-gnu-ld --with-newlib --disable-libssp --disable-multilib --enable-target-optspace
+  COMMON_GCC_CONFIG_ARGS: CPPFLAGS='-U_FORTIFY_SOURCE' --with-gnu-as --with-gnu-ld --with-newlib --disable-libssp --disable-multilib --enable-target-optspace
 
   BUILD_PATH_H8300_GCC: build/gcc+binutils-h8300
   BUILD_PATH_H8300_GDB: build/gdb-h8300
@@ -55,7 +55,7 @@ jobs:
       run:  |
         cd $BUILD_PATH_H8300_GCC
         echo "Current working directory: $PWD"
-        ../../src-combined/configure --enable-languages=c,c++,ada,f77,java,objc  $CROSS_TARGET  $COMMON_GCC_CONFIG_ARGS  $COMMON_CONFIG_ARGS
+        ../../src-combined/configure  $COMMON_GCC_CONFIG_ARGS  --enable-languages=c,c++,ada,f77,java,objc  $CROSS_TARGET  $COMMON_CONFIG_ARGS
 
     - name: Execute the build for an H8/300 cross-compiler
       run:  |
