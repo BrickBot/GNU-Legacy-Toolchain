@@ -13,7 +13,7 @@ Last known versions to include support for h8300-*-coff
 * GCC 3.4.6
   + Last supported version is actually the GCC 4.4 series – note lack of support for h8300-*-coff (covered by the "h8300-*-*" case) in libgcc/config.host in later versions
   + So why GCC 3.4.6?
-    - H8/300 was supported for the duration of the full GCC version series
+    - H8/300 was supported for the duration of the full GCC version series, with 3.4.6 [closing the release series](https://gcc.gnu.org/gcc-3.4/changes.html)
     - Source code has been suppored by Debian package maintainers with maintance patches (gcc-h8300 package)
     - GPC integration is less robust in GCC 4
     - Created smaller binaries compared to the same builds created using GCC 4
