@@ -14,7 +14,7 @@ env:
   COMMON_CONFIG_ARGS: --prefix=/usr/local/brickbot
   # Unfortunately, these older source package releases will not build without disabling Fortify, so CPPFLAGS=-U_FORTIFY_SOURCE is necessary
   # https://www.gnu.org/software/automake/manual/html_node/Flag-Variables-Ordering.html
-  COMMON_GCC_CONFIG_ARGS: AM_CPPFLAGS='-U_FORTIFY_SOURCE' --with-gnu-as --with-gnu-ld --with-newlib --disable-libssp --disable-multilib --enable-target-optspace
+  COMMON_GCC_CONFIG_ARGS: --with-gnu-as --with-gnu-ld --with-newlib --disable-libssp --disable-multilib --enable-target-optspace
 
   BUILD_PATH_H8300_GCC: build/gcc+binutils-h8300
   BUILD_PATH_H8300_GDB: build/gdb-h8300
