@@ -21,7 +21,9 @@ Last known versions to include support for h8300-*-coff
   + Resources
     - [Installation configuration documentation](https://web.archive.org/web/20041013092023/https://gcc.gnu.org/install/configure.html)
     - [Manual](https://gcc.gnu.org/onlinedocs/gcc-3.4.6/gcc/)
-* GPC – note the included README files
+* GPC 2.1-20070904 – note the included README files
+  + [GPC website](https://www.gnu-pascal.de/gpc/h-index.html)
+  + Source files from [hebisch/gpc](https://github.com/hebisch/gpc)
 * GDB 7.12.1 – note lack of support for h8300-*-*-coff (covered by the "h8300-*-*-*" case) in bfd/config.bfd in later versions
 * NewLib 1.19.0
   + Version 1.20.0 introduces incompatibilities with the binutil's version of libiberty (c.f. [gcc list](https://gcc-patches.gcc.gnu.narkive.com/zeSeZ9N8/newlib-vs-libiberty-mismatch-breaks-build-re-patch-export-psignal-on-all-platforms#post1))
