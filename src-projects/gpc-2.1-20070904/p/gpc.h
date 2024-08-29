@@ -143,9 +143,9 @@ extern tree builtin_function (const char *name, tree type, int function_code,
 #define gcc_assert(expression)
 #else
 #define gcc_assert(expression) \
-  ((void) ((expression) ? 0 : (assert_fail (#expression, __FILE__, __PRETTY_FUNCTION__, __LINE__), 0)))
+  ((void) ((expression) ? 0 : (assert_fail (#expression, __FILE__, __func__, __LINE__), 0)))
 #endif
-#define gcc_unreachable() (assert_fail ("unreachable code", __FILE__, __PRETTY_FUNCTION__, __LINE__))
+#define gcc_unreachable() (assert_fail ("unreachable code", __FILE__, __func__, __LINE__))
 #endif
 
 /* @@ gcc-3 has a similar mechanism via abort(). Check this after porting to gcc-3. */
