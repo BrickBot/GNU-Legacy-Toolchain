@@ -8,7 +8,7 @@ on:
     branches: [ master ]
 
 env:
-  BUILD_DEPENDS: gettext   libncurses-dev libexpat1-dev   libisl-dev texinfo bison flex python3-dev  autoconf libtool dejagnu procps libncurses5-dev 
+  BUILD_DEPENDS: make binutils gcc g++ bison flex libtool gawk gettext texinfo file libisl-dev dejagnu
   
   # If these older source package releases will not build without disabling Fortify and/or run without buffer overflow errors,
   #    then "make CPPFLAGS=-U_FORTIFY_SOURCE" might be necessary
@@ -175,7 +175,7 @@ jobs:
       run:  sudo apt-get --assume-yes update
 
     - name: Install build dependencies
-      run:  sudo apt-get --assume-yes install $BUILD_DEPENDS
+      run:  sudo apt-get --assume-yes install $BUILD_DEPENDS  python3-dev  autoconf procps  libncurses-dev libncurses5-dev libexpat1-dev
 
     - name: Setup the build folders for an H8/300 GDB
       run:  mkdir -p $BUILD_PATH_H8300_GDB
