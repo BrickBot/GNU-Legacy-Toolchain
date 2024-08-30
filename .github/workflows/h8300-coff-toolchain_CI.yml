@@ -110,9 +110,9 @@ jobs:
         echo "Current working directory: $PWD"
         make
 
-    - name: Install the built GPC H8/300 cross-compiler
+    - name: Install the built GCC H8/300 cross-compiler
       run:  |
-        cd $BUILD_PATH_H8300_GCC
+        cd $BUILD_PATH_H8300_GPC
         echo "Current working directory: $PWD"
         sudo make install
 
