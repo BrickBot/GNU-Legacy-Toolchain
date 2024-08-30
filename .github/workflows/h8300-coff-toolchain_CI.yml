@@ -57,7 +57,7 @@ jobs:
       run:  |
         cd $BUILD_PATH_H8300_GCC
         echo "Current working directory: $PWD"
-        ../../src-combined/configure  $COMMON_GCC_CONFIG_ARGS  --enable-languages=c,c++,ada,f77,java,objc  $CROSS_TARGET  $COMMON_CONFIG_ARGS
+        ../../src-combined/configure  --enable-languages=c,c++,ada,f77,java,objc  $CROSS_TARGET  $COMMON_GCC_CONFIG_ARGS  $COMMON_CONFIG_ARGS
 
     - name: Execute the build for an H8/300 cross-compiler
       run:  |
@@ -95,26 +95,27 @@ jobs:
     - name: Setup the build folders for a GCC H8/300 cross-compiler
       run:  mkdir -p $BUILD_PATH_H8300_GCC
 
+    - name: Setup the build folders for a GPC H8/300 cross-compiler
+      run:  mkdir -p $BUILD_PATH_H8300_GPC
+
     - name: Configure the build for a GCC H8/300 cross-compiler
       run:  |
-        cd $BUILD_PATH_H8300_GCC
+        cd $BUILD_PATH_H8300_GPC
         echo "Current working directory: $PWD"
-        ../../src-combined/configure  $COMMON_GCC_CONFIG_ARGS  --enable-languages=c,c++,ada,f77,java,objc  $CROSS_TARGET  $COMMON_CONFIG_ARGS
+        ../../src-combined/configure  --enable-languages=c,c++,ada,f77,java,objc  $CROSS_TARGET  $COMMON_GCC_CONFIG_ARGS  $COMMON_CONFIG_ARGS
 
     - name: Execute the build for a GCC H8/300 cross-compiler
       run:  |
-        cd $BUILD_PATH_H8300_GCC
+        cd $BUILD_PATH_H8300_GPC
         echo "Current working directory: $PWD"
         make
 
-    - name: Install the built GCC H8/300 cross-compiler
+    - name: Install the built GPC H8/300 cross-compiler
       run:  |
         cd $BUILD_PATH_H8300_GCC
         echo "Current working directory: $PWD"
         sudo make install
 
-    - name: Setup the build folders for a GPC H8/300 cross-compiler
-      run:  mkdir -p $BUILD_PATH_H8300_GPC
 
     - name: Configure the build for a GPC H8/300 cross-compiler
       run:  |
