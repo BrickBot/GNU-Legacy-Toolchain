@@ -16,7 +16,7 @@ env:
   #    the link https://www.gnu.org/software/automake/manual/html_node/Flag-Variables-Ordering.html
   CROSS_TARGET: --target=h8300-hitachi-coff
   COMMON_CONFIG_ARGS: --prefix=/usr/local/brickbot
-  COMMON_GCC_CONFIG_ARGS: --with-gcc --with-gnu-as --with-gnu-ld --with-newlib --disable-libssp --disable-multilib --enable-target-optspace
+  COMMON_GCC_CONFIG_ARGS: --with-gcc --with-gnu-as --with-gnu-ld --with-newlib --disable-shared --disable-libssp --disable-multilib --enable-target-optspace
 
   BUILD_PATH_H8300_GCC: build/gcc+binutils-h8300
   BUILD_PATH_H8300_GDB: build/gdb-h8300
