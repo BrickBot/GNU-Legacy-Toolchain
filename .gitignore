@@ -1,11 +1,22 @@
 # Repository-Specific Files and Folders
 build/
 src-packages/
+sysroot/
+
+# GPC Auto-Generated Files and Folders
+src-projects/gpc-*/p/doc/generated/
+src-projects/gpc-*/p/doc/info/
+src-projects/gpc-*/p/parse.c \
+src-projects/gpc-*/p/parse.h \
+src-projects/gpc-*/p/pascal-lex.c
+src-projects/gpc-*/p/rts/rtsc.pas
+src-projects/gpc-*/p/rts/gpc.pas
+src-projects/gpc-*/p/units/crtc.h
 
 # Prerequisites
 *.d
 
-# Object files
+# Object Files
 *.o
 *.ko
 *.obj
