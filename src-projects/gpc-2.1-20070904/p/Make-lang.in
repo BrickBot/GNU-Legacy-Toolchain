@@ -404,12 +404,12 @@ GPC_GENERATED_FILES=\
   $(srcdir)/p/COPYING \
   $(srcdir)/p/COPYING.LIB \
   $(srcdir)/p/COPYING.DEMO \
+  $(srcdir)/p/test/README \
   $(srcdir)/p/lang.opt \
   $(srcdir)/p/pascal-lex.c \
   $(srcdir)/p/parse.c \
   $(srcdir)/p/parse.h \
   $(srcdir)/p/units/crtc.h \
-  $(srcdir)/p/test/README \
   $(srcdir)/p/doc/generated/gpc-run.1 \
   $(RTS_GENERATED_FILES)
 
@@ -460,7 +460,10 @@ $(srcdir)/p/units/crtc.h: $(srcdir)/p/units/crt.inc
 
 # Derive parts of the documentation directly from the source.
 
-$(srcdir)/p/doc/generated/version.texi: $(VERSION_FILENAME)
+$(srcdir)/p/doc/generated/:
+	$(srcdir)/p/script/mkdir-p $(srcdir)/p/doc/generated/
+
+$(srcdir)/p/doc/generated/version.texi: $(VERSION_FILENAME) $(srcdir)/p/doc/generated/
 	( \
 	 release=$(gpc_version) && \
 	 echo "@c Generated automatically from `echo $(VERSION_FILENAME) | sed -e 's,.*/,,'`" && \
@@ -473,59 +476,59 @@ $(srcdir)/p/doc/generated/version.texi: $(VERSION_FILENAME)
 	) > $(srcdir)/p/doc/generated/version.texi || \
 	{ rm -f $(srcdir)/p/doc/generated/version.texi; false; }
 
-$(srcdir)/p/doc/generated/lang-options.texi: $(srcdir)/p/lang-options.h
+$(srcdir)/p/doc/generated/lang-options.texi: $(srcdir)/p/lang-options.h $(srcdir)/p/doc/generated/
 	$(srcdir)/p/script/lang-options2texi $(srcdir)/p/lang-options.h $(srcdir)/p/doc/generated/lang-options.texi
 
-$(srcdir)/p/doc/generated/keyword.texi: $(srcdir)/p/predef.def
+$(srcdir)/p/doc/generated/keyword.texi: $(srcdir)/p/predef.def $(srcdir)/p/doc/generated/
 	$(srcdir)/p/script/keywords2texi $(srcdir)/p/predef.def $(srcdir)/p/doc/generated/keyword.texi
 
-$(srcdir)/p/doc/generated/gpcpas.texi: $(RTSSRCDIR)/gpc.pas
+$(srcdir)/p/doc/generated/gpcpas.texi: $(RTSSRCDIR)/gpc.pas $(srcdir)/p/doc/generated/
 	$(srcdir)/p/script/pas2texi $(RTSSRCDIR)/gpc.pas $(srcdir)/p/doc/generated/gpcpas.texi
 
 # This is stupid, but some stupid makes don't support nice pattern rules ...
-# $(srcdir)/p/doc/generated/%.texi: $(srcdir)/p/units/%.pas
+# $(srcdir)/p/doc/generated/%.texi: $(srcdir)/p/units/%.pas $(srcdir)/p/doc/generated/
 # 	$(srcdir)/p/script/pas2texi "$<" "$@"
-$(srcdir)/p/doc/generated/crt.texi: $(srcdir)/p/units/crt.pas
+$(srcdir)/p/doc/generated/crt.texi: $(srcdir)/p/units/crt.pas $(srcdir)/p/doc/generated/
 	$(srcdir)/p/script/pas2texi $(srcdir)/p/units/crt.pas $(srcdir)/p/doc/generated/crt.texi
-$(srcdir)/p/doc/generated/dos.texi: $(srcdir)/p/units/dos.pas
+$(srcdir)/p/doc/generated/dos.texi: $(srcdir)/p/units/dos.pas $(srcdir)/p/doc/generated/
 	$(srcdir)/p/script/pas2texi $(srcdir)/p/units/dos.pas $(srcdir)/p/doc/generated/dos.texi
-$(srcdir)/p/doc/generated/dosunix.texi: $(srcdir)/p/units/dosunix.pas
+$(srcdir)/p/doc/generated/dosunix.texi: $(srcdir)/p/units/dosunix.pas $(srcdir)/p/doc/generated/
 	$(srcdir)/p/script/pas2texi $(srcdir)/p/units/dosunix.pas $(srcdir)/p/doc/generated/dosunix.texi
-$(srcdir)/p/doc/generated/fileutils.texi: $(srcdir)/p/units/fileutils.pas
+$(srcdir)/p/doc/generated/fileutils.texi: $(srcdir)/p/units/fileutils.pas $(srcdir)/p/doc/generated/
 	$(srcdir)/p/script/pas2texi $(srcdir)/p/units/fileutils.pas $(srcdir)/p/doc/generated/fileutils.texi
-$(srcdir)/p/doc/generated/gmp.texi: $(srcdir)/p/units/gmp.pas
+$(srcdir)/p/doc/generated/gmp.texi: $(srcdir)/p/units/gmp.pas $(srcdir)/p/doc/generated/
 	$(srcdir)/p/script/pas2texi $(srcdir)/p/units/gmp.pas $(srcdir)/p/doc/generated/gmp.texi
-$(srcdir)/p/doc/generated/gpcutil.texi: $(srcdir)/p/units/gpcutil.pas
+$(srcdir)/p/doc/generated/gpcutil.texi: $(srcdir)/p/units/gpcutil.pas $(srcdir)/p/doc/generated/
 	$(srcdir)/p/script/pas2texi $(srcdir)/p/units/gpcutil.pas $(srcdir)/p/doc/generated/gpcutil.texi
-$(srcdir)/p/doc/generated/heapmon.texi: $(srcdir)/p/units/heapmon.pas
+$(srcdir)/p/doc/generated/heapmon.texi: $(srcdir)/p/units/heapmon.pas $(srcdir)/p/doc/generated/
 	$(srcdir)/p/script/pas2texi $(srcdir)/p/units/heapmon.pas $(srcdir)/p/doc/generated/heapmon.texi
-$(srcdir)/p/doc/generated/intl.texi: $(srcdir)/p/units/intl.pas
+$(srcdir)/p/doc/generated/intl.texi: $(srcdir)/p/units/intl.pas $(srcdir)/p/doc/generated/
 	$(srcdir)/p/script/pas2texi $(srcdir)/p/units/intl.pas $(srcdir)/p/doc/generated/intl.texi
-$(srcdir)/p/doc/generated/md5.texi: $(srcdir)/p/units/md5.pas
+$(srcdir)/p/doc/generated/md5.texi: $(srcdir)/p/units/md5.pas $(srcdir)/p/doc/generated/
 	$(srcdir)/p/script/pas2texi $(srcdir)/p/units/md5.pas $(srcdir)/p/doc/generated/md5.texi
-$(srcdir)/p/doc/generated/overlay.texi: $(srcdir)/p/units/overlay.pas
+$(srcdir)/p/doc/generated/overlay.texi: $(srcdir)/p/units/overlay.pas $(srcdir)/p/doc/generated/
 	$(srcdir)/p/script/pas2texi $(srcdir)/p/units/overlay.pas $(srcdir)/p/doc/generated/overlay.texi
-$(srcdir)/p/doc/generated/pipes.texi: $(srcdir)/p/units/pipes.pas
+$(srcdir)/p/doc/generated/pipes.texi: $(srcdir)/p/units/pipes.pas $(srcdir)/p/doc/generated/
 	$(srcdir)/p/script/pas2texi $(srcdir)/p/units/pipes.pas $(srcdir)/p/doc/generated/pipes.texi
-$(srcdir)/p/doc/generated/ports.texi: $(srcdir)/p/units/ports.pas
+$(srcdir)/p/doc/generated/ports.texi: $(srcdir)/p/units/ports.pas $(srcdir)/p/doc/generated/
 	$(srcdir)/p/script/pas2texi $(srcdir)/p/units/ports.pas $(srcdir)/p/doc/generated/ports.texi
-$(srcdir)/p/doc/generated/printer.texi: $(srcdir)/p/units/printer.pas
+$(srcdir)/p/doc/generated/printer.texi: $(srcdir)/p/units/printer.pas $(srcdir)/p/doc/generated/
 	$(srcdir)/p/script/pas2texi $(srcdir)/p/units/printer.pas $(srcdir)/p/doc/generated/printer.texi
-$(srcdir)/p/doc/generated/regex.texi: $(srcdir)/p/units/regex.pas
+$(srcdir)/p/doc/generated/regex.texi: $(srcdir)/p/units/regex.pas $(srcdir)/p/doc/generated/
 	$(srcdir)/p/script/pas2texi $(srcdir)/p/units/regex.pas $(srcdir)/p/doc/generated/regex.texi
-$(srcdir)/p/doc/generated/strings.texi: $(srcdir)/p/units/strings.pas
+$(srcdir)/p/doc/generated/strings.texi: $(srcdir)/p/units/strings.pas $(srcdir)/p/doc/generated/
 	$(srcdir)/p/script/pas2texi $(srcdir)/p/units/strings.pas $(srcdir)/p/doc/generated/strings.texi
-$(srcdir)/p/doc/generated/stringutils.texi: $(srcdir)/p/units/stringutils.pas
+$(srcdir)/p/doc/generated/stringutils.texi: $(srcdir)/p/units/stringutils.pas $(srcdir)/p/doc/generated/
 	$(srcdir)/p/script/pas2texi $(srcdir)/p/units/stringutils.pas $(srcdir)/p/doc/generated/stringutils.texi
-$(srcdir)/p/doc/generated/system.texi: $(srcdir)/p/units/system.pas
+$(srcdir)/p/doc/generated/system.texi: $(srcdir)/p/units/system.pas $(srcdir)/p/doc/generated/
 	$(srcdir)/p/script/pas2texi $(srcdir)/p/units/system.pas $(srcdir)/p/doc/generated/system.texi
-$(srcdir)/p/doc/generated/tfdd.texi: $(srcdir)/p/units/tfdd.pas
+$(srcdir)/p/doc/generated/tfdd.texi: $(srcdir)/p/units/tfdd.pas $(srcdir)/p/doc/generated/
 	$(srcdir)/p/script/pas2texi $(srcdir)/p/units/tfdd.pas $(srcdir)/p/doc/generated/tfdd.texi
-$(srcdir)/p/doc/generated/trap.texi: $(srcdir)/p/units/trap.pas
+$(srcdir)/p/doc/generated/trap.texi: $(srcdir)/p/units/trap.pas $(srcdir)/p/doc/generated/
 	$(srcdir)/p/script/pas2texi $(srcdir)/p/units/trap.pas $(srcdir)/p/doc/generated/trap.texi
-$(srcdir)/p/doc/generated/turbo3.texi: $(srcdir)/p/units/turbo3.pas
+$(srcdir)/p/doc/generated/turbo3.texi: $(srcdir)/p/units/turbo3.pas $(srcdir)/p/doc/generated/
 	$(srcdir)/p/script/pas2texi $(srcdir)/p/units/turbo3.pas $(srcdir)/p/doc/generated/turbo3.texi
-$(srcdir)/p/doc/generated/windos.texi: $(srcdir)/p/units/windos.pas
+$(srcdir)/p/doc/generated/windos.texi: $(srcdir)/p/units/windos.pas $(srcdir)/p/doc/generated/
 	$(srcdir)/p/script/pas2texi $(srcdir)/p/units/windos.pas $(srcdir)/p/doc/generated/windos.texi
 
 $(srcdir)/p/INSTALL: $(srcdir)/p/doc/en/install.texi $(GPC_GENERAL_TEXI)
@@ -600,7 +603,7 @@ gpc-run: $(srcdir)/p/script/gpc-run $(VERSION_FILENAME)
 	sed -e s/@version@/$(gpc_version)/ "$<" > "$@" || { rm -f "$@"; false; }
 	chmod a+x "$@"
 
-$(srcdir)/p/doc/generated/gpc-run.1: $(srcdir)/p/script/gpc-run $(VERSION_FILENAME)
+$(srcdir)/p/doc/generated/gpc-run.1: $(srcdir)/p/script/gpc-run $(VERSION_FILENAME) $(srcdir)/p/doc/generated/
 	help2man -N "$<" | sed -e s/@version@/$(gpc_version)/ > "$@" || { rm -f "$@"; false; }
 
 # Headers and flags for GPC specific files.
@@ -824,37 +827,40 @@ pascal.info: $(srcdir)/p/doc/info/gpc.info \
              $(srcdir)/p/doc/info/gpcs-es.info
 pascal.dvi: gpc.dvi
 
-$(srcdir)/p/doc/info/gpc.info: $(GPC_TEXI_EN)
+$(srcdir)/p/doc/info/:
+	$(srcdir)/p/script/mkdir-p $(srcdir)/p/doc/info/
+
+$(srcdir)/p/doc/info/gpc.info: $(GPC_TEXI_EN) $(srcdir)/p/doc/info/
 	[ -d "$(srcdir)/p/doc/info" ] || $(srcdir)/p/script/mkdir-p "$(srcdir)/p/doc/info"
 	$(MAKEINFO_EN) -o $(srcdir)/p/doc/info/gpc.info \
 	  $(srcdir)/p/doc/en/gpc.texi
 
-$(srcdir)/p/doc/info/gpcs.info: $(GPC_TEXI_EN)
+$(srcdir)/p/doc/info/gpcs.info: $(GPC_TEXI_EN) $(srcdir)/p/doc/info/
 	[ -d "$(srcdir)/p/doc/info" ] || $(srcdir)/p/script/mkdir-p "$(srcdir)/p/doc/info"
 	$(MAKEINFO_EN) --no-split -o $(srcdir)/p/doc/info/gpcs.info \
 	  $(srcdir)/p/doc/en/gpcs.texi
 
-$(srcdir)/p/doc/info/gpcs-de.info: $(GPC_TEXI_DE)
+$(srcdir)/p/doc/info/gpcs-de.info: $(GPC_TEXI_DE) $(srcdir)/p/doc/info/
 	[ -d "$(srcdir)/p/doc/info" ] || $(srcdir)/p/script/mkdir-p "$(srcdir)/p/doc/info"
 	$(MAKEINFO_DE) --no-split -o $(srcdir)/p/doc/info/gpcs-de.info \
 	  $(srcdir)/p/doc/de/gpcs.texi
 
-$(srcdir)/p/doc/info/gpc-hr.info: $(GPC_TEXI_HR)
+$(srcdir)/p/doc/info/gpc-hr.info: $(GPC_TEXI_HR) $(srcdir)/p/doc/info/
 	[ -d "$(srcdir)/p/doc/info" ] || $(srcdir)/p/script/mkdir-p "$(srcdir)/p/doc/info"
 	$(MAKEINFO_HR) -o $(srcdir)/p/doc/info/gpc-hr.info \
           $(srcdir)/p/doc/hr/gpc.texi
 
-$(srcdir)/p/doc/info/gpcs-hr.info: $(GPC_TEXI_HR)
+$(srcdir)/p/doc/info/gpcs-hr.info: $(GPC_TEXI_HR) $(srcdir)/p/doc/info/
 	[ -d "$(srcdir)/p/doc/info" ] || $(srcdir)/p/script/mkdir-p "$(srcdir)/p/doc/info"
 	$(MAKEINFO_HR) --no-split -o $(srcdir)/p/doc/info/gpcs-hr.info \
 	  $(srcdir)/p/doc/hr/gpcs.texi
 
-$(srcdir)/p/doc/info/gpc-es.info: $(GPC_TEXI_ES)
+$(srcdir)/p/doc/info/gpc-es.info: $(GPC_TEXI_ES) $(srcdir)/p/doc/info/
 	[ -d "$(srcdir)/p/doc/info" ] || $(srcdir)/p/script/mkdir-p "$(srcdir)/p/doc/info"
 	$(MAKEINFO_ES) -o $(srcdir)/p/doc/info/gpc-es.info \
 	  $(srcdir)/p/doc/es/gpc.texi
 
-$(srcdir)/p/doc/info/gpcs-es.info: $(GPC_TEXI_ES)
+$(srcdir)/p/doc/info/gpcs-es.info: $(GPC_TEXI_ES) $(srcdir)/p/doc/info/
 	[ -d "$(srcdir)/p/doc/info" ] || $(srcdir)/p/script/mkdir-p "$(srcdir)/p/doc/info"
 	$(MAKEINFO_ES) --no-split -o $(srcdir)/p/doc/info/gpcs-es.info \
 	  $(srcdir)/p/doc/es/gpcs.texi
