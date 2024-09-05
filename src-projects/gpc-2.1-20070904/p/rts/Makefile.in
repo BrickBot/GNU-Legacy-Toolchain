@@ -198,6 +198,8 @@ $(GPCLIB): $(OBJS)
 
 # That's a way to do an `if' that even a stupid make understands ...
 sharedlib. sharedlib.no sharedlib.@with_shared$(DUMMY)@:
+	@echo "Skipping making of Pascal shared library"
+
 sharedlib.yes: $(GPCSOLIB)
 $(GPCSOLIB): $(SO_OBJS)
 	-rm -f $(GPCSOLIB)
