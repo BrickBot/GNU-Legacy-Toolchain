@@ -124,10 +124,19 @@ LIBEXECSUBDIR=$(LIBEXECSUBDIR_$(GPC_GCC_34_))
 # distinguish backed versions. For 4.x we build libgpc in
 # toplevel directory.
 ifdef TREE_GIMPLE_H
+__skip_gpc_shared=yes
+endif
+ifneq ("$(WITH_SHARED)","yes")
+__skip_gpc_shared=yes
+endif
+
+ifdef __skip_gpc_shared
 pascal.maybe_rts:
+pascal.maybe_install-utils:
 pascal.install_rts-config.inc:
 else
 pascal.install_rts-config.inc: pascal.do_install_rts-config.inc
+pascal.maybe_install-utils: pascal.install-utils
 pascal.maybe_rts: pascal.rts pascal.utils
 endif
 
@@ -1145,7 +1154,7 @@ pascal.install-compiler: pascal.install-dir pascal
 	fi; exit 0
 
 pascal.install-normal: pascal.install-common pascal.install-compiler$(GPC_GCC_34_) \
- pascal.install-utils pascal.install-lib pascal.install-man \
+ pascal.maybe_install-utils pascal.install-lib pascal.install-man \
  pascal.install-info pascal.install-units pascal.install-doc
 	echo "pascal.install-normal done"
 
