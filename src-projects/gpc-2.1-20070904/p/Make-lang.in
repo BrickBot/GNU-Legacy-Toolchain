@@ -960,23 +960,25 @@ pascal.html-dist: p/stamp-pascal-html
 # gpc1 is installed elsewhere as part of $(COMPILERS).
 
 pascal.install-info-man-dirs:
-	@echo "Running pascal.install-info-man-dirs"
+	@echo "Starting: pascal.install-info-man-dirs"
 	for directory in $(infodir) $(man1dir); do \
 	  $(srcdir)/p/script/mkdir-p -m a+rx $(DESTDIR)$$directory || exit 1; \
 	done
+	@echo "Finished: pascal.install-info-man-dirs"
 
 pascal.install-dir:
-	@echo "Running pascal.install-dir"
+	@echo "Starting: pascal.install-dir"
 	for directory in $(prefix) $(bindir) $(unitsubdir) $(libsubdir)/include $(LIBEXECSUBDIR) \
 	                 $(infodir) $(p_inst_docdir) $(p_inst_demodir) $(p_inst_docdemodir) $(man1dir); do \
 	  $(srcdir)/p/script/mkdir-p -m a+rx $(DESTDIR)$$directory || exit 1; \
 	done
+	@echo "Finished: pascal.install-dir"
 
 # Install the driver program as $(target)-gpc
 # and also as either gpc (if native) or $(tooldir)/bin/gpc.
 pascal.install-common: pascal.install-dir xgpc$(exeext) gpc-run \
                        pascal.install-units
-	@echo "Running pascal.install-common"
+	@echo "Starting: pascal.install-common"
 	if [ -f gpc-cross$(exeext) ]; then \
 	  rm -f $(DESTDIR)$(bindir)/$(GPC_CROSS_NAME)$(exeext); \
 	  $(INSTALL_PROGRAM) gpc-cross$(exeext) $(DESTDIR)$(bindir)/$(GPC_CROSS_NAME)$(exeext) && \
@@ -989,16 +991,18 @@ pascal.install-common: pascal.install-dir xgpc$(exeext) gpc-run \
 	rm -f $(DESTDIR)$(bindir)/gpc-run
 	$(INSTALL_PROGRAM) gpc-run $(DESTDIR)$(bindir)/gpc-run
 	chmod a+x $(DESTDIR)$(bindir)/gpc-run
+	@echo "Finished: pascal.install-common"
 
 pascal.install-utils: pascal.utils
-	@echo "Running pascal.install-utils"
+	@echo "Starting: pascal.install-utils"
 	srcdir=`cd $(srcdir) && pwd` && \
 	bindir=`cd "$(DESTDIR)$(bindir)"; pwd` && \
 	man1dir=`cd "$(DESTDIR)$(man1dir)"; pwd` && \
 	cd ./p/utils && $(MAKE) -f "$$srcdir/p/utils/Makefile" $(UTILS_FLAGS_TO_PASS) GCC_DIR="$$srcdir" bindir="$$bindir" man1dir="$$man1dir" install
+	@echo "Finished: pascal.install-utils"
 
 pascal.install-lib: pascal.install-dir pascal.rts
-	@echo "Running pascal.install-lib"
+	@echo "Starting: pascal.install-lib"
 	if [ -f libgpc.a ]; then \
 	  rm -f $(DESTDIR)$(libsubdir)/libgpc.a; \
 	  $(INSTALL_DATA) libgpc.a $(DESTDIR)$(libsubdir)/libgpc.a && \
@@ -1019,15 +1023,17 @@ pascal.install-lib: pascal.install-dir pascal.rts
 	else \
 	  true; \
 	fi
+	@echo "Finished: pascal.install-lib"
 
 pascal.do_install_rts-config.inc: p/rts/rts-config.inc
-	@echo "Running pascal.do_install_rts-config.inc"
+	@echo "Starting: pascal.do_install_rts-config.inc"
 	$(INSTALL_DATA) p/rts/rts-config.inc \
            $(DESTDIR)$(unitsubdir)/rts-config.inc
 	chmod a-x $(DESTDIR)$(unitsubdir)/rts-config.inc
+	@echo "Finished: pascal.do_install_rts-config.inc"
 
 pascal.install-units: pascal.install-dir $(srcdir)/p/units/crtc.h $(RTSSRCDIR)/gpc.pas
-	@echo "Running pascal.install-units"
+	@echo "Starting: pascal.install-units"
 	$(INSTALL_DATA) $(RTSSRCDIR)/gpc.pas $(DESTDIR)$(unitsubdir)/gpc.pas
 	chmod a-x $(DESTDIR)$(unitsubdir)/gpc.pas
 	for f in `cd $(srcdir)/p/units && echo *`; do \
@@ -1041,6 +1047,7 @@ pascal.install-units: pascal.install-dir $(srcdir)/p/units/crtc.h $(RTSSRCDIR)/g
 	    chmod a-x $(DESTDIR)$(unitsubdir)/"$$f"; \
 	  fi; \
 	done
+	@echo "Finished: pascal.install-units"
 
 # AIX has tight command-line length limits which would be exceeded
 # in `rm -f $(p_inst_docdemodir)/*' or `chmod a-x $(p_inst_docdemodir)/*',
@@ -1049,7 +1056,7 @@ pascal.install-doc: $(PASCAL_INSTALL_DOC)
 pascal.real-install-doc: pascal.install-dir $(srcdir)/p/README \
  $(srcdir)/p/NEWS $(srcdir)/p/FAQ $(srcdir)/p/AUTHORS \
  $(srcdir)/p/COPYING $(srcdir)/p/COPYING.LIB $(srcdir)/p/COPYING.DEMO $(srcdir)/p/test/README pascal.docdemos
-	@echo "Running pascal.real-install-doc"
+	@echo "Starting: pascal.real-install-doc"
 	for f in README NEWS INSTALL FAQ AUTHORS COPYING COPYING.LIB COPYING.DEMO; do \
 	  rm -f "$(DESTDIR)$(p_inst_docdir)/$$f"; \
 	  $(INSTALL_DATA) "$(srcdir)/p/$$f" "$(DESTDIR)$(p_inst_docdir)/$$f" || exit 1; \
@@ -1072,17 +1079,19 @@ pascal.real-install-doc: pascal.install-dir $(srcdir)/p/README \
 	    chmod a-x "$(DESTDIR)$(p_inst_docdemodir)/$$f" || exit 1; \
 	  done; \
 	fi
+	@echo "Finished: pascal.real-install-doc"
 
 pascal.install-info: pascal.install-info-man-dirs pascal.info
-	@echo "Running pascal.install-info"
+	@echo "Starting: pascal.install-info"
 	rm -f $(DESTDIR)$(infodir)/gpc.info* $(DESTDIR)$(infodir)/gpcs.info* $(DESTDIR)$(infodir)/gpcs-de.info* $(DESTDIR)$(infodir)/gpcs-hr.info* $(DESTDIR)$(infodir)/gpcs-es.info*
 	for f in `cd $(srcdir)/p/doc/info && echo gpc.info* gpcs*.info*`; do \
 	  $(INSTALL_DATA) $(srcdir)/p/doc/info/$$f $(DESTDIR)$(infodir)/$$f || exit 1; \
 	done
 	chmod a-x $(DESTDIR)$(infodir)/gpc.info* $(DESTDIR)$(infodir)/gpcs.info* $(DESTDIR)$(infodir)/gpcs-de.info* $(DESTDIR)$(infodir)/gpcs-hr.info* $(DESTDIR)$(infodir)/gpcs-es.info*
+	@echo "Finished: pascal.install-info"
 
 pascal.install-man: pascal.install-info-man-dirs $(srcdir)/p/doc/en/gpc.1 $(srcdir)/p/doc/generated/gpc-run.1
-	@echo "Running pascal.install-man"
+	@echo "Starting: pascal.install-man"
 	-if [ -f gpc1$(exeext) ]; then \
 	  if [ -f gpc-cross$(exeext) ]; then \
 	    rm -f $(DESTDIR)$(man1dir)/$(GPC_CROSS_NAME)$(man1ext); \
@@ -1099,6 +1108,7 @@ pascal.install-man: pascal.install-info-man-dirs $(srcdir)/p/doc/en/gpc.1 $(srcd
 	rm -f $(DESTDIR)$(man1dir)/gpc-run$(man1ext)
 	$(INSTALL_DATA) $(srcdir)/p/doc/generated/gpc-run.1 $(DESTDIR)$(man1dir)/gpc-run$(man1ext)
 	chmod a-x $(DESTDIR)$(man1dir)/gpc-run$(man1ext)
+	@echo "Finished: pascal.install-man"
 
 pascal.install-hr: pascal.install-info-hr pascal.install-man-hr
 
@@ -1138,7 +1148,7 @@ pascal.install-compiler34:
 # Install gpc1 et.al.
 # Do *not* overwrite files if they exist.
 pascal.install-compiler: pascal.install-dir pascal
-	@echo "Running pascal.install-compiler"
+	@echo "Starting: pascal.install-compiler"
 	for file in gpc1$(exeext); do \
 	  if [ -f $$file ]; then \
 	    rm -f $(DESTDIR)$(LIBEXECSUBDIR)/$$file; \
@@ -1161,11 +1171,12 @@ pascal.install-compiler: pascal.install-dir pascal
 	  $(INSTALL_DATA) specs $(DESTDIR)$(libsubdir)/specs && \
 	  chmod a-x $(DESTDIR)$(libsubdir)/specs || exit 1; \
 	fi; exit 0
+	@echo "Finished: pascal.install-compiler"
 
 pascal.install-normal: pascal.install-common pascal.install-compiler$(GPC_GCC_34_) \
  pascal.maybe_install-utils pascal.install-lib pascal.install-man \
  pascal.install-info pascal.install-units pascal.install-doc
-	@echo "pascal.install-normal done"
+	@echo "Finished: pascal.install-normal"
 
 # This target will install GPC into an existing GCC installation,
 # without overwriting existing files.
@@ -1175,16 +1186,17 @@ pascal.install-normal: pascal.install-common pascal.install-compiler$(GPC_GCC_34
 # @@ Repeating pascal.install-compiler is strange here. But since it's disabled
 #    in pascal.install-normal for gcc-3.4, it would otherwise be missing here.
 pascal.install: pascal.install-normal pascal.install-compiler
-	echo "pascal.install done"
+	@echo "Finished: pascal.install"
 
 pascal.install-with-gcc: $(INSTALL_HEADERS) pascal.install $(INSTALL_LIBGCC)
-	@echo "Running pascal.install-with-gcc"
+	@echo "Starting: pascal.install-with-gcc"
 	for file in $(GCC_PASSES); do \
 	  if [ x"$$file" != x"xgcc$(exeext)" ]; then \
 	    rm -f $(DESTDIR)$(libsubdir)/$$file; \
 	    $(INSTALL_PROGRAM) $$file $(DESTDIR)$(libsubdir)/$$file || exit 1; \
 	  fi; \
 	done; exit 0
+	@echo "Finished: pascal.install-with-gcc"
 
 pascal.uninstall:
 	-rm -rf $(DESTDIR)$(bindir)/$(GPC_INSTALL_NAME)$(exeext)
