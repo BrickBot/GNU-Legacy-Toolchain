@@ -1001,7 +1001,7 @@ pascal.install-utils: pascal.utils
 	cd ./p/utils && $(MAKE) -f "$$srcdir/p/utils/Makefile" $(UTILS_FLAGS_TO_PASS) GCC_DIR="$$srcdir" bindir="$$bindir" man1dir="$$man1dir" install
 	@echo "Finished: pascal.install-utils"
 
-pascal.install-lib: pascal.install-dir pascal.rts
+pascal.install-lib: pascal.install-dir pascal.maybe_rts
 	@echo "Starting: pascal.install-lib"
 	if [ -f libgpc.a ]; then \
 	  rm -f $(DESTDIR)$(libsubdir)/libgpc.a; \
