@@ -21,6 +21,9 @@ env:
   BUILD_DIR_GCC: build/gcc-gpc
   BUILD_DIR_GDB: build/gdb
   SYSROOT_DIR:   sysroot
+  
+  GCC_INSTALL_NAME: h8300-coff-gcc_install
+  TOOLCHAIN_INSTALL_NAME: h8300-coff-toolchain_install
 
 jobs:
   build_cross_gcc_gpc_job:
@@ -49,12 +52,11 @@ jobs:
     - name: Install build dependencies
       run:  sudo apt-get --assume-yes install $BUILD_DEPENDS
 
-    - name: Setup the build folders for a GCC H8/300 cross-compiler
+    - name: Setup the build directory for an H8/300 cross-toolchain
       run:  mkdir -p $BUILD_DIR_GCC
 
-    - name: Setup the build folders for a GPC H8/300 cross-compiler
-      run:  mkdir -p $BUILD_DIR_GCC
 
+    # Run the GCC build steps
     - name: Configure the build for a GCC H8/300 cross-compiler
       run:  |
         cd $BUILD_DIR_GCC
@@ -73,6 +75,17 @@ jobs:
         echo "Current working directory: $PWD"
         sudo make DESTDIR=$GITHUB_WORKSPACE/$SYSROOT_DIR install
 
+    # Before archiving, tar the host installation output to preserve file permission
+    # c.f. https://github.com/actions/upload-artifact?tab=readme-ov-file#permission-loss
+    # To avoid including a "." or other unwanted directory, c.f. https://stackoverflow.com/a/39530409
+    - name: Tar the host installation snapshot to preserve file permissions
+      run:  find $SYSROOT_DIR -printf "%P\n" | sort | tar --verbose --create --file build/${{ GCC_INSTALL_NAME }}.tar --no-recursion --directory=$SYSROOT_DIR --files-from=-
+
+    - name: Archive the host installation snapshot tar file
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{ GCC_INSTALL_NAME }}_[runner~${{ matrix.os }}]_run${{ github.run_id }}.${{ github.run_number }}.${{ github.run_attempt }}
+        path: build/${{ GCC_INSTALL_NAME }}.tar
 
     - name: Install the built GCC H8/300 cross-compiler
       run:  |
@@ -81,6 +94,7 @@ jobs:
         sudo make install
 
 
+    # Run the GPC build steps
     - name: Configure the build for a GPC H8/300 cross-compiler
       run:  |
         cd $BUILD_DIR_GCC
@@ -99,23 +113,23 @@ jobs:
         echo "Current working directory: $PWD"
         sudo make DESTDIR=$GITHUB_WORKSPACE/$SYSROOT_DIR pascal.install
 
+    # Before archiving, tar the host installation output to preserve file permission
+    # c.f. https://github.com/actions/upload-artifact?tab=readme-ov-file#permission-loss
+    # To avoid including a "." or other unwanted directory, c.f. https://stackoverflow.com/a/39530409
+    - name: Tar the host installation snapshot to preserve file permissions
+      run:  find $SYSROOT_DIR -printf "%P\n" | sort | tar --verbose --create --file build/${{ TOOLCHAIN_INSTALL_NAME }}.tar --no-recursion --directory=$SYSROOT_DIR --files-from=-
+
+    - name: Archive the host installation snapshot tar file
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{ TOOLCHAIN_INSTALL_NAME }}_[runner~${{ matrix.os }}]_run${{ github.run_id }}.${{ github.run_number }}.${{ github.run_attempt }}
+        path: build/${{ TOOLCHAIN_INSTALL_NAME }}.tar
+
     - name: Install the built GPC H8/300 cross-compiler
       run:  |
         cd $BUILD_DIR_GCC/gcc
         echo "Current working directory: $PWD"
         sudo make pascal.install
-
-    # Before archiving, tar the host installation output to preserve file permission
-    # c.f. https://github.com/actions/upload-artifact?tab=readme-ov-file#permission-loss
-    # To avoid including a "." or other unwanted directory, c.f. https://stackoverflow.com/a/39530409
-    - name: Tar the host installation snapshot to preserve file permissions
-      run:  find $SYSROOT_DIR -printf "%P\n" | sort | tar --verbose --create --file build/h8300-coff-toolchain_install.tar --no-recursion --directory=$SYSROOT_DIR --files-from=-
-
-    - name: Archive the host installation snapshot tar file
-      uses: actions/upload-artifact@v4
-      with:
-        name: h8300-coff-toolchain_install_[runner~${{ matrix.os }}]_run${{ github.run_id }}.${{ github.run_number }}.${{ github.run_attempt }}
-        path: build/h8300-coff-toolchain_install.tar
 
 
 
@@ -177,15 +191,3 @@ jobs:
       with:
         name: h8300-coff-gdb_install_[runner~${{ matrix.os }}]_run${{ github.run_id }}.${{ github.run_number }}.${{ github.run_attempt }}
         path: build/h8300-coff-gdb_install.tar
-
-
-
-#    - name: Archive the demo program files
-#      uses: actions/upload-artifact@v4
-#      with:
-#        name: brickOS-bibo_firmware+programs_[runner~${{ matrix.os }}]_run${{ github.run_id }}.${{ github.run_number }}.${{ github.run_attempt }}
-#        path: |
-#          demo/**/*.srec
-#          demo/**/*.coff
-#          demo/**/*.lx
-#          demo/**/*.a
