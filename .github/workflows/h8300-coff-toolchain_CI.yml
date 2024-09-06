@@ -109,7 +109,7 @@ jobs:
     # c.f. https://github.com/actions/upload-artifact?tab=readme-ov-file#permission-loss
     # To avoid including a "." or other unwanted directory, c.f. https://stackoverflow.com/a/39530409
     - name: Tar the host installation snapshot to preserve file permissions
-      run:  find $SYSROOT_DIR -printf "%P\n" | tar --verbose --create --file build/h8300-coff-toolchain_install.tar --no-recursion --directory=$SYSROOT_DIR --files-from=-
+      run:  find $SYSROOT_DIR -printf "%P\n" | sort | tar --verbose --create --file build/h8300-coff-toolchain_install.tar --no-recursion --directory=$SYSROOT_DIR --files-from=-
 
     - name: Archive the host installation snapshot tar file
       uses: actions/upload-artifact@v4
@@ -170,7 +170,7 @@ jobs:
     # c.f. https://github.com/actions/upload-artifact?tab=readme-ov-file#permission-loss
     # To avoid including a "." or other unwanted directory, c.f. https://stackoverflow.com/a/39530409
     - name: Tar the host installation snapshot to preserve file permissions
-      run:  find $SYSROOT_DIR -printf "%P\n" | tar --verbose --create --file build/h8300-coff-gdb_install.tar --no-recursion --directory=$SYSROOT_DIR --files-from=-
+      run:  find $SYSROOT_DIR -printf "%P\n" | sort | tar --verbose --create --file build/h8300-coff-gdb_install.tar --no-recursion --directory=$SYSROOT_DIR --files-from=-
 
     - name: Archive the host installation snapshot tar file
       uses: actions/upload-artifact@v4
