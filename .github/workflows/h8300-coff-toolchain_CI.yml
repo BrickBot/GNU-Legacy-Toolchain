@@ -79,13 +79,13 @@ jobs:
     # c.f. https://github.com/actions/upload-artifact?tab=readme-ov-file#permission-loss
     # To avoid including a "." or other unwanted directory, c.f. https://stackoverflow.com/a/39530409
     - name: Tar the host installation snapshot to preserve file permissions
-      run:  find $SYSROOT_DIR -printf "%P\n" | sort | tar --verbose --create --file build/${{ GCC_INSTALL_NAME }}.tar --no-recursion --directory=$SYSROOT_DIR --files-from=-
+      run:  find $SYSROOT_DIR -printf "%P\n" | sort | tar --verbose --create --file build/${{ env.GCC_INSTALL_NAME }}.tar --no-recursion --directory=$SYSROOT_DIR --files-from=-
 
     - name: Archive the host installation snapshot tar file
       uses: actions/upload-artifact@v4
       with:
-        name: ${{ GCC_INSTALL_NAME }}_[runner~${{ matrix.os }}]_run${{ github.run_id }}.${{ github.run_number }}.${{ github.run_attempt }}
-        path: build/${{ GCC_INSTALL_NAME }}.tar
+        name: ${{ env.GCC_INSTALL_NAME }}_[runner~${{ matrix.os }}]_run${{ github.run_id }}.${{ github.run_number }}.${{ github.run_attempt }}
+        path: build/${{ env.GCC_INSTALL_NAME }}.tar
 
     - name: Install the built GCC H8/300 cross-compiler
       run:  |
@@ -117,13 +117,13 @@ jobs:
     # c.f. https://github.com/actions/upload-artifact?tab=readme-ov-file#permission-loss
     # To avoid including a "." or other unwanted directory, c.f. https://stackoverflow.com/a/39530409
     - name: Tar the host installation snapshot to preserve file permissions
-      run:  find $SYSROOT_DIR -printf "%P\n" | sort | tar --verbose --create --file build/${{ TOOLCHAIN_INSTALL_NAME }}.tar --no-recursion --directory=$SYSROOT_DIR --files-from=-
+      run:  find $SYSROOT_DIR -printf "%P\n" | sort | tar --verbose --create --file build/${{ env.TOOLCHAIN_INSTALL_NAME }}.tar --no-recursion --directory=$SYSROOT_DIR --files-from=-
 
     - name: Archive the host installation snapshot tar file
       uses: actions/upload-artifact@v4
       with:
-        name: ${{ TOOLCHAIN_INSTALL_NAME }}_[runner~${{ matrix.os }}]_run${{ github.run_id }}.${{ github.run_number }}.${{ github.run_attempt }}
-        path: build/${{ TOOLCHAIN_INSTALL_NAME }}.tar
+        name: ${{ env.TOOLCHAIN_INSTALL_NAME }}_[runner~${{ matrix.os }}]_run${{ github.run_id }}.${{ github.run_number }}.${{ github.run_attempt }}
+        path: build/${{ env.TOOLCHAIN_INSTALL_NAME }}.tar
 
     - name: Install the built GPC H8/300 cross-compiler
       run:  |
