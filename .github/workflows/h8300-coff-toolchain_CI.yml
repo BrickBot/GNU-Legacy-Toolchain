@@ -1,4 +1,4 @@
-name: brickOS-bibo CI
+name: GNU Embedded Toolchain CI
 
 on:
   workflow_dispatch:
@@ -18,56 +18,13 @@ env:
   COMMON_CONFIG_ARGS: --prefix=/usr/local/brickbot
   COMMON_GCC_CONFIG_ARGS: --with-gcc --with-gnu-as --with-gnu-ld --with-newlib --disable-libssp --disable-multilib --enable-target-optspace
 
-  BUILD_PATH_H8300_GCC: build/gcc+binutils-h8300
-  BUILD_PATH_H8300_GPC: build/gpc-h8300
-  BUILD_PATH_H8300_GDB: build/gdb-h8300
-  BUILD_PATH_GPC: build/gpc
+  BUILD_DIR_GCC: build/gcc-gpc
+  BUILD_DIR_GDB: build/gdb
+  SYSROOT_DIR:   sysroot
 
 jobs:
-  build_cross_gcc_job:
-    name:     Build gcc+binutils+newlib+ada+f77+gcj+objc cross-compiler for the H8/300
-    runs-on:  ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ ubuntu-latest ]
-    
-    steps:
-    - name: Get latest from version control
-      uses: actions/checkout@v4
-      with:
-        # git-restore-mtime-bare uses the ref log to find the correct timestamp
-        # for each file. This requires a full git history. The default value (1)
-        # creates a shallow checkout.
-        fetch-depth: 0
-
-      # Fix timestamps (needed to prevent gcc/c-parse.c from sometimes being regenerated during build)
-    - name: Restore source timestamps
-      uses: chetan/git-restore-mtime-action@v2
-
-    - name: Update build environment
-      run:  sudo apt-get --assume-yes update
-
-    - name: Install build dependencies
-      run:  sudo apt-get --assume-yes install $BUILD_DEPENDS
-
-    - name: Setup the build folders for an H8/300 cross-compiler
-      run:  mkdir -p $BUILD_PATH_H8300_GCC
-
-    - name: Configure the build for an H8/300 cross-compiler
-      run:  |
-        cd $BUILD_PATH_H8300_GCC
-        echo "Current working directory: $PWD"
-        ../../src-combined/configure  --enable-languages=c,c++,ada,f77,java,objc  $CROSS_TARGET  $COMMON_GCC_CONFIG_ARGS  $COMMON_CONFIG_ARGS
-
-    - name: Execute the build for an H8/300 cross-compiler
-      run:  |
-        cd $BUILD_PATH_H8300_GCC
-        echo "Current working directory: $PWD"
-        make
-
-
-  build_cross_gpc_job:
-    name:     Build GPC cross-compiler for the H8/300
+  build_cross_gcc_gpc_job:
+    name:     Build gcc+binutils+newlib+ada+f77+gcj+objc+gpc cross-compiler for the H8/300
     runs-on:  ${{ matrix.os }}
     strategy:
       matrix:
@@ -93,89 +50,73 @@ jobs:
       run:  sudo apt-get --assume-yes install $BUILD_DEPENDS
 
     - name: Setup the build folders for a GCC H8/300 cross-compiler
-      run:  mkdir -p $BUILD_PATH_H8300_GCC
+      run:  mkdir -p $BUILD_DIR_GCC
 
     - name: Setup the build folders for a GPC H8/300 cross-compiler
-      run:  mkdir -p $BUILD_PATH_H8300_GPC
+      run:  mkdir -p $BUILD_DIR_GCC
 
     - name: Configure the build for a GCC H8/300 cross-compiler
       run:  |
-        cd $BUILD_PATH_H8300_GPC
+        cd $BUILD_DIR_GCC
         echo "Current working directory: $PWD"
         ../../src-combined/configure  --enable-languages=c,c++,ada,f77,java,objc  $CROSS_TARGET  $COMMON_GCC_CONFIG_ARGS  $COMMON_CONFIG_ARGS
 
     - name: Execute the build for a GCC H8/300 cross-compiler
       run:  |
-        cd $BUILD_PATH_H8300_GPC
+        cd $BUILD_DIR_GCC
         echo "Current working directory: $PWD"
         make
 
+    - name: Test install the built GCC H8/300 cross-compiler
+      run:  |
+        cd $BUILD_DIR_GCC
+        echo "Current working directory: $PWD"
+        sudo make DESTDIR=$SYSROOT install
+
+
     - name: Install the built GCC H8/300 cross-compiler
       run:  |
-        cd $BUILD_PATH_H8300_GPC
+        cd $BUILD_DIR_GCC
         echo "Current working directory: $PWD"
         sudo make install
 
 
     - name: Configure the build for a GPC H8/300 cross-compiler
       run:  |
-        cd $BUILD_PATH_H8300_GPC
+        cd $BUILD_DIR_GCC
         echo "Current working directory: $PWD"
         ../../src-combined/configure --enable-languages=pascal $CROSS_TARGET  $COMMON_GCC_CONFIG_ARGS  $COMMON_CONFIG_ARGS
 
     - name: Execute the build for a GPC H8/300 cross-compiler
       run:  |
-        cd $BUILD_PATH_H8300_GPC
+        cd $BUILD_DIR_GCC
         echo "Current working directory: $PWD"
         make
+
+    - name: Test install the built GPC H8/300 cross-compiler
+      run:  |
+        cd $BUILD_DIR_GCC/gcc
+        echo "Current working directory: $PWD"
+        sudo make DESTDIR=$SYSROOT pascal.install
 
     - name: Install the built GPC H8/300 cross-compiler
       run:  |
-        cd $BUILD_PATH_H8300_GPC/gcc
+        cd $BUILD_DIR_GCC/gcc
         echo "Current working directory: $PWD"
         sudo make pascal.install
 
+    # Before archiving, tar the host installation output to preserve file permission
+    # c.f. https://github.com/actions/upload-artifact?tab=readme-ov-file#permission-loss
+    # To avoid including a "." or other unwanted directory, c.f. https://stackoverflow.com/a/39530409
+    - name: Tar the host installation snapshot to preserve file permissions
+      run:  find $SYSROOT -printf "%P\n" | tar --verbose --create --file build/h8300-coff-toolchain_install.tar --no-recursion --directory=$SYSROOT --files-from=-
 
-  build_gpc_job:
-    name:     Build a GPC compiler (non-cross-compiling)
-    runs-on:  ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ ubuntu-latest ]
-    
-    steps:
-    - name: Get latest from version control
-      uses: actions/checkout@v4
+    - name: Archive the host installation snapshot tar file
+      uses: actions/upload-artifact@v4
       with:
-        # git-restore-mtime-bare uses the ref log to find the correct timestamp
-        # for each file. This requires a full git history. The default value (1)
-        # creates a shallow checkout.
-        fetch-depth: 0
+        name: h8300-coff-toolchain_install_[runner~${{ matrix.os }}]_run${{ github.run_id }}.${{ github.run_number }}.${{ github.run_attempt }}
+        path: build/h8300-coff-toolchain_install.tar
 
-      # Fix timestamps
-    - name: Restore source timestamps
-      uses: chetan/git-restore-mtime-action@v2
-
-    - name: Update build environment
-      run:  sudo apt-get --assume-yes update
-
-    - name: Install build dependencies
-      run:  sudo apt-get --assume-yes install $BUILD_DEPENDS
-
-    - name: Setup the build folders for a gcc+binutils+gpc compiler
-      run:  mkdir -p $BUILD_PATH_GPC
-
-    - name: Configure the build for a gcc+binutils+gpc compiler
-      run:  |
-        cd $BUILD_PATH_GPC
-        echo "Current working directory: $PWD"
-        ../../src-combined/configure --enable-languages=c,c++,pascal  $COMMON_GCC_CONFIG_ARGS  $COMMON_CONFIG_ARGS
-
-    - name: Execute the build for a gcc+binutils+gpc compiler
-      run:  |
-        cd $BUILD_PATH_GPC
-        echo "Current working directory: $PWD"
-        make
 
 
   build_cross_gdb_job:
@@ -205,48 +146,40 @@ jobs:
       run:  sudo apt-get --assume-yes install $BUILD_DEPENDS  python3-dev  autoconf procps  libncurses-dev libncurses5-dev libexpat1-dev
 
     - name: Setup the build folders for an H8/300 GDB
-      run:  mkdir -p $BUILD_PATH_H8300_GDB
+      run:  mkdir -p $BUILD_DIR_GDB
 
     - name: Configure the build for an H8/300 GDB
       run:  |
-        cd $BUILD_PATH_H8300_GDB
+        cd $BUILD_DIR_GDB
         echo "Current working directory: $PWD"
         ../../src-projects/gdb-7.12.1/configure  CXXFLAGS='-D_GLIBCXX_USE_CXX11_ABI=0 -std=c++98'  --without-python  $CROSS_TARGET  $COMMON_CONFIG_ARGS
 
     - name: Execute the build for an H8/300 GDB
       run:  |
-        cd $BUILD_PATH_H8300_GDB
+        cd $BUILD_DIR_GDB
         echo "Current working directory: $PWD"
         make
 
+    - name: Test install the built H8/300 GDB
+      run:  |
+        cd $BUILD_DIR_GDB
+        echo "Current working directory: $PWD"
+        make DESTDIR=$SYSROOT install
+
+    # Before archiving, tar the host installation output to preserve file permission
+    # c.f. https://github.com/actions/upload-artifact?tab=readme-ov-file#permission-loss
+    # To avoid including a "." or other unwanted directory, c.f. https://stackoverflow.com/a/39530409
+    - name: Tar the host installation snapshot to preserve file permissions
+      run:  find $SYSROOT -printf "%P\n" | tar --verbose --create --file build/h8300-coff-gdb_install.tar --no-recursion --directory=$SYSROOT --files-from=-
+
+    - name: Archive the host installation snapshot tar file
+      uses: actions/upload-artifact@v4
+      with:
+        name: h8300-coff-gdb_install_[runner~${{ matrix.os }}]_run${{ github.run_id }}.${{ github.run_number }}.${{ github.run_attempt }}
+        path: build/h8300-coff-gdb_install.tar
 
 
-#    - name: Test-run a host installation
-#      run:  make DESTDIR=$(pwd)/build/destdir install
 
-#    # Before archiving, tar the host installation output to preserve file permission
-#    # c.f. https://github.com/actions/upload-artifact?tab=readme-ov-file#permission-loss
-#    # To avoid including a "." or other unwanted directory, c.f. https://stackoverflow.com/a/39530409
-#    - name: Tar the host installation snapshot to preserve file permissions
-#      run:  find build/destdir/ -printf "%P\n" | tar --verbose --create --file build/install.tar --no-recursion --directory=build/destdir/ --files-from=-
-#
-#    - name: Archive the host installation snapshot tar file
-#      uses: actions/upload-artifact@v4
-#      with:
-#        name: brickOS-bibo_install_[runner~${{ matrix.os }}]_run${{ github.run_id }}.${{ github.run_number }}.${{ github.run_attempt }}
-#        path: build/install.tar
-#
-#    - name: Prepare the firmware and program images for archiving
-#      run:  cp --preserve kernel/*.srec kernel/*.coff  demo/
-#
-#    - name: Archive the firmware image
-#      uses: actions/upload-artifact@v4
-#      with:
-#        name: brickOS-bibo_firmware_[runner~${{ matrix.os }}]_run${{ github.run_id }}.${{ github.run_number }}.${{ github.run_attempt }}
-#        path: |
-#          kernel/*.srec
-#          kernel/*.coff
-#
 #    - name: Archive the demo program files
 #      uses: actions/upload-artifact@v4
 #      with:
