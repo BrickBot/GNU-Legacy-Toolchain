@@ -71,7 +71,7 @@ jobs:
       run:  |
         cd $BUILD_DIR_GCC
         echo "Current working directory: $PWD"
-        sudo make DESTDIR=$SYSROOT install
+        sudo make DESTDIR=$SYSROOT_DIR install
 
 
     - name: Install the built GCC H8/300 cross-compiler
@@ -97,7 +97,7 @@ jobs:
       run:  |
         cd $BUILD_DIR_GCC/gcc
         echo "Current working directory: $PWD"
-        sudo make DESTDIR=$SYSROOT pascal.install
+        sudo make DESTDIR=$SYSROOT_DIR pascal.install
 
     - name: Install the built GPC H8/300 cross-compiler
       run:  |
@@ -109,7 +109,7 @@ jobs:
     # c.f. https://github.com/actions/upload-artifact?tab=readme-ov-file#permission-loss
     # To avoid including a "." or other unwanted directory, c.f. https://stackoverflow.com/a/39530409
     - name: Tar the host installation snapshot to preserve file permissions
-      run:  find $SYSROOT -printf "%P\n" | tar --verbose --create --file build/h8300-coff-toolchain_install.tar --no-recursion --directory=$SYSROOT --files-from=-
+      run:  find $SYSROOT_DIR -printf "%P\n" | tar --verbose --create --file build/h8300-coff-toolchain_install.tar --no-recursion --directory=$SYSROOT_DIR --files-from=-
 
     - name: Archive the host installation snapshot tar file
       uses: actions/upload-artifact@v4
@@ -164,13 +164,13 @@ jobs:
       run:  |
         cd $BUILD_DIR_GDB
         echo "Current working directory: $PWD"
-        make DESTDIR=$SYSROOT install
+        make DESTDIR=$SYSROOT_DIR install
 
     # Before archiving, tar the host installation output to preserve file permission
     # c.f. https://github.com/actions/upload-artifact?tab=readme-ov-file#permission-loss
     # To avoid including a "." or other unwanted directory, c.f. https://stackoverflow.com/a/39530409
     - name: Tar the host installation snapshot to preserve file permissions
-      run:  find $SYSROOT -printf "%P\n" | tar --verbose --create --file build/h8300-coff-gdb_install.tar --no-recursion --directory=$SYSROOT --files-from=-
+      run:  find $SYSROOT_DIR -printf "%P\n" | tar --verbose --create --file build/h8300-coff-gdb_install.tar --no-recursion --directory=$SYSROOT_DIR --files-from=-
 
     - name: Archive the host installation snapshot tar file
       uses: actions/upload-artifact@v4
