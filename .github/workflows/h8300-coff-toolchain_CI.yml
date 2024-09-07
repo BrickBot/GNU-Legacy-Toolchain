@@ -19,7 +19,7 @@ env:
   COMMON_GCC_CONFIG_ARGS: --with-gcc --with-gnu-as --with-gnu-ld --with-newlib --disable-libssp --disable-multilib --enable-target-optspace
 
   BUILD_DIR_GCC: build/gcc-gpc
-  BUILD_DIR_GCC: build/gpc
+  BUILD_DIR_GPC: build/gpc
   BUILD_DIR_GDB: build/gdb
   SYSROOT_DIR:   sysroot
   
