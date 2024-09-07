@@ -160,7 +160,7 @@ Patches not marked with strikethrough have been applied here (unapplied patches 
 * ~~000_no_libstdc++-v3~~
 * 001_h8300_64bit
 * gcc-textdomain.dpatch
-* libstdc++-pic.dpatch
+* ~~libstdc++-pic.dpatch~~
 * libstdc++-doclink.dpatch
 * libstdc++-doxygen-syntax.dpatch
 * amd64-specs.dpatch
