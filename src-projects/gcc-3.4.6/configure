@@ -895,6 +895,7 @@ libgcj="target-libffi \
 target_libraries="target-libiberty \
 		target-libgloss \
 		target-newlib \
+		target-libstdc++-v3 \
 		target-libf2c \
 		${libgcj} \
 		target-libobjc"

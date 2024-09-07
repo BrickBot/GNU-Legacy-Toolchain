@@ -157,7 +157,7 @@ based on gcc 3.4.6 that includes several patch updates in the debian.tar.xz arch
 From the `patches/series` file in that archive (c.f. [release versions here](https://sources.debian.org/src/gcc-h8300-hms/3.4.6/debian/patches/series/)),
 available Debian patches include those lised below.
 Patches not marked with strikethrough have been applied here (unapplied patches are more Debian specific).
-* 000_no_libstdc++-v3
+* ~~000_no_libstdc++-v3~~
 * 001_h8300_64bit
 * gcc-textdomain.dpatch
 * libstdc++-pic.dpatch
