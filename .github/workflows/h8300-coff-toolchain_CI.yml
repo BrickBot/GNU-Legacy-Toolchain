@@ -19,6 +19,7 @@ env:
   COMMON_GCC_CONFIG_ARGS: --with-gcc --with-gnu-as --with-gnu-ld --with-newlib --disable-libssp --disable-multilib --enable-target-optspace
 
   BUILD_DIR_GCC: build/gcc-gpc
+  BUILD_DIR_GCC: build/gpc
   BUILD_DIR_GDB: build/gdb
   SYSROOT_DIR:   sysroot
   
@@ -61,7 +62,7 @@ jobs:
       run:  |
         cd $BUILD_DIR_GCC
         echo "Current working directory: $PWD"
-        ../../src-combined/configure  --enable-languages=c,c++,ada,f77,java,objc  $CROSS_TARGET  $COMMON_GCC_CONFIG_ARGS  $COMMON_CONFIG_ARGS
+        ../../src-combined/configure  --enable-languages=c,c++,ada,f77,java,objc,pascal  $CROSS_TARGET  $COMMON_GCC_CONFIG_ARGS  $COMMON_CONFIG_ARGS
 
     - name: Execute the build for a GCC H8/300 cross-compiler
       run:  |
@@ -191,3 +192,46 @@ jobs:
       with:
         name: h8300-coff-gdb_install_[runner~${{ matrix.os }}]_run${{ github.run_id }}.${{ github.run_number }}.${{ github.run_attempt }}
         path: build/h8300-coff-gdb_install.tar
+
+
+
+  build_native_gpc_job:
+    name:     Build a native GPC compiler (non-cross-compiling)
+    runs-on:  ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ ubuntu-latest ]
+
+    steps:
+    - name: Get latest from version control
+      uses: actions/checkout@v4
+      with:
+        # git-restore-mtime-bare uses the ref log to find the correct timestamp
+        # for each file. This requires a full git history. The default value (1)
+        # creates a shallow checkout.
+        fetch-depth: 0
+
+      # Fix timestamps
+    - name: Restore source timestamps
+      uses: chetan/git-restore-mtime-action@v2
+
+    - name: Update build environment
+      run:  sudo apt-get --assume-yes update
+
+    - name: Install build dependencies
+      run:  sudo apt-get --assume-yes install $BUILD_DEPENDS
+
+    - name: Setup the build folders for a gcc+binutils+gpc compiler
+      run:  mkdir -p $BUILD_DIR_GPC
+
+    - name: Configure the build for a gcc+binutils+gpc compiler
+      run:  |
+        cd $BUILD_DIR_GPC
+        echo "Current working directory: $PWD"
+        ../../src-combined/configure --enable-languages=c,pascal  $COMMON_GCC_CONFIG_ARGS  $COMMON_CONFIG_ARGS
+
+    - name: Execute the build for a gcc+binutils+gpc compiler
+      run:  |
+        cd $BUILD_DIR_GPC
+        echo "Current working directory: $PWD"
+        make
