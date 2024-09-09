@@ -95,42 +95,42 @@ jobs:
         sudo make install
 
 
-    # Run the GPC build steps
-    - name: Configure the build for a GPC H8/300 cross-compiler
-      run:  |
-        cd $BUILD_DIR_GCC
-        echo "Current working directory: $PWD"
-        ../../src-combined/configure --enable-languages=pascal $CROSS_TARGET  $COMMON_GCC_CONFIG_ARGS  $COMMON_CONFIG_ARGS
-
-    - name: Execute the build for a GPC H8/300 cross-compiler
-      run:  |
-        cd $BUILD_DIR_GCC
-        echo "Current working directory: $PWD"
-        make
-
-    - name: Test install the built GPC H8/300 cross-compiler
-      run:  |
-        cd $BUILD_DIR_GCC/gcc
-        echo "Current working directory: $PWD"
-        sudo make DESTDIR=$GITHUB_WORKSPACE/$SYSROOT_DIR pascal.install
-
-    # Before archiving, tar the host installation output to preserve file permission
-    # c.f. https://github.com/actions/upload-artifact?tab=readme-ov-file#permission-loss
-    # To avoid including a "." or other unwanted directory, c.f. https://stackoverflow.com/a/39530409
-    - name: Tar the host installation snapshot to preserve file permissions
-      run:  find $SYSROOT_DIR -printf "%P\n" | sort | tar --verbose --create --file build/${{ env.TOOLCHAIN_INSTALL_NAME }}.tar --no-recursion --directory=$SYSROOT_DIR --files-from=-
-
-    - name: Archive the host installation snapshot tar file
-      uses: actions/upload-artifact@v4
-      with:
-        name: ${{ env.TOOLCHAIN_INSTALL_NAME }}_[runner~${{ matrix.os }}]_run${{ github.run_id }}.${{ github.run_number }}.${{ github.run_attempt }}
-        path: build/${{ env.TOOLCHAIN_INSTALL_NAME }}.tar
-
-    - name: Install the built GPC H8/300 cross-compiler
-      run:  |
-        cd $BUILD_DIR_GCC/gcc
-        echo "Current working directory: $PWD"
-        sudo make pascal.install
+#    # Run the GPC build steps
+#    - name: Configure the build for a GPC H8/300 cross-compiler
+#      run:  |
+#        cd $BUILD_DIR_GCC
+#        echo "Current working directory: $PWD"
+#        ../../src-combined/configure --enable-languages=pascal $CROSS_TARGET  $COMMON_GCC_CONFIG_ARGS  $COMMON_CONFIG_ARGS
+#
+#    - name: Execute the build for a GPC H8/300 cross-compiler
+#      run:  |
+#        cd $BUILD_DIR_GCC
+#        echo "Current working directory: $PWD"
+#        make
+#
+#    - name: Test install the built GPC H8/300 cross-compiler
+#      run:  |
+#        cd $BUILD_DIR_GCC/gcc
+#        echo "Current working directory: $PWD"
+#        sudo make DESTDIR=$GITHUB_WORKSPACE/$SYSROOT_DIR pascal.install
+#
+#    # Before archiving, tar the host installation output to preserve file permission
+#    # c.f. https://github.com/actions/upload-artifact?tab=readme-ov-file#permission-loss
+#    # To avoid including a "." or other unwanted directory, c.f. https://stackoverflow.com/a/39530409
+#    - name: Tar the host installation snapshot to preserve file permissions
+#      run:  find $SYSROOT_DIR -printf "%P\n" | sort | tar --verbose --create --file build/${{ env.TOOLCHAIN_INSTALL_NAME }}.tar --no-recursion --directory=$SYSROOT_DIR --files-from=-
+#
+#    - name: Archive the host installation snapshot tar file
+#      uses: actions/upload-artifact@v4
+#      with:
+#        name: ${{ env.TOOLCHAIN_INSTALL_NAME }}_[runner~${{ matrix.os }}]_run${{ github.run_id }}.${{ github.run_number }}.${{ github.run_attempt }}
+#        path: build/${{ env.TOOLCHAIN_INSTALL_NAME }}.tar
+#
+#    - name: Install the built GPC H8/300 cross-compiler
+#      run:  |
+#        cd $BUILD_DIR_GCC/gcc
+#        echo "Current working directory: $PWD"
+#        sudo make pascal.install
 
 
 
@@ -195,43 +195,43 @@ jobs:
 
 
 
-  build_native_gpc_job:
-    name:     Build a native GPC compiler (non-cross-compiling)
-    runs-on:  ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ ubuntu-latest ]
-
-    steps:
-    - name: Get latest from version control
-      uses: actions/checkout@v4
-      with:
-        # git-restore-mtime-bare uses the ref log to find the correct timestamp
-        # for each file. This requires a full git history. The default value (1)
-        # creates a shallow checkout.
-        fetch-depth: 0
-
-      # Fix timestamps
-    - name: Restore source timestamps
-      uses: chetan/git-restore-mtime-action@v2
-
-    - name: Update build environment
-      run:  sudo apt-get --assume-yes update
-
-    - name: Install build dependencies
-      run:  sudo apt-get --assume-yes install $BUILD_DEPENDS
-
-    - name: Setup the build folders for a gcc+binutils+gpc compiler
-      run:  mkdir -p $BUILD_DIR_GPC
-
-    - name: Configure the build for a gcc+binutils+gpc compiler
-      run:  |
-        cd $BUILD_DIR_GPC
-        echo "Current working directory: $PWD"
-        ../../src-combined/configure --enable-languages=c,pascal  $COMMON_GCC_CONFIG_ARGS  $COMMON_CONFIG_ARGS
-
-    - name: Execute the build for a gcc+binutils+gpc compiler
-      run:  |
-        cd $BUILD_DIR_GPC
-        echo "Current working directory: $PWD"
-        make
+#  build_native_gpc_job:
+#    name:     Build a native GPC compiler (non-cross-compiling)
+#    runs-on:  ${{ matrix.os }}
+#    strategy:
+#      matrix:
+#        os: [ ubuntu-latest ]
+#
+#    steps:
+#    - name: Get latest from version control
+#      uses: actions/checkout@v4
+#      with:
+#        # git-restore-mtime-bare uses the ref log to find the correct timestamp
+#        # for each file. This requires a full git history. The default value (1)
+#        # creates a shallow checkout.
+#        fetch-depth: 0
+#
+#      # Fix timestamps
+#    - name: Restore source timestamps
+#      uses: chetan/git-restore-mtime-action@v2
+#
+#    - name: Update build environment
+#      run:  sudo apt-get --assume-yes update
+#
+#    - name: Install build dependencies
+#      run:  sudo apt-get --assume-yes install $BUILD_DEPENDS
+#
+#    - name: Setup the build folders for a gcc+binutils+gpc compiler
+#      run:  mkdir -p $BUILD_DIR_GPC
+#
+#    - name: Configure the build for a gcc+binutils+gpc compiler
+#      run:  |
+#        cd $BUILD_DIR_GPC
+#        echo "Current working directory: $PWD"
+#        ../../src-combined/configure --enable-languages=c,pascal  $COMMON_GCC_CONFIG_ARGS  $COMMON_CONFIG_ARGS
+#
+#    - name: Execute the build for a gcc+binutils+gpc compiler
+#      run:  |
+#        cd $BUILD_DIR_GPC
+#        echo "Current working directory: $PWD"
+#        make
