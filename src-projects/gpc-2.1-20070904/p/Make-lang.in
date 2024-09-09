@@ -199,9 +199,7 @@ MAKEGPCWITHGCCBINDIST=tar $(GPC_TARFLAGS) ../gpc-$$version-with-gcc.$(target).ta
 GPC_INSTALL_NAME=`t='$(program_transform_name)'; echo gpc | sed $$t`
 
 # Actual names to use when installing a cross-compiler.
-GPC_CROSS_NAME_=`t='$(program_transform_cross_name)'; echo gpc | sed $$t`
-GPC_CROSS_NAME_34=$(target_noncanonical)-`t='$(program_transform_name)'; echo gpc | sed $$t`
-GPC_CROSS_NAME=$(GPC_CROSS_NAME_$(GPC_GCC_34_))
+GPC_CROSS_NAME=$(shell echo gpc|sed '$(program_transform_name)')
 
 # The GPC to use for compiling libgpc.a
 # Usually the one we just built.
