@@ -200,7 +200,7 @@ GPC_INSTALL_NAME=`t='$(program_transform_name)'; echo gpc | sed $$t`
 
 # Actual names to use when installing a cross-compiler.
 GPC_CROSS_NAME_=`t='$(program_transform_cross_name)'; echo gpc | sed $$t`
-GPC_CROSS_NAME_34=$(target_noncanonical)`t='$(program_transform_name)'; echo gpc | sed $$t`
+GPC_CROSS_NAME_34=$(target_noncanonical)-`t='$(program_transform_name)'; echo gpc | sed $$t`
 GPC_CROSS_NAME=$(GPC_CROSS_NAME_$(GPC_GCC_34_))
 
 # The GPC to use for compiling libgpc.a
