@@ -21,12 +21,17 @@ Last known versions to include support for h8300-*-coff
     - Created smaller binaries compared to the same builds created using GCC 4
       * Especially important on memory-constrained devices such as the LEGO MindStorms RCX
   + Resources
-    - [Installation configuration documentation](https://web.archive.org/web/20041013092023/https://gcc.gnu.org/install/configure.html)
+    - [Build and Installation Configuration Documentation](https://web.archive.org/web/20041013092023/https://gcc.gnu.org/install/configure.html)
     - [Manual](https://gcc.gnu.org/onlinedocs/gcc-3.4.6/gcc/)
 * GPC 2.1-20070904 – note the included README files
+  + [The GNU Pascal Manual](https://www.gnu-pascal.de/gpc/)
   + [GPC website](https://www.gnu-pascal.de/gpc/h-index.html)
+    - [Compilation and installation guide](https://www.gnu-pascal.de/gpc/Compiling-GPC.html#Compiling-GPC):  Note the section covering `pascal.install` at the end
+    - [Cross-compilation guide](https://www.gnu-pascal.de/gpc/Cross_002dCompilers.html#Cross_002dCompilers)
   + Source files from [hebisch/gpc](https://github.com/hebisch/gpc)
-* GDB 7.12.1 – note lack of support for h8300-*-*-coff (covered by the "h8300-*-*-*" case) in bfd/config.bfd in later versions
+  + [Mailing list](https://www.gnu.de/mailman3/hyperkitty/list/gpc@gnu.de/latest) (no longer seems to be active)
+    - [Subscribe/Unsubscribe page](https://www.gnu.de/mailman3/postorius/lists/gpc.gnu.de/)
+* GDB 7.12.1 – note lack of support for h8300-\*-\*-coff (covered by the "h8300-\*-\*-\*" case) in bfd/config.bfd in later versions
 * NewLib 1.19.0
   + Version 1.20.0 introduces incompatibilities with the binutil's version of libiberty (c.f. [gcc list](https://gcc-patches.gcc.gnu.narkive.com/zeSeZ9N8/newlib-vs-libiberty-mismatch-breaks-build-re-patch-export-psignal-on-all-platforms#post1))
   + Versions 2.0 and later fail to build if targeting h8300-*-coff
