@@ -23,6 +23,7 @@ Last known versions to include support for h8300-*-coff
   + Resources
     - [Build and Installation Configuration Documentation](https://web.archive.org/web/20041013092023/https://gcc.gnu.org/install/configure.html)
     - [Manual](https://gcc.gnu.org/onlinedocs/gcc-3.4.6/gcc/)
+      * [Manual subsets and/or other formats](https://gcc.gnu.org/onlinedocs/) (scroll down for the GCC 3.4.6 manuals section)
 * GPC 2.1-20070904 – note the included README files
   + [The GNU Pascal Manual](https://www.gnu-pascal.de/gpc/)
   + [GPC website](https://www.gnu-pascal.de/gpc/h-index.html)
