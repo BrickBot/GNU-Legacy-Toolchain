@@ -62,7 +62,7 @@ jobs:
       run:  |
         cd $BUILD_DIR_GCC
         echo "Current working directory: $PWD"
-        ../../src-combined/configure  --enable-languages=c,c++,ada,f77,java,objc,pascal  $CROSS_TARGET  $COMMON_GCC_CONFIG_ARGS  $COMMON_CONFIG_ARGS
+        ../../src-unified/configure  --enable-languages=c,c++,ada,f77,java,objc,pascal  $CROSS_TARGET  $COMMON_GCC_CONFIG_ARGS  $COMMON_CONFIG_ARGS
 
     - name: Execute the build for a GCC H8/300 cross-compiler
       run:  |
@@ -100,7 +100,7 @@ jobs:
 #      run:  |
 #        cd $BUILD_DIR_GCC
 #        echo "Current working directory: $PWD"
-#        ../../src-combined/configure --enable-languages=pascal $CROSS_TARGET  $COMMON_GCC_CONFIG_ARGS  $COMMON_CONFIG_ARGS
+#        ../../src-unified/configure --enable-languages=pascal $CROSS_TARGET  $COMMON_GCC_CONFIG_ARGS  $COMMON_CONFIG_ARGS
 #
 #    - name: Execute the build for a GPC H8/300 cross-compiler
 #      run:  |
@@ -228,7 +228,7 @@ jobs:
 #      run:  |
 #        cd $BUILD_DIR_GPC
 #        echo "Current working directory: $PWD"
-#        ../../src-combined/configure --enable-languages=c,pascal  $COMMON_GCC_CONFIG_ARGS  $COMMON_CONFIG_ARGS
+#        ../../src-unified/configure --enable-languages=c,pascal  $COMMON_GCC_CONFIG_ARGS  $COMMON_CONFIG_ARGS
 #
 #    - name: Execute the build for a gcc+binutils+gpc compiler
 #      run:  |
