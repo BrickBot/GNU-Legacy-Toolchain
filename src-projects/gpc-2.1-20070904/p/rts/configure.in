@@ -1,4 +1,6 @@
 # Autoconf configure script for GPC, the GNU Pascal compiler.
+# Auto-generated when certain other GPC files have a newer modified timestamp.
+#
 # Copyright 1995-2006 Free Software Foundation, Inc.
 #
 # Authors: J.J. van der Heijden <j.j.vanderheijden@student.utwente.nl>
