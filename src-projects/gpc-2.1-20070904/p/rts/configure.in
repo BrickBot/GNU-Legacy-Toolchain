@@ -44,8 +44,8 @@ else
 fi
 AC_SUBST(RANLIB_TEST)
 
-AC_ARG_WITH(shared, [  --with-shared           build shared RTS library], with_shared=${withval})
-AC_SUBST(with_shared)
+AC_ARG_WITH(gpc-shared, [  --with-gpc-shared       build shared RTS library], with_gpc_shared=${withval})
+AC_SUBST(with_gpc_shared)
 
 # GPC_DEFINE(NAME)
 # Define $1 in upper case

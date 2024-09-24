@@ -45,7 +45,6 @@ RTSFLAGS=
 GPC_DESTDIR=.
 GCC_VERSION=unknown
 
-WITH_SHARED=@with_shared@
 VERSION_FILENAME=$(srcdir)/rts-version
 gpc_major=2
 gpc_minor=1
@@ -84,7 +83,7 @@ GENERATED_FILES=\
  $(srcdir)/rtsc.pas \
  $(srcdir)/gpc.pas
 
-all: $(GPCLIB) sharedlib.$(WITH_SHARED)
+all: $(GPCLIB) sharedlib.$(WITH_GPC_SHARED)
 
 generated-files: $(GENERATED_FILES)
 
@@ -113,12 +112,12 @@ rts-config.inc: rts-config.h
 	echo '{ rts-config.inc.  Generated automatically from rts-config.h.  }' > rts-config.inc
 	sed -e 's,/\*,{,g;s,\*/,},g;s,^[ \t]*#\(.*\),{$$\1},' rts-config.h >> rts-config.inc
 
-# @@ `with_shared' is currently not substituted in the parent Makefile, so
-#    it arrives here via the setting of $(WITH_SHARED) on the command line
-DUMMY=# Don't let configure substitute `@with_shared$(DUMMY)@' below
+# @@ `with_gpc_shared' is currently not substituted in the parent Makefile, so
+#    it arrives here via the setting of $(WITH_GPC_SHARED) on the command line
+DUMMY=# Don't let configure substitute `@with_gpc_shared$(DUMMY)@' below
 
 .PHONY: all install check generated-files rts.update-release \
-        sharedlib. sharedlib.no sharedlib.@with_shared$(DUMMY)@ sharedlib.yes \
+        sharedlib. sharedlib.no sharedlib.@with_gpc_shared$(DUMMY)@ sharedlib.yes \
         mostlyclean clean distclean extraclean maintainer-clean
 
 install:
@@ -128,7 +127,7 @@ install:
 	@echo "if know what you are doing and have a current GPC version installed," >&2
 	@echo "but you will have to install the resulting file(s) (libgpc.*) manually" >&2
 	@echo "into the right directories, and create a symlink for the shared library" >&2
-	@echo "if configured \`--with-shared'." >&2
+	@echo "if configured \`--with-gpc-shared'." >&2
 
 check:
 	@echo "Checks for the GPC RTS are contained in the GPC Test Suite."
@@ -197,7 +196,7 @@ $(GPCLIB): $(OBJS)
 	-$(RANLIB) $(GPCLIB) 2> /dev/null
 
 # That's a way to do an `if' that even a stupid make understands ...
-sharedlib. sharedlib.no sharedlib.@with_shared$(DUMMY)@:
+sharedlib. sharedlib.no sharedlib.@with_gpc_shared$(DUMMY)@:
 	@echo "Skipping making of Pascal shared library"
 
 sharedlib.yes: $(GPCSOLIB)

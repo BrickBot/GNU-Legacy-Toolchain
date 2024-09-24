@@ -12,7 +12,7 @@ ac_help=
 ac_default_prefix=/usr/local
 # Any additions from configure.in:
 ac_help="$ac_help
-  --with-shared           build shared RTS library"
+  --with-gpc-shared       build shared RTS library"
 
 # Initialize some variables set by options.
 # The variables have the same names as the options, with
@@ -789,10 +789,10 @@ fi
 fi
 
 
-# Check whether --with-shared or --without-shared was given.
-if test "${with_shared+set}" = set; then
-  withval="$with_shared"
-  with_shared=${withval}
+# Check whether --with-gpc-shared or --without-gpc-shared was given.
+if test "${with_gpc_shared+set}" = set; then
+  withval="$with_gpc_shared"
+  with_gpc_shared=${withval}
 fi
 
 
@@ -4025,7 +4025,7 @@ s%@CC@%$CC%g
 s%@AR@%$AR%g
 s%@RANLIB@%$RANLIB%g
 s%@RANLIB_TEST@%$RANLIB_TEST%g
-s%@with_shared@%$with_shared%g
+s%@with_gpc_shared@%$with_gpc_shared%g
 s%@CPP@%$CPP%g
 
 CEOF

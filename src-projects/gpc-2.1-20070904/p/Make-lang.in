@@ -120,24 +120,36 @@ LIBEXECSUBDIR_34=$(libexecsubdir)
 LIBEXECSUBDIR_=$(libsubdir)
 LIBEXECSUBDIR=$(LIBEXECSUBDIR_$(GPC_GCC_34_))
 
+# PC is the GPC for the host!
+PC="`if [ x"$(GPC_HOST)" = x"$(target)" ]; then echo $(GPC_FOR_TARGET) -L../..' '; else echo $(CC) | $(GCC2GPC); fi | $(ADD_RTS_PARENT_DIR)` -I../rts"
+
 # TREE_GIMPLE_H is defined only for 4.0 and up, so we use it to
 # distinguish backed versions. For 4.x we build libgpc in
 # toplevel directory.
 ifdef TREE_GIMPLE_H
 __skip_gpc_shared=yes
 endif
-ifneq ("$(WITH_SHARED)","yes")
+ifeq ("$(WITH_GPC_SHARED)","no")
 __skip_gpc_shared=yes
 endif
 
 ifdef __skip_gpc_shared
 pascal.maybe_rts:
-pascal.maybe_install-utils:
 pascal.install_rts-config.inc:
+pascal.maybe_utils:
+pascal.maybe_install-utils:
 else
 pascal.install_rts-config.inc: pascal.do_install_rts-config.inc
+pascal.maybe_rts: pascal.rts pascal.maybe_utils
+ifneq (,$(shell $(PC) --version 2>/dev/null))
+pascal.maybe_utils: pascal.utils
 pascal.maybe_install-utils: pascal.install-utils
-pascal.maybe_rts: pascal.rts pascal.utils
+else
+pascal.maybe_utils:
+	$(warning WARNING: Pascal Compiler $(PC) not found; skipping build of GPC utils)
+pascal.maybe_install-utils:
+	$(warning WARNING: Pascal Compiler "$(PC)" not found; skipping install of GPC utils)
+endif
 endif
 
 # gcc<3 doesn't set $(STAMP) and $(man1ext).
@@ -158,7 +170,6 @@ rts_version=`cat $(RTS_VERSION_FILENAME)`
 GPCSOLIBSHORTNAME=libgpc.so
 GPCSOLIBNAME=$(GPCSOLIBSHORTNAME).$(gpc_major).$(gpc_minor).$(rts_version)
 GPCSOLIBDIR=lib
-WITH_SHARED=@with_shared@
 
 BISON=bison
 BISONFLAGS=
@@ -226,7 +237,7 @@ GPC_INSTALL_FLAGS_TO_PASS=\
   "GPCSOLIBSHORTNAME=$(GPCSOLIBSHORTNAME)" \
   "GPCSOLIBDIR=$(GPCSOLIBDIR)" \
   "GPC_EXTRA_INSTALL_LIBS=$(GPC_EXTRA_INSTALL_LIBS)" \
-  "WITH_SHARED=$(WITH_SHARED)" \
+  "WITH_GPC_SHARED=$(WITH_GPC_SHARED)" \
   "FLOAT_H=$(FLOAT_H)" \
   "EXTRA_PARTS=$(EXTRA_PARTS)" \
   $(GPC_EXTRA_INSTALL_FLAGS_TO_PASS)
@@ -234,14 +245,15 @@ GPC_INSTALL_FLAGS_TO_PASS=\
 # Flags to pass when building the utilities. (PC is the GPC for the host!)
 UTILS_FLAGS_TO_PASS=\
   SHELL="$(SHELL)" \
-  PC="`if [ x"$(GPC_HOST)" = x"$(target)" ]; then echo $(GPC_FOR_TARGET) -L../..' '; else echo $(CC) | $(GCC2GPC); fi | $(ADD_RTS_PARENT_DIR)` -I../rts" \
+  PC="$(PC)" \
   CFLAGS="$(CFLAGS)" \
   PFLAGS="$(PFLAGS)" \
   exeext="$(exeext)" \
   INSTALL_PROGRAM="$(INSTALL_PROGRAM)" \
   INSTALL_DATA="$(INSTALL_DATA)" \
   BUILD="$(GPC_BUILD)" \
-  HOST="$(GPC_HOST)"
+  HOST="$(GPC_HOST)" \
+  WITH_GPC_SHARED="$(WITH_GPC_SHARED)"
 
 # Flags to pass when building the RTS.
 RTS_FLAGS_TO_PASS_ALL=\
@@ -251,7 +263,8 @@ RTS_FLAGS_TO_PASS_ALL=\
   PFLAGS="$(PFLAGS)" \
   AR_FLAGS="$(AR_FLAGS)" \
   RTSFLAGS="$(RTSFLAGS)" \
-  GPC_DESTDIR="../.."
+  GPC_DESTDIR="../.." \
+  WITH_GPC_SHARED="$(WITH_GPC_SHARED)"
 
 RTS_FLAGS_TO_PASS_28=\
   AR="$(AR)" \
@@ -813,7 +826,7 @@ p/rts/Makefile: $(GCC_PARTS) \
 	cd ./p/rts && \
 	$(RTS_COMPILERS) CONFIG_SITE=nonexisting-file \
 	$$src/p/rts/configure --silent > /dev/null --srcdir=$$src/p/rts \
-	 `if [ x$(WITH_SHARED) = xyes ]; then echo '--with-shared'; fi`
+	 `if [ x$(WITH_GPC_SHARED) = xyes ]; then echo '--with-gpc-shared'; fi`
 
 pascal.rts: p/rts/Makefile xgpc$(exeext) gpc1$(exeext)
 	cd ./p/rts && $(MAKE) $(RTS_COMPILERS) $(RTS_FLAGS_TO_PASS) all
@@ -1012,7 +1025,7 @@ pascal.install-lib: pascal.install-dir pascal.maybe_rts
 	    $(INSTALL_DATA) "$$f" "$(DESTDIR)$(libsubdir)/`echo "$$f" | sed -e 's,.*/,,'`" || exit 1; \
 	  fi; \
 	done
-	if [ x$(WITH_SHARED) = xyes ] && [ -f $(GPCSOLIBNAME) ]; then \
+	if [ x$(WITH_GPC_SHARED) = xyes ] && [ -f $(GPCSOLIBNAME) ]; then \
 	  $(srcdir)/p/script/mkdir-p -m a+rx $(DESTDIR)$(prefix)/$(GPCSOLIBDIR) && \
 	  rm -f $(DESTDIR)$(libsubdir)/$(GPCSOLIBSHORTNAME) $(DESTDIR)$(prefix)/$(GPCSOLIBDIR)/$(GPCSOLIBNAME); \
 	  $(INSTALL_DATA) $(GPCSOLIBNAME) $(DESTDIR)$(prefix)/$(GPCSOLIBDIR)/$(GPCSOLIBNAME) && \

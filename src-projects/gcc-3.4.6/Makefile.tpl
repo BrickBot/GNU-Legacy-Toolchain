@@ -129,6 +129,9 @@ TARGET_SUBDIR = @target_subdir@
 # directories built for the target.
 TARGET_CONFIGARGS = @target_configargs@
 
+# This is whether to also build shared RTS library when building GPC
+WITH_GPC_SHARED = @with_gpc_shared@
+
 # ----------------------------------------------
 # Programs producing files for the BUILD machine
 # ----------------------------------------------

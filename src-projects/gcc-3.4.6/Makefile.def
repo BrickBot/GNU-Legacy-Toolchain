@@ -166,6 +166,7 @@ flags_to_pass = { flag= gxx_include_dir ; };
 flags_to_pass = { flag= gcc_version ; };
 flags_to_pass = { flag= gcc_version_trigger ; };
 flags_to_pass = { flag= target_alias ; };
+flags_to_pass = { flag= with_gpc_shared ; };
 
 // Build tools
 flags_to_pass = { flag= BISON ; };

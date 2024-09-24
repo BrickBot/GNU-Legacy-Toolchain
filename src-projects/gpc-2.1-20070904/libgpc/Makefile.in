@@ -1,11 +1,10 @@
 
 SHELL = @SHELL@
 srcdir = @srcdir@
-WITH_SHARED = @with_shared@
 target_alias = undef_var
 gcc_version := $(shell cat $(srcdir)/../gcc/BASE-VER)
 
-RTS_SHARED_FLAG = `if [ x$(WITH_SHARED) = xyes ]; then echo '--with-shared'; fi`
+RTS_SHARED_FLAG = `if [ x$(WITH_GPC_SHARED) = xyes ]; then echo '--with-gpc-shared'; fi`
 
 MPREFIX = .
 

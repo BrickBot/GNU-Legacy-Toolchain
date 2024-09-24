@@ -4292,6 +4292,7 @@ s%@host_configargs@%$host_configargs%g
 s%@configdirs@%$configdirs%g
 s%@target_configargs@%$target_configargs%g
 s%@target_configdirs@%$target_configdirs%g
+s%@with_gpc_shared@%$with_gpc_shared%g
 s%@BISON@%$BISON%g
 s%@CC_FOR_BUILD@%$CC_FOR_BUILD%g
 s%@LEX@%$LEX%g
