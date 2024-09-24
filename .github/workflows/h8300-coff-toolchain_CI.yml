@@ -98,6 +98,10 @@ jobs:
       if:   always()
       run:  git status
 
+    - name: Show always any diffs of version-controlled files
+      if:   always()
+      run:  git diff
+
 
 #    # Run the GPC build steps
 #    - name: Configure the build for a GPC H8/300 cross-compiler
