@@ -1,4 +1,4 @@
-/* rts-config.in.  Generated automatically from configure.in by autoheader.  */
+/* p/rts/rts-config.in.  Generated automatically from configure.in by autoheader.  */
 
 /* Define if you have <sys/wait.h> that is POSIX.1 compatible.  */
 #undef HAVE_SYS_WAIT_H
