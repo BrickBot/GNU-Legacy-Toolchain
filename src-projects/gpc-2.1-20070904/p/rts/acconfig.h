@@ -1,4 +1,4 @@
-/* acconfig.h.  Generated automatically from configure.in using make-acconfig-h.m4.  */
+/* p/rts/acconfig.h.  Generated automatically from configure.in using make-acconfig-h.m4.  */
 
 /* Define if struct passwd in <pwd.h> contains a pw_gecos field.  */
 #undef HAVE_PW_GECOS
