@@ -62,7 +62,7 @@ jobs:
       run:  |
         cd $BUILD_DIR_GCC
         echo "Current working directory: $PWD"
-        ../../src-unified/configure  --enable-languages=c,c++,ada,f77,java,objc,pascal  $CROSS_TARGET  $COMMON_GCC_CONFIG_ARGS  $COMMON_PATH_ARGS
+        ../../src-unified/configure  --enable-languages=c,c++,ada,f77,java,objc,pascal  --without-gpc-shared  $CROSS_TARGET  $COMMON_GCC_CONFIG_ARGS  $COMMON_PATH_ARGS
 
     - name: Execute the build for a GCC H8/300 cross-compiler
       run:  |
