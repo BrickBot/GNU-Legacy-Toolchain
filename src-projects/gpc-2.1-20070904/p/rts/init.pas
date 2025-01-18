@@ -68,7 +68,7 @@ implementation
 the Makefile, or define that symbol manually if you know what you are doing.}
 {$endif}
 var
-  RTSReleaseCheck: Integer = $47525453; attribute (name = '_p_GPC_RTS_VERSION_' + RTS_RELEASE_STRING);
+  RTSReleaseCheck: LongInt = $47525453; attribute (name = '_p_GPC_RTS_VERSION_' + RTS_RELEASE_STRING);
 
 procedure InitDummy;
 begin

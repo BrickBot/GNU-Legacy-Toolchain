@@ -93,6 +93,7 @@ function  IsLeapYear (Year: Integer): Boolean;                                  
 { Returns the length of the month, taking leap years into account. }
 function  MonthLength (Month, Year: Integer): Integer;                                                  attribute (name = '_p_MonthLength');
 
+(*
 { Formats a TimeStamp value according to a Format string. The format
   string can contain date/time items consisting of `%', followed by
   the specifiers listed below. All characters outside of these items
@@ -290,6 +291,7 @@ function  MonthLength (Month, Year: Integer): Integer;                          
 
   `%'  (i.e., an item `%%') A literal `%' character. }
 function  FormatTime (const Time: TimeStamp; const Format: String) = Res: TString; attribute (name = '_p_FormatTime');
+*)
 
 implementation
 
@@ -463,6 +465,7 @@ begin
   GetMicroSecondTime := 1000000 * UnixTime + MicroSecond
 end;
 
+(*
 function FormatTime (const Time: TimeStamp; const Format: String) = Res: TString;
 const
   FillNone = #0;
@@ -720,5 +723,6 @@ begin
       i := j + 1
     end
 end;
+*)
 
 end.

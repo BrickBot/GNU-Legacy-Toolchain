@@ -170,8 +170,10 @@ procedure Done_Files; attribute (name = '_p_Done_Files');
 procedure InitFDR (var f: GPC_FDR; InternalName: CString; Size, Flags: Integer); attribute (name = '_p_InitFDR');
 procedure DoneFDR (var f: GPC_FDR); attribute (name = '_p_DoneFDR');
 procedure GPC_BlockWrite (f: GPC_FDR; IsAnyFile: Boolean; Buf: PChars0; Count: Cardinal; var Result: Cardinal); attribute (name = '_p_BlockWrite');
+(*
 procedure InternalOpen (f: GPC_FDR; FileName: CString; Length: Integer; BufferSize: Integer; Mode: TOpenMode); attribute (name = '_p_InternalOpen');
 procedure Initialize_Std_Files; attribute (iocritical, name = '_p_Initialize_Std_Files');
+*)
 function  LazyGet (f: GPC_FDR): Pointer; attribute (ignorable, name = '_p_LazyGet');
 function  LazyUnget (f: GPC_FDR): Pointer; attribute (name = '_p_LazyUnget');
 function  LazyTryGet (f: GPC_FDR): Pointer; attribute (name = '_p_LazyTryGet');
@@ -214,17 +216,21 @@ function  FormatString_Result (f: GPC_FDR; Format: Pointer): Pointer; attribute 
 function  StringOf_Result (f: GPC_FDR): Pointer; attribute (name = '_p_StringOf_Result');
 procedure GPC_Page (f: GPC_FDR); attribute (name = '_p_Page');
 procedure GPC_Put (f: GPC_FDR); attribute (name = '_p_Put');
+(*
 procedure GPC_SeekRead (f: GPC_FDR; NewPlace: FileSizeType); attribute (name = '_p_SeekRead');
 procedure GPC_SeekWrite (f: GPC_FDR; NewPlace: FileSizeType); attribute (name = '_p_SeekWrite');
 procedure GPC_SeekUpdate (f: GPC_FDR; NewPlace: FileSizeType); attribute (name = '_p_SeekUpdate');
 procedure GPC_Seek (f: GPC_FDR; NewPlace: FileSizeType); attribute (name = '_p_Seek');
 procedure GPC_Update (f: GPC_FDR); attribute (name = '_p_Update');
 function  GPC_Position (f: GPC_FDR) = Pos: FileSizeType; attribute (name = '_p_Position');
+*)
 function  GPC_FileSize (f: GPC_FDR): FileSizeType; attribute (name = '_p_FileSize');
 function  GPC_LastPosition (f: GPC_FDR): FileSizeType; attribute (name = '_p_LastPosition');
 function  GPC_Empty (f: GPC_FDR): Boolean; attribute (name = '_p_Empty');
+(*
 procedure GPC_DefineSize (f: GPC_FDR; NewSize: FileSizeType); attribute (name = '_p_DefineSize');
 procedure GPC_Truncate (f: GPC_FDR); attribute (name = '_p_Truncate');
+*)
 function  GetErrorMessageFileName (protected var f: GPC_FDR): TString; attribute (name = '_p_GetErrorMessageFileName');
 procedure GPC_Erase (f: GPC_FDR); attribute (name = '_p_Erase');
 procedure SetFileTime (f: GPC_FDR; AccessTime: UnixTimeType; ModificationTime: UnixTimeType); attribute (name = '_p_SetFileTime');
@@ -390,11 +396,13 @@ procedure AssignFile   (var t: AnyFile; const FileName: String); attribute (name
 procedure AssignBinary (var t: Text; const FileName: String); attribute (name = '_p_AssignBinary');
 procedure AssignHandle (var t: AnyFile; Handle: Integer; CloseFlag: Boolean); attribute (name = '_p_AssignHandle');
 
+(*
 { Under development }
 procedure AnyStringTFDD_Reset (var f: GPC_FDR; var Buf: ConstAnyString); attribute (name = '_p_AnyStringTFDD_Reset');
 { @@ procedure AnyStringTFDD_Rewrite (var f: GPC_FDR; var Buf: VarAnyString); attribute (name = '_p_AnyStringTFDD_Rewrite'); }
 procedure StringTFDD_Reset (var f: GPC_FDR; var Buf: ConstAnyString; var s: array [m .. n: Integer] of Char); attribute (name = '_p_StringTFDD_Reset');
 { @@ procedure StringTFDD_Rewrite (var f: GPC_FDR; var Buf: VarAnyString; var s: String); attribute (name = '_p_StringTFDD_Rewrite'); }
+*)
 
 {@internal}
 { BP compatible seeking routines }
@@ -408,10 +416,12 @@ procedure Internal_ChDir (const Path: String); attribute (name = '_p_ChDir');
 procedure Internal_MkDir (const Path: String); attribute (name = '_p_MkDir');
 procedure Internal_RmDir (const Path: String); attribute (name = '_p_RmDir');
 
+(*
 { Various other versions of Reset, Rewrite and Extend are still overloaded magically }
 procedure Internal_Reset   (f: GPC_FDR; const aFileName: String; FileNameGiven: Boolean; BufferSize: Integer); attribute (name = '_p_Reset');
 procedure Internal_Rewrite (f: GPC_FDR; const aFileName: String; FileNameGiven: Boolean; BufferSize: Integer); attribute (name = '_p_Rewrite');
 procedure Internal_Extend  (f: GPC_FDR; const aFileName: String; FileNameGiven: Boolean; BufferSize: Integer); attribute (name = '_p_Extend');
+*)
 {@endinternal}
 
 { Returns True is a terminal device is open on the file f, False if
@@ -1243,6 +1253,7 @@ begin
     end
 end;
 
+(*
 { Open a file in Mode, depending on its binding etc.
 
   fo_Reset:
@@ -1665,6 +1676,7 @@ begin
   InitFDR (GPC_Input,  'Input',  1, StdFileFlags); InternalOpen (GPC_Input,  nil, 0, -1, fo_Reset);
   RestoreReturnAddress
 end;
+*)
 
 { Get FilSiz bytes from the file. }
 procedure GetN (f: GPC_FDR);
@@ -2839,6 +2851,7 @@ begin
   if f^.Status.EOF then f^.Status.Undef := True
 end;
 
+(*
 { Note: Extended Pascal defines the following operations only for direct access
   file types:
   SeekRead, SeekWrite, SeekUpdate, Empty, Position, LastPosition, Update
@@ -2996,6 +3009,7 @@ begin
   Pos := NumBytes div f^.FilSiz;
   if not (f^.Status.Undef or f^.Status.LGet) then Dec (Pos)
 end;
+*)
 
 function GPC_FileSize (f: GPC_FDR): FileSizeType;
 var OrigPos, LastPos: FileSizeType;
@@ -3029,6 +3043,7 @@ begin
     GPC_Empty := GPC_FileSize (f) = 0
 end;
 
+(*
 { DefineSize (GPC extension): Define files size as count of its
   component type units. May be applied only to random access files
   and files opened for writing. }
@@ -3052,6 +3067,7 @@ procedure GPC_Truncate (f: GPC_FDR);
 begin
   if (InOutRes = 0) and IsOpen (f) then GPC_DefineSize (f, GPC_Position (f))
 end;
+*)
 
 { Get the external file name }
 function FileName (protected var f: GPC_FDR): TString;
@@ -3220,6 +3236,7 @@ begin
     IOErrorCString (485, Path, True);  { cannot remove directory `%s' }
 end;
 
+(*
 procedure Internal_Reset (f: GPC_FDR; const aFileName: String; FileNameGiven: Boolean; BufferSize: Integer);
 begin
   SaveReturnAddress;
@@ -3249,6 +3266,7 @@ begin
     InternalOpen (f, nil, 0, BufferSize, fo_Append);
   RestoreReturnAddress
 end;
+*)
 
 procedure AssignBinary (var t: Text; const FileName: String);
 var b: BindingType;
@@ -3474,6 +3492,7 @@ begin
   RestoreReturnAddress
 end;
 
+(*
 function StringTFDD_Read (var PrivateData; var Buffer; Size: SizeType) = Result: SizeType;
 begin
   with ConstAnyString (PrivateData) do
@@ -3529,6 +3548,7 @@ begin
   AnyStringTFDD_Rewrite (f, Buf)
 end;
 {$endif}
+*)
 
 function IsTerminal (protected var f: GPC_FDR): Boolean;
 begin

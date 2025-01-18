@@ -195,6 +195,7 @@ function  ForceAddDirSeparator (const s: String) = Result: TString;      attribu
   denote the root directory. }
 function  RemoveDirSeparator (const s: String) = Result: TString;        attribute (name = '_p_RemoveDirSeparator');
 
+(*
 { Returns the current directory using OS dependent directory
   separators }
 function  GetCurrentDirectory: TString;                                  attribute (name = '_p_GetCurrentDirectory');
@@ -204,6 +205,7 @@ function  GetCurrentDirectory: TString;                                  attribu
   in DirSeparator. If no suitable directory is found, an empty
   string is returned. }
 function  GetTempDirectory: TString;                                     attribute (name = '_p_GetTempDirectory');
+*)
 
 { Returns a non-existing file name in the directory given. If the
   directory doesn't exist or the Directory name is empty, an I/O
@@ -211,6 +213,7 @@ function  GetTempDirectory: TString;                                     attribu
   string. }
 function  GetTempFileNameInDirectory (const Directory: String) = Result: TString; attribute (iocritical, name = '_p_GetTempFileNameInDirectory');
 
+(*
 { Returns a non-existing file name in GetTempDirectory. If no temp
   directory is found, i.e. GetTempDirectory returns the empty
   string, an I/O error is raised, and GetTempFileName returns the
@@ -220,6 +223,7 @@ function  GetTempFileName: TString;                                      attribu
 { The same as GetTempFileName, but returns a CString allocated from
   the heap. }
 function  GetTempFileName_CString: CString;                              attribute (iocritical, name = '_p_GetTempFileName_CString');
+*)
 
 { Returns True if the given file name is an existing plain file }
 function  FileExists      (const aFileName: String): Boolean;            attribute (name = '_p_FileExists');
@@ -254,6 +258,7 @@ function  FSearchExecutable (const aFileName: String; const DirList: String) = R
   contains the replaced string, and True is returned. }
 function  ExpandEnvironment (var s: String): Boolean;                    attribute (name = '_p_ExpandEnvironment');
 
+(*
 { Expands the given path name to a full path name. Relative paths
   are expanded using the current directory, and occurrences of
   DirSelf and DirParent are resolved. Under Dos, the result is
@@ -274,6 +279,7 @@ function  FExpandQuoted (const Path: String): TString;                   attribu
   it is a prefix of it. If OnlyCurDir is set, the current directory
   will be removed only if Path denotes a file in, not below, it. }
 function  RelativePath (const Path: String; OnlyCurDir, Quoted: Boolean) = Result: TString; attribute (name = '_p_RelativePath');
+*)
 
 { Is aFileName a UNC filename? (Always returns False on non-Dos
   systems.) }
@@ -291,6 +297,7 @@ function  NameFromPath    (const Path: String) = BaseName: TString;      attribu
 function  ExtFromPath     (const Path: String) = Ext: TString;           attribute (name = '_p_ExtFromPath');
 function  NameExtFromPath (const Path: String): TString;                 attribute (name = '_p_NameExtFromPath');
 
+(*
 { Start reading a directory. If successful, a pointer is returned
   that can be used for subsequent calls to ReadDir and finally
   CloseDir. On failure, an I/O error is raised and (in case it is
@@ -303,6 +310,7 @@ function  ReadDir  (Dir: DirPtr): TString;                               attribu
 
 { Closes a directory opened with OpenDir. }
 procedure CloseDir (Dir: DirPtr);                                        attribute (name = '_p_CloseDir');
+*)
 
 { Returns the first position of a non-quoted character of CharSet in
   s, or 0 if no such character exists. }
@@ -416,6 +424,7 @@ function  SystemInfo = Res: TSystemInfo; attribute (name = '_p_SystemInfo');
   interactively). }
 function  GetShellPath (var Option: String) = Res: TString; attribute (name = '_p_GetShellPath');
 
+(*
 { Returns the path of the running executable. *Note*: On most
   systems, this is *not* guaranteed to be the full path, but often
   just the same as `ParamStr (0)' which usually is the name given on
@@ -480,6 +489,7 @@ function  ConfigFileName (const Prefix: String; const BaseName: String; Global: 
   About the symbols used above, and the two possibilities under Dos,
   see the comments for ConfigFileName. }
 function  DataDirectoryName (const Prefix: String; const BaseName: String): TString; attribute (name = '_p_DataDirectoryName');
+*)
 
 { Executes a command line. Reports execution errors via the IOResult
   mechanism and returns the exit status of the executed program.
@@ -589,6 +599,7 @@ begin
     Delete (Result, Length (Result))
 end;
 
+(*
 function GetCurrentDirectory: TString;
 begin
   GetCurrentDirectory := FExpand (DirSelf)
@@ -637,6 +648,7 @@ begin
          ) then TempDirectory := '';
   GetTempDirectory := ForceAddDirSeparator (TempDirectory)
 end;
+*)
 
 function GetTempFileNameInDirectory (const Directory: String) = Result: TString;
 var
@@ -670,6 +682,7 @@ begin
   until not FileExists (Result)
 end;
 
+(*
 function GetTempFileName: TString;
 begin
   GetTempFileName := GetTempFileNameInDirectory (GetTempDirectory)
@@ -679,6 +692,7 @@ function GetTempFileName_CString: CString;
 begin
   GetTempFileName_CString := NewCString (GetTempFileName)
 end;
+*)
 
 function FileExists (const aFileName: String): Boolean;
 var Dir, Special: Boolean;
@@ -823,6 +837,7 @@ begin
   until False
 end;
 
+(*
 function InternalRealPath (const Path: String; Quoted, CheckExisting: Boolean) = Result: TString;
 var
   Existing: Boolean;
@@ -890,6 +905,7 @@ begin
     Delete (Result, 1, Length (p));
   if Result = '' then Result := DirSelf
 end;
+*)
 
 function IsUNC (const aFileName: String): Boolean;
 begin
@@ -945,6 +961,7 @@ begin
   NameExtFromPath := BaseName + Ext
 end;
 
+(*
 function OpenDir (const DirName: String) = Res: DirPtr;
 var s: TString;
 begin
@@ -963,6 +980,7 @@ procedure CloseDir (Dir: DirPtr);
 begin
   CStringCloseDir (Dir)
 end;
+*)
 
 function FindNonQuotedChar (Chars: CharSet; const s: String; From: Integer): Integer;
 var i: Integer;
@@ -1431,6 +1449,7 @@ begin
   if @Option <> nil then Option := ShellExecCommand
 end;
 
+(*
 function ExecutablePath: TString;
 var
   CStringBuffer: TStringBuf;
@@ -1444,6 +1463,7 @@ begin
     end;
   ExecutablePath := Buffer
 end;
+*)
 
 {$ifdef __OS_DOS__}
 function DJGPPChoose (const EnvVar, Suffix1, Name2: String): TString;
@@ -1463,6 +1483,7 @@ begin
 end;
 {$endif}
 
+(*
 function ConfigFileName (const Prefix: String; const BaseName: String; Global: Boolean): TString;
 var PName: TString;
 begin
@@ -1507,6 +1528,7 @@ begin
   DataDirectoryName := RealPrefix + DirSeparator + 'share' + DirSeparator + PName + DirSeparator
   {$endif}
 end;
+*)
 
 function InternalExecute (const CmdLine: String; RestoreTerminalFlag: Boolean): Integer;
 var Status: Integer;

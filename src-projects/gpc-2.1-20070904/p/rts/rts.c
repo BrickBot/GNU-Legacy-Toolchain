@@ -66,6 +66,23 @@
 #include <ctype.h>
 #endif
 
+#if !defined(HAVE_DIRENT_H) && !defined(HAVE_SYS_NDIR_H) && !defined(HAVE_SYS_DIR_H) && !defined(HAVE_NDIR_H)
+#define NOT_HAVE_ANY_DIR_H
+
+// Dummy definition from newlib/libc/sys/linux/sys/dirent.h
+//  (not actually used in systems not having any DIR but needed for standard member definitions)
+typedef struct {
+    int dd_fd;		/* directory file */
+    int dd_loc;		/* position in buffer */
+    int dd_seek;
+    char *dd_buf;	/* buffer */
+    int dd_len;		/* buffer length */
+    int dd_size;	/* amount of data in buffer */
+//    _LOCK_RECURSIVE_T dd_lock;
+} DIR;
+
+#else
+
 #if HAVE_DIRENT_H
 #include <dirent.h>
 #else
@@ -79,6 +96,8 @@
 #if HAVE_NDIR_H
 #include <ndir.h>
 #endif
+#endif
+
 #endif
 
 #ifdef HAVE_ERRNO_H
@@ -1544,19 +1563,33 @@ GLOBAL (Boolean _p_StatFS (char *Path UNUSED, StatFSBuffer *Buf))
 
 GLOBAL (DIR *_p_CStringOpenDir (char *DirName))
 {
+#ifndef NOT_HAVE_ANY_DIR_H
   errno = 0;
   return opendir (DirName);
+#else
+  errno = ENOSYS;
+  return NULL;
+#endif
 }
 
 GLOBAL (char *_p_CStringReadDir (DIR *Dir))
 {
+#ifndef NOT_HAVE_ANY_DIR_H
   struct dirent *d = readdir (Dir);
   return d ? d->d_name : NULL;
+#else
+  errno = ENOSYS;
+  return NULL;
+#endif
 }
 
 GLOBAL (void _p_CStringCloseDir (DIR *Dir))
 {
+#ifndef NOT_HAVE_ANY_DIR_H
   if (Dir) closedir (Dir);
+#else
+  errno = ENOSYS;
+#endif
 }
 
 /** Returns the value of the symlink FileName in a CString allocated
