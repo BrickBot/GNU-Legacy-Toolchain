@@ -68,7 +68,7 @@ package body System.WCh_JIS is
    ----------------
 
    procedure JIS_To_EUC
-     (J    : in Wide_Character;
+     (J    : Wide_Character;
       EUC1 : out Character;
       EUC2 : out Character)
    is
@@ -91,7 +91,7 @@ package body System.WCh_JIS is
    ----------------------
 
    procedure JIS_To_Shift_JIS
-     (J   : in Wide_Character;
+     (J   : Wide_Character;
       SJ1 : out Character;
       SJ2 : out Character)
    is

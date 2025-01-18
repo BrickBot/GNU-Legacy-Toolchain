@@ -81,18 +81,18 @@ package body Exp_Dist is
    -----------------------
 
    procedure Build_General_Calling_Stubs
-     (Decls                     : in List_Id;
-      Statements                : in List_Id;
-      Target_Partition          : in Entity_Id;
-      RPC_Receiver              : in Node_Id;
-      Subprogram_Id             : in Node_Id;
-      Asynchronous              : in Node_Id := Empty;
-      Is_Known_Asynchronous     : in Boolean := False;
-      Is_Known_Non_Asynchronous : in Boolean := False;
-      Is_Function               : in Boolean;
-      Spec                      : in Node_Id;
-      Object_Type               : in Entity_Id := Empty;
-      Nod                       : in Node_Id);
+     (Decls                     : List_Id;
+      Statements                : List_Id;
+      Target_Partition          : Entity_Id;
+      RPC_Receiver              : Node_Id;
+      Subprogram_Id             : Node_Id;
+      Asynchronous              : Node_Id := Empty;
+      Is_Known_Asynchronous     : Boolean := False;
+      Is_Known_Non_Asynchronous : Boolean := False;
+      Is_Function               : Boolean;
+      Spec                      : Node_Id;
+      Object_Type               : Entity_Id := Empty;
+      Nod                       : Node_Id);
    --  Build calling stubs for general purpose. The parameters are:
    --    Decls             : a place to put declarations
    --    Statements        : a place to put statements
@@ -162,19 +162,19 @@ package body Exp_Dist is
    --  there are no parameters, an empty list is returned.
 
    procedure Add_Calling_Stubs_To_Declarations
-     (Pkg_Spec : in Node_Id;
-      Decls    : in List_Id);
+     (Pkg_Spec : Node_Id;
+      Decls    : List_Id);
    --  Add calling stubs to the declarative part
 
    procedure Add_Receiving_Stubs_To_Declarations
-     (Pkg_Spec : in Node_Id;
-      Decls    : in List_Id);
+     (Pkg_Spec : Node_Id;
+      Decls    : List_Id);
    --  Add receiving stubs to the declarative part
 
-   procedure Add_RAS_Dereference_Attribute (N : in Node_Id);
+   procedure Add_RAS_Dereference_Attribute (N : Node_Id);
    --  Add a subprogram body for RAS dereference
 
-   procedure Add_RAS_Access_Attribute (N : in Node_Id);
+   procedure Add_RAS_Access_Attribute (N : Node_Id);
    --  Add a subprogram body for RAS Access attribute
 
    function Could_Be_Asynchronous (Spec : Node_Id) return Boolean;
@@ -297,9 +297,9 @@ package body Exp_Dist is
    --  Mapping between a RCI subprogram and the corresponding calling stubs
 
    procedure Add_Stub_Type
-     (Designated_Type     : in Entity_Id;
-      RACW_Type           : in Entity_Id;
-      Decls               : in List_Id;
+     (Designated_Type     : Entity_Id;
+      RACW_Type           : Entity_Id;
+      Decls               : List_Id;
       Stub_Type           : out Entity_Id;
       Stub_Type_Access    : out Entity_Id;
       Object_RPC_Receiver : out Entity_Id;
@@ -310,28 +310,28 @@ package body Exp_Dist is
    --  anyhow and Existing is set to True.
 
    procedure Add_RACW_Read_Attribute
-     (RACW_Type           : in Entity_Id;
-      Stub_Type           : in Entity_Id;
-      Stub_Type_Access    : in Entity_Id;
-      Declarations        : in List_Id);
+     (RACW_Type           : Entity_Id;
+      Stub_Type           : Entity_Id;
+      Stub_Type_Access    : Entity_Id;
+      Declarations        : List_Id);
    --  Add Read attribute in Decls for the RACW type. The Read attribute
    --  is added right after the RACW_Type declaration while the body is
    --  inserted after Declarations.
 
    procedure Add_RACW_Write_Attribute
-     (RACW_Type           : in Entity_Id;
-      Stub_Type           : in Entity_Id;
-      Stub_Type_Access    : in Entity_Id;
-      Object_RPC_Receiver : in Entity_Id;
-      Declarations        : in List_Id);
+     (RACW_Type           : Entity_Id;
+      Stub_Type           : Entity_Id;
+      Stub_Type_Access    : Entity_Id;
+      Object_RPC_Receiver : Entity_Id;
+      Declarations        : List_Id);
    --  Same thing for the Write attribute
 
    procedure Add_RACW_Read_Write_Attributes
-     (RACW_Type           : in Entity_Id;
-      Stub_Type           : in Entity_Id;
-      Stub_Type_Access    : in Entity_Id;
-      Object_RPC_Receiver : in Entity_Id;
-      Declarations        : in List_Id);
+     (RACW_Type           : Entity_Id;
+      Stub_Type           : Entity_Id;
+      Stub_Type_Access    : Entity_Id;
+      Object_RPC_Receiver : Entity_Id;
+      Declarations        : List_Id);
    --  Add Read and Write attributes declarations and bodies for a given
    --  RACW type. The declarations are added just after the declaration
    --  of the RACW type itself, while the bodies are inserted at the end
@@ -388,8 +388,8 @@ package body Exp_Dist is
    ---------------------------------------
 
    procedure Add_Calling_Stubs_To_Declarations
-     (Pkg_Spec : in Node_Id;
-      Decls    : in List_Id)
+     (Pkg_Spec : Node_Id;
+      Decls    : List_Id)
    is
       Current_Subprogram_Number : Int := 0;
       Current_Declaration       : Node_Id;
@@ -456,7 +456,7 @@ package body Exp_Dist is
    -- Add_RACW_Features --
    -----------------------
 
-   procedure Add_RACW_Features (RACW_Type : in Entity_Id)
+   procedure Add_RACW_Features (RACW_Type : Entity_Id)
    is
       Desig : constant Entity_Id :=
                 Etype (Designated_Type (RACW_Type));
@@ -539,9 +539,9 @@ package body Exp_Dist is
    -------------------------------------------------
 
    procedure Add_RACW_Primitive_Declarations_And_Bodies
-     (Designated_Type : in Entity_Id;
-      Insertion_Node  : in Node_Id;
-      Decls           : in List_Id)
+     (Designated_Type : Entity_Id;
+      Insertion_Node  : Node_Id;
+      Decls           : List_Id)
    is
       --  Set sloc of generated declaration to be that of the
       --  insertion node, so the declarations are recognized as
@@ -744,10 +744,10 @@ package body Exp_Dist is
    -----------------------------
 
    procedure Add_RACW_Read_Attribute
-     (RACW_Type           : in Entity_Id;
-      Stub_Type           : in Entity_Id;
-      Stub_Type_Access    : in Entity_Id;
-      Declarations        : in List_Id)
+     (RACW_Type           : Entity_Id;
+      Stub_Type           : Entity_Id;
+      Stub_Type_Access    : Entity_Id;
+      Declarations        : List_Id)
    is
       Loc : constant Source_Ptr := Sloc (RACW_Type);
 
@@ -987,11 +987,11 @@ package body Exp_Dist is
    ------------------------------------
 
    procedure Add_RACW_Read_Write_Attributes
-     (RACW_Type           : in Entity_Id;
-      Stub_Type           : in Entity_Id;
-      Stub_Type_Access    : in Entity_Id;
-      Object_RPC_Receiver : in Entity_Id;
-      Declarations        : in List_Id)
+     (RACW_Type           : Entity_Id;
+      Stub_Type           : Entity_Id;
+      Stub_Type_Access    : Entity_Id;
+      Object_RPC_Receiver : Entity_Id;
+      Declarations        : List_Id)
    is
    begin
       Add_RACW_Write_Attribute
@@ -1013,11 +1013,11 @@ package body Exp_Dist is
    ------------------------------
 
    procedure Add_RACW_Write_Attribute
-     (RACW_Type           : in Entity_Id;
-      Stub_Type           : in Entity_Id;
-      Stub_Type_Access    : in Entity_Id;
-      Object_RPC_Receiver : in Entity_Id;
-      Declarations        : in List_Id)
+     (RACW_Type           : Entity_Id;
+      Stub_Type           : Entity_Id;
+      Stub_Type_Access    : Entity_Id;
+      Object_RPC_Receiver : Entity_Id;
+      Declarations        : List_Id)
    is
       Loc : constant Source_Ptr := Sloc (RACW_Type);
 
@@ -1180,7 +1180,7 @@ package body Exp_Dist is
    -- Add_RAS_Access_Attribute --
    ------------------------------
 
-   procedure Add_RAS_Access_Attribute (N : in Node_Id) is
+   procedure Add_RAS_Access_Attribute (N : Node_Id) is
       Ras_Type : constant Entity_Id := Defining_Identifier (N);
       Fat_Type : constant Entity_Id := Equivalent_Type (Ras_Type);
       --  Ras_Type is the access to subprogram type while Fat_Type points to
@@ -1201,10 +1201,10 @@ package body Exp_Dist is
 
       Loc : constant Source_Ptr := Sloc (N);
 
-      procedure Set_Field (Field_Name : in Name_Id; Value : in Node_Id);
+      procedure Set_Field (Field_Name : Name_Id; Value : Node_Id);
       --  Set a field name for the return value
 
-      procedure Set_Field (Field_Name : in Name_Id; Value : in Node_Id)
+      procedure Set_Field (Field_Name : Name_Id; Value : Node_Id)
       is
       begin
          Append_To (Proc_Statements,
@@ -1319,7 +1319,7 @@ package body Exp_Dist is
    -- Add_RAS_Dereference_Attribute --
    -----------------------------------
 
-   procedure Add_RAS_Dereference_Attribute (N : in Node_Id) is
+   procedure Add_RAS_Dereference_Attribute (N : Node_Id) is
       Loc : constant Source_Ptr := Sloc (N);
 
       Type_Def : constant Node_Id   := Type_Definition (N);
@@ -1586,8 +1586,8 @@ package body Exp_Dist is
    -----------------------------------------
 
    procedure Add_Receiving_Stubs_To_Declarations
-     (Pkg_Spec : in Node_Id;
-      Decls    : in List_Id)
+     (Pkg_Spec : Node_Id;
+      Decls    : List_Id)
    is
       Loc : constant Source_Ptr := Sloc (Pkg_Spec);
 
@@ -1822,9 +1822,9 @@ package body Exp_Dist is
    -------------------
 
    procedure Add_Stub_Type
-     (Designated_Type     : in Entity_Id;
-      RACW_Type           : in Entity_Id;
-      Decls               : in List_Id;
+     (Designated_Type     : Entity_Id;
+      RACW_Type           : Entity_Id;
+      Decls               : List_Id;
       Stub_Type           : out Entity_Id;
       Stub_Type_Access    : out Entity_Id;
       Object_RPC_Receiver : out Entity_Id;
@@ -2553,7 +2553,7 @@ package body Exp_Dist is
 
       Spec_To_Use : Node_Id;
 
-      procedure Insert_Partition_Check (Parameter : in Node_Id);
+      procedure Insert_Partition_Check (Parameter : Node_Id);
       --  Check that the parameter has been elaborated on the same partition
       --  than the controlling parameter (E.4(19)).
 
@@ -2561,7 +2561,7 @@ package body Exp_Dist is
       -- Insert_Partition_Check --
       ----------------------------
 
-      procedure Insert_Partition_Check (Parameter : in Node_Id) is
+      procedure Insert_Partition_Check (Parameter : Node_Id) is
          Parameter_Entity  : constant Entity_Id :=
                                Defining_Identifier (Parameter);
          Condition         : Node_Id;
@@ -3330,7 +3330,7 @@ package body Exp_Dist is
    -- Expand_All_Calls_Remote_Subprogram_Call --
    ---------------------------------------------
 
-   procedure Expand_All_Calls_Remote_Subprogram_Call (N : in Node_Id) is
+   procedure Expand_All_Calls_Remote_Subprogram_Call (N : Node_Id) is
       Called_Subprogram : constant Entity_Id  := Entity (Name (N));
       RCI_Package       : constant Entity_Id  := Scope (Called_Subprogram);
       Loc               : constant Source_Ptr := Sloc (N);
@@ -3400,7 +3400,7 @@ package body Exp_Dist is
    -- Expand_Calling_Stubs_Bodies --
    ---------------------------------
 
-   procedure Expand_Calling_Stubs_Bodies (Unit_Node : in Node_Id) is
+   procedure Expand_Calling_Stubs_Bodies (Unit_Node : Node_Id) is
       Spec  : constant Node_Id := Specification (Unit_Node);
       Decls : constant List_Id := Visible_Declarations (Spec);
 
@@ -3415,7 +3415,7 @@ package body Exp_Dist is
    -- Expand_Receiving_Stubs_Bodies --
    -----------------------------------
 
-   procedure Expand_Receiving_Stubs_Bodies (Unit_Node : in Node_Id) is
+   procedure Expand_Receiving_Stubs_Bodies (Unit_Node : Node_Id) is
       Spec  : Node_Id;
       Decls : List_Id;
       Temp  : List_Id;
@@ -3668,7 +3668,7 @@ package body Exp_Dist is
    -- RACW_Type_Is_Asynchronous --
    -------------------------------
 
-   procedure RACW_Type_Is_Asynchronous (RACW_Type : in Entity_Id) is
+   procedure RACW_Type_Is_Asynchronous (RACW_Type : Entity_Id) is
       N : constant Node_Id := Asynchronous_Flags_Table.Get (RACW_Type);
       pragma Assert (N /= Empty);
 
@@ -3710,7 +3710,7 @@ package body Exp_Dist is
    -----------------------------------------------
 
    procedure Remote_Types_Tagged_Full_View_Encountered
-     (Full_View : in Entity_Id)
+     (Full_View : Entity_Id)
    is
       Stub_Elements : constant Stub_Structure :=
                         Stubs_Table.Get (Full_View);

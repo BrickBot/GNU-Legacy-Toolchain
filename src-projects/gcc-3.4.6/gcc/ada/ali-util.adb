@@ -371,8 +371,8 @@ package body ALI.Util is
                --  set the Interface flag in the Withs table, so that its
                --  dependant are not considered for elaboration order.
 
-               if ALIs.Table (Idread).Interface then
-                  Withs.Table (W).Interface := True;
+               if ALIs.Table (Idread).Is_Interface then
+                  Withs.Table (W).Is_Interface := True;
                   Interface_Library_Unit := True;
 
                   --  Set the entry in the Interfaces hash table, so that other
@@ -393,7 +393,7 @@ package body ALI.Util is
             --  set the flag in the entry of the Withs table.
 
             elsif Interface_Library_Unit and then Interfaces.Get (Afile) then
-               Withs.Table (W).Interface := True;
+               Withs.Table (W).Is_Interface := True;
             end if;
          end loop;
       end loop;

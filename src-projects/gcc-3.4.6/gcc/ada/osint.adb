@@ -37,7 +37,6 @@ with System.Case_Util; use System.Case_Util;
 
 with Unchecked_Conversion;
 
-with GNAT.OS_Lib; use GNAT.OS_Lib;
 with GNAT.HTable;
 
 package body Osint is
@@ -1401,7 +1400,7 @@ package body Osint is
    -- Is_Readonly_Library --
    -------------------------
 
-   function Is_Readonly_Library (File : in File_Name_Type) return Boolean is
+   function Is_Readonly_Library (File : File_Name_Type) return Boolean is
    begin
       Get_Name_String (File);
 
@@ -2156,7 +2155,7 @@ package body Osint is
          type Actual_Source_Ptr is access Actual_Source_Buffer;
          --  This is the pointer type for the physical buffer allocated
 
-         Actual_Ptr : Actual_Source_Ptr := new Actual_Source_Buffer;
+         Actual_Ptr : constant Actual_Source_Ptr := new Actual_Source_Buffer;
          --  And this is the actual physical buffer
 
       begin
@@ -2196,6 +2195,7 @@ package body Osint is
 
       --  The status should never be False. But, if it is, what can we do?
       --  So, we don't test it.
+      pragma Assert (Status);
 
    end Read_Source_File;
 

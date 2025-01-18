@@ -30,7 +30,6 @@ with Elists;    use Elists;
 with Lib;       use Lib;
 with Osint;     use Osint;
 with Opt;       use Opt;
-with Osint;     use Osint;
 with Osint.C;   use Osint.C;
 with Namet;     use Namet;
 with Nlists;    use Nlists;

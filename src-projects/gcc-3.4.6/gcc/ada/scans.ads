@@ -430,7 +430,7 @@ package Scans is
    --  Saves the current scan state for possible later restoration. Note that
    --  there is no harm in saving the state and then never restoring it.
 
-   procedure Restore_Scan_State (Saved_State : in Saved_Scan_State);
+   procedure Restore_Scan_State (Saved_State : Saved_Scan_State);
    pragma Inline (Restore_Scan_State);
    --  Restores a scan state saved by a call to Save_Scan_State.
    --  The saved scan state must refer to the current source file.

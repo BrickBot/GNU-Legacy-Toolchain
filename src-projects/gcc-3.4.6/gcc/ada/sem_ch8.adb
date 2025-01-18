@@ -932,7 +932,8 @@ package body Sem_Ch8 is
    begin
       if not Is_Overloaded (P) then
          if Ekind (Etype (Nam)) /= E_Subprogram_Type
-           or else not Type_Conformant (Etype (Nam), New_S) then
+           or else not Type_Conformant (Etype (Nam), New_S)
+         then
             Error_Msg_N ("designated type does not match specification", P);
          else
             Resolve (P);
@@ -947,7 +948,8 @@ package body Sem_Ch8 is
          while Present (It.Nam) loop
 
             if Ekind (It.Nam) = E_Subprogram_Type
-              and then Type_Conformant (It.Nam, New_S) then
+              and then Type_Conformant (It.Nam, New_S)
+            then
 
                if Typ /= Any_Id then
                   Error_Msg_N ("ambiguous renaming", P);

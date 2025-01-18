@@ -1504,7 +1504,6 @@ package body CStand is
             Write_Str (" .. ");
             Write_Str (IEEES_Last'Universal_Literal_String);
 
-
          elsif Digs = IEEEL_Digits then
             Write_Str (IEEEL_First'Universal_Literal_String);
             Write_Str (" .. ");

@@ -60,7 +60,6 @@ package Namet is
 --                       the last character of the name, or they are followed
 --                       by an upper case letter or an underscore.
 
-
 --    Operator symbols   Stored with an initial letter O, and the remainder
 --                       of the name is the lower case characters XXX where
 --                       the name is Name_Op_XXX, see Snames spec for a full
@@ -125,7 +124,7 @@ package Namet is
 --  In the binder, the Byte field is unused, and the Int field is used in
 --  various ways depending on the name involved (see binder documentation).
 
-   Name_Buffer : String (1 .. 16*1024);
+   Name_Buffer : String (1 .. 16 * 1024);
    --  This buffer is used to set the name to be stored in the table for the
    --  Name_Find call, and to retrieve the name for the Get_Name_String call.
    --  The plus 1 in the length allows for cases of adding ASCII.NUL. The

@@ -33,15 +33,12 @@
 with Casing;   use Casing;
 with Debug;    use Debug;
 with Err_Vars; use Err_Vars;
-with Hostparm;
 with Namet;    use Namet;
 with Opt;      use Opt;
 with Output;   use Output;
 with Sinput;   use Sinput;
 with Snames;   use Snames;
 with Targparm; use Targparm;
-with Table;
-with Types;    use Types;
 with Uintp;    use Uintp;
 
 package body Erroutc is

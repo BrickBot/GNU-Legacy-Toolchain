@@ -106,7 +106,10 @@ package body Exception_Traces is
    --  the standard GNAT library that can raise exceptions. This ensures
    --  that the exception propagation can properly find these routines
 
-   pragma Propagate_Exceptions;
+   --  NOTE: This pragma is now obsolete
+   --  c.f. gcc.gnu.org/onlinedocs/gnat_rm/Pragma-Propagate_005fExceptions.html
+
+   --  pragma Propagate_Exceptions;
 
    ----------------------
    -- Notify_Exception --
@@ -213,7 +216,6 @@ package body Exception_Traces is
          end if;
       end loop;
    end To_Stderr;
-
 
    ------------------------------------
    -- Handling GNAT.Exception_Traces --

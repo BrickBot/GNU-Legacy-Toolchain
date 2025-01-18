@@ -489,7 +489,7 @@ package body Binde is
             Write_Str ("  decrementing Num_Pred for unit ");
             Write_Unit_Name (Units.Table (U).Uname);
             Write_Str (" new value = ");
-            Write_Int (Int (UNR.Table (U).Num_Pred));
+            Write_Int (UNR.Table (U).Num_Pred);
             Write_Eol;
          end if;
 
@@ -770,7 +770,7 @@ package body Binde is
          --  Skip also if no ALI file for this with, happens with certain
          --  specialized generic files that do not get compiled.
 
-         if not Withs.Table (W).Interface
+         if not Withs.Table (W).Is_Interface
            and then Withs.Table (W).Afile /= No_File
            and then Generic_Separately_Compiled (Withs.Table (W).Sfile)
          then
@@ -949,7 +949,7 @@ package body Binde is
                   Write_Str
                     ("    Elaborate_Body = True, Num_Pred for body = ");
                   Write_Int
-                    (Int (UNR.Table (Corresponding_Body (U)).Num_Pred));
+                    (UNR.Table (Corresponding_Body (U)).Num_Pred);
                else
                   Write_Str
                     ("    Elaborate_Body = False");
@@ -1011,7 +1011,7 @@ package body Binde is
          --  there is a body and a spec, then spec must be elaborated first
          --  Note that the corresponding spec immediately follows the body
 
-         if not Units.Table (U).Interface
+         if not Units.Table (U).Is_Interface
            and then Units.Table (U).Utype = Is_Body
          then
             Build_Link (Corresponding_Spec (U), U, Spec_First);
@@ -1021,12 +1021,12 @@ package body Binde is
          --  process WITH references for this unit ignoring generic units and
          --  interfaces to stand-alone libraries.
 
-         if not Units.Table (U).Interface then
+         if not Units.Table (U).Is_Interface then
             for
               W in Units.Table (U).First_With .. Units.Table (U).Last_With
             loop
                if Withs.Table (W).Sfile /= No_File
-                 and then (not Withs.Table (W).Interface)
+                 and then (not Withs.Table (W).Is_Interface)
                then
                   --  Check for special case of withing a unit that does not
                   --  exist any more. If the unit was completely missing we
@@ -1041,8 +1041,7 @@ package body Binde is
                      goto Next_With;
                   end if;
 
-                  Withed_Unit :=
-                    Unit_Id (Unit_Id_Of (Withs.Table (W).Uname));
+                  Withed_Unit := Unit_Id_Of (Withs.Table (W).Uname);
 
                   --  Pragma Elaborate_All case, for this we use the recursive
                   --  Elab_All_Links procedure to establish the links.

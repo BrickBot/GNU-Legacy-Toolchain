@@ -1845,7 +1845,7 @@ package body Sem_Ch6 is
          null;
 
       elsif Is_Always_Inlined (Subp) then
-         Error_Msg_NE (Msg (1 .. Msg'Length - 1), N, Subp);
+         Error_Msg_NE (Msg (Msg'First .. Msg'Last - 1), N, Subp);
 
       elsif Ineffective_Inline_Warnings then
          Error_Msg_NE (Msg, N, Subp);
@@ -2389,7 +2389,10 @@ package body Sem_Ch6 is
       Err_Loc : Node_Id := Empty)
    is
       Result : Boolean;
-
+      --  Disable unreferenced modified Result warning based on GCC 4.5
+      --  github.com/gcc-mirror/gcc/blob/releases/gcc-4.5/gcc/ada/sem_ch6.adb
+      --    #L4284
+      pragma Warnings (Off, Result);
    begin
       Check_Conformance
         (New_Id, Old_Id, Fully_Conformant, True, Result, Err_Loc);
@@ -2406,7 +2409,10 @@ package body Sem_Ch6 is
       Get_Inst : Boolean := False)
    is
       Result : Boolean;
-
+      --  Disable unreferenced modified Result warning based on GCC 4.5
+      --  github.com/gcc-mirror/gcc/blob/releases/gcc-4.5/gcc/ada/sem_ch6.adb
+      --    #L4301
+      pragma Warnings (Off, Result);
    begin
       Check_Conformance
         (New_Id, Old_Id, Mode_Conformant, True, Result, Err_Loc, Get_Inst);
@@ -2901,7 +2907,10 @@ package body Sem_Ch6 is
       Err_Loc : Node_Id := Empty)
    is
       Result : Boolean;
-
+      --  Disable unreferenced modified Result warning based on GCC 4.5
+      --  github.com/gcc-mirror/gcc/blob/releases/gcc-4.5/gcc/ada/sem_ch6.adb
+      --    #L5019
+      pragma Warnings (Off, Result);
    begin
       Check_Conformance
         (New_Id, Old_Id, Subtype_Conformant, True, Result, Err_Loc);
@@ -2917,7 +2926,10 @@ package body Sem_Ch6 is
       Err_Loc : Node_Id := Empty)
    is
       Result : Boolean;
-
+      --  Disable unreferenced modified Result warning based on GCC 4.5
+      --  github.com/gcc-mirror/gcc/blob/releases/gcc-4.5/gcc/ada/sem_ch6.adb
+      --    #L5036
+      pragma Warnings (Off, Result);
    begin
       Check_Conformance
         (New_Id, Old_Id, Type_Conformant, True, Result, Err_Loc);
@@ -4231,7 +4243,7 @@ package body Sem_Ch6 is
       --  set when freezing entities, so we must examine the place of the
       --  declaration in the tree, and recognize wrapper packages as well.
 
-      procedure Maybe_Primitive_Operation (Overriding : Boolean := False);
+      procedure Maybe_Primitive_Operation (Is_Overriding : Boolean := False);
       --  If the subprogram being analyzed is a primitive operation of
       --  the type of one of its formals, set the corresponding flag.
 
@@ -4267,7 +4279,7 @@ package body Sem_Ch6 is
       -- Maybe_Primitive_Operation --
       -------------------------------
 
-      procedure Maybe_Primitive_Operation (Overriding : Boolean := False) is
+      procedure Maybe_Primitive_Operation (Is_Overriding : Boolean := False) is
          Formal : Entity_Id;
          F_Typ  : Entity_Id;
          B_Typ  : Entity_Id;
@@ -4298,7 +4310,7 @@ package body Sem_Ch6 is
             then
                if Is_Abstract (T)
                  and then Is_Abstract (S)
-                 and then (not Overriding or else not Is_Abstract (E))
+                 and then (not Is_Overriding or else not Is_Abstract (E))
                then
                   Error_Msg_N ("abstract subprograms must be visible "
                                 & "('R'M 3.9.3(10))!", S);
@@ -4306,7 +4318,7 @@ package body Sem_Ch6 is
                elsif Ekind (S) = E_Function
                  and then Is_Tagged_Type (T)
                  and then T = Base_Type (Etype (S))
-                 and then not Overriding
+                 and then not Is_Overriding
                then
                   Error_Msg_N
                     ("private function with tagged result must"
@@ -4371,7 +4383,7 @@ package body Sem_Ch6 is
 
          elsif (Ekind (Current_Scope) = E_Package
                  and then not In_Package_Body (Current_Scope))
-           or else Overriding
+           or else Is_Overriding
          then
             --  For function, check return type
 
@@ -4697,7 +4709,7 @@ package body Sem_Ch6 is
                         Check_Dispatching_Operation (S, Empty);
                      end if;
 
-                     Maybe_Primitive_Operation (Overriding => True);
+                     Maybe_Primitive_Operation (Is_Overriding => True);
                      goto Check_Inequality;
                   end;
 

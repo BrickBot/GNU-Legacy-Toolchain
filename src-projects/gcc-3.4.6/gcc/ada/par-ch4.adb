@@ -1779,7 +1779,9 @@ package body Ch4 is
 
          else
             if Token = Tok_Double_Asterisk then
-               if Style_Check then Style.Check_Exponentiation_Operator; end if;
+               if Style_Check then
+                  Style.Check_Exponentiation_Operator;
+               end if;
                Node2 := New_Node (N_Op_Expon, Token_Ptr);
                Scan; -- past **
                Set_Left_Opnd (Node2, Node1);
@@ -1792,7 +1794,9 @@ package body Ch4 is
                exit when Token not in Token_Class_Mulop;
                Tokptr := Token_Ptr;
                Node2 := New_Node (P_Multiplying_Operator, Tokptr);
-               if Style_Check then Style.Check_Binary_Operator; end if;
+               if Style_Check then
+                  Style.Check_Binary_Operator;
+               end if;
                Scan; -- past operator
                Set_Left_Opnd (Node2, Node1);
                Set_Right_Opnd (Node2, P_Factor);
@@ -1804,7 +1808,9 @@ package body Ch4 is
                exit when Token not in Token_Class_Binary_Addop;
                Tokptr := Token_Ptr;
                Node2 := New_Node (P_Binary_Adding_Operator, Tokptr);
-               if Style_Check then Style.Check_Binary_Operator; end if;
+               if Style_Check then
+                  Style.Check_Binary_Operator;
+               end if;
                Scan; -- past operator
                Set_Left_Opnd (Node2, Node1);
                Set_Right_Opnd (Node2, P_Term);
@@ -1823,7 +1829,9 @@ package body Ch4 is
          if Token in Token_Class_Unary_Addop then
             Tokptr := Token_Ptr;
             Node1 := New_Node (P_Unary_Adding_Operator, Tokptr);
-            if Style_Check then Style.Check_Unary_Plus_Or_Minus; end if;
+            if Style_Check then
+               Style.Check_Unary_Plus_Or_Minus;
+            end if;
             Scan; -- past operator
             Set_Right_Opnd (Node1, P_Term);
             Set_Op_Name (Node1);
@@ -1981,7 +1989,9 @@ package body Ch4 is
    begin
       if Token = Tok_Abs then
          Node1 := New_Node (N_Op_Abs, Token_Ptr);
-         if Style_Check then Style.Check_Abs_Not; end if;
+         if Style_Check then
+            Style.Check_Abs_Not;
+         end if;
          Scan; -- past ABS
          Set_Right_Opnd (Node1, P_Primary);
          Set_Op_Name (Node1);
@@ -1989,7 +1999,9 @@ package body Ch4 is
 
       elsif Token = Tok_Not then
          Node1 := New_Node (N_Op_Not, Token_Ptr);
-         if Style_Check then Style.Check_Abs_Not; end if;
+         if Style_Check then
+            Style.Check_Abs_Not;
+         end if;
          Scan; -- past NOT
          Set_Right_Opnd (Node1, P_Primary);
          Set_Op_Name (Node1);
@@ -2148,7 +2160,9 @@ package body Ch4 is
    function P_Logical_Operator return Node_Kind is
    begin
       if Token = Tok_And then
-         if Style_Check then Style.Check_Binary_Operator; end if;
+         if Style_Check then
+            Style.Check_Binary_Operator;
+         end if;
          Scan; -- past AND
 
          if Token = Tok_Then then
@@ -2159,7 +2173,9 @@ package body Ch4 is
          end if;
 
       elsif Token = Tok_Or then
-         if Style_Check then Style.Check_Binary_Operator; end if;
+         if Style_Check then
+            Style.Check_Binary_Operator;
+         end if;
          Scan; -- past OR
 
          if Token = Tok_Else then
@@ -2170,7 +2186,9 @@ package body Ch4 is
          end if;
 
       else -- Token = Tok_Xor
-         if Style_Check then Style.Check_Binary_Operator; end if;
+         if Style_Check then
+            Style.Check_Binary_Operator;
+         end if;
          Scan; -- past XOR
          return N_Op_Xor;
       end if;
@@ -2209,7 +2227,9 @@ package body Ch4 is
       end if;
 
       Op_Kind := Relop_Node (Token);
-      if Style_Check then Style.Check_Binary_Operator; end if;
+      if Style_Check then
+         Style.Check_Binary_Operator;
+      end if;
       Scan; -- past operator token
 
       if Prev_Token = Tok_Not then

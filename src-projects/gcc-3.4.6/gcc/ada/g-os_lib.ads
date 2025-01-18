@@ -58,7 +58,7 @@ pragma Elaborate_Body (OS_Lib);
    --  this type. Note that the caller is responsible for freeing this
    --  String to avoid memory leaks.
 
-   function "=" (Left, Right : in String_Access) return Boolean
+   function "=" (Left, Right : String_Access) return Boolean
      renames Strings."=";
 
    procedure Free (X : in out String_Access) renames Strings.Free;
@@ -66,7 +66,7 @@ pragma Elaborate_Body (OS_Lib);
    --  String_Access
 
    subtype String_List is Strings.String_List;
-   function "=" (Left, Right : in String_List) return Boolean
+   function "=" (Left, Right : String_List) return Boolean
      renames Strings."=";
 
    function "&" (Left : String_Access; Right : String_Access)
@@ -80,7 +80,7 @@ pragma Elaborate_Body (OS_Lib);
 
    subtype String_List_Access is Strings.String_List_Access;
    --  General purpose array and pointer for list of string accesses
-   function "=" (Left, Right : in String_List_Access) return Boolean
+   function "=" (Left, Right : String_List_Access) return Boolean
      renames Strings."=";
 
    procedure Free (Arg : in out String_List_Access)

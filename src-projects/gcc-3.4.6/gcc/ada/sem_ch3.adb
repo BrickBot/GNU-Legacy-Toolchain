@@ -10477,6 +10477,10 @@ package body Sem_Ch3 is
       --  private view inherits only F1
 
       else
+       --  Removed "return True" line after loop to address "unreachable code"
+       --    warning/error, based on changes found in release 4.5
+       --  github.com/gcc-mirror/gcc/blob/releases/gcc-4.5/gcc/ada/sem_ch3.adb
+       --    #L15025
          declare
             Ancestor : Entity_Id := Scope (C);
 
@@ -10491,7 +10495,7 @@ package body Sem_Ch3 is
                Ancestor := Etype (Ancestor);
             end loop;
 
-            return True;
+            --  return True;
          end;
       end if;
    end Is_Visible_Component;

@@ -771,7 +771,8 @@ package body Sem_Ch5 is
          Kind := Ekind (Scope_Id);
 
          if Kind = E_Loop
-           and then (No (Target) or else Scope_Id = U_Name) then
+           and then (No (Target) or else Scope_Id = U_Name)
+         then
             Set_Has_Exit (Scope_Id);
             exit;
 

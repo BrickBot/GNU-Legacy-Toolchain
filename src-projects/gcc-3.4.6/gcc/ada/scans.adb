@@ -37,7 +37,7 @@ package body Scans is
    -- Restore_Scan_State --
    ------------------------
 
-   procedure Restore_Scan_State (Saved_State : in Saved_Scan_State) is
+   procedure Restore_Scan_State (Saved_State : Saved_Scan_State) is
    begin
       Scan_Ptr                 := Saved_State.Save_Scan_Ptr;
       Token                    := Saved_State.Save_Token;

@@ -297,7 +297,6 @@ package body Fmap is
                return;
             end if;
 
-
             Name_Len := Last - First + 1;
             Name_Buffer (1 .. Name_Len) := SP (First .. Last);
             Uname := Find_Name;

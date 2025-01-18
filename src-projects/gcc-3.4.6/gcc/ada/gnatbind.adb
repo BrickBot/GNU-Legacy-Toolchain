@@ -93,7 +93,7 @@ procedure Gnatbind is
          Output_File_Name_Seen := True;
 
          if Argv'Length = 0
-           or else (Argv'Length >= 1 and then Argv (1) = '-')
+           or else (Argv'Length >= 1 and then Argv (Argv'First) = '-')
          then
             Fail ("output File_Name missing after -o");
 
@@ -101,22 +101,22 @@ procedure Gnatbind is
             Output_File_Name := new String'(Argv);
          end if;
 
-      elsif Argv'Length >= 2 and then Argv (1) = '-' then
+      elsif Argv'Length >= 2 and then Argv (Argv'First) = '-' then
 
          --  -I-
 
-         if Argv (2 .. Argv'Last) = "I-" then
+         if Argv (Argv'First + 1 .. Argv'Last) = "I-" then
             Opt.Look_In_Primary_Dir := False;
 
          --  -Idir
 
-         elsif Argv (2) = 'I' then
-            Add_Src_Search_Dir (Argv (3 .. Argv'Last));
-            Add_Lib_Search_Dir (Argv (3 .. Argv'Last));
+         elsif Argv (Argv'First + 1) = 'I' then
+            Add_Src_Search_Dir (Argv (Argv'First + 2 .. Argv'Last));
+            Add_Lib_Search_Dir (Argv (Argv'First + 2 .. Argv'Last));
 
          --  -Ldir
 
-         elsif Argv (2) = 'L' then
+         elsif Argv (Argv'First + 1) = 'L' then
             if Argv'Length >= 3 then
 
                --  Remember that the -L switch was specified, so that if this
@@ -127,11 +127,14 @@ procedure Gnatbind is
 
                Opt.Bind_For_Library := True;
                Opt.Ada_Init_Name :=
-                 new String'(Argv (3 .. Argv'Last) & Opt.Ada_Init_Suffix);
+                 new String'(Argv (Argv'First + 2 .. Argv'Last)
+                   & Opt.Ada_Init_Suffix);
                Opt.Ada_Final_Name :=
-                 new String'(Argv (3 .. Argv'Last) & Opt.Ada_Final_Suffix);
+                 new String'(Argv (Argv'First + 2 .. Argv'Last)
+                   & Opt.Ada_Final_Suffix);
                Opt.Ada_Main_Name :=
-                 new String'(Argv (3 .. Argv'Last) & Opt.Ada_Main_Name_Suffix);
+                 new String'(Argv (Argv'First + 2 .. Argv'Last)
+                   & Opt.Ada_Main_Name_Suffix);
 
                --  This option (-Lxxx) implies -n
 
@@ -146,11 +149,11 @@ procedure Gnatbind is
          --  -Sin -Slo -Shi -Sxx
 
          elsif Argv'Length = 4
-           and then Argv (2) = 'S'
+           and then Argv (Argv'First + 1) = 'S'
          then
             declare
-               C1 : Character := Argv (3);
-               C2 : Character := Argv (4);
+               C1 : Character := Argv (Argv'First + 2);
+               C2 : Character := Argv (Argv'First + 3);
 
             begin
                --  Fold to upper case
@@ -198,51 +201,54 @@ procedure Gnatbind is
          --  -aIdir
 
          elsif Argv'Length >= 3
-           and then Argv (2 .. 3) = "aI"
+           and then Argv (Argv'First + 1 .. Argv'First + 2) = "aI"
          then
-            Add_Src_Search_Dir (Argv (4 .. Argv'Last));
+            Add_Src_Search_Dir (Argv (Argv'First + 3 .. Argv'Last));
 
          --  -aOdir
 
          elsif Argv'Length >= 3
-           and then Argv (2 .. 3) = "aO"
+           and then Argv (Argv'First + 1 .. Argv'First + 2) = "aO"
          then
-            Add_Lib_Search_Dir (Argv (4 .. Argv'Last));
+            Add_Lib_Search_Dir (Argv (Argv'First + 3 .. Argv'Last));
 
          --  -nostdlib
 
-         elsif Argv (2 .. Argv'Last) = "nostdlib" then
+         elsif Argv (Argv'First + 1 .. Argv'Last) = "nostdlib" then
             Opt.No_Stdlib := True;
 
          --  -nostdinc
 
-         elsif Argv (2 .. Argv'Last) = "nostdinc" then
+         elsif Argv (Argv'First + 1 .. Argv'Last) = "nostdinc" then
             Opt.No_Stdinc := True;
 
          --  -static
 
-         elsif Argv (2 .. Argv'Last) = "static" then
+         elsif Argv (Argv'First + 1 .. Argv'Last) = "static" then
             Opt.Shared_Libgnat := False;
 
          --  -shared
 
-         elsif Argv (2 .. Argv'Last) = "shared" then
+         elsif Argv (Argv'First + 1 .. Argv'Last) = "shared" then
             Opt.Shared_Libgnat := True;
 
          --  -F=mapping_file
 
-         elsif Argv'Length >= 4 and then Argv (2 .. 3) = "F=" then
+         elsif Argv'Length >= 4
+           and then Argv (Argv'First + 1 .. Argv'First + 2) = "F="
+         then
             if Mapping_File /= null then
                Fail ("cannot specify several mapping files");
             end if;
 
-            Mapping_File := new String'(Argv (4 .. Argv'Last));
+            Mapping_File := new String'(Argv (Argv'First + 3 .. Argv'Last));
 
          --  -Mname
 
-         elsif Argv'Length >= 3 and then Argv (2) = 'M' then
+         elsif Argv'Length >= 3 and then Argv (Argv'First + 1) = 'M' then
             Opt.Bind_Alternate_Main_Name := True;
-            Opt.Alternate_Main_Name := new String'(Argv (3 .. Argv'Last));
+            Opt.Alternate_Main_Name :=
+              new String'(Argv (Argv'First + 2 .. Argv'Last));
 
          --  All other options are single character and are handled
          --  by Scan_Binder_Switches.
@@ -466,7 +472,7 @@ begin
       --  ALI files.
 
       for Index in ALIs.First .. ALIs.Last loop
-         ALIs.Table (Index).Interface := False;
+         ALIs.Table (Index).Is_Interface := False;
       end loop;
 
       --  Add System.Standard_Library to list to ensure that these files are
@@ -561,7 +567,7 @@ begin
                Write_Eol;
 
                for J in Elab_Order.First .. Elab_Order.Last loop
-                  if not Units.Table (Elab_Order.Table (J)).Interface then
+                  if not Units.Table (Elab_Order.Table (J)).Is_Interface then
                      Write_Str ("   ");
                      Write_Unit_Name
                        (Units.Table (Elab_Order.Table (J)).Uname);

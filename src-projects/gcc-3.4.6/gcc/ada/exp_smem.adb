@@ -58,7 +58,7 @@ package body Exp_Smem is
    --  the procedure call statement).
 
    procedure Build_Full_Name
-     (E : in  Entity_Id;
+     (E : Entity_Id;
       N : out String_Id);
    --  Build the fully qualified string name of a shared variable.
 
@@ -182,7 +182,7 @@ package body Exp_Smem is
    ---------------------
 
    procedure Build_Full_Name
-     (E : in  Entity_Id;
+     (E : Entity_Id;
       N : out String_Id)
    is
 
@@ -495,6 +495,5 @@ package body Exp_Smem is
          return False;
       end if;
    end On_Lhs_Of_Assignment;
-
 
 end Exp_Smem;

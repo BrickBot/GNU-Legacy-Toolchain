@@ -55,7 +55,7 @@ package body Sem_Maps is
    ---------------------
 
    procedure Add_Association
-     (M    : in out Map;
+     (M    : Map;
       O_Id : Entity_Id;
       N_Id : Entity_Id;
       Kind : Scope_Kind := S_Local)
@@ -318,7 +318,7 @@ package body Sem_Maps is
    ------------------------
 
    procedure Update_Association
-     (M    : in out Map;
+     (M    : Map;
       O_Id : Entity_Id;
       N_Id : Entity_Id;
       Kind : Scope_Kind := S_Local)

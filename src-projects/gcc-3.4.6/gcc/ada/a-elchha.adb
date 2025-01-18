@@ -100,7 +100,7 @@ is
       Info : constant String := Tailored_Exception_Information (X);
    begin
       Last := Info'Last;
-      Buff (1 .. Last) := Info;
+      Buff (Buff'First .. Last) := Info;
    end Tailored_Exception_Information;
 
 begin

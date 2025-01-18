@@ -39,7 +39,7 @@ package body System.String_Ops is
 
    function Str_Concat (X, Y : String) return String is
    begin
-      if X'Length <= 0 then
+      if X'Length = 0 then
          return Y;
 
       else
@@ -87,7 +87,7 @@ package body System.String_Ops is
 
    function Str_Concat_SC (X : String; Y : Character) return String is
    begin
-      if X'Length <= 0 then
+      if X'Length = 0 then
          return (1 => Y);
 
       else

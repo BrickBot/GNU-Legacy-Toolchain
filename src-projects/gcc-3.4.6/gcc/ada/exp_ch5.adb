@@ -160,9 +160,10 @@ package body Exp_Ch5 is
       --  This switch is set to True if the array move must be done using
       --  an explicit front end generated loop.
 
-      function Has_Address_Clause (Exp : Node_Id) return Boolean;
+      --  function Has_Address_Clause (Exp : Node_Id) return Boolean;
       --  Test if Exp is a reference to an array whose declaration has
       --  an address clause, or it is a slice of such an array.
+      --  NOTE: Removed to address "function ___ not referenced" warning/error
 
       function Is_Formal_Array (Exp : Node_Id) return Boolean;
       --  Test if Exp is a reference to an array which is either a formal
@@ -189,14 +190,15 @@ package body Exp_Ch5 is
       -- Has_Address_Clause --
       ------------------------
 
-      function Has_Address_Clause (Exp : Node_Id) return Boolean is
-      begin
-         return
-           (Is_Entity_Name (Exp) and then
-                              Present (Address_Clause (Entity (Exp))))
-             or else
-           (Nkind (Exp) = N_Slice and then Has_Address_Clause (Prefix (Exp)));
-      end Has_Address_Clause;
+      --  function Has_Address_Clause (Exp : Node_Id) return Boolean is
+      --  begin
+      --     return
+      --       (Is_Entity_Name (Exp) and then
+      --                          Present (Address_Clause (Entity (Exp))))
+      --         or else
+      --       (Nkind (Exp) = N_Slice and then
+      --                          Has_Address_Clause (Prefix (Exp)));
+      --  end Has_Address_Clause;
 
       ---------------------
       -- Is_Formal_Array --
@@ -2526,7 +2528,10 @@ package body Exp_Ch5 is
 
          else
             Cur_Idx := Cur_Idx - 1;
-            pragma Assert (Cur_Idx >= 0);
+
+            --  Removed pragma Assert to address the following warning/error:
+            --    "condition can only be False if invalid values present"
+            --  pragma Assert (Cur_Idx >= 0);
          end if;
       end loop;
 

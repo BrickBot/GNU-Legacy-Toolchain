@@ -344,7 +344,6 @@ package body Exception_Data is
       return Info;
    end Exception_Information;
 
-
    -------------------------
    -- Set_Exception_C_Msg --
    -------------------------

@@ -2577,7 +2577,7 @@ package Atree is
       end record;
 
       pragma Pack (Node_Record);
-      for Node_Record'Size use 8*32;
+      for Node_Record'Size use 8 * 32;
       for Node_Record'Alignment use 4;
 
       --  The following defines the extendible array used for the nodes table

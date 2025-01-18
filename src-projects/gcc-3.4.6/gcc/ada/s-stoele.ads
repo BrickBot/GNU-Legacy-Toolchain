@@ -82,7 +82,7 @@ pragma Pure (Storage_Elements);
    function "-" (Left : Address; Right : Storage_Offset) return Address;
    pragma Convention (Intrinsic, "-");
    pragma Inline_Always ("-");
-   pragma Pure_Function ("+");
+   pragma Pure_Function ("-");
 
    function "-" (Left, Right : Address) return Storage_Offset;
    pragma Convention (Intrinsic, "-");

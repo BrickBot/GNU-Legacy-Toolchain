@@ -228,9 +228,13 @@ package body Uintp is
    -- Hash_Num --
    --------------
 
+   --  Compiler error ("expect type "Hnum" defined at line 93") in return
+   --    statement addressed based on the following change introduced in v4.5:
+   --    github.com/gcc-mirror/gcc/blob/releases/gcc-4.5/gcc/ada/uintp.adb#L242
+
    function Hash_Num (F : Int) return Hnum is
    begin
-      return Standard."mod" (F, Hnum'Range_Length);
+      return Types."mod" (F, Hnum'Range_Length);
    end Hash_Num;
 
    ---------------
@@ -1068,7 +1072,9 @@ package body Uintp is
             X_Bigger := True;
          else
             Sum_Length := R_Length + 1;
-            if R_Length > L_Length then Y_Bigger := True; end if;
+            if R_Length > L_Length then
+               Y_Bigger := True;
+            end if;
          end if;
 
          --  Make copies of the absolute values of L_Vec and R_Vec into
@@ -1804,9 +1810,13 @@ package body Uintp is
       return UI_Lt (UI_From_Int (Right), Left);
    end UI_Gt;
 
+   --  Addressing warning/error "actuals for this call may be in wrong order"
+   --    based on changes found in release 4.5
+   --  github.com/gcc-mirror/gcc/blob/releases/gcc-4.5/gcc/ada/uintp.adb#L1936
+
    function UI_Gt (Left : Uint; Right : Uint) return Boolean is
    begin
-      return UI_Lt (Right, Left);
+      return UI_Lt (Left => Right, Right => Left);
    end UI_Gt;
 
    ---------------
@@ -1850,9 +1860,13 @@ package body Uintp is
       return not UI_Lt (UI_From_Int (Right), Left);
    end UI_Le;
 
+   --  Addressing warning/error "actuals for this call may be in wrong order"
+   --    based changes found in release 4.5
+   --  github.com/gcc-mirror/gcc/blob/releases/gcc-4.5/gcc/ada/uintp.adb#L1982
+
    function UI_Le (Left : Uint; Right : Uint) return Boolean is
    begin
-      return not UI_Lt (Right, Left);
+      return not UI_Lt (Left => Right, Right => Left);
    end UI_Le;
 
    ------------

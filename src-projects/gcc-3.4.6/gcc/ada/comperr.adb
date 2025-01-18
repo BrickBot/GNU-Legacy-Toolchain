@@ -179,10 +179,10 @@ package body Comperr is
                   end if;
                end loop;
 
-               Write_Str (X (1 .. Last_Blank));
+               Write_Str (X (X'First .. Last_Blank));
                End_Line;
                Write_Str ("|    ");
-               Write_Str (X (Last_Blank + 1 .. X'Length));
+               Write_Str (X (Last_Blank + 1 .. X'Last));
             end;
          else
             Write_Str (X);

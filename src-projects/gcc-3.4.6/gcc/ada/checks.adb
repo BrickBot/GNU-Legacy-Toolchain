@@ -5059,12 +5059,14 @@ package body Checks is
 
       begin
          if Nkind (LB) = N_Identifier
-           and then Ekind (Entity (LB)) = E_Discriminant then
+           and then Ekind (Entity (LB)) = E_Discriminant
+         then
             LB := New_Occurrence_Of (Discriminal (Entity (LB)), Loc);
          end if;
 
          if Nkind (HB) = N_Identifier
-           and then Ekind (Entity (HB)) = E_Discriminant then
+           and then Ekind (Entity (HB)) = E_Discriminant
+         then
             HB := New_Occurrence_Of (Discriminal (Entity (HB)), Loc);
          end if;
 

@@ -447,7 +447,9 @@ package body ALI is
       begin
          Skip_Space;
 
-         if not At_Eol then Fatal_Error; end if;
+         if not At_Eol then
+            Fatal_Error;
+         end if;
 
          --  Loop to skip past blank lines (first time through skips this EOL)
 
@@ -554,7 +556,7 @@ package body ALI is
         Unit_Exception_Table       => False,
         Ver                        => (others => ' '),
         Ver_Len                    => 0,
-        Interface                  => False,
+        Is_Interface               => False,
         Zero_Cost_Exceptions       => False);
 
       --  Now we acquire the input lines from the ALI file. Note that the
@@ -741,7 +743,7 @@ package body ALI is
                --  Processing for SL
 
                if C = 'L' then
-                  ALIs.Table (Id).Interface := True;
+                  ALIs.Table (Id).Is_Interface := True;
 
                --  Processing for SS
 
@@ -909,7 +911,8 @@ package body ALI is
          Units.Table (Units.Last).First_With      := Withs.Last + 1;
          Units.Table (Units.Last).First_Arg       := First_Arg;
          Units.Table (Units.Last).Elab_Position   := 0;
-         Units.Table (Units.Last).Interface       := ALIs.Table (Id).Interface;
+         Units.Table (Units.Last).Is_Interface    :=
+                                                  ALIs.Table (Id).Is_Interface;
 
          if Debug_Flag_U then
             Write_Str (" ----> reading unit ");
@@ -1178,7 +1181,7 @@ package body ALI is
                Withs.Table (Withs.Last).Elaborate          := False;
                Withs.Table (Withs.Last).Elaborate_All      := False;
                Withs.Table (Withs.Last).Elab_All_Desirable := False;
-               Withs.Table (Withs.Last).Interface          := False;
+               Withs.Table (Withs.Last).Is_Interface       := False;
 
                --  Generic case with no object file available
 
@@ -1295,7 +1298,7 @@ package body ALI is
                   end if;
                end loop;
 
-               Add_Char_To_Name_Buffer (nul);
+               Add_Char_To_Name_Buffer (NUL);
                Skip_Eol;
             end if;
 

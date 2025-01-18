@@ -31,7 +31,6 @@ with Lib;      use Lib;
 with Osint;    use Osint;
 with Opt;      use Opt;
 with Prepcomp; use Prepcomp;
-with Types;    use Types;
 with Validsw;  use Validsw;
 with Stylesw;  use Stylesw;
 

@@ -31,7 +31,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-with Gnatvsn; use Gnatvsn;
 with System;  use System;
 with Tree_IO; use Tree_IO;
 

@@ -33,7 +33,6 @@ with Fname;    use Fname;
 with Fname.UF; use Fname.UF;
 with Freeze;   use Freeze;
 with Hostparm;
-with Inline;   use Inline;
 with Lib;      use Lib;
 with Lib.Load; use Lib.Load;
 with Lib.Xref; use Lib.Xref;
@@ -9635,7 +9634,8 @@ package body Sem_Ch12 is
 
       if Is_Internal_File_Name
           (Fname => Unit_File_Name (Get_Source_Unit (Gen_Unit)),
-           Renamings_Included => True) then
+           Renamings_Included => True)
+      then
          Ada_83 := False;
       end if;
 

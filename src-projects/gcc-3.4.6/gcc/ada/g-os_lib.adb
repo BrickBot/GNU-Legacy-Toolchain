@@ -412,10 +412,10 @@ package body GNAT.OS_Lib is
          --  Copy attributes
 
          C_From (1 .. Name'Length) := Name;
-         C_From (C_From'Last) := ASCII.Nul;
+         C_From (C_From'Last) := ASCII.NUL;
 
          C_To (1 .. To_Name'Length) := To_Name;
-         C_To (C_To'Last) := ASCII.Nul;
+         C_To (C_To'Last) := ASCII.NUL;
 
          case Preserve is
 
@@ -568,10 +568,10 @@ package body GNAT.OS_Lib is
             C_Dest   : String (1 .. Dest'Length + 1);
          begin
             C_Source (1 .. C_Source'Length) := Source;
-            C_Source (C_Source'Last)        := ASCII.Nul;
+            C_Source (C_Source'Last)        := ASCII.NUL;
 
             C_Dest (1 .. C_Dest'Length) := Dest;
-            C_Dest (C_Dest'Last)        := ASCII.Nul;
+            C_Dest (C_Dest'Last)        := ASCII.NUL;
 
             if Copy_Attributes (C_Source'Address, C_Dest'Address, 0) = -1 then
                Success := False;
@@ -1363,10 +1363,10 @@ package body GNAT.OS_Lib is
 
                --  If null terminated string, put the quote before
 
-               if Res (J) = ASCII.Nul then
+               if Res (J) = ASCII.NUL then
                   Res (J) := '"';
                   J := J + 1;
-                  Res (J) := ASCII.Nul;
+                  Res (J) := ASCII.NUL;
 
                --  If argument is terminated by '\', then double it. Otherwise
                --  the ending quote will be taken as-is. This is quite strange
@@ -1489,7 +1489,7 @@ package body GNAT.OS_Lib is
          --  Directory given, add directory separator if needed
 
          if Dir'Length > 0 then
-            if Dir (Dir'Length) = Directory_Separator then
+            if Dir (Dir'Last) = Directory_Separator then
                return Directory;
             else
                declare

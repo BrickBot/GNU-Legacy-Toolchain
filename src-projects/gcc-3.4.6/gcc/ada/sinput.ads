@@ -608,6 +608,7 @@ private
    --  big array, sized as required, so that we avoid the use of fat pointers.
 
    type Lines_Table_Ptr is access all Lines_Table_Type;
+   pragma No_Strict_Aliasing (Lines_Table_Ptr);
    --  Type used for pointers to line tables
 
    type Logical_Lines_Table_Type is
@@ -620,6 +621,7 @@ private
    --  we avoid the use of fat pointers.
 
    type Logical_Lines_Table_Ptr is access all Logical_Lines_Table_Type;
+   pragma No_Strict_Aliasing (Logical_Lines_Table_Ptr);
    --  Type used for pointers to logical line tables.
 
    -----------------------

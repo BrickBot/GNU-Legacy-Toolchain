@@ -39,7 +39,6 @@ with Atree;   use Atree;
 with Einfo;   use Einfo;
 with Fname;   use Fname;
 with Namet;   use Namet;
-with Namet;   use Namet;
 with Output;  use Output;
 with Sinfo;   use Sinfo;
 with Sinput;  use Sinput;

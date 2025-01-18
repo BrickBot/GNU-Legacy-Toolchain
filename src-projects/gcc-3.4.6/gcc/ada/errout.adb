@@ -48,7 +48,6 @@ with Sinfo;    use Sinfo;
 with Snames;   use Snames;
 with Stand;    use Stand;
 with Style;
-with Uintp;    use Uintp;
 with Uname;    use Uname;
 
 with Unchecked_Conversion;
@@ -568,7 +567,6 @@ package body Errout is
 
       S : String (1 .. Feature'Length + 1 + CCRT'Length);
       L : Natural;
-
 
    begin
       S (1) := '|';
@@ -1382,7 +1380,6 @@ package body Errout is
       return Earliest;
    end First_Node;
 
-
    ----------------
    -- Initialize --
    ----------------
@@ -1728,7 +1725,6 @@ package body Errout is
       --  Casing required for result. Default value of Mixed_Case is used if
       --  for some reason we cannot find the right file name in the table.
 
-
    begin
       --  Get length of file name
 
@@ -1760,7 +1756,7 @@ package body Errout is
       for J in Name_Buffer'Range loop
          Name_Buffer (J) := Ident (J);
 
-         if Name_Buffer (J) = ASCII.Nul then
+         if Name_Buffer (J) = ASCII.NUL then
             Name_Len := J - 1;
             exit;
          end if;
@@ -2199,7 +2195,6 @@ package body Errout is
 
             when '>' =>
                Set_Msg_Insertion_Run_Time_Name;
-
 
             when '^' =>
                Set_Msg_Insertion_Uint;

@@ -30,8 +30,6 @@
 --  off into a child package to avoid a dependence of Sinput on Osint which
 --  would cause trouble in the tree read/write routines.
 
-with Types; use Types;
-
 package Sinput.L is
 
    -------------------------------------------

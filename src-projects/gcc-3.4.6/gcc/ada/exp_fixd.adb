@@ -2144,9 +2144,14 @@ package body Exp_Fixd is
          return;
       end if;
 
+      --  "Reversed" parameters to Do_Multiply_Fixed_Universal were validated
+      --    against explicitly-named parameters that were added in GCC 5
+      --    (c.f. the link below)
+      --  github.com/gcc-mirror/gcc/blob/releases/gcc-5/gcc/ada/exp_fixd.adb
+      --    #L2132
       if Etype (Left) = Universal_Real then
          if Nkind (Left) = N_Real_Literal then
-            Do_Multiply_Fixed_Universal (N, Right, Left);
+            Do_Multiply_Fixed_Universal (N, Left => Right, Right => Left);
 
          elsif Nkind (Left) = N_Type_Conversion then
             Rewrite_Non_Static_Universal (Left);
@@ -2239,8 +2244,13 @@ package body Exp_Fixd is
       Right : constant Node_Id := Right_Opnd (N);
 
    begin
+      --  "Reversed" parameters to Do_Multiply_Fixed_Universal validated
+      --    against explicitly-named parameters that were added in GCC 5
+      --    (c.f. the link below)
+      --  github.com/gcc-mirror/gcc/blob/releases/gcc-5/gcc/ada/exp_fixd.adb
+      --    #L2225
       if Etype (Left) = Universal_Real then
-         Do_Multiply_Fixed_Universal (N, Right, Left);
+         Do_Multiply_Fixed_Universal (N, Left => Right, Right => Left);
 
       elsif Etype (Right) = Universal_Real then
          Do_Multiply_Fixed_Universal (N, Left, Right);

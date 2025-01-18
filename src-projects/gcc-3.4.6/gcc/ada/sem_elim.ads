@@ -58,6 +58,4 @@ package Sem_Elim is
    --  subprogram. N is the node for the call, and E is the entity of
    --  the subprogram being eliminated.
 
-
-
 end Sem_Elim;

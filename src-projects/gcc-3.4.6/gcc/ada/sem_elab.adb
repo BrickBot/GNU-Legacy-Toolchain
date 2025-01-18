@@ -2512,7 +2512,11 @@ package body Sem_Elab is
          end if;
       end loop;
 
-      raise Program_Error;
+      --  Removed to address "unreachable code" warning/error based on changes
+      --    found in release 4.5
+      --  github.com/gcc-mirror/gcc/blob/releases/gcc-4.5/gcc/ada/sem_elab.adb
+      --    #L3118
+      --  raise Program_Error;
    end Within;
 
    --------------------------

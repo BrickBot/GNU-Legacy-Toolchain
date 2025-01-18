@@ -25,10 +25,8 @@
 ------------------------------------------------------------------------------
 
 with Atree;    use Atree;
-with Einfo;    use Einfo;
 with Opt;      use Opt;
 with Sem;      use Sem;
-with Sem_Util; use Sem_Util;
 with Sinfo;    use Sinfo;
 with Stand;    use Stand;
 

@@ -101,6 +101,7 @@ package GNAT.Dynamic_Tables is
    --  safety is not compromised by this approach.
 
    type Table_Ptr is access all Big_Table_Type;
+   pragma No_Strict_Aliasing (Table_Ptr);
    --  The table is actually represented as a pointer to allow
    --  reallocation.
 
@@ -123,7 +124,7 @@ package GNAT.Dynamic_Tables is
    --  previously allocated larger table). Init must be called before using
    --  the table. Init is convenient in reestablishing a table for new use.
 
-   function Last (T : in Instance) return Table_Index_Type;
+   function Last (T : Instance) return Table_Index_Type;
    pragma Inline (Last);
    --  Returns the current value of the last used entry in the table,
    --  which can then be used as a subscript for Table. Note that the
@@ -202,7 +203,6 @@ package GNAT.Dynamic_Tables is
    --  matter if True or False is returned (it is slightly more efficient
    --  to return False). The sort is not stable (the order of equal items
    --  in the table is not preserved).
-
 
 private
 

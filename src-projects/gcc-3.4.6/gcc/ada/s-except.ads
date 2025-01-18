@@ -161,7 +161,7 @@ package System.Exceptions is
    subtype Subprogram_Descriptor_1 is Subprogram_Descriptor (1);
    subtype Subprogram_Descriptor_2 is Subprogram_Descriptor (2);
    subtype Subprogram_Descriptor_3 is Subprogram_Descriptor (3);
-   --  Predeclare commonly used subtypes for buildingt he tables
+   --  Predeclare commonly used subtypes for building the tables
 
    type Subprogram_Descriptor_Ptr is access all Subprogram_Descriptor;
 

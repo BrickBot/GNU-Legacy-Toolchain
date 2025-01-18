@@ -185,6 +185,7 @@ pragma Preelaborate (Types);
    --  type Source_Buffer_Ptr, see Osint.Read_Source_File for details.
 
    type Source_Buffer_Ptr is access all Big_Source_Buffer;
+   pragma No_Strict_Aliasing (Source_Buffer_Ptr);
    --  Pointer to source buffer. We use virtual origin addressing for
    --  source buffers, with thin pointers. The pointer points to a virtual
    --  instance of type Big_Source_Buffer, where the actual type is in fact

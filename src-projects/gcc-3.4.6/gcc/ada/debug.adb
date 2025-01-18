@@ -120,7 +120,7 @@ package body Debug is
    --  d.y
    --  d.z
 
-
+   --
 
    --  d1   Error msgs have node numbers where possible
    --  d2   Eliminate error flags in verbose form error messages
@@ -474,6 +474,7 @@ package body Debug is
    --       fully compiled and analyzed, they just get eliminated from the
    --       code generation step.
 
+   --
 
    --  d1   Error messages have node numbers where possible. Normally error
    --       messages have only source locations. This option is useful when

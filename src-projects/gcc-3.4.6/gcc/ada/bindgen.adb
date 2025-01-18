@@ -279,7 +279,7 @@ package body Bindgen is
             U    : Unit_Record renames Units.Table (Unum);
 
          begin
-            if U.Set_Elab_Entity and then not U.Interface then
+            if U.Set_Elab_Entity and then not U.Is_Interface then
                Set_String ("      ");
                Set_String ("E");
                Set_Unit_Number (Unum);
@@ -574,7 +574,7 @@ package body Bindgen is
             Unum : constant Unit_Id := Elab_Order.Table (E);
             U    : Unit_Record renames Units.Table (Unum);
          begin
-            if U.Set_Elab_Entity and then not U.Interface then
+            if U.Set_Elab_Entity and then not U.Is_Interface then
                Set_String ("   extern char ");
                Get_Name_String (U.Uname);
                Set_Unit_Name;
@@ -815,7 +815,7 @@ package body Bindgen is
                --  to True, we do not need to test if this has already been
                --  done, since it is quicker to set the flag than to test it.
 
-               if not U.Interface and then U.Utype = Is_Body
+               if not U.Is_Interface and then U.Utype = Is_Body
                  and then Units.Table (Unum_Spec).Set_Elab_Entity
                then
                   Set_String ("      E");
@@ -840,7 +840,7 @@ package body Bindgen is
             --  The uname_E assignment is skipped if this is a separate spec,
             --  since the assignment will be done when we process the body.
 
-            elsif not U.Interface then
+            elsif not U.Is_Interface then
                if Force_Checking_Of_Elaboration_Flags or
                   Interface_Library_Unit or
                   (not Bind_Main_Program)
@@ -929,7 +929,7 @@ package body Bindgen is
                --  to True, we do not need to test if this has already been
                --  done, since it is quicker to set the flag than to test it.
 
-               if not U.Interface and then U.Utype = Is_Body
+               if not U.Is_Interface and then U.Utype = Is_Body
                  and then Units.Table (Unum_Spec).Set_Elab_Entity
                then
                   Set_String ("   ");
@@ -950,7 +950,7 @@ package body Bindgen is
             --  The uname_E assignment is skipped if this is a separate spec,
             --  since the assignment will be done when we process the body.
 
-            elsif not U.Interface then
+            elsif not U.Is_Interface then
                Get_Name_String (U.Uname);
 
                if Force_Checking_Of_Elaboration_Flags or
@@ -1102,7 +1102,7 @@ package body Bindgen is
 
       Num := 0;
       for A in ALIs.First .. ALIs.Last loop
-         if not ALIs.Table (A).Interface
+         if not ALIs.Table (A).Is_Interface
            and then ALIs.Table (A).Unit_Exception_Table
          then
             Num := Num + 1;
@@ -1140,7 +1140,7 @@ package body Bindgen is
          Write_Statement_Buffer;
 
          for A in ALIs.First .. ALIs.Last loop
-            if not ALIs.Table (A).Interface
+            if not ALIs.Table (A).Is_Interface
               and then ALIs.Table (A).Unit_Exception_Table
             then
                Get_Decoded_Name_String_With_Brackets
@@ -1262,7 +1262,7 @@ package body Bindgen is
 
       Num := 0;
       for A in ALIs.First .. ALIs.Last loop
-         if not ALIs.Table (A).Interface
+         if not ALIs.Table (A).Is_Interface
            and then ALIs.Table (A).Unit_Exception_Table
          then
             Num := Num + 1;
@@ -1292,7 +1292,7 @@ package body Bindgen is
 
       Num2 := 0;
       for A in ALIs.First .. ALIs.Last loop
-         if not ALIs.Table (A).Interface
+         if not ALIs.Table (A).Is_Interface
            and then ALIs.Table (A).Unit_Exception_Table
          then
             Num2 := Num2 + 1;
@@ -1762,7 +1762,7 @@ package body Bindgen is
          --  If not spec that has an associated body, then generate a
          --  comment giving the name of the corresponding object file.
 
-         if (not Units.Table (Elab_Order.Table (E)).Interface)
+         if (not Units.Table (Elab_Order.Table (E)).Is_Interface)
            and then Units.Table (Elab_Order.Table (E)).Utype /= Is_Spec
          then
             Get_Name_String
@@ -2276,10 +2276,16 @@ package body Bindgen is
    -- Gen_Output_File_C --
    -----------------------
 
+   --  Pragma to disable Bfile warning/error based on release 4.5
+   --  Message was: "Bfile" modified by call, but value might not be referenced
+   --  github.com/gcc-mirror/gcc/blob/releases/gcc-4.5/gcc/ada/bindgen.adb
+   --    #L2550
+
    procedure Gen_Output_File_C (Filename : String) is
 
       Bfile : Name_Id;
-      --  Name of generated bind file
+      pragma Warnings (Off, Bfile);
+      --  Name of generated bind file (not referenced)
 
    begin
       Create_Binder_Output (Filename, 'c', Bfile);
@@ -2958,8 +2964,13 @@ package body Bindgen is
    -- Set_Unit_Number --
    ---------------------
 
+   --  Address the "condition is always true" warning/error,
+   --    based on release 4.5
+   --  github.com/gcc-mirror/gcc/blob/releases/gcc-4.5/gcc/ada/bindgen.adb
+   --    #L3493
+
    procedure Set_Unit_Number (U : Unit_Id) is
-      Num_Units : constant Nat := Nat (Units.Table'Last) - Nat (Unit_Id'First);
+      Num_Units : constant Nat := Nat (Units.Last) - Nat (Unit_Id'First);
       Unum      : constant Nat := Nat (U) - Nat (Unit_Id'First);
 
    begin

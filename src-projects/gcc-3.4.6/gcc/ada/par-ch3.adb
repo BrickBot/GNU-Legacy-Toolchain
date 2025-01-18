@@ -3271,7 +3271,9 @@ package body Ch3 is
       Scan_State : Saved_Scan_State;
 
    begin
-      if Style_Check then Style.Check_Indentation; end if;
+      if Style_Check then
+         Style.Check_Indentation;
+      end if;
 
       case Token is
 

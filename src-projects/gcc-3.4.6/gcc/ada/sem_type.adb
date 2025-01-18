@@ -1778,8 +1778,8 @@ package body Sem_Type is
       then
          return False;
 
-      else return
-        Is_Numeric_Type (T)
+      else
+         return Is_Numeric_Type (T)
           and then not In_Open_Scopes (Scope (T))
           and then not Is_Potentially_Use_Visible (T)
           and then not In_Use (T)
@@ -2339,7 +2339,7 @@ package body Sem_Type is
       Write_Str (" Index: ");
       Write_Int (Int (Interp_Map.Table (Map_Ptr).Index));
       Write_Str (" Next:  ");
-      Write_Int (Int (Interp_Map.Table (Map_Ptr).Next));
+      Write_Int (Interp_Map.Table (Map_Ptr).Next);
       Write_Eol;
    end Write_Interp_Ref;
 

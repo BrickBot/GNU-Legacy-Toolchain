@@ -28,7 +28,6 @@
 --  information.
 
 with Einfo; use Einfo;
-with Types; use Types;
 
 package Lib.Xref is
 

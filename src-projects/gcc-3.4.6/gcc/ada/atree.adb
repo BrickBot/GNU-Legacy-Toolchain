@@ -31,6 +31,12 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
+------------------------------------------------------------------------------
+--  NOTE: Address about 92 "lower bound check only fails if it is invalid"  --
+--          warnings / errors by updating asserts, based on release 4.5     --
+--  c.f. github.com/gcc-mirror/gcc/blob/releases/gcc-4.5/gcc/ada/atree.adb  --
+------------------------------------------------------------------------------
+
 pragma Style_Checks (All_Checks);
 --  Turn off subprogram ordering check for this package
 
@@ -392,7 +398,8 @@ package body Atree is
 
    function Analyzed (N : Node_Id) return Boolean is
    begin
-      pragma Assert (N in Nodes.First .. Nodes.Last);
+      --  c.f. atree.adb#L522
+      pragma Assert (N <= Nodes.Last);
       return Nodes.Table (N).Analyzed;
    end Analyzed;
 
@@ -432,7 +439,8 @@ package body Atree is
 
    function Comes_From_Source (N : Node_Id) return Boolean is
    begin
-      pragma Assert (N in Nodes.First .. Nodes.Last);
+      --  c.f. atree.adb#L574
+      pragma Assert (N <= Nodes.Last);
       return Nodes.Table (N).Comes_From_Source;
    end Comes_From_Source;
 
@@ -710,7 +718,8 @@ package body Atree is
 
    function Error_Posted (N : Node_Id) return Boolean is
    begin
-      pragma Assert (N in Nodes.First .. Nodes.Last);
+      --  c.f. atree.adb#L775
+      pragma Assert (N <= Nodes.Last);
       return Nodes.Table (N).Error_Posted;
    end Error_Posted;
 
@@ -2007,7 +2016,8 @@ package body Atree is
       C : Paren_Count_Type := 0;
 
    begin
-      pragma Assert (N in Nodes.First .. Nodes.Last);
+      --  c.f. atree.adb#L1289
+      pragma Assert (N <= Nodes.Last);
 
       if Nodes.Table (N).Pflag1 then
          C := C + 1;
@@ -2224,7 +2234,8 @@ package body Atree is
 
    procedure Set_Comes_From_Source (N : Node_Id; Val : Boolean) is
    begin
-      pragma Assert (N in Nodes.First .. Nodes.Last);
+      --  c.f. atree.adb#L1487
+      pragma Assert (N <= Nodes.Last);
       Nodes.Table (N).Comes_From_Source := Val;
    end Set_Comes_From_Source;
 
@@ -2393,15 +2404,15 @@ package body Atree is
             return OK;
 
          when OK =>
-            if Traverse_Field (Union_Id (Field1 (Node))) = Abandon
+            if Traverse_Field (Field1 (Node)) = Abandon
                  or else
-               Traverse_Field (Union_Id (Field2 (Node))) = Abandon
+               Traverse_Field (Field2 (Node)) = Abandon
                  or else
-               Traverse_Field (Union_Id (Field3 (Node))) = Abandon
+               Traverse_Field (Field3 (Node)) = Abandon
                  or else
-               Traverse_Field (Union_Id (Field4 (Node))) = Abandon
+               Traverse_Field (Field4 (Node)) = Abandon
                  or else
-               Traverse_Field (Union_Id (Field5 (Node))) = Abandon
+               Traverse_Field (Field5 (Node)) = Abandon
             then
                return Abandon;
 
@@ -2414,15 +2425,15 @@ package body Atree is
                Onode : constant Node_Id := Original_Node (Node);
 
             begin
-               if Traverse_Field (Union_Id (Field1 (Onode))) = Abandon
+               if Traverse_Field (Field1 (Onode)) = Abandon
                     or else
-                  Traverse_Field (Union_Id (Field2 (Onode))) = Abandon
+                  Traverse_Field (Field2 (Onode)) = Abandon
                     or else
-                  Traverse_Field (Union_Id (Field3 (Onode))) = Abandon
+                  Traverse_Field (Field3 (Onode)) = Abandon
                     or else
-                  Traverse_Field (Union_Id (Field4 (Onode))) = Abandon
+                  Traverse_Field (Field4 (Onode)) = Abandon
                     or else
-                  Traverse_Field (Union_Id (Field5 (Onode))) = Abandon
+                  Traverse_Field (Field5 (Onode)) = Abandon
                then
                   return Abandon;
 
@@ -2476,31 +2487,36 @@ package body Atree is
 
       function Field1 (N : Node_Id) return Union_Id is
       begin
-         pragma Assert (N in Nodes.First .. Nodes.Last);
+         --  c.f. atree.adb#L1755
+         pragma Assert (N <= Nodes.Last);
          return Nodes.Table (N).Field1;
       end Field1;
 
       function Field2 (N : Node_Id) return Union_Id is
       begin
-         pragma Assert (N in Nodes.First .. Nodes.Last);
+         --  c.f. atree.adb#L1761
+         pragma Assert (N <= Nodes.Last);
          return Nodes.Table (N).Field2;
       end Field2;
 
       function Field3 (N : Node_Id) return Union_Id is
       begin
-         pragma Assert (N in Nodes.First .. Nodes.Last);
+         --  c.f. atree.adb#L1767
+         pragma Assert (N <= Nodes.Last);
          return Nodes.Table (N).Field3;
       end Field3;
 
       function Field4 (N : Node_Id) return Union_Id is
       begin
-         pragma Assert (N in Nodes.First .. Nodes.Last);
+         --  c.f. atree.adb#L1773
+         pragma Assert (N <= Nodes.Last);
          return Nodes.Table (N).Field4;
       end Field4;
 
       function Field5 (N : Node_Id) return Union_Id is
       begin
-         pragma Assert (N in Nodes.First .. Nodes.Last);
+         --  c.f. atree.adb#L1779
+         pragma Assert (N <= Nodes.Last);
          return Nodes.Table (N).Field5;
       end Field5;
 
@@ -2614,31 +2630,36 @@ package body Atree is
 
       function Node1 (N : Node_Id) return Node_Id is
       begin
-         pragma Assert (N in Nodes.First .. Nodes.Last);
+         --  c.f. atree.adb#L1923
+         pragma Assert (N <= Nodes.Last);
          return Node_Id (Nodes.Table (N).Field1);
       end Node1;
 
       function Node2 (N : Node_Id) return Node_Id is
       begin
-         pragma Assert (N in Nodes.First .. Nodes.Last);
+         --  c.f. atree.adb#L1929
+         pragma Assert (N <= Nodes.Last);
          return Node_Id (Nodes.Table (N).Field2);
       end Node2;
 
       function Node3 (N : Node_Id) return Node_Id is
       begin
-         pragma Assert (N in Nodes.First .. Nodes.Last);
+         --  c.f. atree.adb#L1947
+         pragma Assert (N <= Nodes.Last);
          return Node_Id (Nodes.Table (N).Field3);
       end Node3;
 
       function Node4 (N : Node_Id) return Node_Id is
       begin
-         pragma Assert (N in Nodes.First .. Nodes.Last);
+         --  c.f. atree.adb#L1941
+         pragma Assert (N <= Nodes.Last);
          return Node_Id (Nodes.Table (N).Field4);
       end Node4;
 
       function Node5 (N : Node_Id) return Node_Id is
       begin
-         pragma Assert (N in Nodes.First .. Nodes.Last);
+         --  c.f. atree.adb#L1947
+         pragma Assert (N <= Nodes.Last);
          return Node_Id (Nodes.Table (N).Field5);
       end Node5;
 
@@ -2752,31 +2773,36 @@ package body Atree is
 
       function List1 (N : Node_Id) return List_Id is
       begin
-         pragma Assert (N in Nodes.First .. Nodes.Last);
+         --  c.f. atree.adb#L2091
+         pragma Assert (N <= Nodes.Last);
          return List_Id (Nodes.Table (N).Field1);
       end List1;
 
       function List2 (N : Node_Id) return List_Id is
       begin
-         pragma Assert (N in Nodes.First .. Nodes.Last);
+         --  c.f. atree.adb#L2097
+         pragma Assert (N <= Nodes.Last);
          return List_Id (Nodes.Table (N).Field2);
       end List2;
 
       function List3 (N : Node_Id) return List_Id is
       begin
-         pragma Assert (N in Nodes.First .. Nodes.Last);
+         --  c.f. atree.adb#L2103
+         pragma Assert (N <= Nodes.Last);
          return List_Id (Nodes.Table (N).Field3);
       end List3;
 
       function List4 (N : Node_Id) return List_Id is
       begin
-         pragma Assert (N in Nodes.First .. Nodes.Last);
+         --  c.f. atree.adb#L2109
+         pragma Assert (N <= Nodes.Last);
          return List_Id (Nodes.Table (N).Field4);
       end List4;
 
       function List5 (N : Node_Id) return List_Id is
       begin
-         pragma Assert (N in Nodes.First .. Nodes.Last);
+         --  c.f. atree.adb#L2115
+         pragma Assert (N <= Nodes.Last);
          return List_Id (Nodes.Table (N).Field5);
       end List5;
 
@@ -2851,30 +2877,35 @@ package body Atree is
 
       function Name1 (N : Node_Id) return Name_Id is
       begin
-         pragma Assert (N in Nodes.First .. Nodes.Last);
+         --  c.f. atree.adb#L2276
+         pragma Assert (N <= Nodes.Last);
          return Name_Id (Nodes.Table (N).Field1);
       end Name1;
 
       function Name2 (N : Node_Id) return Name_Id is
       begin
-         pragma Assert (N in Nodes.First .. Nodes.Last);
+         --  c.f. atree.adb#L2282
+         pragma Assert (N <= Nodes.Last);
          return Name_Id (Nodes.Table (N).Field2);
       end Name2;
 
       function Str3 (N : Node_Id) return String_Id is
       begin
-         pragma Assert (N in Nodes.First .. Nodes.Last);
+         --  c.f. atree.adb#L2288
+         pragma Assert (N <= Nodes.Last);
          return String_Id (Nodes.Table (N).Field3);
       end Str3;
 
       function Char_Code2 (N : Node_Id) return Char_Code is
       begin
-         pragma Assert (N in Nodes.First .. Nodes.Last);
+         --  No direct equivalent procedure found, but change fits the pattern
+         pragma Assert (N <= Nodes.Last);
          return Char_Code (Nodes.Table (N).Field2 - Char_Code_Bias);
       end Char_Code2;
 
       function Uint3 (N : Node_Id) return Uint is
-         pragma Assert (N in Nodes.First .. Nodes.Last);
+         --  c.f. atree.adb#L2304
+         pragma Assert (N <= Nodes.Last);
          U : constant Union_Id := Nodes.Table (N).Field3;
 
       begin
@@ -2886,7 +2917,8 @@ package body Atree is
       end Uint3;
 
       function Uint4 (N : Node_Id) return Uint is
-         pragma Assert (N in Nodes.First .. Nodes.Last);
+         --  c.f. atree.adb#L2315
+         pragma Assert (N <= Nodes.Last);
          U : constant Union_Id := Nodes.Table (N).Field4;
 
       begin
@@ -2898,7 +2930,8 @@ package body Atree is
       end Uint4;
 
       function Uint5 (N : Node_Id) return Uint is
-         pragma Assert (N in Nodes.First .. Nodes.Last);
+         --  c.f. atree.adb#L2326
+         pragma Assert (N <= Nodes.Last);
          U : constant Union_Id := Nodes.Table (N).Field5;
 
       begin
@@ -3043,7 +3076,8 @@ package body Atree is
 
       function Ureal3 (N : Node_Id) return Ureal is
       begin
-         pragma Assert (N in Nodes.First .. Nodes.Last);
+         --  c.f. atree.adb#L2459
+         pragma Assert (N <= Nodes.Last);
          return From_Union (Nodes.Table (N).Field3);
       end Ureal3;
 
@@ -3061,91 +3095,106 @@ package body Atree is
 
       function Flag4 (N : Node_Id) return Boolean is
       begin
-         pragma Assert (N in Nodes.First .. Nodes.Last);
+         --  c.f. atree.adb#L2477
+         pragma Assert (N <= Nodes.Last);
          return Nodes.Table (N).Flag4;
       end Flag4;
 
       function Flag5 (N : Node_Id) return Boolean is
       begin
-         pragma Assert (N in Nodes.First .. Nodes.Last);
+         --  c.f. atree.adb#L2483
+         pragma Assert (N <= Nodes.Last);
          return Nodes.Table (N).Flag5;
       end Flag5;
 
       function Flag6 (N : Node_Id) return Boolean is
       begin
-         pragma Assert (N in Nodes.First .. Nodes.Last);
+         --  c.f. atree.adb#L2489
+         pragma Assert (N <= Nodes.Last);
          return Nodes.Table (N).Flag6;
       end Flag6;
 
       function Flag7 (N : Node_Id) return Boolean is
       begin
-         pragma Assert (N in Nodes.First .. Nodes.Last);
+         --  c.f. atree.adb#L2495
+         pragma Assert (N <= Nodes.Last);
          return Nodes.Table (N).Flag7;
       end Flag7;
 
       function Flag8 (N : Node_Id) return Boolean is
       begin
-         pragma Assert (N in Nodes.First .. Nodes.Last);
+         --  c.f. atree.adb#L2501
+         pragma Assert (N <= Nodes.Last);
          return Nodes.Table (N).Flag8;
       end Flag8;
 
       function Flag9 (N : Node_Id) return Boolean is
       begin
-         pragma Assert (N in Nodes.First .. Nodes.Last);
+         --  c.f. atree.adb#L2507
+         pragma Assert (N <= Nodes.Last);
          return Nodes.Table (N).Flag9;
       end Flag9;
 
       function Flag10 (N : Node_Id) return Boolean is
       begin
-         pragma Assert (N in Nodes.First .. Nodes.Last);
+         --  c.f. atree.adb#L2513
+         pragma Assert (N <= Nodes.Last);
          return Nodes.Table (N).Flag10;
       end Flag10;
 
       function Flag11 (N : Node_Id) return Boolean is
       begin
-         pragma Assert (N in Nodes.First .. Nodes.Last);
+         --  c.f. atree.adb#L2519
+         pragma Assert (N <= Nodes.Last);
          return Nodes.Table (N).Flag11;
       end Flag11;
 
       function Flag12 (N : Node_Id) return Boolean is
       begin
-         pragma Assert (N in Nodes.First .. Nodes.Last);
+         --  c.f. atree.adb#L2525
+         pragma Assert (N <= Nodes.Last);
          return Nodes.Table (N).Flag12;
       end Flag12;
 
       function Flag13 (N : Node_Id) return Boolean is
       begin
-         pragma Assert (N in Nodes.First .. Nodes.Last);
+         --  c.f. atree.adb#L2531
+         pragma Assert (N <= Nodes.Last);
          return Nodes.Table (N).Flag13;
       end Flag13;
 
       function Flag14 (N : Node_Id) return Boolean is
       begin
-         pragma Assert (N in Nodes.First .. Nodes.Last);
+         --  c.f. atree.adb#L2537
+         pragma Assert (N <= Nodes.Last);
          return Nodes.Table (N).Flag14;
       end Flag14;
 
       function Flag15 (N : Node_Id) return Boolean is
       begin
-         pragma Assert (N in Nodes.First .. Nodes.Last);
+         --  c.f. atree.adb#L2543
+         pragma Assert (N <= Nodes.Last);
          return Nodes.Table (N).Flag15;
       end Flag15;
 
       function Flag16 (N : Node_Id) return Boolean is
       begin
-         pragma Assert (N in Nodes.First .. Nodes.Last);
+         --  c.f. atree.adb#L2549
+         pragma Assert (N <= Nodes.Last);
          return Nodes.Table (N).Flag16;
       end Flag16;
 
       function Flag17 (N : Node_Id) return Boolean is
       begin
-         pragma Assert (N in Nodes.First .. Nodes.Last);
+         --  c.f. atree.adb#L2555
+         pragma Assert (N <= Nodes.Last);
          return Nodes.Table (N).Flag17;
       end Flag17;
 
       function Flag18 (N : Node_Id) return Boolean is
       begin
-         pragma Assert (N in Nodes.First .. Nodes.Last);
+         --  c.f. atree.adb#L2561
+         pragma Assert (N <= Nodes.Last);
          return Nodes.Table (N).Flag18;
       end Flag18;
 
@@ -4141,37 +4190,43 @@ package body Atree is
 
       procedure Set_Nkind (N : Node_Id; Val : Node_Kind) is
       begin
-         pragma Assert (N in Nodes.First .. Nodes.Last);
+         --  c.f. atree.adb#L3941
+         pragma Assert (N <= Nodes.Last);
          Nodes.Table (N).Nkind := Val;
       end Set_Nkind;
 
       procedure Set_Field1 (N : Node_Id; Val : Union_Id) is
       begin
-         pragma Assert (N in Nodes.First .. Nodes.Last);
+         --  c.f. atree.adb#L3947
+         pragma Assert (N <= Nodes.Last);
          Nodes.Table (N).Field1 := Val;
       end Set_Field1;
 
       procedure Set_Field2 (N : Node_Id; Val : Union_Id) is
       begin
-         pragma Assert (N in Nodes.First .. Nodes.Last);
+         --  c.f. atree.adb#L3953
+         pragma Assert (N <= Nodes.Last);
          Nodes.Table (N).Field2 := Val;
       end Set_Field2;
 
       procedure Set_Field3 (N : Node_Id; Val : Union_Id) is
       begin
-         pragma Assert (N in Nodes.First .. Nodes.Last);
+         --  c.f. atree.adb#L3959
+         pragma Assert (N <= Nodes.Last);
          Nodes.Table (N).Field3 := Val;
       end Set_Field3;
 
       procedure Set_Field4 (N : Node_Id; Val : Union_Id) is
       begin
-         pragma Assert (N in Nodes.First .. Nodes.Last);
+         --  c.f. atree.adb#L3965
+         pragma Assert (N <= Nodes.Last);
          Nodes.Table (N).Field4 := Val;
       end Set_Field4;
 
       procedure Set_Field5 (N : Node_Id; Val : Union_Id) is
       begin
-         pragma Assert (N in Nodes.First .. Nodes.Last);
+         --  c.f. atree.adb#L3971
+         pragma Assert (N <= Nodes.Last);
          Nodes.Table (N).Field5 := Val;
       end Set_Field5;
 
@@ -4285,31 +4340,36 @@ package body Atree is
 
       procedure Set_Node1 (N : Node_Id; Val : Node_Id) is
       begin
-         pragma Assert (N in Nodes.First .. Nodes.Last);
+         --  c.f. atree.adb#L4115
+         pragma Assert (N <= Nodes.Last);
          Nodes.Table (N).Field1 := Union_Id (Val);
       end Set_Node1;
 
       procedure Set_Node2 (N : Node_Id; Val : Node_Id) is
       begin
-         pragma Assert (N in Nodes.First .. Nodes.Last);
+         --  c.f. atree.adb#L4121
+         pragma Assert (N <= Nodes.Last);
          Nodes.Table (N).Field2 := Union_Id (Val);
       end Set_Node2;
 
       procedure Set_Node3 (N : Node_Id; Val : Node_Id) is
       begin
-         pragma Assert (N in Nodes.First .. Nodes.Last);
+         --  c.f. atree.adb#L4127
+         pragma Assert (N <= Nodes.Last);
          Nodes.Table (N).Field3 := Union_Id (Val);
       end Set_Node3;
 
       procedure Set_Node4 (N : Node_Id; Val : Node_Id) is
       begin
-         pragma Assert (N in Nodes.First .. Nodes.Last);
+         --  c.f. atree.adb#L4133
+         pragma Assert (N <= Nodes.Last);
          Nodes.Table (N).Field4 := Union_Id (Val);
       end Set_Node4;
 
       procedure Set_Node5 (N : Node_Id; Val : Node_Id) is
       begin
-         pragma Assert (N in Nodes.First .. Nodes.Last);
+         --  c.f. atree.adb#L4139
+         pragma Assert (N <= Nodes.Last);
          Nodes.Table (N).Field5 := Union_Id (Val);
       end Set_Node5;
 
@@ -4423,31 +4483,36 @@ package body Atree is
 
       procedure Set_List1 (N : Node_Id; Val : List_Id) is
       begin
-         pragma Assert (N in Nodes.First .. Nodes.Last);
+         --  c.f. atree.adb#L4283
+         pragma Assert (N <= Nodes.Last);
          Nodes.Table (N).Field1 := Union_Id (Val);
       end Set_List1;
 
       procedure Set_List2 (N : Node_Id; Val : List_Id) is
       begin
-         pragma Assert (N in Nodes.First .. Nodes.Last);
+         --  c.f. atree.adb#L4289
+         pragma Assert (N <= Nodes.Last);
          Nodes.Table (N).Field2 := Union_Id (Val);
       end Set_List2;
 
       procedure Set_List3 (N : Node_Id; Val : List_Id) is
       begin
-         pragma Assert (N in Nodes.First .. Nodes.Last);
+         --  c.f. atree.adb#L4295
+         pragma Assert (N <= Nodes.Last);
          Nodes.Table (N).Field3 := Union_Id (Val);
       end Set_List3;
 
       procedure Set_List4 (N : Node_Id; Val : List_Id) is
       begin
-         pragma Assert (N in Nodes.First .. Nodes.Last);
+         --  c.f. atree.adb#L4301
+         pragma Assert (N <= Nodes.Last);
          Nodes.Table (N).Field4 := Union_Id (Val);
       end Set_List4;
 
       procedure Set_List5 (N : Node_Id; Val : List_Id) is
       begin
-         pragma Assert (N in Nodes.First .. Nodes.Last);
+         --  c.f. atree.adb#L4307
+         pragma Assert (N <= Nodes.Last);
          Nodes.Table (N).Field5 := Union_Id (Val);
       end Set_List5;
 
@@ -4522,37 +4587,43 @@ package body Atree is
 
       procedure Set_Name1 (N : Node_Id; Val : Name_Id) is
       begin
-         pragma Assert (N in Nodes.First .. Nodes.Last);
+         --  c.f. atree.adb#L4399
+         pragma Assert (N <= Nodes.Last);
          Nodes.Table (N).Field1 := Union_Id (Val);
       end Set_Name1;
 
       procedure Set_Name2 (N : Node_Id; Val : Name_Id) is
       begin
-         pragma Assert (N in Nodes.First .. Nodes.Last);
+         --  c.f. atree.adb#L4405
+         pragma Assert (N <= Nodes.Last);
          Nodes.Table (N).Field2 := Union_Id (Val);
       end Set_Name2;
 
       procedure Set_Str3 (N : Node_Id; Val : String_Id) is
       begin
-         pragma Assert (N in Nodes.First .. Nodes.Last);
+         --  c.f. atree.adb#L4411
+         pragma Assert (N <= Nodes.Last);
          Nodes.Table (N).Field3 := Union_Id (Val);
       end Set_Str3;
 
       procedure Set_Uint3 (N : Node_Id; Val : Uint) is
       begin
-         pragma Assert (N in Nodes.First .. Nodes.Last);
+         --  c.f. atree.adb#L4423
+         pragma Assert (N <= Nodes.Last);
          Nodes.Table (N).Field3 := To_Union (Val);
       end Set_Uint3;
 
       procedure Set_Uint4 (N : Node_Id; Val : Uint) is
       begin
-         pragma Assert (N in Nodes.First .. Nodes.Last);
+         --  c.f. atree.adb#L4429
+         pragma Assert (N <= Nodes.Last);
          Nodes.Table (N).Field4 := To_Union (Val);
       end Set_Uint4;
 
       procedure Set_Uint5 (N : Node_Id; Val : Uint) is
       begin
-         pragma Assert (N in Nodes.First .. Nodes.Last);
+         --  c.f. atree.adb#L4435
+         pragma Assert (N <= Nodes.Last);
          Nodes.Table (N).Field5 := To_Union (Val);
       end Set_Uint5;
 
@@ -4624,7 +4695,8 @@ package body Atree is
 
       procedure Set_Ureal3 (N : Node_Id; Val : Ureal) is
       begin
-         pragma Assert (N in Nodes.First .. Nodes.Last);
+         --  c.f. atree.adb#L4507
+         pragma Assert (N <= Nodes.Last);
          Nodes.Table (N).Field3 := To_Union (Val);
       end Set_Ureal3;
 
@@ -4642,97 +4714,113 @@ package body Atree is
 
       procedure Set_Char_Code2 (N : Node_Id; Val : Char_Code) is
       begin
-         pragma Assert (N in Nodes.First .. Nodes.Last);
+         --  No direct equivalent procedure found, but change fits the pattern
+         pragma Assert (N <= Nodes.Last);
          Nodes.Table (N).Field2 := Union_Id (Val) + Char_Code_Bias;
       end Set_Char_Code2;
 
       procedure Set_Flag4 (N : Node_Id; Val : Boolean) is
       begin
-         pragma Assert (N in Nodes.First .. Nodes.Last);
+         --  c.f. atree.adb#L4525
+         pragma Assert (N <= Nodes.Last);
          Nodes.Table (N).Flag4 := Val;
       end Set_Flag4;
 
       procedure Set_Flag5 (N : Node_Id; Val : Boolean) is
       begin
-         pragma Assert (N in Nodes.First .. Nodes.Last);
+         --  c.f. atree.adb#L4531
+         pragma Assert (N <= Nodes.Last);
          Nodes.Table (N).Flag5 := Val;
       end Set_Flag5;
 
       procedure Set_Flag6 (N : Node_Id; Val : Boolean) is
       begin
-         pragma Assert (N in Nodes.First .. Nodes.Last);
+         --  c.f. atree.adb#L4537
+         pragma Assert (N <= Nodes.Last);
          Nodes.Table (N).Flag6 := Val;
       end Set_Flag6;
 
       procedure Set_Flag7 (N : Node_Id; Val : Boolean) is
       begin
-         pragma Assert (N in Nodes.First .. Nodes.Last);
+         --  c.f. atree.adb#L4543
+         pragma Assert (N <= Nodes.Last);
          Nodes.Table (N).Flag7 := Val;
       end Set_Flag7;
 
       procedure Set_Flag8 (N : Node_Id; Val : Boolean) is
       begin
-         pragma Assert (N in Nodes.First .. Nodes.Last);
+         --  c.f. atree.adb#L4549
+         pragma Assert (N <= Nodes.Last);
          Nodes.Table (N).Flag8 := Val;
       end Set_Flag8;
 
       procedure Set_Flag9 (N : Node_Id; Val : Boolean) is
       begin
-         pragma Assert (N in Nodes.First .. Nodes.Last);
+         --  c.f. atree.adb#L4555
+         pragma Assert (N <= Nodes.Last);
          Nodes.Table (N).Flag9 := Val;
       end Set_Flag9;
 
       procedure Set_Flag10 (N : Node_Id; Val : Boolean) is
       begin
-         pragma Assert (N in Nodes.First .. Nodes.Last);
+         --  c.f. atree.adb#L4561
+         pragma Assert (N <= Nodes.Last);
          Nodes.Table (N).Flag10 := Val;
       end Set_Flag10;
 
       procedure Set_Flag11 (N : Node_Id; Val : Boolean) is
       begin
-         pragma Assert (N in Nodes.First .. Nodes.Last);
+         --  c.f. atree.adb#L4567
+         pragma Assert (N <= Nodes.Last);
          Nodes.Table (N).Flag11 := Val;
       end Set_Flag11;
 
       procedure Set_Flag12 (N : Node_Id; Val : Boolean) is
       begin
-         pragma Assert (N in Nodes.First .. Nodes.Last);
+         --  c.f. atree.adb#L4573
+         pragma Assert (N <= Nodes.Last);
          Nodes.Table (N).Flag12 := Val;
       end Set_Flag12;
 
       procedure Set_Flag13 (N : Node_Id; Val : Boolean) is
       begin
-         pragma Assert (N in Nodes.First .. Nodes.Last);
+         --  c.f. atree.adb#L4579
+         pragma Assert (N <= Nodes.Last);
          Nodes.Table (N).Flag13 := Val;
       end Set_Flag13;
 
       procedure Set_Flag14 (N : Node_Id; Val : Boolean) is
       begin
-         pragma Assert (N in Nodes.First .. Nodes.Last);
+         --  c.f. atree.adb#L4585
+         pragma Assert (N <= Nodes.Last);
          Nodes.Table (N).Flag14 := Val;
       end Set_Flag14;
 
       procedure Set_Flag15 (N : Node_Id; Val : Boolean) is
       begin
-         pragma Assert (N in Nodes.First .. Nodes.Last);
+         --  c.f. atree.adb#L4591
+         pragma Assert (N <= Nodes.Last);
          Nodes.Table (N).Flag15 := Val;
       end Set_Flag15;
 
       procedure Set_Flag16 (N : Node_Id; Val : Boolean) is
       begin
-         pragma Assert (N in Nodes.First .. Nodes.Last);
+         --  c.f. atree.adb#L4597
+         pragma Assert (N <= Nodes.Last);
          Nodes.Table (N).Flag16 := Val;
       end Set_Flag16;
 
       procedure Set_Flag17 (N : Node_Id; Val : Boolean) is
       begin
-         pragma Assert (N in Nodes.First .. Nodes.Last);
+         --  c.f. atree.adb#L4603
+         pragma Assert (N <= Nodes.Last);
          Nodes.Table (N).Flag17 := Val;
       end Set_Flag17;
 
       procedure Set_Flag18 (N : Node_Id; Val : Boolean) is
       begin
-         pragma Assert (N in Nodes.First .. Nodes.Last);
+         --  c.f. atree.adb#L4609
+         pragma Assert (N <= Nodes.Last);
          Nodes.Table (N).Flag18 := Val;
       end Set_Flag18;
 
@@ -5918,44 +6006,64 @@ package body Atree is
              (Nodes.Table (N + 3).Field11'Unrestricted_Access)).Flag183 := Val;
       end Set_Flag183;
 
+      --  "Reversed" parameters to Set_Parent validated against explicitly-
+      --    named parameters that were added in GCC 5 (c.f. the link below)
+      --  github.com/gcc-mirror/gcc/blob/releases/gcc-5/gcc/ada/atree.adb#L8249
+
       procedure Set_Node1_With_Parent (N : Node_Id; Val : Node_Id) is
       begin
-         pragma Assert (N in Nodes.First .. Nodes.Last);
-         if Val > Error then Set_Parent (Val, N); end if;
+         --  c.f. atree.adb#L6309
+         pragma Assert (N <= Nodes.Last);
+         if Val > Error then
+            Set_Parent (N => Val, Val => N);
+         end if;
          Set_Node1 (N, Val);
       end Set_Node1_With_Parent;
 
       procedure Set_Node2_With_Parent (N : Node_Id; Val : Node_Id) is
       begin
-         pragma Assert (N in Nodes.First .. Nodes.Last);
-         if Val > Error then Set_Parent (Val, N); end if;
+         --  c.f. atree.adb#L6320
+         pragma Assert (N <= Nodes.Last);
+         if Val > Error then
+            Set_Parent (N => Val, Val => N);
+         end if;
          Set_Node2 (N, Val);
       end Set_Node2_With_Parent;
 
       procedure Set_Node3_With_Parent (N : Node_Id; Val : Node_Id) is
       begin
-         pragma Assert (N in Nodes.First .. Nodes.Last);
-         if Val > Error then Set_Parent (Val, N); end if;
+         --  c.f. atree.adb#L6331
+         pragma Assert (N <= Nodes.Last);
+         if Val > Error then
+            Set_Parent (N => Val, Val => N);
+         end if;
          Set_Node3 (N, Val);
       end Set_Node3_With_Parent;
 
       procedure Set_Node4_With_Parent (N : Node_Id; Val : Node_Id) is
       begin
-         pragma Assert (N in Nodes.First .. Nodes.Last);
-         if Val > Error then Set_Parent (Val, N); end if;
+         --  c.f. atree.adb#L6342
+         pragma Assert (N <= Nodes.Last);
+         if Val > Error then
+            Set_Parent (N => Val, Val => N);
+         end if;
          Set_Node4 (N, Val);
       end Set_Node4_With_Parent;
 
       procedure Set_Node5_With_Parent (N : Node_Id; Val : Node_Id) is
       begin
-         pragma Assert (N in Nodes.First .. Nodes.Last);
-         if Val > Error then Set_Parent (Val, N); end if;
+         --  c.f. atree.adb#L6353
+         pragma Assert (N <= Nodes.Last);
+         if Val > Error then
+            Set_Parent (N => Val, Val => N);
+         end if;
          Set_Node5 (N, Val);
       end Set_Node5_With_Parent;
 
       procedure Set_List1_With_Parent (N : Node_Id; Val : List_Id) is
       begin
-         pragma Assert (N in Nodes.First .. Nodes.Last);
+         --  c.f. atree.adb#L6364
+         pragma Assert (N <= Nodes.Last);
          if Val /= No_List and then Val /= Error_List then
             Set_Parent (Val, N);
          end if;
@@ -5964,7 +6072,8 @@ package body Atree is
 
       procedure Set_List2_With_Parent (N : Node_Id; Val : List_Id) is
       begin
-         pragma Assert (N in Nodes.First .. Nodes.Last);
+         --  c.f. atree.adb#L6373
+         pragma Assert (N <= Nodes.Last);
          if Val /= No_List and then Val /= Error_List then
             Set_Parent (Val, N);
          end if;
@@ -5973,7 +6082,8 @@ package body Atree is
 
       procedure Set_List3_With_Parent (N : Node_Id; Val : List_Id) is
       begin
-         pragma Assert (N in Nodes.First .. Nodes.Last);
+         --  c.f. atree.adb#L6382
+         pragma Assert (N <= Nodes.Last);
          if Val /= No_List and then Val /= Error_List then
             Set_Parent (Val, N);
          end if;
@@ -5982,7 +6092,8 @@ package body Atree is
 
       procedure Set_List4_With_Parent (N : Node_Id; Val : List_Id) is
       begin
-         pragma Assert (N in Nodes.First .. Nodes.Last);
+         --  c.f. atree.adb#L6391
+         pragma Assert (N <= Nodes.Last);
          if Val /= No_List and then Val /= Error_List then
             Set_Parent (Val, N);
          end if;
@@ -5991,7 +6102,8 @@ package body Atree is
 
       procedure Set_List5_With_Parent (N : Node_Id; Val : List_Id) is
       begin
-         pragma Assert (N in Nodes.First .. Nodes.Last);
+         --  c.f. atree.adb#L6400
+         pragma Assert (N <= Nodes.Last);
          if Val /= No_List and then Val /= Error_List then
             Set_Parent (Val, N);
          end if;

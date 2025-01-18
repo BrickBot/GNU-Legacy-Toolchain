@@ -35,7 +35,6 @@ with Snames;  use Snames;
 with Stand;   use Stand;
 with Tbuild;  use Tbuild;
 with Ttypes;  use Ttypes;
-with Exp_Tss; use Exp_Tss;
 with Uintp;   use Uintp;
 
 package body Exp_Strm is

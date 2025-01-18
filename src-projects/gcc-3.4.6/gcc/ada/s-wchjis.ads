@@ -43,7 +43,7 @@ pragma Pure (WCh_JIS);
    --  if the two characters are not a valid EUC encoding.
 
    procedure JIS_To_EUC
-     (J    : in Wide_Character;
+     (J    : Wide_Character;
       EUC1 : out Character;
       EUC2 : out Character);
 
@@ -56,7 +56,7 @@ pragma Pure (WCh_JIS);
    --  the input code is assumed to be in an appropriate range.
 
    procedure JIS_To_Shift_JIS
-     (J   : in Wide_Character;
+     (J   : Wide_Character;
       SJ1 : out Character;
       SJ2 : out Character);
    --  Given a wide character code in JIS form, produce the corresponding

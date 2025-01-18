@@ -246,7 +246,9 @@ package body Ch10 is
       if Token = Tok_Private then
          Private_Sloc := Token_Ptr;
          Set_Keyword_Casing (Current_Source_File, Determine_Token_Casing);
-         if Style_Check then Style.Check_Indentation; end if;
+         if Style_Check then
+            Style.Check_Indentation;
+         end if;
 
          Save_Scan_State (Scan_State); -- at PRIVATE
          Scan; -- past PRIVATE
@@ -323,7 +325,9 @@ package body Ch10 is
       --  it hasn't already been done on seeing a WITH or PRIVATE.
 
       Set_Keyword_Casing (Current_Source_File, Determine_Token_Casing);
-      if Style_Check then Style.Check_Indentation; end if;
+      if Style_Check then
+         Style.Check_Indentation;
+      end if;
 
       --  Remaining processing depends on particular type of compilation unit
 
@@ -774,7 +778,9 @@ package body Ch10 is
       --  Loop through context items
 
       loop
-         if Style_Check then Style.Check_Indentation; end if;
+         if Style_Check then
+            Style.Check_Indentation;
+         end if;
 
          --  Gather any pragmas appearing in the context clause
 

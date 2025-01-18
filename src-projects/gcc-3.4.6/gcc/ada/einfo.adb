@@ -4435,17 +4435,21 @@ package body Einfo is
    -- Append_Entity --
    -------------------
 
+   --  "Reversed" parameters to Set_*_Entity validated against explicitly-named
+   --    parameters that were added in GCC 5 (c.f. the link below)
+   --    github.com/gcc-mirror/gcc/blob/releases/gcc-5/gcc/ada/einfo.adb#L6601
+
    procedure Append_Entity (Id : Entity_Id; V : Entity_Id) is
    begin
       if Last_Entity (V) = Empty then
-         Set_First_Entity (V, Id);
+         Set_First_Entity (Id => V, V => Id);
       else
          Set_Next_Entity (Last_Entity (V), Id);
       end if;
 
       Set_Next_Entity (Id, Empty);
       Set_Scope (Id, V);
-      Set_Last_Entity (V, Id);
+      Set_Last_Entity (Id => V, V => Id);
    end Append_Entity;
 
    ---------------
@@ -5748,7 +5752,11 @@ package body Einfo is
          end loop;
       end if;
 
-      raise Program_Error;
+      --  Removed to address "unreachable code" warning/error based on changes
+      --    found in release 4.5
+      --  github.com/gcc-mirror/gcc/blob/releases/gcc-4.5/gcc/ada/einfo.adb
+      --    #L6498
+      --  raise Program_Error;
    end Root_Type;
 
    -----------------

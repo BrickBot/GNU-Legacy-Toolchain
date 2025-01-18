@@ -58,5 +58,3 @@ package System.Traceback_Entries is
    --  Returns an entry representing a frame for a call instruction at PC.
 
 end System.Traceback_Entries;
-
-

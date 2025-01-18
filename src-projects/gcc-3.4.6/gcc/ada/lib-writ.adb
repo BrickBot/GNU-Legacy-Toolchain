@@ -910,7 +910,7 @@ package body Lib.Writ is
            or else Unit = Main_Unit
          then
             if not Has_No_Elaboration_Code (Cunit (Unit)) then
-               Violations (No_ELaboration_Code) := True;
+               Violations (No_Elaboration_Code) := True;
             end if;
          end if;
       end loop;

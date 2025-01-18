@@ -40,7 +40,7 @@
 with Types; use Types;
 
 package Get_Targ is
-pragma Preelaborate (Get_Targ);
+   pragma Preelaborate (Get_Targ);
 
    function Get_Bits_Per_Unit return Pos;
    pragma Import (C, Get_Bits_Per_Unit, "get_target_bits_per_unit");
@@ -81,8 +81,13 @@ pragma Preelaborate (Get_Targ);
    function Get_Maximum_Alignment return Pos;
    pragma Import (C, Get_Maximum_Alignment, "get_target_maximum_alignment");
 
-   function Get_No_Dollar_In_Label return Boolean;
-   pragma Import (C, Get_No_Dollar_In_Label, "get_target_no_dollar_in_label");
+   --  Function commented out to address "not referenced" warning/error,
+   --    based on release 4.5
+   --  github.com/gcc-mirror/gcc/blob/releases/gcc-4.5/gcc/ada/get_targ.ads
+
+   --  function Get_No_Dollar_In_Label return Boolean;
+   --  pragma Import (C, Get_No_Dollar_In_Label,
+   --                    "get_target_no_dollar_in_label");
 
    function Get_Float_Words_BE return Nat;
    pragma Import (C, Get_Float_Words_BE, "get_float_words_be");

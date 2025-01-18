@@ -1078,13 +1078,13 @@ package body Sem_Util is
 
          --  Make all such messages unconditional
 
-         Msgc (1 .. Msg'Length) := Msg;
+         Msgc (Msg'First .. Msg'Last) := Msg;
          Msgc (Msg'Length + 1) := '!';
          Msgl := Msg'Length + 1;
 
          --  Message is a warning, even in Ada 95 case
 
-         if Msg (Msg'Length) = '?' then
+         if Msg (Msg'Last) = '?' then
             Wmsg := True;
 
          --  In Ada 83, all messages are warnings. In the private part and
@@ -2161,7 +2161,7 @@ package body Sem_Util is
 
    begin
       Res := Internal_Full_Qualified_Name (E);
-      Store_String_Char (Get_Char_Code (ASCII.nul));
+      Store_String_Char (Get_Char_Code (ASCII.NUL));
       return End_String;
    end Full_Qualified_Name;
 
@@ -4051,7 +4051,7 @@ package body Sem_Util is
       -- Comes_From_Limited_Private_Type_Declaration --
       -------------------------------------------------
 
-      function Comes_From_Limited_Private_Type_Declaration (E : in Entity_Id)
+      function Comes_From_Limited_Private_Type_Declaration (E : Entity_Id)
         return Boolean
       is
          N : constant Node_Id := Declaration_Node (E);

@@ -117,6 +117,7 @@ pragma Elaborate_Body (Table);
       --  safety is not compromised by this approach.
 
       type Table_Ptr is access all Big_Table_Type;
+      pragma No_Strict_Aliasing (Table_Ptr);
       --  The table is actually represented as a pointer to allow reallocation
 
       Table : aliased Table_Ptr := null;

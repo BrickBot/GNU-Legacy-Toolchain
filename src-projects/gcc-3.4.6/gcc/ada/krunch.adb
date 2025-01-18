@@ -39,7 +39,7 @@ procedure Krunch
    No_Predef : Boolean)
 
 is
-   B1       : Character renames Buffer (1);
+   B1       : Character renames Buffer (Buffer'First);
    Curlen   : Natural;
    Krlen    : Natural;
    Num_Seps : Natural;
@@ -56,35 +56,45 @@ begin
       Krlen := Maxlen;
 
    elsif Len >= 18
-     and then Buffer (1 .. 17) = "ada-wide_text_io-"
+     and then Buffer (Buffer'First .. Buffer'First + 16) = "ada-wide_text_io-"
    then
       Startloc := 3;
-      Buffer (2 .. 5) := "-wt-";
-      Buffer (6 .. Len - 12) := Buffer (18 .. Len);
+      Buffer (Buffer'First + 1 .. Buffer'First + 4) := "-wt-";
+      Buffer (Buffer'First + 5 .. Len - 12) :=
+                                            Buffer (Buffer'First + 17 .. Len);
       Curlen := Len - 12;
       Krlen  := 8;
 
-   elsif Len >= 4 and then Buffer (1 .. 4) = "ada-" then
+   elsif Len >= 4
+     and then Buffer (Buffer'First .. Buffer'First + 3) = "ada-"
+   then
       Startloc := 3;
-      Buffer (2 .. Len - 2) := Buffer (4 .. Len);
+      Buffer (Buffer'First + 1 .. Len - 2) := Buffer (Buffer'First + 3 .. Len);
       Curlen := Len - 2;
       Krlen  := 8;
 
-   elsif Len >= 5 and then Buffer (1 .. 5) = "gnat-" then
+   elsif Len >= 5
+     and then Buffer (Buffer'First .. Buffer'First + 4) = "gnat-"
+   then
       Startloc := 3;
-      Buffer (2 .. Len - 3) := Buffer (5 .. Len);
+      Buffer (Buffer'First + 1 .. Len - 3) := Buffer (Buffer'First + 4 .. Len);
       Curlen := Len - 3;
       Krlen  := 8;
 
-   elsif Len >= 7 and then Buffer (1 .. 7) = "system-" then
+   elsif Len >= 7
+     and then Buffer (Buffer'First .. Buffer'First + 6) = "system-"
+   then
       Startloc := 3;
-      Buffer (2 .. Len - 5) := Buffer (7 .. Len);
+      Buffer (Buffer'First + 1 .. Len - 5) := Buffer (Buffer'First + 6 .. Len);
       Curlen := Len - 5;
       Krlen  := 8;
 
-   elsif Len >= 11 and then Buffer (1 .. 11) = "interfaces-" then
+   elsif Len >= 11
+     and then Buffer (Buffer'First .. Buffer'First + 10) = "interfaces-"
+   then
       Startloc := 3;
-      Buffer (2 .. Len - 9) := Buffer (11 .. Len);
+      Buffer (Buffer'First + 1 .. Len - 9) :=
+                                           Buffer (Buffer'First + 10 .. Len);
       Curlen := Len - 9;
       Krlen  := 8;
 
@@ -92,13 +102,20 @@ begin
    --  to 8 characters, but no other special processing is required here.
    --  Note that text_io and calendar are already short enough anyway.
 
-   elsif     (Len =  9 and then Buffer (1 ..  9) = "direct_io")
-     or else (Len = 10 and then Buffer (1 .. 10) = "interfaces")
-     or else (Len = 13 and then Buffer (1 .. 13) = "io_exceptions")
-     or else (Len = 12 and then Buffer (1 .. 12) = "machine_code")
-     or else (Len = 13 and then Buffer (1 .. 13) = "sequential_io")
-     or else (Len = 20 and then Buffer (1 .. 20) = "unchecked_conversion")
-     or else (Len = 22 and then Buffer (1 .. 22) = "unchecked_deallocation")
+   elsif     (Len =  9 and then
+       Buffer (Buffer'First .. Buffer'First +  8) = "direct_io")
+     or else (Len = 10 and then
+       Buffer (Buffer'First .. Buffer'First +  9) = "interfaces")
+     or else (Len = 13 and then
+       Buffer (Buffer'First .. Buffer'First + 12) = "io_exceptions")
+     or else (Len = 12 and then
+       Buffer (Buffer'First .. Buffer'First + 11) = "machine_code")
+     or else (Len = 13 and then
+       Buffer (Buffer'First .. Buffer'First + 12) = "sequential_io")
+     or else (Len = 20 and then
+       Buffer (Buffer'First .. Buffer'First + 19) = "unchecked_conversion")
+     or else (Len = 22 and then
+       Buffer (Buffer'First .. Buffer'First + 21) = "unchecked_deallocation")
    then
       Startloc := 1;
       Krlen    := 8;
@@ -111,14 +128,14 @@ begin
    --  in a file name, so a dollar_sign is used instead.
 
    elsif Len > 1
-     and then Buffer (2) = '-'
+     and then Buffer (Buffer'First + 1) = '-'
      and then (B1 = 'a' or else B1 = 'g' or else B1 = 'i' or else B1 = 's')
      and then Len <= Maxlen
    then
       if Hostparm.OpenVMS then
-         Buffer (2) := '$';
+         Buffer (Buffer'First + 1) := '$';
       else
-         Buffer (2) := '~';
+         Buffer (Buffer'First + 1) := '~';
       end if;
 
       return;

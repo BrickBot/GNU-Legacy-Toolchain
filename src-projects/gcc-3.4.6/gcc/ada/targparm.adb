@@ -430,7 +430,6 @@ package body Targparm is
                then
                   P := P + 3 + Targparm_Str (K)'Length;
 
-
                   if Targparm_Flags (K) then
                      Set_Standard_Error;
                      Write_Line

@@ -31,8 +31,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-with Output; use Output;
-
 separate (Lib)
 procedure List (File_Names_Only : Boolean := False) is
 

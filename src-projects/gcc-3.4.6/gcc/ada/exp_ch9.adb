@@ -55,9 +55,7 @@ with Sinfo;    use Sinfo;
 with Snames;   use Snames;
 with Stand;    use Stand;
 with Tbuild;   use Tbuild;
-with Types;    use Types;
 with Uintp;    use Uintp;
-with Opt;
 
 package body Exp_Ch9 is
 
@@ -2641,7 +2639,6 @@ package body Exp_Ch9 is
                               New_Occurrence_Of
                                 (Etype (Discrete_Subtype_Definition
                                   (Parent (Efam))), Loc)))))));
-
 
          end if;
 
@@ -8725,7 +8722,8 @@ package body Exp_Ch9 is
          else
             if Nkind (N) in N_Has_Etype
               and then Present (Etype (N))
-              and then Is_Itype (Etype (N)) then
+              and then Is_Itype (Etype (N))
+            then
 
                if Is_Array_Type (Etype (N)) then
                   Update_Array_Bounds (Etype (N));

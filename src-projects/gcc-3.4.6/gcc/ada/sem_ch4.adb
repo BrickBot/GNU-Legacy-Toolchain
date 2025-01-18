@@ -2323,7 +2323,14 @@ package body Sem_Ch4 is
 
       procedure Check_Common_Type (T1, T2 : Entity_Id) is
       begin
-         if Covers (T1, T2) or else Covers (T2, T1) then
+      --  Address "actuals for this call may be in wrong order" warnings /
+      --    errors by updating call, based on release 4.5
+      --  github.com/gcc-mirror/gcc/blob/releases/gcc-4.5/gcc/ada/sem_ch4.adb
+      --    #L2948
+         if Covers (T1 => T1, T2 => T2)
+              or else
+            Covers (T1 => T2, T2 => T1)
+         then
             if T1 = Universal_Integer
               or else T1 = Universal_Real
               or else T1 = Any_Character
@@ -3239,7 +3246,13 @@ package body Sem_Ch4 is
 
          if Is_Numeric_Type (T1)
            and then Is_Numeric_Type (T2)
-           and then (Covers (T1, T2) or else Covers (T2, T1))
+      --  Address "actuals for this call may be in wrong order" warnings /
+      --    errors by updating call, based on release 4.5
+      --  github.com/gcc-mirror/gcc/blob/releases/gcc-4.5/gcc/ada/sem_ch4.adb
+      --    #L4227
+           and then (Covers (T1 => T1, T2 => T2)
+                       or else
+                     Covers (T1 => T2, T2 => T1))
          then
             Add_One_Interp (N, Op_Id, Specific_Type (T1, T2));
          end if;
@@ -3272,7 +3285,13 @@ package body Sem_Ch4 is
 
          elsif Is_Numeric_Type (T1)
            and then Is_Numeric_Type (T2)
-           and then (Covers (T1, T2) or else Covers (T2, T1))
+      --  Address "actuals for this call may be in wrong order" warnings /
+      --    errors by updating call, based on release 4.5
+      --  github.com/gcc-mirror/gcc/blob/releases/gcc-4.5/gcc/ada/sem_ch4.adb
+      --    #L4268
+           and then (Covers (T1 => T1, T2 => T2)
+                       or else
+                     Covers (T1 => T2, T2 => T1))
          then
             Add_One_Interp (N, Op_Id, Specific_Type (T1, T2));
 
@@ -3317,7 +3336,13 @@ package body Sem_Ch4 is
          --  already set (case of operation constructed by Exp_Fixed).
 
          if Is_Integer_Type (T1)
-           and then (Covers (T1, T2) or else Covers (T2, T1))
+      --  Address "actuals for this call may be in wrong order" warnings /
+      --    errors by updating call, based on release 4.5
+      --  github.com/gcc-mirror/gcc/blob/releases/gcc-4.5/gcc/ada/sem_ch4.adb
+      --    #L4315
+           and then (Covers (T1 => T1, T2 => T2)
+                       or else
+                     Covers (T1 => T2, T2 => T1))
          then
             Add_One_Interp (N, Op_Id, Specific_Type (T1, T2));
          end if;
@@ -3727,7 +3752,11 @@ package body Sem_Ch4 is
       if Nkind (L) = N_Aggregate
         and then Nkind (R) /= N_Aggregate
       then
-         Find_Comparison_Types (R, L, Op_Id, N);
+      --  Address "actuals for this call may be in wrong order" warnings /
+      --    errors by updating call, based on release 4.5
+      --  github.com/gcc-mirror/gcc/blob/releases/gcc-4.5/gcc/ada/sem_ch4.adb
+      --    #L4748
+         Find_Comparison_Types (L => R, R => L, Op_Id => Op_Id, N => N);
          return;
       end if;
 
@@ -3919,7 +3948,11 @@ package body Sem_Ch4 is
       if Nkind (L) = N_Aggregate
         and then Nkind (R) /= N_Aggregate
       then
-         Find_Equality_Types (R, L, Op_Id, N);
+      --  Address "actuals for this call may be in wrong order" warnings /
+      --    errors by updating call, based on release 4.5
+      --  github.com/gcc-mirror/gcc/blob/releases/gcc-4.5/gcc/ada/sem_ch4.adb
+      --    #L4994
+         Find_Equality_Types (L => R, R => L, Op_Id => Op_Id, N => N);
          return;
       end if;
 

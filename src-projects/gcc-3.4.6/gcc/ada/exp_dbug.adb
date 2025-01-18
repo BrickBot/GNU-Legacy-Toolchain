@@ -516,7 +516,7 @@ package body Exp_Dbug is
       --  For all these cases, just return the name unchanged
 
       then
-         Name_Buffer (Name_Len + 1) := ASCII.Nul;
+         Name_Buffer (Name_Len + 1) := ASCII.NUL;
          return;
       end if;
 
@@ -727,7 +727,7 @@ package body Exp_Dbug is
          Get_Qualified_Name_And_Append (E);
       end if;
 
-      Name_Buffer (Name_Len + 1) := ASCII.Nul;
+      Name_Buffer (Name_Len + 1) := ASCII.NUL;
    end Get_External_Name;
 
    -----------------------------------
@@ -762,7 +762,7 @@ package body Exp_Dbug is
          Add_Str_To_Name_Buffer ("___");
          Add_Str_To_Name_Buffer (Suffix);
 
-         Name_Buffer (Name_Len + 1) := ASCII.Nul;
+         Name_Buffer (Name_Len + 1) := ASCII.NUL;
       end if;
    end Get_External_Name_With_Suffix;
 

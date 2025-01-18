@@ -119,7 +119,6 @@ package body Namet is
       end loop;
    end Add_Str_To_Name_Buffer;
 
-
    --------------
    -- Finalize --
    --------------
@@ -150,7 +149,7 @@ package body Namet is
 
             else
                Write_Str ("Hash_Table (");
-               Write_Int (Int (I));
+               Write_Int (I);
                Write_Str (") has ");
 
                declare

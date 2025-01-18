@@ -31,7 +31,6 @@ with Elists;   use Elists;
 with Errout;   use Errout;
 with Exp_Ch7;  use Exp_Ch7;
 with Exp_Ch11; use Exp_Ch11;
-with Exp_Tss;  use Exp_Tss;
 with Hostparm; use Hostparm;
 with Inline;   use Inline;
 with Itypes;   use Itypes;
@@ -46,7 +45,6 @@ with Sem_Ch8;  use Sem_Ch8;
 with Sem_Eval; use Sem_Eval;
 with Sem_Res;  use Sem_Res;
 with Sem_Util; use Sem_Util;
-with Sinfo;    use Sinfo;
 with Snames;   use Snames;
 with Stand;    use Stand;
 with Stringt;  use Stringt;
@@ -92,8 +90,8 @@ package body Exp_Util is
        Pos    : out Entity_Id;
        Prefix : Entity_Id;
        Sum    : Node_Id;
-       Decls  : in out List_Id;
-       Stats  : in out List_Id);
+       Decls  : List_Id;
+       Stats  : List_Id);
    --  Common processing for Task_Array_Image and Task_Record_Image.
    --  Create local variables and assign prefix of name to result string.
 
@@ -408,8 +406,8 @@ package body Exp_Util is
       T : Entity_Id;
       --  Entity for name at one index position
 
-      Decls : List_Id := New_List;
-      Stats : List_Id := New_List;
+      Decls : constant List_Id := New_List;
+      Stats : constant List_Id := New_List;
 
    begin
       Pref := Make_Defining_Identifier (Loc, New_Internal_Name ('P'));
@@ -712,8 +710,8 @@ package body Exp_Util is
        Pos    : out Entity_Id;
        Prefix : Entity_Id;
        Sum    : Node_Id;
-       Decls  : in out List_Id;
-       Stats  : in out List_Id)
+       Decls  : List_Id;
+       Stats  : List_Id)
    is
    begin
       Len := Make_Defining_Identifier (Loc, New_Internal_Name ('L'));
@@ -721,8 +719,8 @@ package body Exp_Util is
       Append_To (Decls,
         Make_Object_Declaration (Loc,
           Defining_Identifier => Len,
-          Object_Definition => New_Occurrence_Of (Standard_Integer, Loc),
-          Expression        => Sum));
+          Object_Definition   => New_Occurrence_Of (Standard_Integer, Loc),
+          Expression          => Sum));
 
       Res := Make_Defining_Identifier (Loc, New_Internal_Name ('R'));
 
@@ -809,8 +807,8 @@ package body Exp_Util is
       Sel : Entity_Id;
       --  Entity for selector name
 
-      Decls : List_Id := New_List;
-      Stats : List_Id := New_List;
+      Decls : constant List_Id := New_List;
+      Stats : constant List_Id := New_List;
 
    begin
       Pref := Make_Defining_Identifier (Loc, New_Internal_Name ('P'));

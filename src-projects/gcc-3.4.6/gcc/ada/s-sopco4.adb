@@ -39,7 +39,7 @@ package body System.String_Ops_Concat_4 is
 
    function Str_Concat_4 (S1, S2, S3, S4 : String) return String is
    begin
-      if S1'Length <= 0 then
+      if S1'Length = 0 then
          return S2 & S3 & S4;
 
       else

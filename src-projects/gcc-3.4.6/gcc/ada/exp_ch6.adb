@@ -2126,12 +2126,16 @@ package body Exp_Ch6 is
             --  random collection of arguments.
 
             else
+        --  Address "not modified" & "possible infinite loop" warnings /
+        --    errors by replacing Discard, based on release 4.5
+        --  github.com/gcc-mirror/gcc/blob/releases/gcc-4.5/gcc/ada/exp_ch6.adb
+        --    #L3213
                declare
                   Temp   : Node_Id;
                   Passoc : Node_Id;
 
-                  Discard : Node_Id;
-                  pragma Warnings (Off, Discard);
+                  --  Discard : Node_Id;
+                  --  pragma Warnings (Off, Discard);
 
                begin
                   --  First step, remove all the named parameters from the
@@ -2155,7 +2159,8 @@ package body Exp_Ch6 is
                      end loop;
 
                      while Present (Next (Temp)) loop
-                        Discard := Remove_Next (Temp);
+                        --  Discard := Remove_Next (Temp);
+                        Remove (Next (Temp));
                      end loop;
                   end if;
 

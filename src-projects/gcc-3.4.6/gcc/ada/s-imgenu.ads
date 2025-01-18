@@ -72,5 +72,4 @@ pragma Pure (Img_Enum);
    --  Identical to Image_Enumeration_8 except that it handles types
    --  using array (0 .. Num) of Natural_32 for the Indexes table.
 
-
 end System.Img_Enum;

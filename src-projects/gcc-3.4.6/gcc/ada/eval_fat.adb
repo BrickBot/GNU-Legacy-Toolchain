@@ -52,7 +52,7 @@ package body Eval_Fat is
 
    procedure Decompose
      (RT       : R;
-      X        : in T;
+      X        : T;
       Fraction : out T;
       Exponent : out UI;
       Mode     : Rounding_Mode := Round);
@@ -63,7 +63,7 @@ package body Eval_Fat is
 
    procedure Decompose_Int
      (RT               : R;
-      X                : in T;
+      X                : T;
       Fraction         : out UI;
       Exponent         : out UI;
       Mode             : Rounding_Mode);
@@ -163,7 +163,7 @@ package body Eval_Fat is
 
    procedure Decompose
      (RT       : R;
-      X        : in T;
+      X        : T;
       Fraction : out T;
       Exponent : out UI;
       Mode     : Rounding_Mode := Round)
@@ -198,7 +198,7 @@ package body Eval_Fat is
 
    procedure Decompose_Int
      (RT               : R;
-      X                : in T;
+      X                : T;
       Fraction         : out UI;
       Exponent         : out UI;
       Mode             : Rounding_Mode)
