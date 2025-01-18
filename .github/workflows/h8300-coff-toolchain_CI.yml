@@ -1,4 +1,4 @@
-name: GNU Embedded Toolchain CI
+name: GNU Legacy Toolchain CI
 
 on:
   workflow_dispatch:
