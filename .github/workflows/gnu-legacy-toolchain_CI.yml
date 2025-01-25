@@ -8,7 +8,7 @@ on:
     branches: [ master ]
 
 env:
-  BUILD_DEPENDS: make binutils gcc gcc-multilib g++ bison flex libtool gawk gettext texinfo file libisl-dev dejagnu
+  BUILD_DEPENDS: make binutils gcc gcc-multilib g++ bison flex libtool gawk gettext texinfo file libisl-dev dejagnu  stow
   
   # If these older source package releases will not build without disabling Fortify and/or run without buffer overflow errors,
   #    then "make CPPFLAGS=-U_FORTIFY_SOURCE" might be necessary
