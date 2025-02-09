@@ -3,9 +3,9 @@ name: GNU Legacy Toolchain CI
 on:
   workflow_dispatch:
   push:
-    branches: [ master ]
+    # branches: [ master ]
   pull_request:
-    branches: [ master ]
+    # branches: [ master ]
 
 env:
   BUILD_DEPENDS: make binutils gcc gcc-multilib g++ bison flex libtool gawk gettext texinfo file libisl-dev dejagnu  stow
@@ -16,7 +16,7 @@ env:
   #    the link https://www.gnu.org/software/automake/manual/html_node/Flag-Variables-Ordering.html
   CROSS_TARGET: --target=h8300-hitachi-coff
   COMMON_PATH_ARGS: --prefix=/usr/local/brickbot
-  COMMON_GCC_CONFIG_ARGS: --with-gcc --with-gnu-as --with-gnu-ld --with-newlib --disable-libssp --disable-multilib --enable-target-optspace
+  COMMON_GCC_CONFIG_ARGS: --with-gcc --with-gnu-as --with-gnu-ld --with-newlib --disable-libssp --disable-multilib --disable-libada --enable-target-optspace
 
   BUILD_DIR_GCC: build/gcc-gpc
   BUILD_DIR_GPC: build/gpc
