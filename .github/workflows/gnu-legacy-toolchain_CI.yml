@@ -31,6 +31,7 @@ jobs:
     name:     Build gcc+binutils+newlib+ada+f77+gcj+objc+gpc cross-compiler for the H8/300
     runs-on:  ${{ matrix.os }}
     strategy:
+      fail-fast: false
       matrix:
         os: [ ubuntu-latest, ubuntu-20.04 ]
     
