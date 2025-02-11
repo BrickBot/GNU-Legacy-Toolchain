@@ -68,7 +68,7 @@ jobs:
       run:  |
         cd $BUILD_DIR_GCC
         echo "Current working directory: $PWD"
-        make
+        make --keep-going
 
     - name: Test install the built GCC H8/300 cross-compiler
       run:  |
@@ -114,7 +114,7 @@ jobs:
 #      run:  |
 #        cd $BUILD_DIR_GCC
 #        echo "Current working directory: $PWD"
-#        make
+#        make --keep-going
 #
 #    - name: Test install the built GPC H8/300 cross-compiler
 #      run:  |
@@ -181,7 +181,7 @@ jobs:
       run:  |
         cd $BUILD_DIR_GDB
         echo "Current working directory: $PWD"
-        make
+        make --keep-going
 
     - name: Test install the built H8/300 GDB
       run:  |
@@ -242,7 +242,7 @@ jobs:
 #      run:  |
 #        cd $BUILD_DIR_GPC
 #        echo "Current working directory: $PWD"
-#        make
+#        make --keep-going
 #
 #    - name: Test install the built native gcc+binutils+gpc compiler
 #      run:  |
