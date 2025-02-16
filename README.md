@@ -12,7 +12,7 @@ Repository Creation Notes
 Last known versions to include support for h8300-*-coff
 * BinUtils 2.16.1
   + Note lack of support for h8300-*-coff in gas/configure.tgt in later versions
-* GCC 3.4.6
+* GCC 3.4.6  (c.f. [full GCC release timeline](https://gcc.gnu.org/develop.html))
   + Last supported version is actually the GCC 4.4 series – note lack of support for h8300-*-coff (covered by the "h8300-*-*" case) in libgcc/config.host in later versions
   + So why GCC 3.4.6?
     - H8/300 was supported for the duration of the full GCC version series, with 3.4.6 [closing the release series](https://gcc.gnu.org/gcc-3.4/changes.html)
