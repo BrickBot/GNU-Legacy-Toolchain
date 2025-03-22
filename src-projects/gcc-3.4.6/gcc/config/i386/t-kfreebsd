@@ -1,0 +1,7 @@
+MULTIARCH_DIRNAME = $(call if_multiarch,i386-kfreebsd-gnu)
+
+# MULTILIB_OSDIRNAMES are set in t-linux64.
+# NOTE: Compared to multiarch patch for GCC 4.6, the patch for GCC 4.7 
+#       also adds a "filter-out" for mx32
+KFREEBSD_OS = $(filter kfreebsd%, $(word 3, $(subst -, ,$(target))))
+MULTILIB_OSDIRNAMES := $(subst linux,$(KFREEBSD_OS),$(MULTILIB_OSDIRNAMES))

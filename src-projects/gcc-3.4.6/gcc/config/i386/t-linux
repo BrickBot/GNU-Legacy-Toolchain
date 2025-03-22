@@ -1,0 +1,6 @@
+# NOTE: Compared to the multiarch patch for GCC 4.6,
+#       the multiarch patch for GCC 4.7 does _not_ include the if statement
+#       (it just sets MULTIARCH_DIRNAME directly)
+ifneq (,$(findstring -linux,$(target)))
+MULTIARCH_DIRNAME = $(call if_multiarch,i386-linux-gnu)
+endif

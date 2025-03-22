@@ -1,0 +1,4 @@
+ifneq (,$(findstring gnueabi,$(target)))
+ARM_EB = $(if $(findstring TARGET_BIG_ENDIAN_DEFAULT=1, $(tm_defines)),eb)
+MULTIARCH_DIRNAME = $(call if_multiarch,arm$(ARM_EB)-linux-gnueabi$(if $(filter hard,$(with_float)),hf))
+endif

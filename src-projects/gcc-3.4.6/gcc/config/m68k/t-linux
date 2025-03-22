@@ -1,0 +1,3 @@
+ifeq ($(M68K_ARCH),m68k)
+MULTIARCH_DIRNAME = $(call if_multiarch,m68k-linux-gnu)
+endif
