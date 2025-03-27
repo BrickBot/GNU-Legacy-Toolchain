@@ -140,6 +140,14 @@ add_standard_paths (const char *sysroot, const char *iprefix, int cxx_stdinc)
 	      if (!strncmp (p->fname, cpp_GCC_INCLUDE_DIR, len))
 		{
 		  char *str = concat (iprefix, p->fname + len, NULL);
+		  if (p->multilib == 1 && imultilib)
+		    str = concat (str, dir_separator_str, imultilib, NULL);
+		  else if (p->multilib == 2)
+		    {
+		      if (!imultiarch)
+			continue;
+		      str = concat (str, dir_separator_str, imultiarch, NULL);
+		    }
 		  add_path (str, SYSTEM, p->cxx_aware);
 		}
 	    }
@@ -158,6 +166,14 @@ add_standard_paths (const char *sysroot, const char *iprefix, int cxx_stdinc)
 	  else
 	    str = update_path (p->fname, p->component);
 
+	  if (p->multilib == 1 && imultilib)
+	    str = concat (str, dir_separator_str, imultilib, NULL);
+	  else if (p->multilib == 2)
+	    {
+	      if (!imultiarch)
+		continue;
+	      str = concat (str, dir_separator_str, imultiarch, NULL);
+	    }
 	  add_path (str, SYSTEM, p->cxx_aware);
 	}
     }

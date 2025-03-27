@@ -164,6 +164,11 @@ static int print_multi_directory;
 
 static int print_multi_os_directory;
 
+/* Flag saying to print the target's normalized GNU triplet,
+   used as a component in the library path.  */
+
+static int print_multi_arch;
+
 /* Flag saying to print the list of subdirectories and
    compiler flags used to select them in a standard form.  */
 
@@ -1059,6 +1064,7 @@ static const struct option_map option_map[] =
    {"--print-multi-lib", "-print-multi-lib", 0},
    {"--print-multi-directory", "-print-multi-directory", 0},
    {"--print-multi-os-directory", "-print-multi-os-directory", 0},
+   {"--print-multi-arch", "-print-multi-arch", 0},
    {"--print-prog-name", "-print-prog-name=", "aj"},
    {"--profile", "-p", 0},
    {"--profile-blocks", "-a", 0},
@@ -1430,6 +1436,11 @@ static const char *multilib_dir;
    set_multilib_dir based on the compilation options.  */
 
 static const char *multilib_os_dir;
+
+/* Subdirectory to use for locating libraries in multiarch conventions.  Set by
+   set_multilib_dir based on the compilation options.  */
+
+static const char *multiarch_dir;
 
 /* Structure to keep track of the specs that have been defined so far.
    These are accessed using %(specname) or %[specname] in a compiler
@@ -3002,6 +3013,9 @@ display_help (void)
   fputs (_("  -print-libgcc-file-name  Display the name of the compiler's companion library\n"), stdout);
   fputs (_("  -print-file-name=<lib>   Display the full path to library <lib>\n"), stdout);
   fputs (_("  -print-prog-name=<prog>  Display the full path to compiler component <prog>\n"), stdout);
+  fputs (_("\
+  -print-multi-arch         Display the target's normalized GNU triplet, used as\n\
+                           a component in the library path\n"), stdout);
   fputs (_("  -print-multi-directory   Display the root directory for versions of libgcc\n"), stdout);
   fputs (_("\
   -print-multi-lib         Display the mapping between command line options and\n\
@@ -3420,6 +3434,8 @@ warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n"
 	print_multi_directory = 1;
       else if (! strcmp (argv[i], "-print-multi-os-directory"))
 	print_multi_os_directory = 1;
+      else if (! strcmp (argv[i], "-print-multi-arch"))
+	print_multi_arch = 1;
       else if (! strncmp (argv[i], "-Wa,", 4))
 	{
 	  int prev, j;
@@ -4797,6 +4813,15 @@ do_spec_1 (const char *spec, int inswitch, const char *soft_matched_part)
 	  case 'I':
 	    {
 	      struct prefix_list *pl = include_prefixes.plist;
+
+	      if (multiarch_dir)
+		{
+		  do_spec_1 ("-imultiarch", 1, NULL);
+		  /* Make this a separate argument.  */
+		  do_spec_1 (" ", 0, NULL);
+		  do_spec_1 (multiarch_dir, 1, NULL);
+		  do_spec_1 (" ", 0, NULL);
+		}
 
 	      if (gcc_exec_prefix)
 		{
@@ -6233,6 +6258,15 @@ main (int argc, const char **argv)
       return (0);
     }
 
+  if (print_multi_arch)
+    {
+      if (multiarch_dir == NULL)
+	printf ("\n");
+      else
+	printf ("%s\n", multiarch_dir);
+      return (0);
+    }
+
   if (print_multi_os_directory)
     {
       if (multilib_os_dir == NULL)
@@ -6900,7 +6934,9 @@ default_arg (const char *p, int len)
    options are present, then we will ignore this completely. Passing
    that, gcc will consider each multilib_select in turn using the same
    rules for matching the options. If a match is found, that subdirectory
-   will be used.  */
+   will be used.
+   A subdirectory name is optionally followed by a colon and the corresponding
+   multiarch name.  */
 
 static void
 set_multilib_dir (void)
@@ -7104,10 +7140,25 @@ set_multilib_dir (void)
 	    q++;
 	  if (q < end)
 	    {
-	      char *new_multilib_os_dir = xmalloc (end - q);
-	      memcpy (new_multilib_os_dir, q + 1, end - q - 1);
-	      new_multilib_os_dir[end - q - 1] = '\0';
-	      multilib_os_dir = new_multilib_os_dir;
+	      const char *q2 = q + 1, *ml_end = end;
+	      char *new_multilib_os_dir;
+
+	      while (q2 < end && *q2 != ':')
+		q2++;
+	      if (*q2 == ':')
+		ml_end = q2;
+	      new_multilib_os_dir = xmalloc (ml_end - q);
+	      memcpy (new_multilib_os_dir, q + 1, ml_end - q - 1);
+	      new_multilib_os_dir[ml_end - q - 1] = '\0';
+	      multilib_os_dir = *new_multilib_os_dir ? new_multilib_os_dir : ".";
+
+	      if (q2 < end && *q2 == ':')
+		{
+		  char *new_multiarch_dir = xmalloc (end - q2);
+		  memcpy (new_multiarch_dir, q2 + 1, end - q2 - 1);
+		  new_multiarch_dir[end - q2 - 1] = '\0';
+		  multiarch_dir = new_multiarch_dir;
+		}
 	      break;
 	    }
 	}
@@ -7163,9 +7214,10 @@ print_multilib_info (void)
 	}
 
       /* When --disable-multilib was used but target defines
-	 MULTILIB_OSDIRNAMES, entries starting with .: are there just
-	 to find multilib_os_dir, so skip them from output.  */
-      if (this_path[0] == '.' && this_path[1] == ':')
+	 MULTILIB_OSDIRNAMES, entries starting with .: (and not starting
+         with .:: for multiarch configurations) are there just to find
+         multilib_os_dir, so skip them from output.  */
+      if (this_path[0] == '.' && this_path[1] == ':' && this_path[2] != ':')
 	skip = 1;
 
       /* Check for matches with the multilib_exclusions. We don't bother
