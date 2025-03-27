@@ -245,7 +245,7 @@ do { \
       {									\
 	struct rt_sigframe {						\
 	  struct siginfo info;						\
-	  struct ucontext uc;						\
+	  ucontext_t uc;						\
 	} *rt_ = (CONTEXT)->cfa;					\
 	sc_ = (struct sigcontext *) &rt_->uc.uc_mcontext;		\
       }									\
