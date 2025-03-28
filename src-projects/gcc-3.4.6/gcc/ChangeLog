@@ -1,3 +1,25 @@
+2006-04-25  Nick Clifton  <nickc@redhat.com>
+
+	* config/m32r/m32r.c (gen_compare): Fix reg/smallconst equal code,
+	the patch for which was accidentally omitted from the previous
+	commit.
+
+2006-04-04  Kazuhiro Inaoka <inaoka.kazuhiro@renesas.com>
+
+	PR target/26775
+	PR target/26776
+	* config/m32r/m32r.c (m32r_output_function_epilogue): Case for
+	a large stack frame at epilogue. Use fp to recover a stack
+	pointer for alloca function at epilogue.
+
+	PR target/36276
+	* config/m32r/m32r.c (gen_compare): Removed a rule addsi3 codes 
+	to avoid a miss optimizing at simplify_relational_operation().
+	* config/m32r/m32r.md (seq): Ditto. Changed reg_or_eq_int16_operand
+	to reg_or_uint16_operand because seq_insn has not used addsi3 already.
+	(seq_insn): Ditto. Removed operand check mode "P". Changed 
+	reg_or_eq_int16_operand to reg_or_uint16_operand.
+
 2006-03-05  Release Manager
 
 	* GCC 3.4.6 released.
