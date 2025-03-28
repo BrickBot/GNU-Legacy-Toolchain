@@ -1,0 +1,315 @@
+2005-07-22  Jakub Jelinek  <jakub@redhat.com>
+
+	PR middle-end/20303
+	* c-pragma.c: Include varray.h.
+	(visibility_stack): New variable.
+	(handle_pragma_visibility): Use VARRAY.
+	* Makefile.in (c-pragma.o): Depend on varray.h.
+	* doc/invoke.texi: Remove the nested visibility push limit.
+
+	* gcc.dg/visibility-d.c: New test.
+
+--- gcc/Makefile.in.jj	2005-07-21 15:31:14.000000000 +0200
++++ gcc/Makefile.in	2005-07-22 11:20:35.000000000 +0200
+@@ -1345,7 +1345,8 @@ c-aux-info.o : c-aux-info.c  $(CONFIG_H)
+ c-convert.o : c-convert.c $(CONFIG_H) $(SYSTEM_H) coretypes.h $(TM_H) $(TREE_H) \
+     flags.h toplev.h $(C_COMMON_H) real.h
+ c-pragma.o: c-pragma.c $(CONFIG_H) $(SYSTEM_H) coretypes.h $(TM_H) $(RTL_H) $(TREE_H) \
+-    function.h c-pragma.h toplev.h output.h $(GGC_H) $(TM_P_H) $(C_COMMON_H) gt-c-pragma.h
++    function.h c-pragma.h toplev.h output.h $(GGC_H) $(TM_P_H) $(C_COMMON_H) \
++    varray.h gt-c-pragma.h
+ graph.o: graph.c $(CONFIG_H) $(SYSTEM_H) coretypes.h $(TM_H) toplev.h flags.h output.h \
+     $(RTL_H) function.h hard-reg-set.h $(BASIC_BLOCK_H) graph.h
+ sbitmap.o: sbitmap.c $(CONFIG_H) $(SYSTEM_H) coretypes.h $(TM_H) $(RTL_H) flags.h \
+--- gcc/doc/invoke.texi.jj	2005-06-07 00:39:11.000000000 +0200
++++ gcc/doc/invoke.texi	2005-07-22 12:03:55.000000000 +0200
+@@ -11418,8 +11418,8 @@ For those adding visibility support to e
+ @samp{#pragma GCC visibility} of use. This works by you enclosing
+ the declarations you wish to set visibility for with (for example)
+ @samp{#pragma GCC visibility push(hidden)} and
+-@samp{#pragma GCC visibility pop}. These can be nested up to sixteen
+-times. Bear in mind that symbol visibility should be viewed @strong{as
++@samp{#pragma GCC visibility pop}.
++Bear in mind that symbol visibility should be viewed @strong{as
+ part of the API interface contract} and thus all new code should
+ always specify visibility when it is not the default ie; declarations
+ only for use within the local DSO should @strong{always} be marked explicitly
+--- gcc/c-pragma.c.jj	2004-09-01 18:16:57.000000000 +0200
++++ gcc/c-pragma.c	2005-07-22 11:42:24.000000000 +0200
+@@ -34,6 +34,7 @@ Software Foundation, 59 Temple Place - S
+ #include "c-common.h"
+ #include "output.h"
+ #include "tm_p.h"
++#include "varray.h"
+ 
+ #define GCC_BAD(msgid) do { warning (msgid); return; } while (0)
+ #define GCC_BAD2(msgid, arg) do { warning (msgid, arg); return; } while (0)
+@@ -483,6 +484,8 @@ maybe_apply_renaming_pragma (tree decl, 
+ 
+ 
+ #ifdef HANDLE_PRAGMA_VISIBILITY
++static GTY(()) varray_type visibility_stack;
++
+ static void handle_pragma_visibility (cpp_reader *);
+ 
+ /* Sets the default visibility for symbols to something other than that
+@@ -490,11 +493,13 @@ static void handle_pragma_visibility (cp
+ static void
+ handle_pragma_visibility (cpp_reader *dummy ATTRIBUTE_UNUSED)
+ { /* Form is #pragma GCC visibility push(hidden)|pop */
+-  static int visstack [16], visidx;
+   tree x;
+   enum cpp_ttype token;
+   enum { bad, push, pop } action = bad;
+  
++  if (!visibility_stack)
++    VARRAY_INT_INIT (visibility_stack, 32, "visibility_stack");
++
+   token = c_lex (&x);
+   if (token == CPP_NAME)
+     {
+@@ -510,14 +515,17 @@ handle_pragma_visibility (cpp_reader *du
+     {
+       if (pop == action)
+         {
+-          if (!visidx)
++          int visidx = VARRAY_ACTIVE_SIZE (visibility_stack);
++
++          if (visidx <= 0)
+             {
+               GCC_BAD ("No matching push for '#pragma GCC visibility pop'");
+             }
+           else
+             {
+-              default_visibility = visstack[--visidx];
+-              visibility_options.inpragma = (visidx>0);
++              default_visibility = VARRAY_INT (visibility_stack, visidx - 1);
++              VARRAY_POP (visibility_stack);
++              visibility_options.inpragma = (visidx>1);
+             }
+         }
+       else
+@@ -529,14 +537,10 @@ handle_pragma_visibility (cpp_reader *du
+             {
+               GCC_BAD ("malformed #pragma GCC visibility push");
+             }
+-          else if (visidx >= 16)
+-            {
+-              GCC_BAD ("No more than sixteen #pragma GCC visibility pushes allowed at once");
+-            }
+           else
+             {
+               const char *str = IDENTIFIER_POINTER (x);
+-              visstack[visidx++] = default_visibility;
++              VARRAY_PUSH_INT (visibility_stack, (int) default_visibility);
+               if (!strcmp (str, "default"))
+                 default_visibility = VISIBILITY_DEFAULT;
+               else if (!strcmp (str, "internal"))
+--- gcc/testsuite/gcc.dg/visibility-d.c.jj	2005-07-22 11:28:44.000000000 +0200
++++ gcc/testsuite/gcc.dg/visibility-d.c	2005-07-22 11:59:35.000000000 +0200
+@@ -0,0 +1,205 @@
++/* PR middle-end/20303 */
++/* Test nesting of #pragma GCC visibility. */
++/* { dg-do compile } */
++/* { dg-require-visibility "" } */
++/* { dg-final { scan-assembler-not "\\.hidden\[^\\n\]foo00" } } */
++/* { dg-final { scan-assembler "\\.hidden\[^\\n\]foo01" } } */
++/* { dg-final { scan-assembler-not "\\.hidden\[^\\n\]foo02" } } */
++/* { dg-final { scan-assembler "\\.hidden\[^\\n\]foo03" } } */
++/* { dg-final { scan-assembler-not "\\.hidden\[^\\n\]foo04" } } */
++/* { dg-final { scan-assembler-not "\\.hidden\[^\\n\]foo05" } } */
++/* { dg-final { scan-assembler-not "\\.hidden\[^\\n\]foo06" } } */
++/* { dg-final { scan-assembler "\\.hidden\[^\\n\]foo07" } } */
++/* { dg-final { scan-assembler-not "\\.hidden\[^\\n\]foo08" } } */
++/* { dg-final { scan-assembler "\\.hidden\[^\\n\]foo09" } } */
++/* { dg-final { scan-assembler-not "\\.hidden\[^\\n\]foo10" } } */
++/* { dg-final { scan-assembler "\\.hidden\[^\\n\]foo11" } } */
++/* { dg-final { scan-assembler "\\.hidden\[^\\n\]foo12" } } */
++/* { dg-final { scan-assembler "\\.hidden\[^\\n\]foo13" } } */
++/* { dg-final { scan-assembler-not "\\.hidden\[^\\n\]foo14" } } */
++/* { dg-final { scan-assembler "\\.hidden\[^\\n\]foo15" } } */
++/* { dg-final { scan-assembler-not "\\.hidden\[^\\n\]foo16" } } */
++/* { dg-final { scan-assembler "\\.hidden\[^\\n\]foo17" } } */
++/* { dg-final { scan-assembler-not "\\.hidden\[^\\n\]foo18" } } */
++/* { dg-final { scan-assembler "\\.hidden\[^\\n\]foo19" } } */
++/* { dg-final { scan-assembler-not "\\.hidden\[^\\n\]foo20" } } */
++/* { dg-final { scan-assembler "\\.hidden\[^\\n\]foo21" } } */
++/* { dg-final { scan-assembler-not "\\.hidden\[^\\n\]foo22" } } */
++/* { dg-final { scan-assembler "\\.hidden\[^\\n\]foo23" } } */
++/* { dg-final { scan-assembler-not "\\.hidden\[^\\n\]foo24" } } */
++/* { dg-final { scan-assembler "\\.hidden\[^\\n\]foo25" } } */
++/* { dg-final { scan-assembler-not "\\.hidden\[^\\n\]foo26" } } */
++/* { dg-final { scan-assembler "\\.hidden\[^\\n\]foo27" } } */
++/* { dg-final { scan-assembler-not "\\.hidden\[^\\n\]foo28" } } */
++/* { dg-final { scan-assembler "\\.hidden\[^\\n\]foo29" } } */
++/* { dg-final { scan-assembler-not "\\.hidden\[^\\n\]foo30" } } */
++/* { dg-final { scan-assembler "\\.hidden\[^\\n\]foo31" } } */
++/* { dg-final { scan-assembler-not "\\.hidden\[^\\n\]foo32" } } */
++/* { dg-final { scan-assembler "\\.hidden\[^\\n\]foo33" } } */
++/* { dg-final { scan-assembler-not "\\.hidden\[^\\n\]foo34" } } */
++/* { dg-final { scan-assembler "\\.hidden\[^\\n\]foo35" } } */
++/* { dg-final { scan-assembler-not "\\.hidden\[^\\n\]foo36" } } */
++/* { dg-final { scan-assembler "\\.hidden\[^\\n\]foo37" } } */
++/* { dg-final { scan-assembler-not "\\.hidden\[^\\n\]foo38" } } */
++/* { dg-final { scan-assembler "\\.hidden\[^\\n\]foo39" } } */
++/* { dg-final { scan-assembler-not "\\.hidden\[^\\n\]foo40" } } */
++/* { dg-final { scan-assembler "\\.hidden\[^\\n\]foo41" } } */
++/* { dg-final { scan-assembler-not "\\.hidden\[^\\n\]foo42" } } */
++/* { dg-final { scan-assembler "\\.hidden\[^\\n\]foo43" } } */
++/* { dg-final { scan-assembler-not "\\.hidden\[^\\n\]foo44" } } */
++/* { dg-final { scan-assembler "\\.hidden\[^\\n\]foo45" } } */
++/* { dg-final { scan-assembler "\\.hidden\[^\\n\]foo46" } } */
++/* { dg-final { scan-assembler "\\.hidden\[^\\n\]foo47" } } */
++/* { dg-final { scan-assembler-not "\\.hidden\[^\\n\]foo48" } } */
++/* { dg-final { scan-assembler "\\.hidden\[^\\n\]foo49" } } */
++/* { dg-final { scan-assembler-not "\\.hidden\[^\\n\]foo50" } } */
++/* { dg-final { scan-assembler "\\.hidden\[^\\n\]foo51" } } */
++/* { dg-final { scan-assembler-not "\\.hidden\[^\\n\]foo52" } } */
++/* { dg-final { scan-assembler-not "\\.hidden\[^\\n\]foo53" } } */
++/* { dg-final { scan-assembler-not "\\.hidden\[^\\n\]foo54" } } */
++/* { dg-final { scan-assembler "\\.hidden\[^\\n\]foo55" } } */
++/* { dg-final { scan-assembler-not "\\.hidden\[^\\n\]foo56" } } */
++/* { dg-final { scan-assembler "\\.hidden\[^\\n\]foo57" } } */
++/* { dg-final { scan-assembler-not "\\.hidden\[^\\n\]foo58" } } */
++/* { dg-final { scan-assembler "\\.hidden\[^\\n\]foo59" } } */
++
++#pragma GCC visibility push(default)
++void foo00();
++#pragma GCC visibility push(hidden)
++void foo01();
++#pragma GCC visibility push(default)
++void foo02();
++#pragma GCC visibility push(hidden)
++void foo03();
++#pragma GCC visibility push(default)
++void foo04();
++#pragma GCC visibility push(default)
++void foo05();
++#pragma GCC visibility push(default)
++void foo06();
++#pragma GCC visibility push(hidden)
++void foo07();
++#pragma GCC visibility push(default)
++void foo08();
++#pragma GCC visibility push(hidden)
++void foo09();
++#pragma GCC visibility push(default)
++void foo10();
++#pragma GCC visibility push(hidden)
++void foo11();
++#pragma GCC visibility push(hidden)
++void foo12();
++#pragma GCC visibility push(hidden)
++void foo13();
++#pragma GCC visibility push(default)
++void foo14();
++#pragma GCC visibility push(hidden)
++void foo15();
++#pragma GCC visibility push(default)
++void foo16();
++#pragma GCC visibility push(hidden)
++void foo17();
++#pragma GCC visibility push(default)
++void foo18();
++#pragma GCC visibility push(hidden)
++void foo19();
++#pragma GCC visibility push(default)
++void foo20();
++#pragma GCC visibility push(hidden)
++void foo21();
++#pragma GCC visibility push(default)
++void foo22();
++#pragma GCC visibility push(hidden)
++void foo23();
++#pragma GCC visibility push(default)
++void foo24();
++#pragma GCC visibility push(hidden)
++void foo25();
++#pragma GCC visibility push(default)
++void foo26();
++#pragma GCC visibility push(hidden)
++void foo27();
++#pragma GCC visibility push(default)
++void foo28();
++#pragma GCC visibility push(hidden)
++void foo29();
++#pragma GCC visibility pop
++void foo30();
++#pragma GCC visibility pop
++void foo31();
++#pragma GCC visibility pop
++void foo32();
++#pragma GCC visibility pop
++void foo33();
++#pragma GCC visibility pop
++void foo34();
++#pragma GCC visibility pop
++void foo35();
++#pragma GCC visibility pop
++void foo36();
++#pragma GCC visibility pop
++void foo37();
++#pragma GCC visibility pop
++void foo38();
++#pragma GCC visibility pop
++void foo39();
++#pragma GCC visibility pop
++void foo40();
++#pragma GCC visibility pop
++void foo41();
++#pragma GCC visibility pop
++void foo42();
++#pragma GCC visibility pop
++void foo43();
++#pragma GCC visibility pop
++void foo44();
++#pragma GCC visibility pop
++void foo45();
++#pragma GCC visibility pop
++void foo46();
++#pragma GCC visibility pop
++void foo47();
++#pragma GCC visibility pop
++void foo48();
++#pragma GCC visibility pop
++void foo49();
++#pragma GCC visibility pop
++void foo50();
++#pragma GCC visibility pop
++void foo51();
++#pragma GCC visibility pop
++void foo52();
++#pragma GCC visibility pop
++void foo53();
++#pragma GCC visibility pop
++void foo54();
++#pragma GCC visibility pop
++void foo55();
++#pragma GCC visibility pop
++void foo56();
++#pragma GCC visibility pop
++void foo57();
++#pragma GCC visibility pop
++void foo58();
++#pragma GCC visibility push (hidden)
++void foo59();
++#pragma GCC visibility pop
++#pragma GCC visibility pop
++
++#define D(N) \
++void foo##N##0() { } \
++void foo##N##1() { } \
++void foo##N##2() { } \
++void foo##N##3() { } \
++void foo##N##4() { } \
++void foo##N##5() { } \
++void foo##N##6() { } \
++void foo##N##7() { } \
++void foo##N##8() { } \
++void foo##N##9() { }
++D(0)
++D(1)
++D(2)
++D(3)
++D(4)
++D(5)

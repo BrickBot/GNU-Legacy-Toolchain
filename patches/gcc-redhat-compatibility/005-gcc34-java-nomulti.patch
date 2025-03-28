@@ -1,0 +1,25 @@
+--- libjava/configure.in.jj	2004-08-16 21:13:29.000000000 +0200
++++ libjava/configure.in	2004-08-21 11:44:59.020755542 +0200
+@@ -367,6 +367,10 @@ use_gtk_awt=""
+ TOOLKIT=
+ AC_SUBST(TOOLKIT)
+ 
++if test -n "${with_multisubdir}"; then
++  peerlibs=no
++fi
++
+ for peer in $peerlibs ; do
+   case $peer in
+     xlib)
+--- libjava/configure.jj	2004-08-16 21:22:14.000000000 +0200
++++ libjava/configure	2004-08-21 11:45:16.260738060 +0200
+@@ -4118,6 +4118,9 @@ use_gtk_awt=""
+ # The default toolkit to use is the first one specified.
+ TOOLKIT=
+ 
++if test -n "${with_multisubdir}"; then
++  peerlibs=no
++fi
+ 
+ for peer in $peerlibs ; do
+   case $peer in

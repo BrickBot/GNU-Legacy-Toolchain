@@ -1,0 +1,40 @@
+2006-01-10  Benjamin Kosnik  <bkoz@redhat.com>
+	    Ulrich Drepper  <drepper@redhat.com>
+
+	PR libstdc++/23591
+	* libsupc++/eh_globals.cc: Make global thread local.
+
+--- libstdc++-v3/libsupc++/eh_globals.cc.jj	2005-11-21 14:43:32.000000000 +0100
++++ libstdc++-v3/libsupc++/eh_globals.cc	2006-04-21 15:38:55.000000000 +0200
+@@ -36,6 +36,26 @@
+ 
+ using namespace __cxxabiv1;
+ 
++#if 1
++namespace __gnu_internal
++{
++  __cxxabiv1::__cxa_eh_globals*
++  get_global() throw()
++  {
++    static __thread __cxxabiv1::__cxa_eh_globals global __attribute__((tls_model ("initial-exec")));
++    return &global;
++  }
++}
++
++extern "C" __cxa_eh_globals*
++__cxxabiv1::__cxa_get_globals_fast() throw()
++{ return __gnu_internal::get_global(); }
++
++extern "C" __cxa_eh_globals*
++__cxxabiv1::__cxa_get_globals() throw()
++{ return __gnu_internal::get_global(); }
++
++#else
+ 
+ // Single-threaded fallback buffer.
+ static __cxa_eh_globals globals_static;
+@@ -125,3 +145,4 @@ __cxa_get_globals () throw()
+   return &globals_static;
+ #endif
+ }
++#endif

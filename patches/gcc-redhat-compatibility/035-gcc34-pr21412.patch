@@ -1,0 +1,136 @@
+2005-05-07  Richard Henderson  <rth@redhat.com>
+
+	PR target/21412
+	* config/rs6000/rs6000.c (rs6000_emit_move): Look for tls addresses
+	with constant offsets.
+
+2004-07-11  Ulrich Weigand  <uweigand@de.ibm.com>
+
+	* config/s390/s390.c (legitimize_tls_address): Handle constant offsets
+	added to TLS symbol addresses.
+
+2004-07-06  Richard Henderson  <rth@redhat.com>
+
+	* config/i386/i386.c (legitimize_address): Handle CONST with TLS
+	operand.
+	(ix86_expand_move): Don't call legitimize_pic_address directly.
+
+2006-05-05  Jakub Jelinek  <jakub@redhat.com>
+
+	* gcc.dg/tls/opt-12.c: New test.
+
+--- gcc/config/s390/s390.c	(revision 84404)
++++ gcc/config/s390/s390.c	(revision 84535)
+@@ -2913,6 +2913,18 @@ legitimize_tls_address (rtx addr, rtx re
+ 	}
+     }
+ 
++  else if (GET_CODE (addr) == CONST && GET_CODE (XEXP (addr, 0)) == PLUS
++	   && GET_CODE (XEXP (XEXP (addr, 0), 1)) == CONST_INT)
++    {
++      new = XEXP (XEXP (addr, 0), 0);
++      if (GET_CODE (new) != SYMBOL_REF)
++	new = gen_rtx_CONST (Pmode, new);
++
++      new = legitimize_tls_address (new, reg);
++      new = plus_constant (new, INTVAL (XEXP (XEXP (addr, 0), 1)));
++      new = force_operand (new, 0);
++    }
++
+   else
+     abort ();  /* for now ... */
+ 
+--- gcc/config/i386/i386.c	2005-11-21 14:56:49.000000000 +0100
++++ gcc/config/i386/i386.c	2006-05-05 11:21:54.000000000 +0200
+@@ -6604,6 +6604,13 @@ legitimize_address (rtx x, rtx oldx ATTR
+   log = tls_symbolic_operand (x, mode);
+   if (log)
+     return legitimize_tls_address (x, log, false);
++  if (GET_CODE (x) == CONST
++      && GET_CODE (XEXP (x, 0)) == PLUS
++      && (log = tls_symbolic_operand (XEXP (XEXP (x, 0), 0), Pmode)))
++    {
++      rtx t = legitimize_tls_address (XEXP (XEXP (x, 0), 0), log, false);
++      return gen_rtx_PLUS (Pmode, t, XEXP (XEXP (x, 0), 1));
++    }
+ 
+   if (flag_pic && SYMBOLIC_CONST (x))
+     return legitimize_pic_address (x, 0);
+@@ -8395,6 +8402,10 @@ ix86_expand_move (enum machine_mode mode
+ #else
+       if (GET_CODE (op0) == MEM)
+ 	op1 = force_reg (Pmode, op1);
++      else if (GET_CODE (op1) == CONST
++	       && GET_CODE (XEXP (op1, 0)) == PLUS
++	       && tls_symbolic_operand (XEXP (XEXP (op1, 0), 0), Pmode))
++	op1 = legitimize_address (op1, op1, Pmode);
+       else
+ 	{
+ 	  rtx temp = op0;
+--- gcc/config/rs6000/rs6000.c	(revision 99334)
++++ gcc/config/rs6000/rs6000.c	(revision 99367)
+@@ -4436,11 +4436,31 @@ rs6000_emit_move (rtx dest, rtx source, 
+ 
+   /* Recognize the case where operand[1] is a reference to thread-local
+      data and load its address to a register.  */
+-  if (GET_CODE (operands[1]) == SYMBOL_REF)
++  if (rs6000_tls_referenced_p (operands[1]))
+     {
+-      enum tls_model model = SYMBOL_REF_TLS_MODEL (operands[1]);
+-      if (model != 0)
+-	operands[1] = rs6000_legitimize_tls_address (operands[1], model);
++      enum tls_model model;
++      rtx tmp = operands[1];
++      rtx addend = NULL;
++
++      if (GET_CODE (tmp) == CONST && GET_CODE (XEXP (tmp, 0)) == PLUS)
++	{
++          addend = XEXP (XEXP (tmp, 0), 1);
++	  tmp = XEXP (XEXP (tmp, 0), 0);
++	}
++
++      if (GET_CODE (tmp) != SYMBOL_REF)
++	abort ();
++      model = SYMBOL_REF_TLS_MODEL (tmp);
++      if (model == 0)
++	abort ();
++
++      tmp = rs6000_legitimize_tls_address (tmp, model);
++      if (addend)
++	{
++	  tmp = gen_rtx_PLUS (mode, tmp, addend);
++	  tmp = force_operand (tmp, operands[0]);
++	}
++      operands[1] = tmp;
+     }
+ 
+   /* Handle the case where reload calls us with an invalid address.  */
+--- gcc/testsuite/gcc.dg/tls/opt-9.c	(revision 0)
++++ gcc/testsuite/gcc.dg/tls/opt-9.c	(revision 99367)
+@@ -0,0 +1,7 @@
++/* PR 21412 */
++/* { dg-do compile */
++/* { dg-options "-O2 -fPIC" } */
++
++struct S { int x[10]; };
++extern __thread struct S s;
++int *foo() { return &s.x[2]; }
+--- gcc/testsuite/gcc.dg/tls/opt-12.c	2006-04-19 19:21:31.748476000 +0200
++++ gcc/testsuite/gcc.dg/tls/opt-12.c	2006-05-05 11:01:33.000000000 +0200
+@@ -0,0 +1,16 @@
++/* { dg-do compile } */
++/* { dg-options "-O2" } */
++/* { XXdgXX-require-effective-target tls } */
++
++__thread struct
++{
++  int a;
++  char b[32];
++} thr;
++
++int
++main ()
++{
++  __builtin_strcpy (thr.b, "abcd");
++  return 0;
++}

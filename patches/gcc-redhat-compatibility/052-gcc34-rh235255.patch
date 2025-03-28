@@ -1,0 +1,142 @@
+2007-04-21  Alexandre Oliva  <aoliva@redhat.com>
+
+	* gcse.c (store_killed_in_insn): Handle PARALLELs.
+	(store_killed_in_pat): New.
+
+	* gcc.dg/movsi-sm-1.c: New.
+
+--- gcc/gcse.c.jj	2007-02-23 21:29:12.000000000 +0100
++++ gcc/gcse.c	2007-07-18 20:41:08.000000000 +0200
+@@ -7427,6 +7427,40 @@ find_loads (rtx x, rtx store_pattern, in
+   return ret;
+ }
+ 
++static inline bool
++store_killed_in_pat (rtx x, rtx pat, int after)
++{
++  if (GET_CODE (pat) == SET)
++    {
++      rtx dest = SET_DEST (pat);
++
++      if (GET_CODE (dest) == SIGN_EXTRACT
++	  || GET_CODE (dest) == ZERO_EXTRACT)
++	dest = XEXP (dest, 0);
++
++      /* Check for memory stores to aliased objects.  */
++      if (GET_CODE (dest) == MEM
++	  && !expr_equiv_p (dest, x))
++	{
++	  if (after)
++	    {
++	      if (output_dependence (dest, x))
++		return true;
++	    }
++	  else
++	    {
++	      if (output_dependence (x, dest))
++		return true;
++	    }
++	}
++    }
++
++  if (find_loads (pat, x, after))
++    return true;
++
++  return false;
++}
++
+ /* Check if INSN kills the store pattern X (is aliased with it).
+    AFTER is true if we are checking the case when store X occurs
+    after the insn.  Return true if it it does.  */
+@@ -7434,7 +7468,7 @@ find_loads (rtx x, rtx store_pattern, in
+ static bool
+ store_killed_in_insn (rtx x, rtx x_regs, rtx insn, int after)
+ {
+-  rtx reg, base, note;
++  rtx reg, base, note, pat;
+ 
+   if (!INSN_P (insn))
+     return false;
+@@ -7461,33 +7495,20 @@ store_killed_in_insn (rtx x, rtx x_regs,
+       return false;
+     }
+ 
+-  if (GET_CODE (PATTERN (insn)) == SET)
++  pat = PATTERN (insn);
++  if (GET_CODE (pat) == SET)
+     {
+-      rtx pat = PATTERN (insn);
+-      rtx dest = SET_DEST (pat);
+-
+-      if (GET_CODE (dest) == SIGN_EXTRACT
+-	  || GET_CODE (dest) == ZERO_EXTRACT)
+-	dest = XEXP (dest, 0);
+-
+-      /* Check for memory stores to aliased objects.  */
+-      if (GET_CODE (dest) == MEM
+-	  && !expr_equiv_p (dest, x))
+-	{
+-	  if (after)
+-	    {
+-	      if (output_dependence (dest, x))
+-		return true;
+-	    }
+-	  else
+-	    {
+-	      if (output_dependence (x, dest))
+-		return true;
+-	    }
+-	}
+-      if (find_loads (SET_SRC (pat), x, after))
++      if (store_killed_in_pat (x, pat, after))
+ 	return true;
+     }
++  else if (GET_CODE (pat) == PARALLEL)
++    {
++      int i;
++
++      for (i = 0; i < XVECLEN (pat, 0); i++)
++	if (store_killed_in_pat (x, XVECEXP (pat, 0, i), after))
++	  return true;
++    }
+   else if (find_loads (PATTERN (insn), x, after))
+     return true;
+ 
+--- gcc/testsuite/gcc.dg/movsi-sm-1.c.jj	2007-07-18 20:58:08.000000000 +0200
++++ gcc/testsuite/gcc.dg/movsi-sm-1.c	2007-07-18 21:01:52.000000000 +0200
+@@ -0,0 +1,35 @@
++/* { dg-do run } */
++/* { dg-options "-O2" } */
++/* { dg-options "-O2 -mtune=i386" { target { { i?86-*-* x86_64-*-* } && ilp32 } } } */
++
++int ret = 1;
++char buf[128];
++
++void
++__attribute__((noinline))
++bug (int arg)
++{
++  char str[28];
++
++  __builtin_memcpy (str, "Bugged!", 8);
++
++  if (arg & 0200)
++    {
++      __builtin_memcpy (str, "This is what we should get!", 28);
++      ret = 0;
++    }
++
++  if (arg & 0100)
++    __builtin_memcpy (str, "Broken!", 8);
++
++  __builtin_sprintf (buf, "%s\n", str);
++}
++
++int
++main ()
++{
++  bug (0200);
++  if (ret)
++    return ret;
++  return __builtin_strcmp (buf, "This is what we should get!\n") != 0;
++}

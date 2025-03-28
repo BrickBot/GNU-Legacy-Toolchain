@@ -1,0 +1,39 @@
+2006-02-17  Jakub Jelinek  <jakub@redhat.com>
+
+	PR libstdc++/11953
+	* gthr-posix.h (_REENTRANT): Only define if __osf__ is defined.
+
+	* config/ia64/linux.h (CPP_SPEC): Define.
+	* config/s390/linux.h (CPP_SPEC): Define.
+ 
+--- gcc/gthr-posix.h	(revision 111211)
++++ gcc/gthr-posix.h	(revision 111212)
+@@ -36,7 +36,7 @@ Software Foundation, 51 Franklin Street,
+ #define __GTHREADS 1
+ 
+ /* Some implementations of <pthread.h> require this to be defined.  */
+-#ifndef _REENTRANT
++#if !defined(_REENTRANT) && defined(__osf__)
+ #define _REENTRANT 1
+ #endif
+ 
+--- gcc/config/s390/linux.h	(revision 111211)
++++ gcc/config/s390/linux.h	(revision 111212)
+@@ -89,6 +89,7 @@ Software Foundation, 51 Franklin Street,
+           %{m31:-dynamic-linker /lib/ld.so.1} \
+           %{m64:-dynamic-linker /lib64/ld64.so.1}}}}"
+ 
++#define CPP_SPEC "%{posix:-D_POSIX_SOURCE} %{pthread:-D_REENTRANT}"
+ 
+ #define TARGET_ASM_FILE_END file_end_indicate_exec_stack
+ 
+--- gcc/config/ia64/linux.h	(revision 111211)
++++ gcc/config/ia64/linux.h	(revision 111212)
+@@ -48,6 +48,7 @@ do {						\
+       %{!dynamic-linker:-dynamic-linker /lib/ld-linux-ia64.so.2}} \
+       %{static:-static}}"
+ 
++#define CPP_SPEC "%{posix:-D_POSIX_SOURCE} %{pthread:-D_REENTRANT}"
+ 
+ #define JMP_BUF_SIZE  76
+ 

@@ -31,7 +31,7 @@ GCC
 Subsequent to the final release of GCC 3 ([v3.4.6 on March 6, 2006](https://gcc.gnu.org/develop.html)), four additional patches were pushed to the
 [releases/gcc-3.4](https://github.com/gcc-mirror/gcc/commits/releases/gcc-3.4/) branch.  Patch files are available in both \*.diff and \*.patch forms.
 * ~~m32r~~: Three patches—all released later in 2006—pertain to m32r support but are superseded by more comprehensive patches from Debian (c.f. the Debian patch section).
-* bison: The fourth patch—from 2009—provides a fix for compatibility with bison 2.4.1.
+* ~~bison~~: The fourth patch—from 2009—provides a fix for compatibility with bison 2.4.1.  Superseded by the more recent pair of Bison patches from the Red Hat compatibility patches.
 
 ### System Update Compatibility Patches
 * [Convert `struct ucontext` to `ucontext_t`](https://github.com/BrickBot/GNU-Legacy-Toolchain/issues/8)
@@ -43,6 +43,12 @@ Subsequent to the final release of GCC 3 ([v3.4.6 on March 6, 2006](https://gcc.
     - [Basic patch for x86-64 PCs](https://github.com/hebisch/gpc/blob/master/p/diffs/ucontext.diff)
       * c.f. [GPC ReadMe](https://github.com/hebisch/gpc)
 
+
+### Red Hat
+Red Hat provided [backwards compatibility patches for GCC 3.4](https://access.redhat.com/solutions/19458).
+* [Patch Sources](https://git.centos.org/rpms/compat-gcc-34/blob/c7/f/SOURCES)
+    (c.f. [GitHub clone, which includes an additional Bison patch](https://github.com/weevington/gcc-3.4.6-41-compat))
+* [Patch Ordering](https://git.centos.org/rpms/compat-gcc-34/blob/c7/f/SPECS/compat-gcc-34.spec)
 
 ### Debian
 Debian provides a [gcc-h8300-hms](https://packages.debian.org/source/stable/gcc-h8300-hms) package

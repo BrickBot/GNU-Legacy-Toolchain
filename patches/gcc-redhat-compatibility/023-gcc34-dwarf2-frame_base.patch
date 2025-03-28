@@ -1,0 +1,1153 @@
+2005-08-22  Richard Henderson  <rth@redhat.com>
+
+	* function.c (ARG_POINTER_CFA_OFFSET): Move ...
+	* defaults.h (ARG_POINTER_CFA_OFFSET): ... here.
+	(INCOMING_FRAME_SP_OFFSET): Moved from ...
+	* dwarf2out.c (INCOMING_FRAME_SP_OFFSET): ... here.
+	(struct cfa_loc): Change reg to unsigned int,
+	rearrange for better packing.
+	(lookup_cfa_1): Remove inline marker.
+	(cfa_equal_p): Split out of ...
+	(def_cfa_1): ... here.  Use INVALID_REGNUM.
+	(build_cfa_loc): Handle !cfa->indirect.
+	(frame_pointer_cfa_offset): New.
+	(dbx_reg_number): Assert register elimination performed; do
+	leaf register remapping.
+	(reg_loc_descriptor): Avoid calling dbx_reg_number when unused.
+	(eliminate_reg_to_offset): New.
+	(based_loc_descr): Remove can_use_fbreg argument.  Use fbreg only
+	for verifiably local stack frame addresses; re-base to CFA.
+	(mem_loc_descriptor): Remove can_use_fbreg argument.
+	(concat_loc_descriptor, loc_descriptor): Likewise.
+	(containing_function_has_frame_base): Remove.
+	(rtl_for_decl_location): Don't do register elimination or
+	leaf register remapping here.
+	(secname_for_decl): Split out from ..
+	(add_location_or_const_value_attribute): ... here.
+	(convert_cfa_to_loc_list): New.
+	(compute_frame_pointer_to_cfa_displacement): New.
+	(gen_subprogram_die): Use them.
+	* tree.h (frame_base_decl): Remove.
+	* var-tracking.c (frame_base_decl, frame_stack_adjust): Remove.
+	(prologue_stack_adjust): Remove.
+	(vt_stack_adjustments): Use INCOMING_FRAME_SP_OFFSET.
+	(adjust_stack_reference): Re-base memories to arg_pointer_rtx.
+	(set_frame_base_location): Remove.
+	(compute_bb_dataflow, emit_notes_in_bb): Don't call it.
+	(dump_attrs_list, dump_dataflow_set): Use string concatenation.
+	(vt_add_function_parameters): Don't eliminate_regs.
+	(vt_initialize): Don't create frame_base_decl.
+
+--- gcc/defaults.h.orig	2005-11-17 23:01:55.000000000 -0200
++++ gcc/defaults.h	2005-11-17 23:07:55.000000000 -0200
+@@ -715,4 +715,15 @@
+ #define EXIT_IGNORE_STACK 0
+ #endif
+ 
++/* On most machines, the CFA coincides with the first incoming parm.  */
++#ifndef ARG_POINTER_CFA_OFFSET
++#define ARG_POINTER_CFA_OFFSET(FNDECL) FIRST_PARM_OFFSET (FNDECL)
++#endif
++
++/* The offset from the incoming value of %sp to the top of the stack frame
++   for the current function.  */
++#ifndef INCOMING_FRAME_SP_OFFSET
++#define INCOMING_FRAME_SP_OFFSET 0
++#endif
++
+ #endif  /* ! GCC_DEFAULTS_H */
+--- gcc/dwarf2out.c.orig	2005-11-17 23:07:20.000000000 -0200
++++ gcc/dwarf2out.c	2005-11-17 23:07:55.000000000 -0200
+@@ -228,9 +228,9 @@ dw_cfi_node;
+    of this structure.  */
+ typedef struct cfa_loc GTY(())
+ {
+-  unsigned long reg;
+   HOST_WIDE_INT offset;
+   HOST_WIDE_INT base_offset;
++  unsigned int reg;
+   int indirect;            /* 1 if CFA is accessed via a dereference.  */
+ } dw_cfa_location;
+ 
+@@ -418,12 +418,6 @@ static void def_cfa_1 (const char *, dw_
+ #ifndef DWARF_FRAME_REGNUM
+ #define DWARF_FRAME_REGNUM(REG) DBX_REGISTER_NUMBER (REG)
+ #endif
+-
+-/* The offset from the incoming value of %sp to the top of the stack frame
+-   for the current function.  */
+-#ifndef INCOMING_FRAME_SP_OFFSET
+-#define INCOMING_FRAME_SP_OFFSET 0
+-#endif
+ 
+ /* Hook used by __throw.  */
+ 
+@@ -651,7 +645,7 @@ add_fde_cfi (const char *label, dw_cfi_r
+ 
+ /* Subroutine of lookup_cfa.  */
+ 
+-static inline void
++static void
+ lookup_cfa_1 (dw_cfi_ref cfi, dw_cfa_location *loc)
+ {
+   switch (cfi->dw_cfi_opc)
+@@ -681,7 +675,7 @@ lookup_cfa (dw_cfa_location *loc)
+ {
+   dw_cfi_ref cfi;
+ 
+-  loc->reg = (unsigned long) -1;
++  loc->reg = INVALID_REGNUM;
+   loc->offset = 0;
+   loc->indirect = 0;
+   loc->base_offset = 0;
+@@ -725,6 +719,18 @@ dwarf2out_def_cfa (const char *label, un
+   def_cfa_1 (label, &loc);
+ }
+ 
++/* Determine if two dw_cfa_location structures define the same data.  */
++
++static bool
++cfa_equal_p (const dw_cfa_location *loc1, const dw_cfa_location *loc2)
++{
++  return (loc1->reg == loc2->reg
++	  && loc1->offset == loc2->offset
++	  && loc1->indirect == loc2->indirect
++	  && (loc1->indirect == 0
++	      || loc1->base_offset == loc2->base_offset));
++}
++
+ /* This routine does the actual work.  The CFA is now calculated from
+    the dw_cfa_location structure.  */
+ 
+@@ -744,9 +750,7 @@ def_cfa_1 (const char *label, dw_cfa_loc
+   lookup_cfa (&old_cfa);
+ 
+   /* If nothing changed, no need to issue any call frame instructions.  */
+-  if (loc.reg == old_cfa.reg && loc.offset == old_cfa.offset
+-      && loc.indirect == old_cfa.indirect
+-      && (loc.indirect == 0 || loc.base_offset == old_cfa.base_offset))
++  if (cfa_equal_p (&loc, &old_cfa))
+     return;
+ 
+   cfi = new_cfi ();
+@@ -761,7 +765,8 @@ def_cfa_1 (const char *label, dw_cfa_loc
+     }
+ 
+ #ifndef MIPS_DEBUGGING_INFO  /* SGI dbx thinks this means no offset.  */
+-  else if (loc.offset == old_cfa.offset && old_cfa.reg != (unsigned long) -1
++  else if (loc.offset == old_cfa.offset
++	   && old_cfa.reg != INVALID_REGNUM
+ 	   && !loc.indirect)
+     {
+       /* Construct a "DW_CFA_def_cfa_register <register>" instruction,
+@@ -3098,28 +3103,40 @@ build_cfa_loc (dw_cfa_location *cfa)
+ {
+   struct dw_loc_descr_struct *head, *tmp;
+ 
+-  if (cfa->indirect == 0)
+-    abort ();
+-
+-  if (cfa->base_offset)
++  if (cfa->indirect)
+     {
+-      if (cfa->reg <= 31)
+-	head = new_loc_descr (DW_OP_breg0 + cfa->reg, cfa->base_offset, 0);
++      if (cfa->base_offset)
++	{
++	  if (cfa->reg <= 31)
++	    head = new_loc_descr (DW_OP_breg0 + cfa->reg, cfa->base_offset, 0);
++	  else
++	    head = new_loc_descr (DW_OP_bregx, cfa->reg, cfa->base_offset);
++	}
++      else if (cfa->reg <= 31)
++	head = new_loc_descr (DW_OP_reg0 + cfa->reg, 0, 0);
+       else
+-	head = new_loc_descr (DW_OP_bregx, cfa->reg, cfa->base_offset);
++	head = new_loc_descr (DW_OP_regx, cfa->reg, 0);
++
++      head->dw_loc_oprnd1.val_class = dw_val_class_const;
++      tmp = new_loc_descr (DW_OP_deref, 0, 0);
++      add_loc_descr (&head, tmp);
++      if (cfa->offset != 0)
++	{
++	  tmp = new_loc_descr (DW_OP_plus_uconst, cfa->offset, 0);
++	  add_loc_descr (&head, tmp);
++	}
+     }
+-  else if (cfa->reg <= 31)
+-    head = new_loc_descr (DW_OP_reg0 + cfa->reg, 0, 0);
+   else
+-    head = new_loc_descr (DW_OP_regx, cfa->reg, 0);
+-
+-  head->dw_loc_oprnd1.val_class = dw_val_class_const;
+-  tmp = new_loc_descr (DW_OP_deref, 0, 0);
+-  add_loc_descr (&head, tmp);
+-  if (cfa->offset != 0)
+     {
+-      tmp = new_loc_descr (DW_OP_plus_uconst, cfa->offset, 0);
+-      add_loc_descr (&head, tmp);
++      if (cfa->offset == 0)
++	if (cfa->reg <= 31)
++	  head = new_loc_descr (DW_OP_reg0 + cfa->reg, 0, 0);
++	else
++	  head = new_loc_descr (DW_OP_regx, cfa->reg, 0);
++      else if (cfa->reg <= 31)
++	head = new_loc_descr (DW_OP_breg0 + cfa->reg, cfa->offset, 0);
++      else
++	head = new_loc_descr (DW_OP_bregx, cfa->reg, cfa->offset);
+     }
+ 
+   return head;
+@@ -3607,6 +3624,10 @@ static GTY(()) int label_num;
+ 
+ #ifdef DWARF2_DEBUGGING_INFO
+ 
++/* Offset from the "steady-state frame pointer" to the CFA,
++   within the current function.  */
++static HOST_WIDE_INT frame_pointer_cfa_offset;
++
+ /* Forward declarations for functions defined in this file.  */
+ 
+ static int is_pseudo_reg (rtx);
+@@ -3752,11 +3773,11 @@ static dw_loc_descr_ref reg_loc_descript
+ static dw_loc_descr_ref one_reg_loc_descriptor (unsigned int);
+ static dw_loc_descr_ref multiple_reg_loc_descriptor (rtx, rtx);
+ static dw_loc_descr_ref int_loc_descriptor (HOST_WIDE_INT);
+-static dw_loc_descr_ref based_loc_descr (unsigned, HOST_WIDE_INT, bool);
++static dw_loc_descr_ref based_loc_descr (rtx, HOST_WIDE_INT);
+ static int is_based_loc (rtx);
+-static dw_loc_descr_ref mem_loc_descriptor (rtx, enum machine_mode mode, bool);
+-static dw_loc_descr_ref concat_loc_descriptor (rtx, rtx, bool);
+-static dw_loc_descr_ref loc_descriptor (rtx, bool);
++static dw_loc_descr_ref mem_loc_descriptor (rtx, enum machine_mode mode);
++static dw_loc_descr_ref concat_loc_descriptor (rtx, rtx);
++static dw_loc_descr_ref loc_descriptor (rtx);
+ static dw_loc_descr_ref loc_descriptor_from_tree (tree, int);
+ static HOST_WIDE_INT ceiling (HOST_WIDE_INT, unsigned int);
+ static tree field_type (tree);
+@@ -8171,9 +8192,20 @@ dbx_reg_number (rtx rtl)
+ {
+   unsigned regno = REGNO (rtl);
+ 
++  if (! (HARD_FRAME_POINTER_REGNUM == ARG_POINTER_REGNUM
++	 || rtl != arg_pointer_rtx))
++    abort ();
++  if (! (HARD_FRAME_POINTER_REGNUM == FRAME_POINTER_REGNUM
++	 || rtl != frame_pointer_rtx))
++    abort ();
++
+   if (regno >= FIRST_PSEUDO_REGISTER)
+     abort ();
+ 
++#ifdef LEAF_REG_REMAP
++  regno = LEAF_REG_REMAP (regno);
++#endif
++
+   return DBX_REGISTER_NUMBER (regno);
+ }
+ 
+@@ -8203,20 +8235,17 @@ add_loc_descr_op_piece (dw_loc_descr_ref
+ static dw_loc_descr_ref
+ reg_loc_descriptor (rtx rtl)
+ {
+-  unsigned reg;
+   rtx regs;
+ 
+   if (REGNO (rtl) >= FIRST_PSEUDO_REGISTER)
+     return 0;
+ 
+-  reg = dbx_reg_number (rtl);
+   regs = (*targetm.dwarf_register_span) (rtl);
+ 
+-  if (HARD_REGNO_NREGS (REGNO (rtl), GET_MODE (rtl)) > 1
+-      || regs)
++  if (HARD_REGNO_NREGS(REGNO (rtl), GET_MODE (rtl)) > 1 || regs)
+     return multiple_reg_loc_descriptor (rtl, regs);
+   else
+-    return one_reg_loc_descriptor (reg);
++    return one_reg_loc_descriptor (dbx_reg_number (rtl));
+ }
+ 
+ /* Return a location descriptor that designates a machine register for
+@@ -8321,25 +8350,54 @@ int_loc_descriptor (HOST_WIDE_INT i)
+   return new_loc_descr (op, i, 0);
+ }
+ 
++/* Return an offset from an eliminable register to the post-prologue
++   frame pointer.  */
++
++static HOST_WIDE_INT
++eliminate_reg_to_offset (rtx reg)
++{
++  HOST_WIDE_INT offset = 0;
++
++  reg = eliminate_regs (reg, VOIDmode, NULL_RTX);
++  if (GET_CODE (reg) == PLUS)
++    {
++      offset = INTVAL (XEXP (reg, 1));
++      reg = XEXP (reg, 0);
++    }
++  if (! (reg == (frame_pointer_needed ? hard_frame_pointer_rtx
++		 : stack_pointer_rtx)))
++    abort ();
++
++  return offset;
++}
++
+ /* Return a location descriptor that designates a base+offset location.  */
+ 
+ static dw_loc_descr_ref
+-based_loc_descr (unsigned int reg, HOST_WIDE_INT offset, bool can_use_fbreg)
++based_loc_descr (rtx reg, HOST_WIDE_INT offset)
+ {
+   dw_loc_descr_ref loc_result;
+-  /* For the "frame base", we use the frame pointer or stack pointer
+-     registers, since the RTL for local variables is relative to one of
+-     them.  */
+-  unsigned fp_reg = DBX_REGISTER_NUMBER (frame_pointer_needed
+-					 ? HARD_FRAME_POINTER_REGNUM
+-					 : STACK_POINTER_REGNUM);
+-
+-  if (reg == fp_reg && can_use_fbreg)
+-    loc_result = new_loc_descr (DW_OP_fbreg, offset, 0);
+-  else if (reg <= 31)
+-    loc_result = new_loc_descr (DW_OP_breg0 + reg, offset, 0);
++
++  /* We only use "frame base" when we're sure we're talking about the
++     post-prologue local stack frame.  We do this by *not* running
++     register elimination until this point, and recognizing the special
++     argument pointer and soft frame pointer rtx's.  */
++  if (reg == arg_pointer_rtx || reg == frame_pointer_rtx)
++    {
++      offset += eliminate_reg_to_offset (reg);
++      offset += frame_pointer_cfa_offset;
++
++      loc_result = new_loc_descr (DW_OP_fbreg, offset, 0);
++    }
+   else
+-    loc_result = new_loc_descr (DW_OP_bregx, reg, offset);
++    {
++      unsigned int regno = dbx_reg_number (reg);
++
++      if (regno <= 31)
++	loc_result = new_loc_descr (DW_OP_breg0 + regno, offset, 0);
++      else
++	loc_result = new_loc_descr (DW_OP_bregx, regno, offset);
++    }
+ 
+   return loc_result;
+ }
+@@ -8368,15 +8426,13 @@ is_based_loc (rtx rtl)
+    MODE is the mode of the memory reference, needed to handle some
+    autoincrement addressing modes.
+ 
+-   CAN_USE_FBREG is a flag whether we can use DW_AT_frame_base in the location
+-   list for RTL. We can't use it when we are emitting location list for
+-   virtual variable frame_base_decl (i.e. a location list for DW_AT_frame_base)
+-   which describes how frame base changes when !frame_pointer_needed.
++   CAN_USE_FBREG is a flag whether we can use DW_AT_frame_base in the
++   location list for RTL.
+ 
+    Return 0 if we can't represent the location.  */
+ 
+ static dw_loc_descr_ref
+-mem_loc_descriptor (rtx rtl, enum machine_mode mode, bool can_use_fbreg)
++mem_loc_descriptor (rtx rtl, enum machine_mode mode)
+ {
+   dw_loc_descr_ref mem_loc_result = NULL;
+ 
+@@ -8422,13 +8478,11 @@ mem_loc_descriptor (rtx rtl, enum machin
+ 	 memory) so DWARF consumers need to be aware of the subtle
+ 	 distinction between OP_REG and OP_BASEREG.  */
+       if (REGNO (rtl) < FIRST_PSEUDO_REGISTER)
+-	mem_loc_result = based_loc_descr (dbx_reg_number (rtl), 0,
+-					  can_use_fbreg);
++	mem_loc_result = based_loc_descr (rtl, 0);
+       break;
+ 
+     case MEM:
+-      mem_loc_result = mem_loc_descriptor (XEXP (rtl, 0), GET_MODE (rtl),
+-					   can_use_fbreg);
++      mem_loc_result = mem_loc_descriptor (XEXP (rtl, 0), GET_MODE (rtl));
+       if (mem_loc_result != 0)
+ 	add_loc_descr (&mem_loc_result, new_loc_descr (DW_OP_deref, 0, 0));
+       break;
+@@ -8494,13 +8548,11 @@ mem_loc_descriptor (rtx rtl, enum machin
+     case PLUS:
+     plus:
+       if (is_based_loc (rtl))
+-	mem_loc_result = based_loc_descr (dbx_reg_number (XEXP (rtl, 0)),
+-					  INTVAL (XEXP (rtl, 1)),
+-					  can_use_fbreg);
++	mem_loc_result = based_loc_descr (XEXP (rtl, 0),
++					  INTVAL (XEXP (rtl, 1)));
+       else
+ 	{
+-	  mem_loc_result = mem_loc_descriptor (XEXP (rtl, 0), mode,
+-					       can_use_fbreg);
++	  mem_loc_result = mem_loc_descriptor (XEXP (rtl, 0), mode);
+ 	  if (mem_loc_result == 0)
+ 	    break;
+ 
+@@ -8512,8 +8564,7 @@ mem_loc_descriptor (rtx rtl, enum machin
+ 	  else
+ 	    {
+ 	      add_loc_descr (&mem_loc_result,
+-			     mem_loc_descriptor (XEXP (rtl, 1), mode,
+-						 can_use_fbreg));
++			     mem_loc_descriptor (XEXP (rtl, 1), mode));
+ 	      add_loc_descr (&mem_loc_result,
+ 			     new_loc_descr (DW_OP_plus, 0, 0));
+ 	    }
+@@ -8524,10 +8575,8 @@ mem_loc_descriptor (rtx rtl, enum machin
+       {
+ 	/* If a pseudo-reg is optimized away, it is possible for it to
+ 	   be replaced with a MEM containing a multiply.  */
+-	dw_loc_descr_ref op0 = mem_loc_descriptor (XEXP (rtl, 0), mode,
+-						   can_use_fbreg);
+-	dw_loc_descr_ref op1 = mem_loc_descriptor (XEXP (rtl, 1), mode,
+-						   can_use_fbreg);
++	dw_loc_descr_ref op0 = mem_loc_descriptor (XEXP (rtl, 0), mode);
++	dw_loc_descr_ref op1 = mem_loc_descriptor (XEXP (rtl, 1), mode);
+ 
+ 	if (op0 == 0 || op1 == 0)
+ 	  break;
+@@ -8546,8 +8595,7 @@ mem_loc_descriptor (rtx rtl, enum machin
+       /* If this is a MEM, return its address.  Otherwise, we can't
+ 	 represent this.  */
+       if (GET_CODE (XEXP (rtl, 0)) == MEM)
+-	return mem_loc_descriptor (XEXP (XEXP (rtl, 0), 0), mode,
+-				   can_use_fbreg);
++	return mem_loc_descriptor (XEXP (XEXP (rtl, 0), 0), mode);
+       else
+ 	return 0;
+ 
+@@ -8562,11 +8610,11 @@ mem_loc_descriptor (rtx rtl, enum machin
+    This is typically a complex variable.  */
+ 
+ static dw_loc_descr_ref
+-concat_loc_descriptor (rtx x0, rtx x1, bool can_use_fbreg)
++concat_loc_descriptor (rtx x0, rtx x1)
+ {
+   dw_loc_descr_ref cc_loc_result = NULL;
+-  dw_loc_descr_ref x0_ref = loc_descriptor (x0, can_use_fbreg);
+-  dw_loc_descr_ref x1_ref = loc_descriptor (x1, can_use_fbreg);
++  dw_loc_descr_ref x0_ref = loc_descriptor (x0);
++  dw_loc_descr_ref x1_ref = loc_descriptor (x1);
+ 
+   if (x0_ref == 0 || x1_ref == 0)
+     return 0;
+@@ -8580,29 +8628,6 @@ concat_loc_descriptor (rtx x0, rtx x1, b
+   return cc_loc_result;
+ }
+ 
+-/* Return true if DECL's containing function has a frame base attribute.
+-   Return false otherwise.  */
+-
+-static bool
+-containing_function_has_frame_base (tree decl)
+-{
+-  tree declcontext = decl_function_context (decl);
+-  dw_die_ref context;
+-  dw_attr_ref attr;
+-
+-  if (!declcontext)
+-    return false;
+-
+-  context = lookup_decl_die (declcontext);
+-  if (!context)
+-    return false;
+-
+-  for (attr = context->die_attr; attr; attr = attr->dw_attr_next)
+-    if (attr->dw_attr == DW_AT_frame_base)
+-      return true;
+-  return false;
+-}
+-
+ /* Output a proper Dwarf location descriptor for a variable or parameter
+    which is either allocated in a register or in a memory location.  For a
+    register, we just generate an OP_REG and the register number.  For a
+@@ -8612,7 +8637,7 @@ containing_function_has_frame_base (tree
+    If we don't know how to describe it, return 0.  */
+ 
+ static dw_loc_descr_ref
+-loc_descriptor (rtx rtl, bool can_use_fbreg)
++loc_descriptor (rtx rtl)
+ {
+   dw_loc_descr_ref loc_result = NULL;
+ 
+@@ -8633,20 +8658,18 @@ loc_descriptor (rtx rtl, bool can_use_fb
+       break;
+ 
+     case MEM:
+-      loc_result = mem_loc_descriptor (XEXP (rtl, 0), GET_MODE (rtl),
+-				       can_use_fbreg);
++      loc_result = mem_loc_descriptor (XEXP (rtl, 0), GET_MODE (rtl));
+       break;
+ 
+     case CONCAT:
+-      loc_result = concat_loc_descriptor (XEXP (rtl, 0), XEXP (rtl, 1),
+-					  can_use_fbreg);
++      loc_result = concat_loc_descriptor (XEXP (rtl, 0), XEXP (rtl, 1));
+       break;
+ 
+     case VAR_LOCATION:
+       /* Single part.  */
+       if (GET_CODE (XEXP (rtl, 1)) != PARALLEL)
+ 	{
+-	  loc_result = loc_descriptor (XEXP (XEXP (rtl, 1), 0), can_use_fbreg);
++	  loc_result = loc_descriptor (XEXP (XEXP (rtl, 1), 0));
+ 	}
+       /* Multiple parts.  */
+       else
+@@ -8657,16 +8680,14 @@ loc_descriptor (rtx rtl, bool can_use_fb
+ 	  int i;
+ 
+ 	  /* Create the first one, so we have something to add to.  */
+-	  loc_result = loc_descriptor (XEXP (RTVEC_ELT (par_elems, 0), 0),
+-				       can_use_fbreg);
++	  loc_result = loc_descriptor (XEXP (RTVEC_ELT (par_elems, 0), 0));
+ 	  mode = GET_MODE (XEXP (RTVEC_ELT (par_elems, 0), 0));
+ 	  add_loc_descr_op_piece (&loc_result, GET_MODE_SIZE (mode));
+ 	  for (i = 1; i < num_elem; i++)
+ 	    {
+ 	      dw_loc_descr_ref temp;
+ 
+-	      temp = loc_descriptor (XEXP (RTVEC_ELT (par_elems, i), 0),
+-				     can_use_fbreg);
++	      temp = loc_descriptor (XEXP (RTVEC_ELT (par_elems, i), 0));
+ 	      add_loc_descr (&loc_result, temp);
+ 	      mode = GET_MODE (XEXP (RTVEC_ELT (par_elems, i), 0));
+ 	      add_loc_descr_op_piece (&loc_result, GET_MODE_SIZE (mode));
+@@ -8789,7 +8810,6 @@ loc_descriptor_from_tree (tree loc, int 
+ 	else
+ 	  {
+ 	    enum machine_mode mode = GET_MODE (rtl);
+-	    bool can_use_fb = containing_function_has_frame_base (loc);
+ 
+ 	    if (GET_CODE (rtl) == MEM)
+ 	      {
+@@ -8797,7 +8817,7 @@ loc_descriptor_from_tree (tree loc, int 
+ 		rtl = XEXP (rtl, 0);
+ 	      }
+ 
+-	    ret = mem_loc_descriptor (rtl, mode, can_use_fb);
++	    ret = mem_loc_descriptor (rtl, mode);
+ 	  }
+       }
+       break;
+@@ -8872,18 +8892,16 @@ loc_descriptor_from_tree (tree loc, int 
+ 	/* Get an RTL for this, if something has been emitted.  */
+ 	rtx rtl = lookup_constant_def (loc);
+ 	enum machine_mode mode;
+-	bool can_use_fb;
+ 
+ 	if (GET_CODE (rtl) != MEM)
+ 	  return 0;
+-	can_use_fb = containing_function_has_frame_base (loc);
+ 	mode = GET_MODE (rtl);
+ 	rtl = XEXP (rtl, 0);
+ 
+ 	rtl = (*targetm.delegitimize_address) (rtl);
+ 
+ 	indirect_p = 1;
+-	ret = mem_loc_descriptor (rtl, mode, can_use_fb);
++	ret = mem_loc_descriptor (rtl, mode);
+ 	break;
+       }
+ 
+@@ -9743,19 +9761,10 @@ rtl_for_decl_location (tree decl)
+ 	}
+     }
+ 
+-  if (rtl != NULL_RTX)
+-    {
+-      rtl = eliminate_regs (rtl, 0, NULL_RTX);
+-#ifdef LEAF_REG_REMAP
+-      if (current_function_uses_only_leaf_regs)
+-	leaf_renumber_regs_insn (rtl);
+-#endif
+-    }
+-
+   /* A variable with no DECL_RTL but a DECL_INITIAL is a compile-time constant,
+      and will have been substituted directly into all expressions that use it.
+      C does not have such a concept, but C++ and other languages do.  */
+-  else if (TREE_CODE (decl) == VAR_DECL && DECL_INITIAL (decl))
++  if (!rtl && TREE_CODE (decl) == VAR_DECL && DECL_INITIAL (decl))
+     {
+       /* If a variable is initialized with a string constant without embedded
+ 	 zeros, build CONST_STRING.  */
+@@ -9803,6 +9812,34 @@ rtl_for_decl_location (tree decl)
+   return rtl;
+ }
+ 
++/* We need to figure out what section we should use as the base for the
++   address ranges where a given location is valid.
++   1. If this particular DECL has a section associated with it, use that.
++   2. If this function has a section associated with it, use that.
++   3. Otherwise, use the text section.
++   XXX: If you split a variable across multiple sections, we won't notice.  */
++
++static const char *
++secname_for_decl (tree decl)
++{
++  const char *secname;
++
++  if (DECL_SECTION_NAME (decl))
++    {
++      tree sectree = DECL_SECTION_NAME (decl);
++      secname = TREE_STRING_POINTER (sectree);
++    }
++  else if (current_function_decl && DECL_SECTION_NAME (current_function_decl))
++    {
++      tree sectree = DECL_SECTION_NAME (current_function_decl);
++      secname = TREE_STRING_POINTER (sectree);
++    }
++  else
++    secname = text_section_label;
++
++  return secname;
++}
++
+ /* Generate *either* a DW_AT_location attribute or else a DW_AT_const_value
+    data attribute for a variable or a parameter.  We generate the
+    DW_AT_const_value attribute only in those cases where the given variable
+@@ -9834,36 +9871,11 @@ add_location_or_const_value_attribute (d
+      differ.  */
+   if (loc_list && loc_list->first != loc_list->last)
+     {
+-      const char *secname;
+-      const char *endname;
++      const char *secname, *endname;
+       dw_loc_list_ref list;
+       rtx varloc;
+       struct var_loc_node *node;
+ 
+-      /* We need to figure out what section we should use as the base
+-	 for the address ranges where a given location is valid.
+-	 1. If this particular DECL has a section associated with it,
+-	 use that.
+-	 2. If this function has a section associated with it, use
+-	 that.
+-	 3. Otherwise, use the text section.
+-	 XXX: If you split a variable across multiple sections, this
+-	 won't notice.  */
+-
+-      if (DECL_SECTION_NAME (decl))
+-	{
+-	  tree sectree = DECL_SECTION_NAME (decl);
+-	  secname = TREE_STRING_POINTER (sectree);
+-	}
+-      else if (current_function_decl
+-	       && DECL_SECTION_NAME (current_function_decl))
+-	{
+-	  tree sectree = DECL_SECTION_NAME (current_function_decl);
+-	  secname = TREE_STRING_POINTER (sectree);
+-	}
+-      else
+-	secname = text_section_label;
+-
+       /* Now that we know what section we are using for a base,
+          actually construct the list of locations.
+ 	 The first location information is what is passed to the
+@@ -9877,7 +9889,9 @@ add_location_or_const_value_attribute (d
+ 
+       node = loc_list->first;
+       varloc = NOTE_VAR_LOCATION (node->var_loc_note);
+-      list = new_loc_list (loc_descriptor (varloc, attr != DW_AT_frame_base),
++      secname = secname_for_decl (decl);
++
++      list = new_loc_list (loc_descriptor (varloc),
+ 			   node->label, node->next->label, secname, 1);
+       node = node->next;
+ 
+@@ -9888,8 +9902,7 @@ add_location_or_const_value_attribute (d
+ 	       NODE->NEXT->LABEL.  */
+ 	    varloc = NOTE_VAR_LOCATION (node->var_loc_note);
+ 	    add_loc_descr_to_loc_list (&list,
+-				       loc_descriptor (varloc,
+-						       attr != DW_AT_frame_base),
++				       loc_descriptor (varloc),
+ 				       node->label, node->next->label, secname);
+ 	  }
+ 
+@@ -9909,8 +9922,7 @@ add_location_or_const_value_attribute (d
+ 	      endname = ggc_strdup (label_id);
+ 	    }
+ 	  add_loc_descr_to_loc_list (&list,
+-				     loc_descriptor (varloc,
+-						     attr != DW_AT_frame_base),
++				     loc_descriptor (varloc),
+ 				     node->label, endname, secname);
+ 	}
+ 
+@@ -9964,7 +9976,7 @@ add_location_or_const_value_attribute (d
+ 	case REG:
+ 	case SUBREG:
+ 	case CONCAT:
+-	  descr = loc_descriptor (rtl, true);
++	  descr = loc_descriptor (rtl);
+ 	}
+       add_AT_location_description (die, attr, descr);
+       break;
+@@ -9977,14 +9989,14 @@ add_location_or_const_value_attribute (d
+ 	int i;
+ 
+ 	/* Create the first one, so we have something to add to.  */
+-	descr = loc_descriptor (XEXP (RTVEC_ELT (par_elems, 0), 0), true);
++	descr = loc_descriptor (XEXP (RTVEC_ELT (par_elems, 0), 0));
+ 	mode = GET_MODE (XEXP (RTVEC_ELT (par_elems, 0), 0));
+ 	add_loc_descr_op_piece (&descr, GET_MODE_SIZE (mode));
+ 	for (i = 1; i < num_elem; i++)
+ 	  {
+ 	    dw_loc_descr_ref temp;
+ 
+-	    temp = loc_descriptor (XEXP (RTVEC_ELT (par_elems, i), 0), true);
++	    temp = loc_descriptor (XEXP (RTVEC_ELT (par_elems, i), 0));
+ 	    add_loc_descr (&descr, temp);
+ 	    mode = GET_MODE (XEXP (RTVEC_ELT (par_elems, i), 0));
+ 	    add_loc_descr_op_piece (&descr, GET_MODE_SIZE (mode));
+@@ -10030,6 +10042,98 @@ tree_add_const_value_attribute (dw_die_r
+     }
+ }
+ 
++/* Convert the CFI instructions for the current function into a location
++   list.  This is used for DW_AT_frame_base when we targeting a dwarf2
++   consumer that does not support the dwarf3 DW_OP_call_frame_cfa.  */
++
++static dw_loc_list_ref
++convert_cfa_to_loc_list (void)
++{
++  dw_fde_ref fde;
++  dw_loc_list_ref list, *list_tail;
++  dw_cfi_ref cfi;
++  dw_cfa_location last_cfa, next_cfa;
++  const char *start_label, *last_label, *section;
++
++  fde = &fde_table[fde_table_in_use - 1];
++
++  section = secname_for_decl (current_function_decl);
++  list_tail = &list;
++  list = NULL;
++
++  next_cfa.reg = INVALID_REGNUM;
++  next_cfa.offset = 0;
++  next_cfa.indirect = 0;
++  next_cfa.base_offset = 0;
++
++  start_label = fde->dw_fde_begin;
++
++  /* ??? Bald assumption that the CIE opcode list does not contain
++     advance opcodes.  */
++  for (cfi = cie_cfi_head; cfi; cfi = cfi->dw_cfi_next)
++    lookup_cfa_1 (cfi, &next_cfa);
++
++  last_cfa = next_cfa;
++  last_label = start_label;
++
++  for (cfi = fde->dw_fde_cfi; cfi; cfi = cfi->dw_cfi_next)
++    switch (cfi->dw_cfi_opc)
++      {
++      case DW_CFA_advance_loc1:
++      case DW_CFA_advance_loc2:
++      case DW_CFA_advance_loc4:
++	if (!cfa_equal_p (&last_cfa, &next_cfa))
++	  {
++	    *list_tail = new_loc_list (build_cfa_loc (&last_cfa), start_label,
++				       last_label, section, list == NULL);
++
++	    list_tail = &(*list_tail)->dw_loc_next;
++	    last_cfa = next_cfa;
++	    start_label = last_label;
++	  }
++	last_label = cfi->dw_cfi_oprnd1.dw_cfi_addr;
++	break;
++
++      case DW_CFA_advance_loc:
++	/* The encoding is complex enough that we should never emit this.  */
++      case DW_CFA_remember_state:
++      case DW_CFA_restore_state:
++	/* We don't handle these two in this function.  It would be possible
++	   if it were to be required.  */
++	abort ();
++
++      default:
++	lookup_cfa_1 (cfi, &next_cfa);
++	break;
++      }
++
++  if (!cfa_equal_p (&last_cfa, &next_cfa))
++    {
++      *list_tail = new_loc_list (build_cfa_loc (&last_cfa), start_label,
++				 last_label, section, list == NULL);
++      list_tail = &(*list_tail)->dw_loc_next;
++      start_label = last_label;
++    }
++  *list_tail = new_loc_list (build_cfa_loc (&next_cfa), start_label,
++			     fde->dw_fde_end, section, list == NULL);
++
++  return list;
++}
++
++/* Compute a displacement from the "steady-state frame pointer" to
++   the CFA, and store it in frame_pointer_cfa_offset.  */
++
++static void
++compute_frame_pointer_to_cfa_displacement (void)
++{
++  HOST_WIDE_INT offset;
++
++  offset = eliminate_reg_to_offset (arg_pointer_rtx);
++  offset += ARG_POINTER_CFA_OFFSET (current_function_decl);
++
++  frame_pointer_cfa_offset = -offset;
++}
++
+ /* Generate a DW_AT_name attribute given some string value to be included as
+    the value of the attribute.  */
+ 
+@@ -10128,7 +10232,7 @@ add_bound_info (dw_die_ref subrange_die,
+ 	  add_AT_flag (decl_die, DW_AT_artificial, 1);
+ 	  add_type_attribute (decl_die, TREE_TYPE (bound), 1, 0, ctx);
+ 	  add_AT_location_description (decl_die, DW_AT_location,
+-				       loc_descriptor (loc, true));
++				       loc_descriptor (loc));
+ 	  add_AT_die_ref (subrange_die, bound_attr, decl_die);
+ 	}
+ 
+@@ -11114,7 +11218,6 @@ gen_subprogram_die (tree decl, dw_die_re
+   char label_id[MAX_ARTIFICIAL_LABEL_BYTES];
+   tree origin = decl_ultimate_origin (decl);
+   dw_die_ref subr_die;
+-  rtx fp_reg;
+   tree fn_arg_types;
+   tree outer_scope;
+   dw_die_ref old_die = lookup_decl_die (decl);
+@@ -11277,20 +11380,32 @@ gen_subprogram_die (tree decl, dw_die_re
+       add_AT_fde_ref (subr_die, DW_AT_MIPS_fde, current_funcdef_fde);
+ #endif
+ 
+-      /* Define the "frame base" location for this routine.  We use the
+-	 frame pointer or stack pointer registers, since the RTL for local
+-	 variables is relative to one of them.  */
+-      if (frame_base_decl && lookup_decl_loc (frame_base_decl) != NULL)
+-	{
+-	  add_location_or_const_value_attribute (subr_die, frame_base_decl,
+-						 DW_AT_frame_base);
+-	}
+-      else
+-	{
+-	  fp_reg
+-	    = frame_pointer_needed ? hard_frame_pointer_rtx : stack_pointer_rtx;
+-	  add_AT_loc (subr_die, DW_AT_frame_base, reg_loc_descriptor (fp_reg));
+-	}
++      /* We define the "frame base" as the function's CFA.  This is more
++	 convenient for several reasons: (1) It's stable across the prologue
++	 and epilogue, which makes it better than just a frame pointer,
++	 (2) With dwarf3, there exists a one-byte encoding that allows us
++	 to reference the .debug_frame data by proxy, but failing that,
++	 (3) We can at least reuse the code inspection and interpretation
++	 code that determines the CFA position at various points in the
++	 function.  */
++      /* ??? Use some command-line or configury switch to enable the use
++	 of dwarf3 DW_OP_call_frame_cfa.  At present there are no dwarf
++	 consumers that understand it; fall back to "pure" dwarf2 and
++	 convert the CFA data into a location list.  */
++      {
++	dw_loc_list_ref list = convert_cfa_to_loc_list ();
++	if (list->dw_loc_next)
++	  add_AT_loc_list (subr_die, DW_AT_frame_base, list);
++	else
++	  add_AT_loc (subr_die, DW_AT_frame_base, list->expr);
++      }
++
++      /* Compute a displacement from the "steady-state frame pointer" to
++	 the CFA.  The former is what all stack slots and argument slots
++	 will reference in the rtl; the later is what we've told the
++	 debugger about.  We'll need to adjust all frame_base references
++	 by this displacement.  */
++      compute_frame_pointer_to_cfa_displacement ();
+ 
+ #if 0
+       /* ??? This fails for nested inline functions, because context_display
+--- gcc/function.c.orig	2005-11-17 23:01:55.000000000 -0200
++++ gcc/function.c	2005-11-17 23:07:55.000000000 -0200
+@@ -2824,12 +2824,6 @@
+ #endif
+ #endif
+ 
+-/* On most machines, the CFA coincides with the first incoming parm.  */
+-
+-#ifndef ARG_POINTER_CFA_OFFSET
+-#define ARG_POINTER_CFA_OFFSET(FNDECL) FIRST_PARM_OFFSET (FNDECL)
+-#endif
+-
+ /* Build up a (MEM (ADDRESSOF (REG))) rtx for a register REG that just
+    had its address taken.  DECL is the decl or SAVE_EXPR for the
+    object stored in the register, for later use if we do need to force
+--- gcc/tree.h.orig	2005-11-17 23:06:26.000000000 -0200
++++ gcc/tree.h	2005-11-17 23:07:55.000000000 -0200
+@@ -2065,7 +2065,6 @@
+ 
+ #define NULL_TREE (tree) NULL
+ 
+-extern GTY(()) tree frame_base_decl;
+ extern tree decl_assembler_name (tree);
+ 
+ /* Compute the number of bytes occupied by 'node'.  This routine only
+--- gcc/var-tracking.c.orig	2005-11-17 23:01:55.000000000 -0200
++++ gcc/var-tracking.c	2005-11-17 23:07:55.000000000 -0200
+@@ -266,19 +266,12 @@
+ /* Shall notes be emitted?  */
+ static bool emit_notes;
+ 
+-/* Fake variable for stack pointer.  */
+-tree frame_base_decl;
+-
+-/* Stack adjust caused by function prologue.  */
+-static HOST_WIDE_INT frame_stack_adjust;
+-
+ /* Local function prototypes.  */
+ static void stack_adjust_offset_pre_post (rtx, HOST_WIDE_INT *,
+ 					  HOST_WIDE_INT *);
+ static void insn_stack_adjust_offset_pre_post (rtx, HOST_WIDE_INT *,
+ 					       HOST_WIDE_INT *);
+ static void bb_stack_adjust_offset (basic_block);
+-static HOST_WIDE_INT prologue_stack_adjust (void);
+ static bool vt_stack_adjustments (void);
+ static rtx adjust_stack_reference (rtx, HOST_WIDE_INT);
+ static hashval_t variable_htab_hash (const void *);
+@@ -333,7 +326,6 @@
+ static void dump_dataflow_sets (void);
+ 
+ static void variable_was_changed (variable, htab_t);
+-static void set_frame_base_location (dataflow_set *, rtx);
+ static void set_variable_part (dataflow_set *, rtx, tree, HOST_WIDE_INT);
+ static void delete_variable_part (dataflow_set *, rtx, tree, HOST_WIDE_INT);
+ static int emit_note_insn_var_location (void **, void *);
+@@ -489,38 +481,6 @@
+   VTI (bb)->out.stack_adjust = offset;
+ }
+ 
+-/* Compute stack adjustment caused by function prologue.  */
+-
+-static HOST_WIDE_INT
+-prologue_stack_adjust (void)
+-{
+-  HOST_WIDE_INT offset = 0;
+-  basic_block bb = ENTRY_BLOCK_PTR->next_bb;
+-  rtx insn;
+-  rtx end;
+-
+-  if (!BB_END (bb))
+-    return 0;
+-
+-  end = NEXT_INSN (BB_END (bb));
+-  for (insn = BB_HEAD (bb); insn != end; insn = NEXT_INSN (insn))
+-    {
+-      if (GET_CODE (insn) == NOTE
+-	  && NOTE_LINE_NUMBER (insn) == NOTE_INSN_PROLOGUE_END)
+-	break;
+-
+-      if (INSN_P (insn))
+-	{
+-	  HOST_WIDE_INT tmp;
+-
+-	  insn_stack_adjust_offset_pre_post (insn, &tmp, &tmp);
+-	  offset += tmp;
+-	}
+-    }
+-
+-  return offset;
+-}
+-
+ /* Compute stack adjustments for all blocks by traversing DFS tree.
+    Return true when the adjustments on all incoming edges are consistent.
+    Heavily borrowed from flow_depth_first_order_compute.  */
+@@ -533,7 +493,7 @@
+ 
+   /* Initialize entry block.  */
+   VTI (ENTRY_BLOCK_PTR)->visited = true;
+-  VTI (ENTRY_BLOCK_PTR)->out.stack_adjust = frame_stack_adjust;
++  VTI (ENTRY_BLOCK_PTR)->out.stack_adjust = INCOMING_FRAME_SP_OFFSET;
+ 
+   /* Allocate stack for back-tracking up CFG.  */
+   stack = xmalloc ((n_basic_blocks + 1) * sizeof (edge));
+@@ -587,27 +547,23 @@
+   return true;
+ }
+ 
+-/* Adjust stack reference MEM by ADJUSTMENT bytes and return the new rtx.  */
++/* Adjust stack reference MEM by ADJUSTMENT bytes and make it relative
++   to the argument pointer.  Return the new rtx.  */
+ 
+ static rtx
+ adjust_stack_reference (rtx mem, HOST_WIDE_INT adjustment)
+ {
+-  rtx adjusted_mem;
+-  rtx tmp;
++  rtx addr, cfa, tmp;
+ 
+-  if (adjustment == 0)
+-    return mem;
++  adjustment -= ARG_POINTER_CFA_OFFSET (current_function_decl);
++  cfa = plus_constant (arg_pointer_rtx, adjustment);
+ 
+-  adjusted_mem = copy_rtx (mem);
+-  XEXP (adjusted_mem, 0) = replace_rtx (XEXP (adjusted_mem, 0),
+-					stack_pointer_rtx,
+-					gen_rtx_PLUS (Pmode, stack_pointer_rtx,
+-						      GEN_INT (adjustment)));
+-  tmp = simplify_rtx (XEXP (adjusted_mem, 0));
++  addr = replace_rtx (copy_rtx (XEXP (mem, 0)), stack_pointer_rtx, cfa);
++  tmp = simplify_rtx (addr);
+   if (tmp)
+-    XEXP (adjusted_mem, 0) = tmp;
++    addr = tmp;
+ 
+-  return adjusted_mem;
++  return replace_equiv_address_nv (mem, addr);
+ }
+ 
+ /* The hash function for variable_htab, computes the hash value
+@@ -1657,14 +1613,7 @@
+ 	    break;
+ 
+ 	  case MO_ADJUST:
+-	    {
+-	      rtx base;
+-
+-	      out->stack_adjust += VTI (bb)->mos[i].u.adjust;
+-	      base = gen_rtx_MEM (Pmode, plus_constant (stack_pointer_rtx,
+-							out->stack_adjust));
+-	      set_frame_base_location (out, base);
+-	    }
++	    out->stack_adjust += VTI (bb)->mos[i].u.adjust;
+ 	    break;
+ 	}
+     }
+@@ -1786,8 +1735,7 @@
+   for (; list; list = list->next)
+     {
+       print_mem_expr (rtl_dump_file, list->decl);
+-      fprintf (rtl_dump_file, "+");
+-      fprintf (rtl_dump_file, HOST_WIDE_INT_PRINT_DEC, list->offset);
++      fprintf (rtl_dump_file, "+" HOST_WIDE_INT_PRINT_DEC, list->offset);
+     }
+   fprintf (rtl_dump_file, "\n");
+ }
+@@ -1837,9 +1785,8 @@
+ {
+   int i;
+ 
+-  fprintf (rtl_dump_file, "Stack adjustment: ");
+-  fprintf (rtl_dump_file, HOST_WIDE_INT_PRINT_DEC, set->stack_adjust);
+-  fprintf (rtl_dump_file, "\n");
++  fprintf (rtl_dump_file, "Stack adjustment: " HOST_WIDE_INT_PRINT_DEC "\n",
++	   set->stack_adjust);
+   for (i = 1; i < FIRST_PSEUDO_REGISTER; i++)
+     {
+       if (set->regs[i])
+@@ -1921,37 +1868,6 @@
+     }
+ }
+ 
+-/* Set the location of frame_base_decl to LOC in dataflow set SET.  This
+-   function expects that frame_base_decl has already one location for offset 0
+-   in the variable table.  */
+-
+-static void
+-set_frame_base_location (dataflow_set *set, rtx loc)
+-{
+-  variable var;
+-  
+-  var = htab_find_with_hash (set->vars, frame_base_decl,
+-			     VARIABLE_HASH_VAL (frame_base_decl));
+-#ifdef ENABLE_CHECKING
+-  if (!var)
+-    abort ();
+-  if (var->n_var_parts != 1)
+-    abort ();
+-  if (var->var_part[0].offset != 0)
+-    abort ();
+-  if (!var->var_part[0].loc_chain)
+-    abort ();
+-#endif
+-
+-  /* If frame_base_decl is shared unshare it first.  */
+-  if (var->refcount > 1)
+-    var = unshare_variable (set, var);
+-
+-  var->var_part[0].loc_chain->loc = loc;
+-  var->var_part[0].cur_loc = loc;
+-  variable_was_changed (var, set->vars);
+-}
+-
+ /* Set the part of variable's location in the dataflow set SET.  The variable
+    part is specified by variable's declaration DECL and offset OFFSET and the
+    part's location by LOC.  */
+@@ -2482,15 +2398,7 @@
+ 	    break;
+ 
+ 	  case MO_ADJUST:
+-	    {
+-	      rtx base;
+-
+-	      set.stack_adjust += VTI (bb)->mos[i].u.adjust;
+-	      base = gen_rtx_MEM (Pmode, plus_constant (stack_pointer_rtx,
+-							set.stack_adjust));
+-	      set_frame_base_location (&set, base);
+-	      emit_notes_for_changes (insn, EMIT_NOTE_AFTER_INSN);
+-	    }
++	    set.stack_adjust += VTI (bb)->mos[i].u.adjust;
+ 	    break;
+ 	}
+     }
+@@ -2600,7 +2508,6 @@
+ 	abort ();
+ #endif
+ 
+-      incoming = eliminate_regs (incoming, 0, NULL_RTX);
+       out = &VTI (ENTRY_BLOCK_PTR)->out;
+ 
+       if (GET_CODE (incoming) == REG)
+@@ -2614,9 +2521,7 @@
+ 	  set_variable_part (out, incoming, parm, offset);
+ 	}
+       else if (GET_CODE (incoming) == MEM)
+-	{
+-	  set_variable_part (out, incoming, parm, offset);
+-	}
++	set_variable_part (out, incoming, parm, offset);
+     }
+ }
+ 
+@@ -2761,28 +2666,6 @@
+   changed_variables = htab_create (10, variable_htab_hash, variable_htab_eq,
+ 				   NULL);
+   vt_add_function_parameters ();
+-
+-  if (!frame_pointer_needed)
+-    {
+-      rtx base;
+-
+-      /* Create fake variable for tracking stack pointer changes.  */
+-      frame_base_decl = make_node (VAR_DECL);
+-      DECL_NAME (frame_base_decl) = get_identifier ("___frame_base_decl");
+-      TREE_TYPE (frame_base_decl) = char_type_node;
+-      DECL_ARTIFICIAL (frame_base_decl) = 1;
+-      DECL_IGNORED_P (frame_base_decl) = 1;
+-
+-      /* Set its initial "location".  */
+-      frame_stack_adjust = -prologue_stack_adjust ();
+-      base = gen_rtx_MEM (Pmode, plus_constant (stack_pointer_rtx,
+-						frame_stack_adjust));
+-      set_variable_part (&VTI (ENTRY_BLOCK_PTR)->out, base, frame_base_decl, 0);
+-    }
+-  else
+-    {
+-      frame_base_decl = NULL;
+-    }
+ }
+ 
+ /* Free the data structures needed for variable tracking.  */

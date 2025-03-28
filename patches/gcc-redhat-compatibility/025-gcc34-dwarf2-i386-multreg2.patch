@@ -1,0 +1,17 @@
+2005-11-30  Jakub Jelinek  <jakub@redhat.com>
+
+	* dwarf2out.c (multiple_reg_loc_descriptor): Remap reg with
+	LEAF_REG_REMAP.
+
+--- gcc/dwarf2out.c.jj	2005-11-21 10:57:57.000000000 +0100
++++ gcc/dwarf2out.c	2005-11-30 21:35:28.000000000 +0100
+@@ -8271,6 +8271,9 @@ multiple_reg_loc_descriptor (rtx rtl, rt
+   dw_loc_descr_ref loc_result = NULL;
+ 
+   reg = REGNO (rtl);
++#ifdef LEAF_REG_REMAP
++  reg = LEAF_REG_REMAP (reg);
++#endif
+   if ((unsigned) DBX_REGISTER_NUMBER (reg) != dbx_reg_number (rtl))
+     abort ();
+   nregs = HARD_REGNO_NREGS (REGNO (rtl), GET_MODE (rtl));
