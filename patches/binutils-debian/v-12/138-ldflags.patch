@@ -1,0 +1,181 @@
+From: Nicolas Schodet <nico@ni.fr.eu.org>
+Date: Fri, 21 Mar 2025 00:08:56 +0100
+Subject: Use compilation/linker flags from configure environment
+
+---
+ Makefile.in           | 11 +++++++++--
+ Makefile.tpl          | 11 +++++++++--
+ configure.in          | 10 +++++++++-
+ libiberty/Makefile.in |  4 +++-
+ 4 files changed, 30 insertions(+), 6 deletions(-)
+
+diff --git a/Makefile.in b/Makefile.in
+index 2287ad3..b0c06ec 100644
+--- a/Makefile.in
++++ b/Makefile.in
+@@ -137,6 +137,7 @@ BUILD_EXPORTS = \
+ 	CC="$(CC_FOR_BUILD)"; export CC; \
+ 	CFLAGS="$(CFLAGS_FOR_BUILD)"; export CFLAGS; \
+ 	CONFIG_SHELL="$(SHELL)"; export CONFIG_SHELL; \
++	CPPFLAGS="$(CPPFLAGS_FOR_BUILD)"; export CPPFLAGS; \
+ 	CXX="$(CXX_FOR_BUILD)"; export CXX; \
+ 	CXXFLAGS="$(CXXFLAGS_FOR_BUILD)"; export CXXFLAGS; \
+ 	GCJ="$(GCJ_FOR_BUILD)"; export GCJ; \
+@@ -163,11 +164,13 @@ HOST_EXPORTS = \
+ 	CC="$(CC)"; export CC; \
+ 	CFLAGS="$(CFLAGS)"; export CFLAGS; \
+ 	CONFIG_SHELL="$(SHELL)"; export CONFIG_SHELL; \
++	CPPFLAGS="$(CPPFLAGS)"; export CPPFLAGS; \
+ 	CXX="$(CXX)"; export CXX; \
+ 	CXXFLAGS="$(CXXFLAGS)"; export CXXFLAGS; \
+ 	AR="$(AR)"; export AR; \
+ 	AS="$(AS)"; export AS; \
+ 	CC_FOR_BUILD="$(CC_FOR_BUILD)"; export CC_FOR_BUILD; \
++	CPPFLAGS_FOR_BUILD="$(CPPFLAGS_FOR_BUILD)"; export CPPFLAGS_FOR_BUILD; \
+ 	DLLTOOL="$(DLLTOOL)"; export DLLTOOL; \
+ 	LD="$(LD)"; export LD; \
+ 	LDFLAGS="$(LDFLAGS)"; export LDFLAGS; \
+@@ -254,7 +257,10 @@ PWD_COMMAND = $${PWDCMD-pwd}
+ CC_FOR_BUILD = @CC_FOR_BUILD@
+ CFLAGS_FOR_BUILD = @CFLAGS_FOR_BUILD@
+ 
++CPPFLAGS_FOR_BUILD = @CPPFLAGS_FOR_BUILD@
++CXXFLAGS_FOR_BUILD = @CXXFLAGS_FOR_BUILD@
+ CXX_FOR_BUILD = $(CXX)
++LDFLAGS_FOR_BUILD = @LDFLAGS_FOR_BUILD@
+ 
+ # Special variables passed down in EXTRA_GCC_FLAGS.  They are defined
+ # here so that they can be overridden by Makefile fragments.
+@@ -337,7 +343,8 @@ AR_FLAGS = rc
+ 
+ CC = @CC@
+ CFLAGS = @CFLAGS@
+-LIBCFLAGS = $(CFLAGS)
++CPPFLAGS = @CPPFLAGS@
++LIBCFLAGS = $(CFLAGS) $(CPPFLAGS)
+ 
+ CXX = @CXX@
+ CXXFLAGS = @CXXFLAGS@
+@@ -348,7 +355,7 @@ DLLTOOL = @DLLTOOL@
+ NM = @NM@
+ 
+ LD = @LD@
+-LDFLAGS = 
++LDFLAGS = @LDFLAGS@
+ 
+ RANLIB = @RANLIB@
+ 
+diff --git a/Makefile.tpl b/Makefile.tpl
+index 232c457..29d7789 100644
+--- a/Makefile.tpl
++++ b/Makefile.tpl
+@@ -140,6 +140,7 @@ BUILD_EXPORTS = \
+ 	CC="$(CC_FOR_BUILD)"; export CC; \
+ 	CFLAGS="$(CFLAGS_FOR_BUILD)"; export CFLAGS; \
+ 	CONFIG_SHELL="$(SHELL)"; export CONFIG_SHELL; \
++	CPPFLAGS="$(CPPFLAGS_FOR_BUILD)"; export CPPFLAGS; \
+ 	CXX="$(CXX_FOR_BUILD)"; export CXX; \
+ 	CXXFLAGS="$(CXXFLAGS_FOR_BUILD)"; export CXXFLAGS; \
+ 	GCJ="$(GCJ_FOR_BUILD)"; export GCJ; \
+@@ -166,11 +167,13 @@ HOST_EXPORTS = \
+ 	CC="$(CC)"; export CC; \
+ 	CFLAGS="$(CFLAGS)"; export CFLAGS; \
+ 	CONFIG_SHELL="$(SHELL)"; export CONFIG_SHELL; \
++	CPPFLAGS="$(CPPFLAGS)"; export CPPFLAGS; \
+ 	CXX="$(CXX)"; export CXX; \
+ 	CXXFLAGS="$(CXXFLAGS)"; export CXXFLAGS; \
+ 	AR="$(AR)"; export AR; \
+ 	AS="$(AS)"; export AS; \
+ 	CC_FOR_BUILD="$(CC_FOR_BUILD)"; export CC_FOR_BUILD; \
++	CPPFLAGS_FOR_BUILD="$(CPPFLAGS_FOR_BUILD)"; export CPPFLAGS_FOR_BUILD; \
+ 	DLLTOOL="$(DLLTOOL)"; export DLLTOOL; \
+ 	LD="$(LD)"; export LD; \
+ 	LDFLAGS="$(LDFLAGS)"; export LDFLAGS; \
+@@ -257,7 +260,10 @@ PWD_COMMAND = $${PWDCMD-pwd}
+ CC_FOR_BUILD = @CC_FOR_BUILD@
+ CFLAGS_FOR_BUILD = @CFLAGS_FOR_BUILD@
+ 
++CPPFLAGS_FOR_BUILD = @CPPFLAGS_FOR_BUILD@
++CXXFLAGS_FOR_BUILD = @CXXFLAGS_FOR_BUILD@
+ CXX_FOR_BUILD = $(CXX)
++LDFLAGS_FOR_BUILD = @LDFLAGS_FOR_BUILD@
+ 
+ # Special variables passed down in EXTRA_GCC_FLAGS.  They are defined
+ # here so that they can be overridden by Makefile fragments.
+@@ -340,7 +346,8 @@ AR_FLAGS = rc
+ 
+ CC = @CC@
+ CFLAGS = @CFLAGS@
+-LIBCFLAGS = $(CFLAGS)
++CPPFLAGS = @CPPFLAGS@
++LIBCFLAGS = $(CFLAGS) $(CPPFLAGS)
+ 
+ CXX = @CXX@
+ CXXFLAGS = @CXXFLAGS@
+@@ -351,7 +358,7 @@ DLLTOOL = @DLLTOOL@
+ NM = @NM@
+ 
+ LD = @LD@
+-LDFLAGS = 
++LDFLAGS = @LDFLAGS@
+ 
+ RANLIB = @RANLIB@
+ 
+diff --git a/configure.in b/configure.in
+index 37173ef..b7d96ec 100644
+--- a/configure.in
++++ b/configure.in
+@@ -2025,6 +2025,9 @@ esac
+ # Allow the user to override the flags for
+ # our build compiler if desired.
+ CFLAGS_FOR_BUILD=${CFLAGS_FOR_BUILD-${CFLAGS}}
++CPPFLAGS_FOR_BUILD=${CPPFLAGS_FOR_BUILD-${CPPFLAGS}}
++CXXFLAGS_FOR_BUILD=${CXXFLAGS_FOR_BUILD-${CXXFLAGS}}
++LDFLAGS_FOR_BUILD=${LDFLAGS_FOR_BUILD-${LDFLAGS}}
+ 
+ # On Canadian crosses, we'll be searching the right directories for
+ # the previously-installed cross compiler, so don't bother to add
+@@ -2160,6 +2163,10 @@ AC_SUBST(target_configdirs)
+ 
+ # Build tools.
+ AC_SUBST(CC_FOR_BUILD)
++AC_SUBST(CFLAGS_FOR_BUILD)
++AC_SUBST(CPPFLAGS_FOR_BUILD)
++AC_SUBST(CXXFLAGS_FOR_BUILD)
++AC_SUBST(LDFLAGS_FOR_BUILD)
+ AC_SUBST(config_shell)
+ 
+ # Host tools.
+@@ -2175,8 +2182,9 @@ NCN_STRICT_CHECK_TOOL(OBJDUMP, objdump)
+ AC_SUBST(CC)
+ AC_SUBST(CXX)
+ AC_SUBST(CFLAGS)
+-AC_SUBST(CFLAGS_FOR_BUILD)
++AC_SUBST(CPPFLAGS)
+ AC_SUBST(CXXFLAGS)
++AC_SUBST(LDFLAGS)
+ 
+ # Target tools.
+ NCN_STRICT_CHECK_TARGET_TOOL(CONFIGURED_AR_FOR_TARGET, ar)
+diff --git a/libiberty/Makefile.in b/libiberty/Makefile.in
+index 2dc4e7a..c0819ee 100644
+--- a/libiberty/Makefile.in
++++ b/libiberty/Makefile.in
+@@ -60,7 +60,8 @@ AR_FLAGS = rc
+ 
+ CC = @CC@
+ CFLAGS = @CFLAGS@
+-LIBCFLAGS = $(CFLAGS)
++CPPFLAGS = @CPPFLAGS@
++LIBCFLAGS = $(CFLAGS) $(CPPFLAGS)
+ RANLIB = @RANLIB@
+ MAKEINFO = @MAKEINFO@
+ PERL = @PERL@
+@@ -84,6 +85,7 @@ FLAGS_TO_PASS = \
+ 	"AR_FLAGS=$(AR_FLAGS)" \
+ 	"CC=$(CC)" \
+ 	"CFLAGS=$(CFLAGS)" \
++	"CPPFLAGS=$(CPPFLAGS)" \
+ 	"DESTDIR=$(DESTDIR)" \
+ 	"LIBCFLAGS=$(LIBCFLAGS)" \
+ 	"EXTRA_OFILES=$(EXTRA_OFILES)" \

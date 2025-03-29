@@ -6,11 +6,16 @@ Unapplied patches might be specific to a particular distribution or duplicate pa
 
 Binutils
 --------
+### Debian
 Debian provides a [binutils-h8300-hms](https://packages.debian.org/source/stable/binutils-h8300-hms) package
-based on binutils 2.16.1 that includes several patch updates in the debian.tar.xz archive file available on that page.
+based on binutils 2.16.1 that bundles several patches.
 From the `patches/series` file in that archive (c.f. [release versions here](https://sources.debian.org/src/binutils-h8300-hms/2.16.1/debian/patches/series/)),
 available Debian patches include those lised below.
-Patches not marked with strikethrough have been applied here (unapplied patches are more Debian specific).
+Use [this link](https://sources.debian.org/src/binutils-h8300-hms/stable/debian/patches/) to be redirected to the latest collection of stable patches.
+Generally, unapplied patches are more Debian specific.
+#### Patches through Debian release v-10
+Patches maintained up through Debian release [2.16.1-10](https://sources.debian.org/src/binutils-h8300-hms/2.16.1-10/debian/patches/),
+with patch descriptions [available here](https://udd.debian.org/patches.cgi?src=binutils-h8300-hms&version=2.16.1-10).
 * ~~000_print_debian_version~~
 * 002_gprof_profile_arcs
 * 003_gprof_see_also_monitor
@@ -24,6 +29,29 @@ Patches not marked with strikethrough have been applied here (unapplied patches 
 * 131_sprintf
 * 132_texinfo_fixes
 * ~~bts729274~~
+#### Patches from Debian release v-11 and forward
+Patches maintained commencing with Debian release [2.16.1-11](https://sources.debian.org/src/binutils-h8300-hms/2.16.1-12/debian/patches/),
+with patch descriptions [available here](https://udd.debian.org/patches.cgi?src=binutils-h8300-hms&version=2.16.1-12).
+
+**TODO**:
+
+| Patch File Name | Notes |
+| --------------- | ----- |
+| ~~000-print-debian-version.patch~~   | Was also included in v-10 |
+| ~~006-better-file-error.patch~~      | Was also included in v-10 |
+| ~~012-check-ldrunpath-length.patch~~ | Was also included in v-10 |
+| ~~128-ln-s-makefiles.patch~~         | Was also included in v-10 |
+| ~~129-gas-h8300.patch~~              | Was also included in v-10 |
+| ~~130-coff-arm.patch~~               | Was also included in v-10 |
+| ~~131-sprintf.patch~~                | Was also included in v-10 |
+| ~~132-texinfo-fixes.patch~~          | Was also included in v-10 |
+| 133-configure-signatures.patch       | New subsequent to v-10 |
+| 134-texinfo-fixes.patch              | New subsequent to v-10 |
+| 135-update-autotools.patch           | New subsequent to v-10 |
+| 136-ld-libdir.patch                  | New subsequent to v-10 |
+| 137-abort-on-invalid-header.patch    | New subsequent to v-10 |
+| 138-ldflags.patch                    | New subsequent to v-10 |
+| 139-spacepad.patch                   | New subsequent to v-10 |
 
 
 GCC
@@ -53,13 +81,13 @@ Red Hat provided [backwards compatibility patches for GCC 3.4](https://access.re
 
 ### Debian
 Debian provides a [gcc-h8300-hms](https://packages.debian.org/source/stable/gcc-h8300-hms) package
-based on gcc 3.4.6 that includes several patch updates in the debian.tar.xz archive file available on that page.
+based on gcc 3.4.6 that bundles several patches.
 From the `patches/series` file in that archive (c.f. [release versions here](https://sources.debian.org/src/gcc-h8300-hms/3.4.6/debian/patches/series/)),
-available Debian patches include those lised below.  Use [this link](https://sources.debian.org/src/gcc-h8300-hms/1%3A3.4.6%2Bdfsg2-5/debian/patches/) to be redirected to the latest collection of patches.
-Patches not marked with strikethrough have been applied here (unapplied patches are more Debian specific).
+available Debian patches include those lised below.  Use [this link](https://sources.debian.org/src/gcc-h8300-hms/stable/debian/patches/) to be redirected to the latest collection of stable patches.
+Generally, unapplied patches are more Debian specific.
 #### Patches through Debian release dfsg2-4.2
-More patches were maintained through Debian release [dfsg2-4.2](https://sources.debian.org/src/gcc-h8300-hms/1%3A3.4.6%2Bdfsg2-4.2/debian/patches/).
-Patch descriptions are [available here](https://udd.debian.org/patches.cgi?src=gcc-h8300-hms&version=1%3A3.4.6%2Bdfsg2-4.2).
+Numerous patches were maintained up through Debian release [dfsg2-4.2](https://sources.debian.org/src/gcc-h8300-hms/1%3A3.4.6%2Bdfsg2-4.2/debian/patches/),
+with patch descriptions [available here](https://udd.debian.org/patches.cgi?src=gcc-h8300-hms&version=1%3A3.4.6%2Bdfsg2-4.2).
 * ~~000_no_libstdc++-v3~~
 * 001_h8300_64bit
 * gcc-textdomain.dpatch
@@ -90,24 +118,24 @@ Patch descriptions are [available here](https://udd.debian.org/patches.cgi?src=g
 * ~~debian-changes-1:3.4.6+dfsg-1~~
 * fix_ftbs.diff
 #### Patches from Debian release dfsg2-5 and forward
-Commencing with Debian release [dfsg2-5](https://sources.debian.org/src/gcc-h8300-hms/1%3A3.4.6%2Bdfsg2-5/debian/patches/), the number of patches was reduced, and a few new ones were added.
-Patch descriptions are [available here](https://udd.debian.org/patches.cgi?src=gcc-h8300-hms&version=1%3A3.4.6%2Bdfsg2-5).
+Commencing with Debian release [dfsg2-5](https://sources.debian.org/src/gcc-h8300-hms/1%3A3.4.6%2Bdfsg2-5/debian/patches/), the number of patches was reduced, while a few new ones were added.
+Patch descriptions for these are [available here](https://udd.debian.org/patches.cgi?src=gcc-h8300-hms&version=1%3A3.4.6%2Bdfsg2-5).
 
 **TODO**:
 
-| Name | Notes |
-|======|=======|
+| Patch File Name | Notes |
+| --------------- | ----- |
 | ~~000_no_libstdc%2B%2B-v3~~                       | Was also included in dfsg2-4.2 |
 | ~~001_h8300_64bit~~                               | Was also included in dfsg2-4.2 |
 | ~~gcc-textdomain.dpatch~~                         | Was also included in dfsg2-4.2 |
 | ~~bin_false_fixup~~                               | Was also included in dfsg2-4.2 |
 | ~~debian-changes-1%3A3.4.6%2Bdfsg-1~~             | Was also included in dfsg2-4.2 |
 | ~~fix_ftbs.diff~~                                 | Was also included in dfsg2-4.2 |
-| 150-configure-signatures.patch                                  | New with dfsg2-5 |
-| 0030-Add-now-mandatory-parameter-to-AM_GNU_GETTEXT.patch        | New with dfsg2-5 |
-| 0032-Fix-format-not-a-string-literal.patch                      | New with dfsg2-5 |
-| 0033-Remove-AC_CONFIG_AUX_DIR-in-libiberty-configure-temp.patch | New with dfsg2-5 |
-| 0034-Fix-c-parse.y-build-error.patch                            | New with dfsg2-5 |
+| 150-configure-signatures.patch                                  | New subsequent to dfsg2-4.2 |
+| 0030-Add-now-mandatory-parameter-to-AM_GNU_GETTEXT.patch        | New subsequent to dfsg2-4.2 |
+| 0032-Fix-format-not-a-string-literal.patch                      | New subsequent to dfsg2-4.2 |
+| 0033-Remove-AC_CONFIG_AUX_DIR-in-libiberty-configure-temp.patch | New subsequent to dfsg2-4.2 |
+| 0034-Fix-c-parse.y-build-error.patch                            | New subsequent to dfsg2-4.2 |
 
 ### GNU Pascal Compiler (GPC)
 The GNU Pascal Compiler (GPC) patches most applicable to this particular GCC version were also applied.
