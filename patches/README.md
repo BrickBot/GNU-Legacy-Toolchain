@@ -1,6 +1,7 @@
 Patches
 =======
-The patches described below have been applied to the code in this respository.
+Known patches are listed below.  Those not marked with ~~strikethrough~~ have been applied to the code in this respository.
+Unapplied patches might be specific to a particular distribution or duplicate patches from other sources.
 
 
 Binutils
@@ -54,8 +55,11 @@ Red Hat provided [backwards compatibility patches for GCC 3.4](https://access.re
 Debian provides a [gcc-h8300-hms](https://packages.debian.org/source/stable/gcc-h8300-hms) package
 based on gcc 3.4.6 that includes several patch updates in the debian.tar.xz archive file available on that page.
 From the `patches/series` file in that archive (c.f. [release versions here](https://sources.debian.org/src/gcc-h8300-hms/3.4.6/debian/patches/series/)),
-available Debian patches include those lised below.
+available Debian patches include those lised below.  Use [this link](https://sources.debian.org/src/gcc-h8300-hms/1%3A3.4.6%2Bdfsg2-5/debian/patches/) to be redirected to the latest collection of patches.
 Patches not marked with strikethrough have been applied here (unapplied patches are more Debian specific).
+#### Patches through Debian release dfsg2-4.2
+More patches were maintained through Debian release [dfsg2-4.2](https://sources.debian.org/src/gcc-h8300-hms/1%3A3.4.6%2Bdfsg2-4.2/debian/patches/).
+Patch descriptions are [available here](https://udd.debian.org/patches.cgi?src=gcc-h8300-hms&version=1%3A3.4.6%2Bdfsg2-4.2).
 * ~~000_no_libstdc++-v3~~
 * 001_h8300_64bit
 * gcc-textdomain.dpatch
@@ -65,6 +69,7 @@ Patches not marked with strikethrough have been applied here (unapplied patches 
 * amd64-specs.dpatch
 * gccbug.dpatch
 * gccbug-posix.dpatch
+* gcc-textdomain.dpatch
 * hppa-toplevel.dpatch
 * m68k-update.dpatch
 * arm-bigendian.dpatch
@@ -84,6 +89,25 @@ Patches not marked with strikethrough have been applied here (unapplied patches 
 * ~~configure-update~~
 * ~~debian-changes-1:3.4.6+dfsg-1~~
 * fix_ftbs.diff
+#### Patches from Debian release dfsg2-5 and forward
+Commencing with Debian release [dfsg2-5](https://sources.debian.org/src/gcc-h8300-hms/1%3A3.4.6%2Bdfsg2-5/debian/patches/), the number of patches was reduced, and a few new ones were added.
+Patch descriptions are [available here](https://udd.debian.org/patches.cgi?src=gcc-h8300-hms&version=1%3A3.4.6%2Bdfsg2-5).
+
+**TODO**:
+
+| Name | Notes |
+|======|=======|
+| ~~000_no_libstdc%2B%2B-v3~~                       | Was also included in dfsg2-4.2 |
+| ~~001_h8300_64bit~~                               | Was also included in dfsg2-4.2 |
+| ~~gcc-textdomain.dpatch~~                         | Was also included in dfsg2-4.2 |
+| ~~bin_false_fixup~~                               | Was also included in dfsg2-4.2 |
+| ~~debian-changes-1%3A3.4.6%2Bdfsg-1~~             | Was also included in dfsg2-4.2 |
+| ~~fix_ftbs.diff~~                                 | Was also included in dfsg2-4.2 |
+| 150-configure-signatures.patch                                  | New with dfsg2-5 |
+| 0030-Add-now-mandatory-parameter-to-AM_GNU_GETTEXT.patch        | New with dfsg2-5 |
+| 0032-Fix-format-not-a-string-literal.patch                      | New with dfsg2-5 |
+| 0033-Remove-AC_CONFIG_AUX_DIR-in-libiberty-configure-temp.patch | New with dfsg2-5 |
+| 0034-Fix-c-parse.y-build-error.patch                            | New with dfsg2-5 |
 
 ### GNU Pascal Compiler (GPC)
 The GNU Pascal Compiler (GPC) patches most applicable to this particular GCC version were also applied.

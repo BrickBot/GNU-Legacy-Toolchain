@@ -9,7 +9,8 @@ Multiple use cases exist for continuing to maintain a legacy toolchain:
 
 While primarily intended for building a cross-toolchain targeting Hitachi/Renesas H8/300 processors with the COFF (or, colloquially, HMS) format, this should work for other targets as well.
 
-While this H8/300 target has sometimes been referred to as h8300-hitachi-hms, it is [more properly](https://sources.debian.org/src/gcc-h8300-hms/1%3A3.4.6%2Bdfsg2-4.2/debian/rules/#L30) identified as h8300-hitachi-coff.
+While this H8/300 target has sometimes been referred to as h8300-hitachi-hms, it is more properly identified as
+h8300-hitachi-coff ([ref 1](https://tracker.debian.org/pkg/gcc-h8300-hms), [ref 2](https://sources.debian.org/src/gcc-h8300-hms/1%3A3.4.6%2Bdfsg2-4.2/debian/rules/#L30)).
 
 
 Repository Creation Notes
