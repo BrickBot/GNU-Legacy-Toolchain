@@ -25,7 +25,7 @@ but this also overlapped well with support for GPC and g77.
   + So why GCC 3.4.6?
     - H8/300 was supported for the duration of the full GCC version series, with 3.4.6 [closing the release series](https://gcc.gnu.org/gcc-3.4/changes.html)
     - GPC integration is less robust in GCC 4
-    - Fortran77/g77 support was not included in later GCC versions, and [some older code is not well suited to being built by newer Fortran compilers such as `gfortran`](https://github.com/weevington/gcc-3.4.6-41-compat).
+    - Fortran77/g77 support was not included in later GCC versions, and some older code is not well suited to being built by newer Fortran compilers such as `gfortran` ([ref 1](https://github.com/weevington/gcc-3.4.6-41-compat), [ref 2](https://forums.linuxmint.com/viewtopic.php?t=261066)).
     - Created smaller binaries compared to the same builds created using GCC 4
       * Especially important on memory-constrained devices such as the LEGO MindStorms RCX
     - Multiple ongoing patch sources were provided by Linux distributions such as RedHad and Debian
