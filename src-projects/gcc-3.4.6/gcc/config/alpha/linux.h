@@ -95,7 +95,7 @@ Boston, MA 02111-1307, USA.  */
       {									\
 	struct rt_sigframe {						\
 	  struct siginfo info;						\
-	  struct ucontext uc;						\
+	  ucontext_t uc;						\
 	} *rt_ = (CONTEXT)->cfa;					\
 	sc_ = &rt_->uc.uc_mcontext;					\
       }									\

@@ -238,7 +238,7 @@ Boston, MA 02111-1307, USA.  */
 	  struct siginfo *pinfo;					\
 	  void *puc;							\
 	  struct siginfo info;						\
-	  struct ucontext uc;						\
+	  ucontext_t uc;						\
 	} *rt_ = (CONTEXT)->cfa;					\
 	sc_ = (struct sigcontext *) &rt_->uc.uc_mcontext;		\
       }									\
