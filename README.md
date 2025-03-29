@@ -129,7 +129,7 @@ Files from GCC
 * ylwrap
 
 
-The following were not able to be linked in as part of teh combined sources folder
+The following were not able to be linked in as part of the combined sources folder
 without also introducing build issues (these can build separately, though):
 
 Folders from GDB
@@ -137,7 +137,3 @@ Folders from GDB
 * libdecnumber
 * readline
 * sim
-
-Folders from NewLib
-* libgloss
-* newlib
