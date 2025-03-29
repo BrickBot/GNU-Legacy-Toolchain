@@ -98,7 +98,7 @@ jobs:
       run:  |
         cd $BUILD_DIR_GCC
         echo "Current working directory: $PWD"
-        sudo stow --dir=/opt/stow --target=/usr/local -S gcc34-h8
+        sudo stow --dir=/opt/stow --target=/usr/local --verbose -S gcc34-h8
 
     - name: Check always if any version-controlled files were modified
       if:   always()
@@ -217,7 +217,7 @@ jobs:
       run:  |
         cd $BUILD_DIR_GDB
         echo "Current working directory: $PWD"
-        sudo stow --dir=/opt/stow --target=/usr/local -S gdb712-h8
+        sudo stow --dir=/opt/stow --target=/usr/local --verbose -S gdb712-h8
 
     - name: Check always if any version-controlled files were modified
       if:   always()
