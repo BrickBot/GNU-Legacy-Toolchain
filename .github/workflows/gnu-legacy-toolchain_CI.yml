@@ -88,11 +88,16 @@ jobs:
         name: ${{ env.GCC_INSTALL_NAME }}_[runner~${{ matrix.os }}]_run${{ github.run_id }}.${{ github.run_number }}.${{ github.run_attempt }}
         path: build/${{ env.GCC_INSTALL_NAME }}.tar
 
-    - name: Install the built GCC H8/300 cross-compiler
+    - name: Setup the built GCC H8/300 cross-compiler for Stow
       run:  |
         cd $BUILD_DIR_GCC
         echo "Current working directory: $PWD"
         make prefix=/opt/stow/gcc34-h8 install
+
+    - name: Install the built GCC H8/300 cross-compiler using Stow
+      run:  |
+        cd $BUILD_DIR_GCC
+        echo "Current working directory: $PWD"
         sudo stow --dir=/opt/stow --target=/usr/local -S gcc34-h8
 
     - name: Check always if any version-controlled files were modified
@@ -202,12 +207,25 @@ jobs:
         name: h8300-coff-gdb_install_[runner~${{ matrix.os }}]_run${{ github.run_id }}.${{ github.run_number }}.${{ github.run_attempt }}
         path: build/h8300-coff-gdb_install.tar
 
-    - name: Install the built H8/300 GDB
+    - name: Setup the built H8/300 GDB for Stow
       run:  |
         cd $BUILD_DIR_GDB
         echo "Current working directory: $PWD"
         make prefix=/opt/stow/gdb712-h8 install
-        sudo stow --dir=/opt/stow --target=/usr/local -S gcc34-h8
+
+    - name: Install the built H8/300 GDB using Stow
+      run:  |
+        cd $BUILD_DIR_GDB
+        echo "Current working directory: $PWD"
+        sudo stow --dir=/opt/stow --target=/usr/local -S gdb712-h8
+
+    - name: Check always if any version-controlled files were modified
+      if:   always()
+      run:  git status
+
+    - name: Show always any diffs of version-controlled files
+      if:   always()
+      run:  git diff
 
 
 
