@@ -15,7 +15,7 @@ env:
   #    Passing that to this older configure might not work, as should otherwise seem doable per
   #    the link https://www.gnu.org/software/automake/manual/html_node/Flag-Variables-Ordering.html
   CROSS_TARGET: --target=h8300-hitachi-coff
-  COMMON_PATH_ARGS: --prefix=/usr/local/brickbot
+  COMMON_PATH_ARG_PREFIX: --prefix=/opt/stow
   COMMON_GCC_CONFIG_ARGS: --with-gcc --with-gnu-as --with-gnu-ld --with-newlib --disable-libssp --disable-multilib --disable-libada --enable-target-optspace
 
   BUILD_DIR_GCC: build/gcc-gpc
@@ -62,7 +62,7 @@ jobs:
       run:  |
         cd $BUILD_DIR_GCC
         echo "Current working directory: $PWD"
-        ../../src-unified/configure  --enable-languages=c,c++,ada,f77,java,objc,pascal  --without-gpc-shared  $CROSS_TARGET  $COMMON_GCC_CONFIG_ARGS  $COMMON_PATH_ARGS
+        ../../src-combined/gcc-combined/configure  --enable-languages=c,c++,ada,f77,java,objc,pascal  --without-gpc-shared  $CROSS_TARGET  $COMMON_GCC_CONFIG_ARGS  $COMMON_PATH_ARG_PREFIX/gcc34-h8
 
     - name: Execute the build for a GCC H8/300 cross-compiler
       run:  |
@@ -108,7 +108,7 @@ jobs:
 #      run:  |
 #        cd $BUILD_DIR_GCC
 #        echo "Current working directory: $PWD"
-#        ../../src-unified/configure --enable-languages=pascal $CROSS_TARGET  $COMMON_GCC_CONFIG_ARGS  $COMMON_PATH_ARGS
+#        ../../src-combined/gcc-combined/configure --enable-languages=pascal $CROSS_TARGET  $COMMON_GCC_CONFIG_ARGS  $COMMON_PATH_ARG_PREFIX/gcc34-h8
 #
 #    - name: Execute the build for a GPC H8/300 cross-compiler
 #      run:  |
@@ -175,7 +175,7 @@ jobs:
       run:  |
         cd $BUILD_DIR_GDB
         echo "Current working directory: $PWD"
-        ../../src-projects/gdb-7.12.1/configure  CXXFLAGS='-D_GLIBCXX_USE_CXX11_ABI=0 -std=c++98'  --without-python  $CROSS_TARGET  $COMMON_PATH_ARGS
+        ../../src-combined/gdb/configure  CXXFLAGS='-D_GLIBCXX_USE_CXX11_ABI=0 -std=c++98'  --without-python  $CROSS_TARGET  $COMMON_PATH_ARG_PREFIX/gdb712-h8
 
     - name: Execute the build for an H8/300 GDB
       run:  |
@@ -236,7 +236,7 @@ jobs:
 #      run:  |
 #        cd $BUILD_DIR_GPC
 #        echo "Current working directory: $PWD"
-#        ../../src-unified/configure --enable-languages=pascal  --with-gcc --with-gnu-as --with-gnu-ld  $COMMON_PATH_ARGS
+#        ../../src-combined/gcc-combined/configure --enable-languages=pascal  --with-gcc --with-gnu-as --with-gnu-ld  $COMMON_PATH_ARG_PREFIX/gcc34
 #
 #    - name: Execute the build for a native gcc+binutils+gpc compiler
 #      run:  |
