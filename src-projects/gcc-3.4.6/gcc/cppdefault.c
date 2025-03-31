@@ -25,18 +25,10 @@ Foundation, 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  */
 #include "tm.h"
 #include "cppdefault.h"
 
+static const char dir_separator_str[] = { DIR_SEPARATOR, 0 };
+
 #ifndef STANDARD_INCLUDE_DIR
 #define STANDARD_INCLUDE_DIR "/usr/include"
-#endif
-
-#ifdef MULTIARCH_DIRNAME
-#ifndef MULTIARCH_STANDARD_INCLUDE_DIR
-#define MULTIARCH_STANDARD_INCLUDE_DIR STANDARD_INCLUDE_DIR DIR_SEPARATOR MULTIARCH_DIRNAME
-#endif
-
-#ifndef MULTIARCH_LOCAL_INCLUDE_DIR
-#define MULTIARCH_LOCAL_INCLUDE_DIR LOCAL_INCLUDE_DIR DIR_SEPARATOR MULTIARCH_DIRNAME
-#endif
 #endif
 
 #ifndef STANDARD_INCLUDE_COMPONENT
@@ -49,6 +41,16 @@ Foundation, 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  */
 # undef STANDARD_INCLUDE_DIR
 #else
 # undef CROSS_INCLUDE_DIR
+#endif
+
+#ifdef MULTIARCH_DIRNAME
+#ifndef MULTIARCH_STANDARD_INCLUDE_DIR
+#define MULTIARCH_STANDARD_INCLUDE_DIR STANDARD_INCLUDE_DIR dir_separator_str MULTIARCH_DIRNAME
+#endif
+
+#ifndef MULTIARCH_LOCAL_INCLUDE_DIR
+#define MULTIARCH_LOCAL_INCLUDE_DIR LOCAL_INCLUDE_DIR dir_separator_str MULTIARCH_DIRNAME
+#endif
 #endif
 
 const struct default_include cpp_include_defaults[]

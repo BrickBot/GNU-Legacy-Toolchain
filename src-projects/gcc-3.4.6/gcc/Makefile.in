@@ -2359,7 +2359,7 @@ intl.o: intl.c $(CONFIG_H) $(SYSTEM_H) coretypes.h $(TM_H) intl.h Makefile
 #
 # Remake cpp and protoize.
 
-ifeq ($(MULTIARCH_DIRNAME),)
+ifneq ($(MULTIARCH_DIRNAME),)
 MULTIARCH_DIRNAME_DEFINE = -DMULTIARCH_DIRNAME=\"$(MULTIARCH_DIRNAME)\"
 endif
 
