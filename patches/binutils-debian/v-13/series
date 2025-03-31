@@ -13,3 +13,4 @@
 137-abort-on-invalid-header.patch
 138-ldflags.patch
 139-spacepad.patch
+140-deterministic-output.patch
