@@ -346,7 +346,7 @@ for combo in ${combinations}; do
   else
     if [ "x${enable_multilib}" != xyes ]; then
       # genmultilib with --disable-multilib should be
-      # called with '' '' '' '' '' '' '' no
+      # called with '' '' '' '' '' '' '' '' no
       # if MULTILIB_OSDIRNAMES is empty.
       exit 1
     fi
