@@ -1,0 +1,92 @@
+diff --git a/gcc/ChangeLog b/gcc/ChangeLog
+index ed158a156bead..e660b38d0c042 100644
+--- a/gcc/ChangeLog
++++ b/gcc/ChangeLog
+@@ -1,3 +1,11 @@
++2006-04-04  Kazuhiro Inaoka <inaoka.kazuhiro@renesas.com>
++
++	PR target/26775
++	PR target/26776
++	* config/m32r/m32r.c (m32r_output_function_epilogue): Case for
++	a large stack frame at epilogue. Use fp to recover a stack
++	pointer for alloca function at epilogue.
++
+ 2006-03-05  Release Manager
+ 
+ 	* GCC 3.4.6 released.
+diff --git a/gcc/config/m32r/m32r.c b/gcc/config/m32r/m32r.c
+index c28140b246bc0..5609b0487cc9e 100644
+--- a/gcc/config/m32r/m32r.c
++++ b/gcc/config/m32r/m32r.c
+@@ -2087,11 +2087,19 @@ m32r_output_function_epilogue (FILE * file, HOST_WIDE_INT size ATTRIBUTE_UNUSED)
+ 	  else if (reg_offset < 32768)
+ 	    fprintf (file, "\tadd3 %s,%s,%s%d\n",
+ 		     sp_str, sp_str, IMMEDIATE_PREFIX, reg_offset);
+-	  else
++	  else if (reg_offset <= 0xffffff)
+ 	    fprintf (file, "\tld24 %s,%s%d\n\tadd %s,%s\n",
+ 		     reg_names[PROLOGUE_TMP_REGNUM],
+ 		     IMMEDIATE_PREFIX, reg_offset,
+ 		     sp_str, reg_names[PROLOGUE_TMP_REGNUM]);
++	  else
++	    fprintf (file, "\tseth %s,%shigh(%d)\n\tor3 %s,%s,%slow(%d)\n\tadd %s,%s\n",
++		     reg_names[PROLOGUE_TMP_REGNUM],
++		     IMMEDIATE_PREFIX, reg_offset,
++		     reg_names[PROLOGUE_TMP_REGNUM],
++		     reg_names[PROLOGUE_TMP_REGNUM],
++		     IMMEDIATE_PREFIX, reg_offset,
++		     sp_str, reg_names[PROLOGUE_TMP_REGNUM]);
+ 	}
+       else if (frame_pointer_needed)
+ 	{
+@@ -2102,10 +2110,20 @@ m32r_output_function_epilogue (FILE * file, HOST_WIDE_INT size ATTRIBUTE_UNUSED)
+ 	  else if (reg_offset < 32768)
+ 	    fprintf (file, "\tadd3 %s,%s,%s%d\n",
+ 		     sp_str, fp_str, IMMEDIATE_PREFIX, reg_offset);
++	  else if (reg_offset <= 0xffffff)
++	    fprintf (file, "\tld24 %s,%s%d\n\tadd %s,%s\n\tmv %s,%s\n",
++		     reg_names[PROLOGUE_TMP_REGNUM],
++		     IMMEDIATE_PREFIX, reg_offset,
++		     reg_names[PROLOGUE_TMP_REGNUM], fp_str,
++		     sp_str, reg_names[PROLOGUE_TMP_REGNUM]);
+ 	  else
+-	    fprintf (file, "\tld24 %s,%s%d\n\tadd %s,%s\n",
++	    fprintf (file, "\tseth %s,%shigh(%d)\nor3 %s,%s,%slow(%d)\n\tadd %s,%s\n\tmv %s,%s\n",
++		     reg_names[PROLOGUE_TMP_REGNUM],
++		     IMMEDIATE_PREFIX, reg_offset,
++		     reg_names[PROLOGUE_TMP_REGNUM],
+ 		     reg_names[PROLOGUE_TMP_REGNUM],
+ 		     IMMEDIATE_PREFIX, reg_offset,
++		     reg_names[PROLOGUE_TMP_REGNUM], fp_str,
+ 		     sp_str, reg_names[PROLOGUE_TMP_REGNUM]);
+ 	}
+       else
+@@ -2127,8 +2145,26 @@ m32r_output_function_epilogue (FILE * file, HOST_WIDE_INT size ATTRIBUTE_UNUSED)
+ 
+       /* Remove varargs area if present.  */
+       if (current_frame_info.pretend_size != 0)
+-	fprintf (file, "\taddi %s,%s%d\n",
+-		 sp_str, IMMEDIATE_PREFIX, current_frame_info.pretend_size);
++        if (current_frame_info.pretend_size < 128)
++	  fprintf (file, "\taddi %s,%s%d\n",
++		     sp_str, IMMEDIATE_PREFIX, current_frame_info.pretend_size);
++        else if (current_frame_info.pretend_size < 32768)
++	  fprintf (file, "\tadd3 %s,%s,%s%d\n",
++		   sp_str, sp_str, IMMEDIATE_PREFIX,
++		   current_frame_info.pretend_size);
++        else if (current_frame_info.pretend_size <= 0xffffff)
++	  fprintf (file, "\tld24 %s,%s%d\n\tadd %s,%s\n",
++		   reg_names[PROLOGUE_TMP_REGNUM],
++		   IMMEDIATE_PREFIX, current_frame_info.pretend_size,
++		   sp_str, reg_names[PROLOGUE_TMP_REGNUM]);
++        else
++	  fprintf (file, "\tseth %s,%shigh(%d)\n\tor3 %s,%s,%slow(%d)\n\tadd %s,%s\n",
++		   reg_names[PROLOGUE_TMP_REGNUM],
++		   IMMEDIATE_PREFIX, current_frame_info.pretend_size,
++		   reg_names[PROLOGUE_TMP_REGNUM],
++		   reg_names[PROLOGUE_TMP_REGNUM],
++		   IMMEDIATE_PREFIX, current_frame_info.pretend_size,
++		   sp_str, reg_names[PROLOGUE_TMP_REGNUM]);
+ 	
+       /* Emit the return instruction.  */
+       if (M32R_INTERRUPT_P (fn_type))

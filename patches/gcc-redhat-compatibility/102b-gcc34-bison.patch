@@ -1,0 +1,20 @@
+--- gcc/c-parse.in.jj	2005-11-21 14:43:19.000000000 +0100
++++ gcc/c-parse.in	2014-09-22 17:31:14.696458883 +0200
+@@ -635,7 +635,7 @@ primary:
+ 	IDENTIFIER
+ 		{
+ 		  if (yychar == YYEMPTY)
+-		    yychar = YYLEX;
++		    yychar = yylex ();
+ 		  $$ = build_external_ref ($1, yychar == '(');
+ 		}
+ 	| CONSTANT
+@@ -2227,7 +2227,7 @@ do_stmt_start:
+ 
+ save_location:
+ 		{ if (yychar == YYEMPTY)
+-		    yychar = YYLEX;
++		    yychar = yylex ();
+ 		  $$ = input_location; }
+ 	;
+ 

@@ -1,0 +1,46 @@
+2007-06-08  Jatin Nansi  <jnansi@redhat.com>
+
+	* config/locale/ieee_1003.1-2001/codecvt_specializations.h: Make sure
+	_M_int_enc and _M_ext_enc are '\0' terminated.
+
+--- libstdc++-v3/config/locale/ieee_1003.1-2001/codecvt_specializations.h.jj	2007-02-23 21:29:34.000000000 +0100
++++ libstdc++-v3/config/locale/ieee_1003.1-2001/codecvt_specializations.h	2007-07-19 14:20:20.000000000 +0200
+@@ -83,8 +83,10 @@
+ 			  int __ibom = 0, int __ebom = 0)
+     : _M_in_desc(0), _M_out_desc(0), _M_ext_bom(__ebom), _M_int_bom(__ibom)
+     {
+-      strncpy(_M_int_enc, __int, _S_max_size);
+-      strncpy(_M_ext_enc, __ext, _S_max_size);
++      strncpy(_M_int_enc, __int, _S_max_size - 1);
++      strncpy(_M_ext_enc, __ext, _S_max_size - 1);
++      _M_int_enc[_S_max_size - 1] = '\0';
++      _M_ext_enc[_S_max_size - 1] = '\0';
+       _M_init();
+     }
+ 
+@@ -98,8 +100,10 @@
+     // information.
+     __enc_traits(const __enc_traits& __obj): _M_in_desc(0), _M_out_desc(0)
+     {
+-      strncpy(_M_int_enc, __obj._M_int_enc, _S_max_size);
+-      strncpy(_M_ext_enc, __obj._M_ext_enc, _S_max_size);
++      strncpy(_M_int_enc, __obj._M_int_enc, _S_max_size - 1);
++      strncpy(_M_ext_enc, __obj._M_ext_enc, _S_max_size - 1);
++      _M_int_enc[_S_max_size - 1] = '\0';
++      _M_ext_enc[_S_max_size - 1] = '\0';
+       _M_ext_bom = __obj._M_ext_bom;
+       _M_int_bom = __obj._M_int_bom;
+       _M_destroy();
+@@ -110,8 +114,10 @@
+     __enc_traits&
+     operator=(const __enc_traits& __obj)
+     {
+-      strncpy(_M_int_enc, __obj._M_int_enc, _S_max_size);
+-      strncpy(_M_ext_enc, __obj._M_ext_enc, _S_max_size);
++      strncpy(_M_int_enc, __obj._M_int_enc, _S_max_size - 1);
++      strncpy(_M_ext_enc, __obj._M_ext_enc, _S_max_size - 1);
++      _M_int_enc[_S_max_size - 1] = '\0';
++      _M_ext_enc[_S_max_size - 1] = '\0';
+       _M_ext_bom = __obj._M_ext_bom;
+       _M_int_bom = __obj._M_int_bom;
+       _M_destroy();

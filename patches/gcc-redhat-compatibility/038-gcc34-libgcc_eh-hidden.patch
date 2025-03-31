@@ -1,0 +1,31 @@
+--- gcc/mklibgcc.in.jj	2005-11-21 08:57:19.000000000 -0500
++++ gcc/mklibgcc.in	2006-05-23 09:12:19.000000000 -0400
+@@ -490,10 +490,26 @@ EOF
+ 
+   if [ "$SHLIB_LINK" ]; then
+ 
++    if [ "@libgcc_visibility@" = yes ]; then
++      libgcc_eh_static_objS=
++      echo ""
++      for o in $libgcc_eh_static_objs; do
++      # .oS objects will have all non-local symbol definitions .hidden
++      oS=`echo ${o} | sed s~${objext}'$~.oS~g'`
++      echo "${oS}: stmp-dirs libgcc/${dir}/stacknote.s ${o}"
++      # non-GNU nm emits three fields even for undefined and typeless symbols,
++      # so explicitly omit them
++      echo '	( $(NM_FOR_TARGET) '${SHLIB_NM_FLAGS} ${o}' | $(AWK) '\''NF == 3 && $$2 !~ /^[UN]$$/ { print "\t.hidden", $$3 }'\''; cat libgcc/${dir}/stacknote.s ) | $(GCC_FOR_TARGET) $(LIBGCC2_CFLAGS) '${flags}' -r -nostdinc -nostdlib -o $@ '${o}' -xassembler -'
++      libgcc_eh_static_objS="${libgcc_eh_static_objS} ${oS}"
++    done
++    else
++      libgcc_eh_static_objS="$libgcc_eh_static_objs"
++    fi
++
+     echo ""
+-    echo "${dir}/libgcc_eh.a: stmp-dirs $libgcc_eh_static_objs"
++    echo "${dir}/libgcc_eh.a: stmp-dirs $libgcc_eh_static_objS"
+     echo "	-rm -rf ${dir}/libgcc_eh.a"
+-    echo '	$(AR_CREATE_FOR_TARGET)' ${dir}/libgcc_eh.a $libgcc_eh_static_objs
++    echo '	$(AR_CREATE_FOR_TARGET)' ${dir}/libgcc_eh.a $libgcc_eh_static_objS
+     echo '	$(RANLIB_FOR_TARGET)' ${dir}/libgcc_eh.a
+ 
+     if [ -z "$SHLIB_MULTILIB" ]; then

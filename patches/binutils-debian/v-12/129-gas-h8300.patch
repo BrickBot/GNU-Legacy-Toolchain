@@ -1,0 +1,20 @@
+From: Michael Tautschnig <mt@debian.org>
+Subject: On 64bit archs unsigned != unsigned long
+
+---
+ gas/config/tc-h8300.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/gas/config/tc-h8300.c b/gas/config/tc-h8300.c
+index 103e605..37234ec 100644
+--- a/gas/config/tc-h8300.c
++++ b/gas/config/tc-h8300.c
+@@ -529,7 +529,7 @@ static int
+ constant_fits_width_p (struct h8_op *operand, unsigned int width)
+ {
+   return ((operand->exp.X_add_number & ~width) == 0
+-	  || (operand->exp.X_add_number | width) == (unsigned)(~0));
++	  || (operand->exp.X_add_number | width) == (unsigned long)(~0));
+ }
+ 
+ static int

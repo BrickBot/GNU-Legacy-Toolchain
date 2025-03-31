@@ -1,0 +1,115 @@
+2005-07-25  James E Wilson  <wilson@specifixinc.com>
+
+	* dwarf2out.c (add_call_src_coords_attributes): New.
+	(gen_inlined_subroutine_die): Call it.
+	(maybe_emit_file, init_file_table): Add comments.
+	(prune_unused_types_walk_attribs): Pass DW_AT_call_file through
+	maybe_emit_file.
+	* tree-inline.c (remap_block): Copy BLOCK_SOURCE_LOCATION.
+	(expand_call_inline): Set BLOCK_SOURCE_LOCATION.
+	* tree.h (BLOCK_SOURCE_LOCATION): New.
+	(struct tree_block): New field locus.
+
+--- gcc/dwarf2out.c.orig	2005-11-17 23:37:43.000000000 -0200
++++ gcc/dwarf2out.c	2005-11-17 23:38:25.000000000 -0200
+@@ -11509,6 +11509,20 @@
+     }
+ }
+ 
++/* A helper function for gen_inlined_subroutine_die.  Add source coordinate
++   attributes to the DIE for a block STMT, to describe where the inlined
++   function was called from.  This is similar to add_src_coords_attributes.  */
++
++static inline void
++add_call_src_coords_attributes (tree stmt, dw_die_ref die)
++{
++  unsigned file_index = BLOCK_SOURCE_LOCATION (stmt).file
++    ? lookup_filename (BLOCK_SOURCE_LOCATION (stmt).file) : 0;
++
++  add_AT_unsigned (die, DW_AT_call_file, file_index);
++  add_AT_unsigned (die, DW_AT_call_line, BLOCK_SOURCE_LOCATION (stmt).line);
++}
++
+ /* A helper function for gen_lexical_block_die and gen_inlined_subroutine_die.
+    Add low_pc and high_pc attributes to the DIE for a block STMT.  */
+ 
+@@ -11576,6 +11590,7 @@
+ 
+       add_abstract_origin_attribute (subr_die, decl);
+       add_high_low_attributes (stmt, subr_die);
++      add_call_src_coords_attributes (stmt, subr_die);
+ 
+       decls_for_scope (stmt, subr_die, depth);
+       current_function_has_inlines = 1;
+@@ -12824,6 +12839,12 @@
+   return i;
+ }
+ 
++/* If the assembler will construct the file table, then translate the compiler
++   internal file table number into the assembler file table number, and emit
++   a .file directive if we haven't already emitted one yet.  The file table
++   numbers are different because we prune debug info for unused variables and
++   types, which may include filenames.  */
++
+ static int
+ maybe_emit_file (int fileno)
+ {
+@@ -12844,6 +12865,8 @@
+     return fileno;
+ }
+ 
++/* Initialize the compiler internal file table.  */
++
+ static void
+ init_file_table (void)
+ {
+@@ -13207,7 +13230,7 @@
+ 	     Make sure that it will get emitted.  */
+ 	  prune_unused_types_mark (a->dw_attr_val.v.val_die_ref.die, 1);
+ 	}
+-      else if (a->dw_attr == DW_AT_decl_file)
++      else if (a->dw_attr == DW_AT_decl_file || a->dw_attr == DW_AT_call_file)
+ 	{
+ 	  /* A reference to a file.  Make sure the file name is emitted.  */
+ 	  a->dw_attr_val.v.val_unsigned =
+--- gcc/tree-inline.c.orig	2005-11-17 23:37:02.000000000 -0200
++++ gcc/tree-inline.c	2005-11-17 23:37:46.000000000 -0200
+@@ -346,6 +346,7 @@
+       new_block = make_node (BLOCK);
+       TREE_USED (new_block) = TREE_USED (old_block);
+       BLOCK_ABSTRACT_ORIGIN (new_block) = old_block;
++      BLOCK_SOURCE_LOCATION (new_block) = BLOCK_SOURCE_LOCATION (old_block);
+       SCOPE_STMT_BLOCK (scope_stmt) = new_block;
+ 
+       /* Remap its variables.  */
+@@ -420,6 +421,7 @@
+   new_block = make_node (BLOCK);
+   TREE_USED (new_block) = TREE_USED (old_block);
+   BLOCK_ABSTRACT_ORIGIN (new_block) = old_block;
++  BLOCK_SOURCE_LOCATION (new_block) = BLOCK_SOURCE_LOCATION (old_block);
+   BLOCK_SUBBLOCKS (new_block) = BLOCK_SUBBLOCKS (old_block);
+   TREE_SIDE_EFFECTS (new_block) = TREE_SIDE_EFFECTS (old_block);
+   TREE_TYPE (new_block) = TREE_TYPE (old_block);
+--- gcc/tree.h.orig	2005-11-17 23:37:02.000000000 -0200
++++ gcc/tree.h	2005-11-17 23:37:46.000000000 -0200
+@@ -903,6 +903,12 @@
+ #define BLOCK_FRAGMENT_ORIGIN(NODE) (BLOCK_CHECK (NODE)->block.fragment_origin)
+ #define BLOCK_FRAGMENT_CHAIN(NODE) (BLOCK_CHECK (NODE)->block.fragment_chain)
+ 
++/* For an inlined function, this gives the location where it was called
++   from.  This is only set in the top level block, which corresponds to the
++   inlined function scope.  This is used in the debug output routines.  */
++
++#define BLOCK_SOURCE_LOCATION(NODE) (BLOCK_CHECK (NODE)->block.locus)
++
+ struct tree_block GTY(())
+ {
+   struct tree_common common;
+@@ -917,6 +923,7 @@
+   tree abstract_origin;
+   tree fragment_origin;
+   tree fragment_chain;
++  location_t locus;
+ };
+ 
+ /* Define fields and accessors for nodes representing data types.  */

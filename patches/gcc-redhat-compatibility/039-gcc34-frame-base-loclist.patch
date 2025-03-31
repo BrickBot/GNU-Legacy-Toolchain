@@ -1,0 +1,143 @@
+2006-05-19  Jakub Jelinek  <jakub@redhat.com>
+
+	* dwarf2out.c (gen_subprogram_die): If -fno-frame-base-loclist,
+	set frame base to hard fp or stack pointer.
+	* toplev.c (flag_frame_base_loclist): New variable.
+	(f_options): Add -fframe-base-loclist.
+	* flags.h (flag_frame_base_loclist): New extern.
+	* common.opt (frame-base-loclist): New flag.
+	* opts.c (common_handle_option): Handle -f{,no-}frame-base-loclist.
+
+--- gcc/dwarf2out.c.jj	2006-05-15 14:02:35.000000000 +0200
++++ gcc/dwarf2out.c	2006-05-15 14:21:40.000000000 +0200
+@@ -11389,33 +11389,35 @@ gen_subprogram_die (tree decl, dw_die_re
+ #endif
+ 
+ #ifdef DWARF2_UNWIND_INFO
+-      /* We define the "frame base" as the function's CFA.  This is more
+-	 convenient for several reasons: (1) It's stable across the prologue
+-	 and epilogue, which makes it better than just a frame pointer,
+-	 (2) With dwarf3, there exists a one-byte encoding that allows us
+-	 to reference the .debug_frame data by proxy, but failing that,
+-	 (3) We can at least reuse the code inspection and interpretation
+-	 code that determines the CFA position at various points in the
+-	 function.  */
+-      /* ??? Use some command-line or configury switch to enable the use
+-	 of dwarf3 DW_OP_call_frame_cfa.  At present there are no dwarf
+-	 consumers that understand it; fall back to "pure" dwarf2 and
+-	 convert the CFA data into a location list.  */
+-      {
+-	dw_loc_list_ref list = convert_cfa_to_loc_list ();
+-	if (list->dw_loc_next)
+-	  add_AT_loc_list (subr_die, DW_AT_frame_base, list);
+-	else
+-	  add_AT_loc (subr_die, DW_AT_frame_base, list->expr);
+-      }
++      if (flag_frame_base_loclist)
++	{
++	  /* We define the "frame base" as the function's CFA.  This is more
++	     convenient for several reasons: (1) It's stable across the prologue
++	     and epilogue, which makes it better than just a frame pointer,
++	     (2) With dwarf3, there exists a one-byte encoding that allows us
++	     to reference the .debug_frame data by proxy, but failing that,
++	     (3) We can at least reuse the code inspection and interpretation
++	     code that determines the CFA position at various points in the
++	     function.  */
++	  /* ??? Use some command-line or configury switch to enable the use
++	     of dwarf3 DW_OP_call_frame_cfa.  At present there are no dwarf
++	     consumers that understand it; fall back to "pure" dwarf2 and
++	     convert the CFA data into a location list.  */
++	  dw_loc_list_ref list = convert_cfa_to_loc_list ();
++	  if (list->dw_loc_next)
++	    add_AT_loc_list (subr_die, DW_AT_frame_base, list);
++	  else
++	    add_AT_loc (subr_die, DW_AT_frame_base, list->expr);
+ 
+-      /* Compute a displacement from the "steady-state frame pointer" to
+-	 the CFA.  The former is what all stack slots and argument slots
+-	 will reference in the rtl; the later is what we've told the
+-	 debugger about.  We'll need to adjust all frame_base references
+-	 by this displacement.  */
+-      compute_frame_pointer_to_cfa_displacement ();
+-#else
++	  /* Compute a displacement from the "steady-state frame pointer" to
++	     the CFA.  The former is what all stack slots and argument slots
++	     will reference in the rtl; the later is what we've told the
++	     debugger about.  We'll need to adjust all frame_base references
++	     by this displacement.  */
++	  compute_frame_pointer_to_cfa_displacement ();
++	}
++      else
++#endif
+       /* For targets which support DWARF2, but not DWARF2 call-frame info,
+ 	 we just use the stack pointer or frame pointer.  */
+       /* ??? Should investigate getting better info via callbacks, or else
+@@ -11425,7 +11427,6 @@ gen_subprogram_die (tree decl, dw_die_re
+ 	  = frame_pointer_needed ? hard_frame_pointer_rtx : stack_pointer_rtx;
+ 	add_AT_loc (subr_die, DW_AT_frame_base, reg_loc_descriptor (fp_reg));
+       }
+-#endif
+ 
+ #if 0
+       /* ??? This fails for nested inline functions, because context_display
+--- gcc/toplev.c.jj	2005-11-21 14:55:43.000000000 +0100
++++ gcc/toplev.c	2006-05-15 14:25:14.000000000 +0200
+@@ -961,6 +961,10 @@ int flag_tracer = 0;
+ 
+ int flag_unit_at_a_time = 0;
+ 
++/* Nonzero if DWARF2 DW_AT_frame_base can be a location list.  */
++
++int flag_frame_base_loclist = 1;
++
+ /* Nonzero if we should track variables.  When
+    flag_var_tracking == AUTODETECT_FLAG_VAR_TRACKING it will be set according
+    to optimize, debug_info_level and debug_hooks in process_options ().  */
+@@ -1165,7 +1169,8 @@ static const lang_independent_options f_
+   { "trapv", &flag_trapv, 1 },
+   { "wrapv", &flag_wrapv, 1 },
+   { "new-ra", &flag_new_regalloc, 1 },
+-  { "var-tracking", &flag_var_tracking, 1}
++  { "var-tracking", &flag_var_tracking, 1},
++  { "frame-base-loclist", &flag_frame_base_loclist, 1}
+ };
+ 
+ /* Here is a table, controlled by the tm.h file, listing each -m switch
+--- gcc/flags.h.jj	2005-11-21 14:43:20.000000000 +0100
++++ gcc/flags.h	2006-05-15 14:25:06.000000000 +0200
+@@ -746,6 +746,9 @@ extern int flag_remove_unreachable_funct
+ /* Nonzero if we should track variables.  */
+ extern int flag_var_tracking;
+ 
++/* Nonzero if DWARF2 DW_AT_frame_base can be a location list.  */
++extern int flag_frame_base_loclist;
++
+ /* A string that's used when a random name is required.  NULL means
+    to make it really random.  */
+ 
+--- gcc/common.opt.jj	2005-11-21 08:43:20.000000000 -0500
++++ gcc/common.opt	2006-05-19 06:24:09.000000000 -0400
+@@ -718,6 +718,10 @@ fvar-tracking
+ Common
+ Perform variable tracking
+ 
++fframe-base-loclist
++Common
++Allow use of DWARF2 location lists for frame base
++
+ fverbose-asm
+ Common
+ Add extra commentary to assembler output
+--- gcc/opts.c.jj	2005-11-21 08:43:21.000000000 -0500
++++ gcc/opts.c	2006-05-19 06:26:26.000000000 -0400
+@@ -1461,6 +1461,10 @@ common_handle_option (size_t scode, cons
+       flag_var_tracking = value;
+       break;
+ 
++    case OPT_fframe_base_loclist:
++      flag_frame_base_loclist = value;
++      break;
++
+     case OPT_fverbose_asm:
+       flag_verbose_asm = value;
+       break;

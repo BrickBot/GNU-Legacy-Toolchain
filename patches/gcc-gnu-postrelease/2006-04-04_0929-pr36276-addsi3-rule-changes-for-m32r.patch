@@ -1,0 +1,103 @@
+From a0cde57a943636aa436aee30acf9351f64db9ea7 Mon Sep 17 00:00:00 2001
+From: Kazuhiro Inaoka <inaoka.kazuhiro@renesas.com>
+Date: Tue, 4 Apr 2006 09:29:31 +0000
+Subject: [PATCH] re PR fortran/36276 (possible issue with opening fortran
+ files?)
+
+PR target/36276
+* config/m32r/m32r.c (gen_compare): Removed a rule addsi3 codes to avoid a miss
+  optimizing at simplify_relational_operation().
+* config/m32r/m32r.md (seq): Ditto. Changed reg_or_eq_int16_operand to
+  reg_or_uint16_operand because seq_insn has not used addsi3 already.
+  (seq_insn): Ditto. Removed operand check mode "P".
+  Changed reg_or_eq_int16_operand to reg_or_uint16_operand.
+
+From-SVN: r112661
+---
+ gcc/ChangeLog           |  8 ++++++++
+ gcc/config/m32r/m32r.c  |  5 ++---
+ gcc/config/m32r/m32r.md | 12 ++++--------
+ 3 files changed, 14 insertions(+), 11 deletions(-)
+
+diff --git a/gcc/ChangeLog b/gcc/ChangeLog
+index e660b38d0c042..143f9b69e8687 100644
+--- a/gcc/ChangeLog
++++ b/gcc/ChangeLog
+@@ -6,6 +6,14 @@
+ 	a large stack frame at epilogue. Use fp to recover a stack
+ 	pointer for alloca function at epilogue.
+ 
++	PR target/36276
++	* config/m32r/m32r.c (gen_compare): Removed a rule addsi3 codes 
++	to avoid a miss optimizing at simplify_relational_operation().
++	* config/m32r/m32r.md (seq): Ditto. Changed reg_or_eq_int16_operand
++	to reg_or_uint16_operand because seq_insn has not used addsi3 already.
++	(seq_insn): Ditto. Removed operand check mode "P". Changed 
++	reg_or_eq_int16_operand to reg_or_uint16_operand.
++
+ 2006-03-05  Release Manager
+ 
+ 	* GCC 3.4.6 released.
+diff --git a/gcc/config/m32r/m32r.c b/gcc/config/m32r/m32r.c
+index 5609b0487cc9e..abeea182859ca 100644
+--- a/gcc/config/m32r/m32r.c
++++ b/gcc/config/m32r/m32r.c
+@@ -1028,12 +1028,11 @@ gen_compare (enum rtx_code code, rtx x, rtx y, int need_compare)
+ 	{
+ 	case EQ:
+ 	  if (GET_CODE (y) == CONST_INT
+-	      && CMP_INT16_P (INTVAL (y))		/* Reg equal to small const.  */
+-	      && y != const0_rtx)
++	      && UINT16_P (INTVAL (y)))
+ 	    {
+ 	      rtx tmp = gen_reg_rtx (SImode);		
+ 	      
+-	      emit_insn (gen_addsi3 (tmp, x, GEN_INT (-INTVAL (y))));
++	      emit_insn (gen_xorsi3 (tmp, x, GEN_INT (INTVAL (y))));
+ 	      x = tmp;
+ 	      y = const0_rtx;
+ 	    }
+diff --git a/gcc/config/m32r/m32r.md b/gcc/config/m32r/m32r.md
+index 9e8d1eb0f31e8..c202594fc50fa 100644
+--- a/gcc/config/m32r/m32r.md
++++ b/gcc/config/m32r/m32r.md
+@@ -1690,7 +1690,7 @@
+       DONE;
+     }
+ 
+-  if (! reg_or_eq_int16_operand (op2, mode))
++  if (! reg_or_uint16_operand (op2, mode))
+     op2 = force_reg (mode, op2);
+ 
+   emit_insn (gen_seq_insn (op0, op1, op2));
+@@ -1752,7 +1752,7 @@
+ (define_insn "seq_insn"
+   [(set (match_operand:SI 0 "register_operand" "=r,r,??r,r")
+ 	(eq:SI (match_operand:SI 1 "register_operand" "r,r,r,r")
+-	       (match_operand:SI 2 "reg_or_eq_int16_operand" "r,r,r,PK")))
++	       (match_operand:SI 2 "reg_or_uint16_operand" "r,r,r,K")))
+    (clobber (reg:CC 17))
+    (clobber (match_scratch:SI 3 "=1,2,&r,r"))]
+   "TARGET_M32R"
+@@ -1763,7 +1763,7 @@
+ (define_split
+   [(set (match_operand:SI 0 "register_operand" "")
+ 	(eq:SI (match_operand:SI 1 "register_operand" "")
+-	       (match_operand:SI 2 "reg_or_eq_int16_operand" "")))
++	       (match_operand:SI 2 "reg_or_uint16_operand" "")))
+    (clobber (reg:CC 17))
+    (clobber (match_scratch:SI 3 ""))]
+   "TARGET_M32R && reload_completed"
+@@ -1791,11 +1791,7 @@
+       op1 = op3;
+     }
+ 
+-  if (GET_CODE (op2) == CONST_INT && (value = INTVAL (op2)) != 0
+-      && CMP_INT16_P (value))
+-    emit_insn (gen_addsi3 (op3, op1, GEN_INT (-value)));
+-  else
+-    emit_insn (gen_xorsi3 (op3, op1, op2));
++  emit_insn (gen_xorsi3 (op3, op1, op2));
+ 
+   emit_insn (gen_cmp_ltusi_insn (op3, GEN_INT (1)));
+   emit_insn (gen_movcc_insn (op0));

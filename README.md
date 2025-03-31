@@ -1,30 +1,40 @@
 GNU Legacy Toolchain
 ====================
-A legacy GNU toolchain that includes binutils, gcc, gpc, gdb, and newlib. While primarily intended for building a cross-toolchain targeting Hitachi/Renesas H8/300 processors with the COFF (or, colloquially, HMS) format, this should work for other targets as well.
+A legacy GNU toolchain that includes binutils, gcc, gpc, gdb, and newlib.
 
-While this H8/300 target has sometimes been referred to as h8300-hitachi-hms, it is [more properly](https://sources.debian.org/src/gcc-h8300-hms/1%3A3.4.6%2Bdfsg2-4.2/debian/rules/#L30) identified as h8300-hitachi-coff.
+Multiple use cases exist for continuing to maintain a legacy toolchain:
+* **H8/300 Processor Targets**
+* **GNU Pascal Compiler (GPC)**
+* **Fortran77 / G77 Compiler**
+
+While primarily intended for building a cross-toolchain targeting Hitachi/Renesas H8/300 processors with the COFF (or, colloquially, HMS) format, this should work for other targets as well.
+
+While this H8/300 target has sometimes been referred to as h8300-hitachi-hms, it is more properly identified as
+h8300-hitachi-coff ([ref 1](https://tracker.debian.org/pkg/gcc-h8300-hms), [ref 2](https://sources.debian.org/src/gcc-h8300-hms/1%3A3.4.6%2Bdfsg2-4.2/debian/rules/#L30)).
 
 
 Repository Creation Notes
 -------------------------
 
 ### Sources Versions Used
-Last known versions to include support for h8300-*-coff
-* BinUtils 2.16.1
-  + Note lack of support for h8300-*-coff in gas/configure.tgt in later versions
-* GCC 3.4.6  (c.f. [full GCC release timeline](https://gcc.gnu.org/develop.html))
-  + Last supported version is actually the GCC 4.4 series – note lack of support for h8300-*-coff (covered by the "h8300-*-*" case) in libgcc/config.host in later versions
+The primary selection criteria was the last known versions to include support for h8300-\*-coff,
+but this also overlapped well with support for GPC and g77.
+* **BinUtils 2.16.1**
+  + Note lack of support for h8300-\*-coff in gas/configure.tgt in later versions
+* **GCC 3.4.6**  (c.f. [full GCC release timeline](https://gcc.gnu.org/develop.html))
+  + Last supported version is actually the GCC 4.4 series – note lack of support for h8300-\*-coff (covered by the "h8300-\*-\*" case) in libgcc/config.host in later versions
   + So why GCC 3.4.6?
     - H8/300 was supported for the duration of the full GCC version series, with 3.4.6 [closing the release series](https://gcc.gnu.org/gcc-3.4/changes.html)
-    - Source code has been suppored by Debian package maintainers with maintance patches (gcc-h8300 package)
     - GPC integration is less robust in GCC 4
+    - Fortran77/g77 support was not included in later GCC versions, and some older code is not well suited to being built by newer Fortran compilers such as `gfortran` ([ref 1](https://github.com/weevington/gcc-3.4.6-41-compat), [ref 2](https://forums.linuxmint.com/viewtopic.php?t=261066)).
     - Created smaller binaries compared to the same builds created using GCC 4
       * Especially important on memory-constrained devices such as the LEGO MindStorms RCX
+    - Multiple ongoing patch sources were provided by Linux distributions such as RedHad and Debian
   + Resources
     - [Build and Installation Configuration Documentation](https://web.archive.org/web/20041013092023/https://gcc.gnu.org/install/configure.html)
     - [Manual](https://gcc.gnu.org/onlinedocs/gcc-3.4.6/gcc/)
       * [Manual subsets and/or other formats](https://gcc.gnu.org/onlinedocs/) (scroll down for the GCC 3.4.6 manuals section)
-* GPC 2.1-20070904 – note the included README files
+* **GPC 2.1-20070904** – note the included README files
   + [The GNU Pascal Manual](https://www.gnu-pascal.de/gpc/)
   + [GPC website](https://www.gnu-pascal.de/gpc/h-index.html)
     - [Compilation and installation guide](https://www.gnu-pascal.de/gpc/Compiling-GPC.html#Compiling-GPC):  Note the section covering `pascal.install` at the end
@@ -32,10 +42,10 @@ Last known versions to include support for h8300-*-coff
   + Source files from [hebisch/gpc](https://github.com/hebisch/gpc)
   + [Mailing list](https://www.gnu.de/mailman3/hyperkitty/list/gpc@gnu.de/latest) (no longer seems to be active)
     - [Subscribe/Unsubscribe page](https://www.gnu.de/mailman3/postorius/lists/gpc.gnu.de/)
-* GDB 7.12.1 – note lack of support for h8300-\*-\*-coff (covered by the "h8300-\*-\*-\*" case) in bfd/config.bfd in later versions
-* NewLib 1.19.0
-  + Version 1.20.0 introduces incompatibilities with the binutil's version of libiberty (c.f. [gcc list](https://gcc-patches.gcc.gnu.narkive.com/zeSeZ9N8/newlib-vs-libiberty-mismatch-breaks-build-re-patch-export-psignal-on-all-platforms#post1))
-  + Versions 2.0 and later fail to build if targeting h8300-*-coff
+* **GDB 7.12.1** – note lack of support for h8300-\*-\*-coff (covered by the "h8300-\*-\*-\*" case) in bfd/config.bfd in later versions
+* **NewLib 1.19.0**
+  + Version 1.20.0 introduces incompatibilities with the binutil’s version of libiberty (c.f. [gcc list](https://gcc-patches.gcc.gnu.narkive.com/zeSeZ9N8/newlib-vs-libiberty-mismatch-breaks-build-re-patch-export-psignal-on-all-platforms#post1))
+  + Versions 2.0 and later fail to build if targeting h8300-\*-coff
 
 
 
@@ -120,7 +130,7 @@ Files from GCC
 * ylwrap
 
 
-The following were not able to be linked in as part of teh combined sources folder
+The following were not able to be linked in as part of the combined sources folder
 without also introducing build issues (these can build separately, though):
 
 Folders from GDB
@@ -128,71 +138,3 @@ Folders from GDB
 * libdecnumber
 * readline
 * sim
-
-Folders from NewLib
-* libgloss
-* newlib
-
-
-
-### Patches
-The following patches were applied.
-
-#### Binutils
-Debian provides a [binutils-h8300-hms](https://packages.debian.org/source/stable/binutils-h8300-hms) package
-based on binutils 2.16.1 that includes several patch updates in the debian.tar.xz archive file available on that page.
-From the `patches/series` file in that archive (c.f. [release versions here](https://sources.debian.org/src/binutils-h8300-hms/2.16.1/debian/patches/series/)),
-available Debian patches include those lised below.
-Patches not marked with strikethrough have been applied here (unapplied patches are more Debian specific).
-* ~~000_print_debian_version~~
-* 002_gprof_profile_arcs
-* 003_gprof_see_also_monitor
-* 006_better_file_error
-* 012_check_ldrunpath_length
-* ~~121_i386_x86_64_biarch~~
-* ~~127_x86_64_i386_biarch~~
-* 128_ln_s_makefiles
-* 129_gas_h8300
-* 130_coff_arm
-* 131_sprintf
-* 132_texinfo_fixes
-* ~~bts729274~~
-
-
-#### GCC
-Debian provides a [gcc-h8300-hms](https://packages.debian.org/source/stable/gcc-h8300-hms) package
-based on gcc 3.4.6 that includes several patch updates in the debian.tar.xz archive file available on that page.
-From the `patches/series` file in that archive (c.f. [release versions here](https://sources.debian.org/src/gcc-h8300-hms/3.4.6/debian/patches/series/)),
-available Debian patches include those lised below.
-Patches not marked with strikethrough have been applied here (unapplied patches are more Debian specific).
-* ~~000_no_libstdc++-v3~~
-* 001_h8300_64bit
-* gcc-textdomain.dpatch
-* ~~libstdc++-pic.dpatch~~
-* libstdc++-doclink.dpatch
-* libstdc++-doxygen-syntax.dpatch
-* amd64-specs.dpatch
-* gccbug.dpatch
-* gccbug-posix.dpatch
-* hppa-toplevel.dpatch
-* m68k-update.dpatch
-* arm-bigendian.dpatch
-* cpu-default-i486.dpatch
-* deb-protoize.dpatch
-* hurd-changes.dpatch
-* m32r-gotoff.dpatch
-* m32r-stack.dpatch
-* m32r-fixes.dpatch
-* m32r-limits.dpatch
-* m32r-pie.dpatch
-* m32r-remove-addsi3.dpatch
-* m32r-auto.dpatch
-* alpha-ieee.dpatch
-* libstdc++-mips-atomic.dpatch
-* bin_false_fixup
-* ~~configure-update~~
-* ~~debian-changes-1:3.4.6+dfsg-1~~
-* fix_ftbs.diff
-
-The GNU Pascal Compiler (GPC) patches most applicable to this particular GCC version were also applied.
-* gcc-3.4.4.diff

@@ -1,0 +1,333 @@
+2005-11-30  Alexandre Oliva  <aoliva@redhat.com>
+
+	* gcc.c (find_a_file): Use update_path before access tests.
+	Mostly from Thomas Walker <thomas.walker@morganstanley.com>
+	* prefix.c (update_path): Move dir/../-stripping code to...
+	(maybe_strip_dotdots): New function.  Reorganize.
+
+--- gcc/gcc.c.orig	2005-12-01 18:38:38.000000000 -0200
++++ gcc/gcc.c	2005-12-01 18:41:01.000000000 -0200
+@@ -2371,7 +2371,7 @@
+ find_a_file (struct path_prefix *pprefix, const char *name, int mode,
+ 	     int multilib)
+ {
+-  char *temp;
++  char *temp, *temp2;
+   const char *const file_suffix =
+     ((mode & X_OK) != 0 ? HOST_EXECUTABLE_SUFFIX : "");
+   struct prefix_list *pl;
+@@ -2407,19 +2407,18 @@
+ 				    NULL));
+     }
+ 
+-  temp = xmalloc (len);
+-
+   /* Determine the filename to execute (special case for absolute paths).  */
+ 
+   if (IS_ABSOLUTE_PATH (name))
+     {
+-      if (access (name, mode) == 0)
+-	{
+-	  strcpy (temp, name);
+-	  return temp;
+-	}
++      /* IS_ABSOLUTE_PATHNAME lets anything through that starts with '/'  */
++      temp = update_path (name, NULL);
++      if (access (temp, mode) == 0)
++	return temp;
+     }
+   else
++  {
++    temp = xmalloc (len);
+     for (pl = pprefix->plist; pl; pl = pl->next)
+       {
+ 	const char *this_name
+@@ -2435,24 +2434,30 @@
+ 		strcat (temp, machine_suffix);
+ 		strcat (temp, multilib_name);
+ 		strcat (temp, file_suffix);
+-		if (access_check (temp, mode) == 0)
++		temp2 = update_path (temp, NULL);
++		if (access_check (temp2, mode) == 0)
+ 		  {
+ 		    if (pl->used_flag_ptr != 0)
+ 		      *pl->used_flag_ptr = 1;
+-		    return temp;
++		    free (temp);
++		    return temp2;
+ 		  }
++		free (temp2);
+ 	      }
+ 
+ 	    /* Now try just the multilib_name.  */
+ 	    strcpy (temp, pl->prefix);
+ 	    strcat (temp, machine_suffix);
+ 	    strcat (temp, multilib_name);
+-	    if (access_check (temp, mode) == 0)
++	    temp2 = update_path (temp, NULL);
++	    if (access_check (temp2, mode) == 0)
+ 	      {
+ 		if (pl->used_flag_ptr != 0)
+ 		  *pl->used_flag_ptr = 1;
+-		return temp;
++		free (temp);
++		return temp2;
+ 	      }
++	    free (temp2);
+ 	  }
+ 
+ 	/* Certain prefixes are tried with just the machine type,
+@@ -2467,23 +2472,29 @@
+ 		strcat (temp, just_machine_suffix);
+ 		strcat (temp, multilib_name);
+ 		strcat (temp, file_suffix);
+-		if (access_check (temp, mode) == 0)
++		temp2 = update_path (temp, NULL);
++		if (access_check (temp2, mode) == 0)
+ 		  {
+ 		    if (pl->used_flag_ptr != 0)
+ 		      *pl->used_flag_ptr = 1;
+-		    return temp;
++		    free (temp);
++		    return temp2;
+ 		  }
++		free (temp2);
+ 	      }
+ 
+ 	    strcpy (temp, pl->prefix);
+ 	    strcat (temp, just_machine_suffix);
+ 	    strcat (temp, multilib_name);
+-	    if (access_check (temp, mode) == 0)
++	    temp2 = update_path (temp, NULL);
++	    if (access_check (temp2, mode) == 0)
+ 	      {
+ 		if (pl->used_flag_ptr != 0)
+ 		  *pl->used_flag_ptr = 1;
+-		return temp;
++		free (temp);
++		return temp2;
+ 	      }
++	    free (temp2);
+ 	  }
+ 
+ 	/* Certain prefixes can't be used without the machine suffix
+@@ -2497,24 +2508,31 @@
+ 		strcpy (temp, pl->prefix);
+ 		strcat (temp, this_name);
+ 		strcat (temp, file_suffix);
+-		if (access_check (temp, mode) == 0)
++		temp2 = update_path (temp, NULL);
++		if (access_check (temp2, mode) == 0)
+ 		  {
+ 		    if (pl->used_flag_ptr != 0)
+ 		      *pl->used_flag_ptr = 1;
+-		    return temp;
++		    free (temp);
++		    return temp2;
+ 		  }
++		free (temp2);
+ 	      }
+ 
+ 	    strcpy (temp, pl->prefix);
+ 	    strcat (temp, this_name);
+-	    if (access_check (temp, mode) == 0)
++	    temp2 = update_path (temp, NULL);
++	    if (access_check (temp2, mode) == 0)
+ 	      {
+ 		if (pl->used_flag_ptr != 0)
+ 		  *pl->used_flag_ptr = 1;
+-		return temp;
++		free (temp);
++		return temp2;
+ 	      }
++	    free (temp2);
+ 	  }
+       }
++  }
+ 
+   free (temp);
+   return 0;
+--- gcc/prefix.c.orig	2005-12-01 18:38:38.000000000 -0200
++++ gcc/prefix.c	2005-12-01 18:46:37.000000000 -0200
+@@ -238,6 +238,105 @@
+   while (*string++);
+ }
+ 
++/* Strip dir/.. from a pathname when it makes sense, e.g., when this
++   would turn an inaccessible pathname into an accessible one.
++
++   We short-circuit dir/.. when dir does not exist, and when
++   some/dir/../thing does not exist but some/thing does.  In case
++   there are multiple possible dir/../ stripping possibilities that
++   would turn an inaccessible pathname into an accessible one, the one
++   closer to the end of the pathname is preferred.
++
++   RESULT is the pathname that might contain such dotdot sequences to
++   be stripped.  P points into RESULT, and indicates the location
++   where we should start looking for ../ sequences.
++
++   Even though RESULT is const, P is not, and that's because
++   characters in it may be temporarily overwritten, so RESULT must not
++   be in read-only storage.
++
++   The returned value is either a newly-allocated memory area, holding
++   a string that is the result of dotdot-stripping from the original
++   input strip, or RESULT itself, in which case any modifications made
++   to the string will have been undone.  */
++
++static const char *
++maybe_strip_dotdots (const char *result, char *p)
++{
++  char *temp;
++  const char *path, *before, *after;
++  size_t len;
++
++  while (1)
++    {
++      p = strchr (p, '.');
++      if (p == NULL)
++	return result;
++      /* Look for `/../'  */
++      if (p[1] == '.'
++	  && IS_DIR_SEPARATOR (p[2])
++	  && (p != result && IS_DIR_SEPARATOR (p[-1])))
++	break;
++      else
++	++p;
++    }
++
++  *p = 0;
++  if (access (result, X_OK) == 0)
++    {
++      *p = '.';
++
++      path = maybe_strip_dotdots (result, p + 3);
++      if (access (path, F_OK) == 0)
++	return path;
++      if (path != result)
++	free ((char *) path);
++    }
++  else
++    *p = '.';
++
++  /* If we couldn't access the dir, or if recursion resulted in a
++     non-accessible pathname, we try stripping out dir/../.  If `dir'
++     turns out to be `.', strip one more path component.  */
++  before = p;
++  do
++    {
++      --before;
++      while (before != result && IS_DIR_SEPARATOR (*before))
++	--before;
++      while (before != result && !IS_DIR_SEPARATOR (before[-1]))
++	--before;
++    }
++  while (before != result && *before == '.'
++	 && IS_DIR_SEPARATOR (*(before + 1)));
++  /* If we have something like `./..' or `/..', don't
++     strip anything more.  */
++  if (*before == '.' || IS_DIR_SEPARATOR (*before))
++    return result;
++
++  after = p + 3;
++  while (IS_DIR_SEPARATOR (*after))
++    ++after;
++
++  len = (after - result) + strlen (after);
++
++  temp = xmalloc (len + 1 - (after - before));
++  memcpy (temp, result, before - result);
++  memcpy (temp + (before - result), after, len + 1 - (after - result));
++
++  path = maybe_strip_dotdots (temp, temp + (before - result));
++
++  if (path != temp)
++    free (temp);
++
++  if (access (path, F_OK) == 0)
++    result = path;
++  else if (path != result)
++    free ((char *) path);
++
++  return result;
++}
++
+ /* Update PATH using KEY if PATH starts with PREFIX.  The returned
+    string is always malloc-ed, and the caller is responsible for
+    freeing it.  */
+@@ -245,7 +344,7 @@
+ char *
+ update_path (const char *path, const char *key)
+ {
+-  char *result, *p;
++  char *result, *temp;
+ 
+   if (! strncmp (path, std_prefix, strlen (std_prefix)) && key != 0)
+     {
+@@ -265,62 +364,11 @@
+   else
+     result = xstrdup (path);
+ 
+-#ifndef ALWAYS_STRIP_DOTDOT
+-#define ALWAYS_STRIP_DOTDOT 0
+-#endif
++  temp = result;
++  result = (char *) maybe_strip_dotdots (temp, temp);
+ 
+-  p = result;
+-  while (1)
+-    {
+-      char *src, *dest;
+-
+-      p = strchr (p, '.');
+-      if (p == NULL)
+-	break;
+-      /* Look for `/../'  */
+-      if (p[1] == '.'
+-	  && IS_DIR_SEPARATOR (p[2])
+-	  && (p != result && IS_DIR_SEPARATOR (p[-1])))
+-	{
+-	  *p = 0;
+-	  if (!ALWAYS_STRIP_DOTDOT && access (result, X_OK) == 0)
+-	    {
+-	      *p = '.';
+-	      break;
+-	    }
+-	  else
+-	    {
+-	      /* We can't access the dir, so we won't be able to
+-		 access dir/.. either.  Strip out `dir/../'.  If `dir'
+-		 turns out to be `.', strip one more path component.  */
+-	      dest = p;
+-	      do
+-		{
+-		  --dest;
+-		  while (dest != result && IS_DIR_SEPARATOR (*dest))
+-		    --dest;
+-		  while (dest != result && !IS_DIR_SEPARATOR (dest[-1]))
+-		    --dest;
+-		}
+-	      while (dest != result && *dest == '.');
+-	      /* If we have something like `./..' or `/..', don't
+-		 strip anything more.  */
+-	      if (*dest == '.' || IS_DIR_SEPARATOR (*dest))
+-		{
+-		  *p = '.';
+-		  break;
+-		}
+-	      src = p + 3;
+-	      while (IS_DIR_SEPARATOR (*src))
+-		++src;
+-	      p = dest;
+-	      while ((*dest++ = *src++) != 0)
+-		;
+-	    }
+-	}
+-      else
+-	++p;
+-    }
++  if (result != temp)
++    free (temp);
+ 
+ #ifdef UPDATE_PATH_HOST_CANONICALIZE
+   /* Perform host dependent canonicalization when needed.  */
