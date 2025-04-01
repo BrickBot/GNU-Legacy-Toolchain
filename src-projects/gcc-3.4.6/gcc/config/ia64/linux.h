@@ -77,7 +77,7 @@ do {						\
       struct sigframe {							\
 	char scratch[16];						\
 	unsigned long sig_number;					\
-	struct siginfo *info;						\
+	siginfo_t *info;						\
 	struct sigcontext *sc;						\
       } *frame_ = (struct sigframe *)(CONTEXT)->psp;			\
       struct sigcontext *sc_ = frame_->sc;				\
@@ -150,7 +150,7 @@ do {						\
       struct sigframe {							\
 	char scratch[16];						\
 	unsigned long sig_number;					\
-	struct siginfo *info;						\
+	siginfo_t *info;						\
 	struct sigcontext *sc;						\
       } *frame_ = (struct sigframe *)(CONTEXT)->psp;			\
       struct sigcontext *sc_ = frame_->sc;				\

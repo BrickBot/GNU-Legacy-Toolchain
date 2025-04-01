@@ -228,7 +228,7 @@ typedef struct _sig_ucontext {
       {                                                              \
         struct rt_sigframe {                                         \
           u_int32_t  trampoline[2];                                \
-          struct siginfo info;                                       \
+          siginfo_t info;                                       \
           _sig_ucontext_t uc;                                        \
         } *rt_ = (CONTEXT)->ra;                                      \
         sc_ = &rt_->uc.uc_mcontext;                                  \
