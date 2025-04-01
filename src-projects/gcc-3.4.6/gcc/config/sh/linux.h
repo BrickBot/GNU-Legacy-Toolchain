@@ -244,7 +244,7 @@ do { \
 		 && (*(unsigned short *) (pc_+14)  == 0x00ad))))	\
       {									\
 	struct rt_sigframe {						\
-	  struct siginfo info;						\
+	  siginfo_t info;						\
 	  ucontext_t uc;						\
 	} *rt_ = (CONTEXT)->cfa;					\
 	sc_ = (struct sigcontext *) &rt_->uc.uc_mcontext;		\

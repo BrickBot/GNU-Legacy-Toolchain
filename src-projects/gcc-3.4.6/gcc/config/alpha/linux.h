@@ -94,7 +94,7 @@ Boston, MA 02111-1307, USA.  */
     else if (pc_[1] == 0x201f015f)	/* lda $0,NR_rt_sigreturn */	\
       {									\
 	struct rt_sigframe {						\
-	  struct siginfo info;						\
+	  siginfo_t info;						\
 	  ucontext_t uc;						\
 	} *rt_ = (CONTEXT)->cfa;					\
 	sc_ = &rt_->uc.uc_mcontext;					\
