@@ -92,13 +92,13 @@ jobs:
       run:  |
         cd $BUILD_DIR_GCC
         echo "Current working directory: $PWD"
-        make prefix=/opt/stow/gcc34-h8 install
+        make prefix=/opt/stow/gcc3-h8 install
 
     - name: Install the built GCC H8/300 cross-compiler using Stow
       run:  |
         cd $BUILD_DIR_GCC
         echo "Current working directory: $PWD"
-        sudo stow --dir=/opt/stow --target=/usr/local --verbose -S gcc34-h8
+        sudo stow --dir=/opt/stow --target=/usr/local --verbose -S gcc3-h8
 
     - name: Check always if any version-controlled files were modified
       if:   always()
@@ -262,7 +262,7 @@ jobs:
 #      run:  |
 #        cd $BUILD_DIR_GPC
 #        echo "Current working directory: $PWD"
-#        ../../src-combined/gcc-combined/configure --enable-languages=pascal  --with-gcc --with-gnu-as --with-gnu-ld  $COMMON_PATH_ARG_PREFIX
+#        ../../src-combined/gcc-combined/configure --enable-languages=pascal  --with-gcc --with-gnu-as --with-gnu-ld  $COMMON_PATH_ARG_PREFIX  --program-suffix=3
 #
 #    - name: Execute the build for a native gcc+binutils+gpc compiler
 #      run:  |
