@@ -1,0 +1,382 @@
+From fd5c8f0002f6790d57b6479bc9f2e86ccd63a68b Mon Sep 17 00:00:00 2001
+From: Rainer Orth <ro@CeBiTec.Uni-Bielefeld.DE>
+Date: Tue, 25 Oct 2016 15:51:40 +0200
+Subject: [PATCH 025/122] Fix gdb C++ compilation on Solaris (PR build/20712)
+
+gdb 7.12 doesn't compile as C++ (tried with g++ 4.9) on Solaris (tried
+10 and 12, sparc and x86).  The following patch (relative to the 7.12
+release, though I expect most if not all issues to be present on trunk,
+too) fixes this.
+
+Only a few of the changes bear explanation:
+
+* Initially, compilation failed whereever defs.h. was included:
+
+In file included from /vol/src/gnu/gdb/gdb-7.12/gdb/gdb.c:19:0:
+/vol/src/gnu/gdb/gdb-7.12/gdb/defs.h:630:33: error: 'double atof(const char*)' conflicts with a previous declaration
+ extern double atof (const char *); /* X3.159-1989  4.10.1.1 */
+                                 ^
+In file included from /usr/include/stdlib.h:17:0,
+                 from build-gnulib/import/stdlib.h:36,
+                 from /vol/src/gnu/gdb/gdb-7.12/gdb/common/common-defs.h:32,
+                 from /vol/src/gnu/gdb/gdb-7.12/gdb/defs.h:28,
+                 from /vol/src/gnu/gdb/gdb-7.12/gdb/gdb.c:19:
+/vol/gcc-4.9/lib/gcc/i386-pc-solaris2.10/4.9.0/include-fixed/iso/stdlib_iso.h:119:15: note: previous declaration 'double std::atof(const char*)'
+ extern double atof(const char *);
+               ^
+
+  This is due to this gem in gdb/defs.h which seems to have been present
+  like forever:
+
+#ifndef atof
+extern double atof (const char *);	/* X3.159-1989  4.10.1.1 */
+#endif
+
+  In the Solaris headers, the appropriate functions are in namespace std,
+  thus the conflict.  I've wrapped the defs.h declaration in !__cplusplus
+  to avoid this; perhaps it can go completely instead.
+
+* All the casts are necessary to appease g++ and should be pretty
+  obvious.
+
+* The sol-thread.c changes are here to handle
+
+/vol/src/gnu/gdb/gdb-7.12/gdb/sol-thread.c: In function 'void _initialize_sol_thread()':
+/vol/src/gnu/gdb/gdb-7.12/gdb/sol-thread.c:1252:36: error: invalid conversion from 'void*' to 'void (*)(int)' [-fpermissive]
+   if (!(p_##X = dlsym (dlhandle, #X))) \
+                                    ^
+/vol/src/gnu/gdb/gdb-7.12/gdb/sol-thread.c:1255:3: note: in expansion of macro 'resolve'
+   resolve (td_log);
+   ^
+
+  and are modeled after linux-thread-db.c (try_thread_db_load_1).
+
+The patch allowed both 32 and 64-bit C++ builds on sparc-sun-solaris2.10
+and i386-pc-solaris2.10 to complete.  The resulting binary hasn't seen
+more than a smoke test (invoke it on itself, b main, run) yet.
+
+When investigating the failure to detect -static-libstdc++
+support (more below), I found two more issues which only show up with
+-Werror:
+
+/vol/src/gnu/gdb/gdb/local/gdb/procfs.c: In function 'ssd* proc_get_LDT_entry(procinfo*, int)':
+/vol/src/gnu/gdb/gdb/local/gdb/procfs.c:2487:19: error: variable 'old_chain' set but not used [-Werror=unused-but-set-variable]
+   struct cleanup *old_chain = NULL;
+                   ^
+
+Unless I'm mistaken, you need to run do_cleanups on every return from
+the function.
+
+Afterwards, I ran a 32-bit compilation, which (after adding
+--disable-largefile to avoid
+
+In file included from /usr/include/sys/procfs.h:28:0,
+                 from /vol/src/gnu/gdb/gdb/local/gdb/i386-sol2-nat.c:23:
+/usr/include/sys/old_procfs.h:39:2: error: #error "Cannot use procfs in the large file compilation environment"
+ #error "Cannot use procfs in the large file compilation environment"
+  ^
+
+and two more instances) revealed
+
+/vol/src/gnu/gdb/gdb/local/gdb/top.c: In function 'void gdb_safe_append_history()':
+/vol/src/gnu/gdb/gdb/local/gdb/top.c:1170:59: error: format '%d' expects argument of type 'int', but argument 3 has type 'pid_t {aka long int}' [-Werror=format=]
+     = xstrprintf ("%s-gdb%d~", history_filename, getpid ());
+                                                           ^
+
+Fixed by casting pid_t to long and printing it as such.
+---
+ gdb/defs.h       |   8 +---
+ gdb/procfs.c     |  23 ++++++----
+ gdb/sol-thread.c | 128 +++++++++++++++++++++++++++++++++----------------------
+ gdb/top.c        |   2 +-
+ 4 files changed, 93 insertions(+), 68 deletions(-)
+
+diff --git a/gdb/defs.h b/gdb/defs.h
+index 9b44f44349..b2568723e4 100644
+--- a/gdb/defs.h
++++ b/gdb/defs.h
+@@ -620,13 +620,7 @@ enum gdb_osabi
+   GDB_OSABI_INVALID		/* keep this last */
+ };
+ 
+-/* Global functions from other, non-gdb GNU thingies.
+-   Libiberty thingies are no longer declared here.  We include libiberty.h
+-   above, instead.  */
+-
+-/* From other system libraries */
+-
+-#ifndef atof
++#if !defined atof && !defined __cplusplus
+ extern double atof (const char *);	/* X3.159-1989  4.10.1.1 */
+ #endif
+ 
+diff --git a/gdb/procfs.c b/gdb/procfs.c
+index 67b424f5e5..be81b3a791 100644
+--- a/gdb/procfs.c
++++ b/gdb/procfs.c
+@@ -791,7 +791,7 @@ destroy_procinfo (procinfo *pi)
+ static void
+ do_destroy_procinfo_cleanup (void *pi)
+ {
+-  destroy_procinfo (pi);
++  destroy_procinfo ((procinfo *) pi);
+ }
+ 
+ enum { NOKILL, KILL };
+@@ -845,7 +845,7 @@ sysset_t_alloc (procinfo * pi)
+   sysset_t *ret;
+   int size = sysset_t_size (pi);
+ 
+-  ret = xmalloc (size);
++  ret = (sysset_t *) xmalloc (size);
+ #ifdef DYNAMIC_SYSCALLS
+   ret->pr_size = ((pi->num_syscalls + (8 * sizeof (uint64_t) - 1))
+ 		  / (8 * sizeof (uint64_t)));
+@@ -1675,7 +1675,7 @@ proc_set_traced_sysentry (procinfo *pi, sysset_t *sysset)
+ 		  - sizeof (sysset_t)
+ 		  + sysset_t_size (pi);
+ 
+-    argp = xmalloc (argp_size);
++    argp = (struct gdb_proc_ctl_pcsentry *) xmalloc (argp_size);
+ 
+     argp->cmd = PCSENTRY;
+     memcpy (&argp->sysset, sysset, sysset_t_size (pi));
+@@ -1720,7 +1720,7 @@ proc_set_traced_sysexit (procinfo *pi, sysset_t *sysset)
+ 		  - sizeof (sysset_t)
+ 		  + sysset_t_size (pi);
+ 
+-    argp = xmalloc (argp_size);
++    argp = (struct gdb_proc_ctl_pcsexit *) xmalloc (argp_size);
+ 
+     argp->cmd = PCSEXIT;
+     memcpy (&argp->sysset, sysset, sysset_t_size (pi));
+@@ -2512,9 +2512,13 @@ proc_get_LDT_entry (procinfo *pi, int key)
+ 	break;	/* end of table */
+       /* If key matches, return this entry.  */
+       if (ldt_entry->sel == key)
+-	return ldt_entry;
++	{
++	  do_cleanups (old_chain);
++	  return ldt_entry;
++	}
+     }
+   /* Loop ended, match not found.  */
++  do_cleanups (old_chain);
+   return NULL;
+ #else
+   int nldt, i;
+@@ -2756,7 +2760,7 @@ proc_update_threads (procinfo *pi)
+ static void
+ do_closedir_cleanup (void *dir)
+ {
+-  closedir (dir);
++  closedir ((DIR *) dir);
+ }
+ 
+ static int
+@@ -3836,7 +3840,7 @@ wait_again:
+ 		      add_thread (temp_ptid);
+ 
+ 		    status->kind = TARGET_WAITKIND_STOPPED;
+-		    status->value.sig = 0;
++		    status->value.sig = GDB_SIGNAL_0;
+ 		    return retval;
+ 		  }
+ #endif
+@@ -4567,7 +4571,7 @@ procfs_create_inferior (struct target_ops *ops, char *exec_file,
+       if (path == NULL)
+ 	path = "/bin:/usr/bin";
+ 
+-      tryname = alloca (strlen (path) + strlen (shell_file) + 2);
++      tryname = (char *) alloca (strlen (path) + strlen (shell_file) + 2);
+       for (p = path; p != NULL; p = p1 ? p1 + 1: NULL)
+ 	{
+ 	  p1 = strchr (p, ':');
+@@ -5367,7 +5371,8 @@ struct procfs_corefile_thread_data {
+ static int
+ procfs_corefile_thread_callback (procinfo *pi, procinfo *thread, void *data)
+ {
+-  struct procfs_corefile_thread_data *args = data;
++  struct procfs_corefile_thread_data *args
++    = (struct procfs_corefile_thread_data *) data;
+ 
+   if (pi != NULL)
+     {
+diff --git a/gdb/sol-thread.c b/gdb/sol-thread.c
+index 000d223169..85bf3ff6f1 100644
+--- a/gdb/sol-thread.c
++++ b/gdb/sol-thread.c
+@@ -98,56 +98,82 @@ static void init_sol_thread_ops (void);
+ /* Default definitions: These must be defined in tm.h if they are to
+    be shared with a process module such as procfs.  */
+ 
++/* Types of the libthread_db functions.  */
++
++typedef void (td_log_ftype)(const int on_off);
++typedef td_err_e (td_ta_new_ftype)(const struct ps_prochandle *ph_p,
++				   td_thragent_t **ta_pp);
++typedef td_err_e (td_ta_delete_ftype)(td_thragent_t *ta_p);
++typedef td_err_e (td_init_ftype)(void);
++typedef td_err_e (td_ta_get_ph_ftype)(const td_thragent_t *ta_p,
++				      struct ps_prochandle **ph_pp);
++typedef td_err_e (td_ta_get_nthreads_ftype)(const td_thragent_t *ta_p,
++					    int *nthread_p);
++typedef td_err_e (td_ta_tsd_iter_ftype)(const td_thragent_t *ta_p,
++					td_key_iter_f *cb, void *cbdata_p);
++typedef td_err_e (td_ta_thr_iter_ftype)(const td_thragent_t *ta_p,
++					td_thr_iter_f *cb, void *cbdata_p,
++					td_thr_state_e state, int ti_pri,
++					sigset_t *ti_sigmask_p,
++					unsigned ti_user_flags);
++typedef td_err_e (td_thr_validate_ftype)(const td_thrhandle_t *th_p);
++typedef td_err_e (td_thr_tsd_ftype)(const td_thrhandle_t * th_p,
++				    const thread_key_t key, void **data_pp);
++typedef td_err_e (td_thr_get_info_ftype)(const td_thrhandle_t *th_p,
++					 td_thrinfo_t *ti_p);
++typedef td_err_e (td_thr_getfpregs_ftype)(const td_thrhandle_t *th_p,
++					  prfpregset_t *fpregset);
++typedef td_err_e (td_thr_getxregsize_ftype)(const td_thrhandle_t *th_p,
++					    int *xregsize);
++typedef td_err_e (td_thr_getxregs_ftype)(const td_thrhandle_t *th_p,
++					 const caddr_t xregset);
++typedef td_err_e (td_thr_sigsetmask_ftype)(const td_thrhandle_t *th_p,
++					   const sigset_t ti_sigmask);
++typedef td_err_e (td_thr_setprio_ftype)(const td_thrhandle_t *th_p,
++					const int ti_pri);
++typedef td_err_e (td_thr_setsigpending_ftype)(const td_thrhandle_t *th_p,
++					      const uchar_t ti_pending_flag,
++					      const sigset_t ti_pending);
++typedef td_err_e (td_thr_setfpregs_ftype)(const td_thrhandle_t *th_p,
++					  const prfpregset_t *fpregset);
++typedef td_err_e (td_thr_setxregs_ftype)(const td_thrhandle_t *th_p,
++					 const caddr_t xregset);
++typedef td_err_e (td_ta_map_id2thr_ftype)(const td_thragent_t *ta_p,
++					  thread_t tid,
++					  td_thrhandle_t *th_p);
++typedef td_err_e (td_ta_map_lwp2thr_ftype)(const td_thragent_t *ta_p,
++					   lwpid_t lwpid,
++					   td_thrhandle_t *th_p);
++typedef td_err_e (td_thr_getgregs_ftype)(const td_thrhandle_t *th_p,
++					 prgregset_t regset);
++typedef td_err_e (td_thr_setgregs_ftype)(const td_thrhandle_t *th_p,
++					 const prgregset_t regset);
++
+ /* Pointers to routines from libthread_db resolved by dlopen().  */
+ 
+-static void (*p_td_log)(const int on_off);
+-static td_err_e (*p_td_ta_new)(const struct ps_prochandle *ph_p,
+-			       td_thragent_t **ta_pp);
+-static td_err_e (*p_td_ta_delete)(td_thragent_t *ta_p);
+-static td_err_e (*p_td_init)(void);
+-static td_err_e (*p_td_ta_get_ph)(const td_thragent_t *ta_p,
+-				  struct ps_prochandle **ph_pp);
+-static td_err_e (*p_td_ta_get_nthreads)(const td_thragent_t *ta_p,
+-					int *nthread_p);
+-static td_err_e (*p_td_ta_tsd_iter)(const td_thragent_t *ta_p,
+-				    td_key_iter_f *cb, void *cbdata_p);
+-static td_err_e (*p_td_ta_thr_iter)(const td_thragent_t *ta_p,
+-				    td_thr_iter_f *cb, void *cbdata_p,
+-				    td_thr_state_e state, int ti_pri,
+-				    sigset_t *ti_sigmask_p,
+-				    unsigned ti_user_flags);
+-static td_err_e (*p_td_thr_validate)(const td_thrhandle_t *th_p);
+-static td_err_e (*p_td_thr_tsd)(const td_thrhandle_t * th_p,
+-				const thread_key_t key, void **data_pp);
+-static td_err_e (*p_td_thr_get_info)(const td_thrhandle_t *th_p,
+-				     td_thrinfo_t *ti_p);
+-static td_err_e (*p_td_thr_getfpregs)(const td_thrhandle_t *th_p,
+-				      prfpregset_t *fpregset);
+-static td_err_e (*p_td_thr_getxregsize)(const td_thrhandle_t *th_p,
+-					int *xregsize);
+-static td_err_e (*p_td_thr_getxregs)(const td_thrhandle_t *th_p,
+-				     const caddr_t xregset);
+-static td_err_e (*p_td_thr_sigsetmask)(const td_thrhandle_t *th_p,
+-				       const sigset_t ti_sigmask);
+-static td_err_e (*p_td_thr_setprio)(const td_thrhandle_t *th_p,
+-				    const int ti_pri);
+-static td_err_e (*p_td_thr_setsigpending)(const td_thrhandle_t *th_p,
+-					  const uchar_t ti_pending_flag,
+-					  const sigset_t ti_pending);
+-static td_err_e (*p_td_thr_setfpregs)(const td_thrhandle_t *th_p,
+-				      const prfpregset_t *fpregset);
+-static td_err_e (*p_td_thr_setxregs)(const td_thrhandle_t *th_p,
+-				     const caddr_t xregset);
+-static td_err_e (*p_td_ta_map_id2thr)(const td_thragent_t *ta_p,
+-				      thread_t tid,
+-				      td_thrhandle_t *th_p);
+-static td_err_e (*p_td_ta_map_lwp2thr)(const td_thragent_t *ta_p,
+-				       lwpid_t lwpid,
+-				       td_thrhandle_t *th_p);
+-static td_err_e (*p_td_thr_getgregs)(const td_thrhandle_t *th_p,
+-				     prgregset_t regset);
+-static td_err_e (*p_td_thr_setgregs)(const td_thrhandle_t *th_p,
+-				     const prgregset_t regset);
++static td_log_ftype *p_td_log;
++static td_ta_new_ftype *p_td_ta_new;
++static td_ta_delete_ftype *p_td_ta_delete;
++static td_init_ftype *p_td_init;
++static td_ta_get_ph_ftype *p_td_ta_get_ph;
++static td_ta_get_nthreads_ftype *p_td_ta_get_nthreads;
++static td_ta_tsd_iter_ftype *p_td_ta_tsd_iter;
++static td_ta_thr_iter_ftype *p_td_ta_thr_iter;
++static td_thr_validate_ftype *p_td_thr_validate;
++static td_thr_tsd_ftype *p_td_thr_tsd;
++static td_thr_get_info_ftype *p_td_thr_get_info;
++static td_thr_getfpregs_ftype *p_td_thr_getfpregs;
++static td_thr_getxregsize_ftype *p_td_thr_getxregsize;
++static td_thr_getxregs_ftype *p_td_thr_getxregs;
++static td_thr_sigsetmask_ftype *p_td_thr_sigsetmask;
++static td_thr_setprio_ftype *p_td_thr_setprio;
++static td_thr_setsigpending_ftype *p_td_thr_setsigpending;
++static td_thr_setfpregs_ftype *p_td_thr_setfpregs;
++static td_thr_setxregs_ftype *p_td_thr_setxregs;
++static td_ta_map_id2thr_ftype *p_td_ta_map_id2thr;
++static td_ta_map_lwp2thr_ftype *p_td_ta_map_lwp2thr;
++static td_thr_getgregs_ftype *p_td_thr_getgregs;
++static td_thr_setgregs_ftype *p_td_thr_setgregs;
+ 
+ 
+ /* Return the libthread_db error string associated with ERRCODE.  If
+@@ -818,7 +844,7 @@ ps_err_e
+ ps_pdread (gdb_ps_prochandle_t ph, gdb_ps_addr_t addr,
+ 	   gdb_ps_read_buf_t buf, gdb_ps_size_t size)
+ {
+-  return rw_common (0, ph, addr, buf, size);
++  return rw_common (0, ph, addr, (gdb_byte *) buf, size);
+ }
+ 
+ /* Copies SIZE bytes from debugger memory .data segment to target process.  */
+@@ -836,7 +862,7 @@ ps_err_e
+ ps_ptread (gdb_ps_prochandle_t ph, gdb_ps_addr_t addr,
+ 	   gdb_ps_read_buf_t buf, gdb_ps_size_t size)
+ {
+-  return rw_common (0, ph, addr, buf, size);
++  return rw_common (0, ph, addr, (gdb_byte *) buf, size);
+ }
+ 
+ /* Copies SIZE bytes from debugger memory .text segment to target process.  */
+@@ -1249,7 +1275,7 @@ _initialize_sol_thread (void)
+     goto die;
+ 
+ #define resolve(X) \
+-  if (!(p_##X = dlsym (dlhandle, #X))) \
++  if (!(p_##X = (X ## _ftype *) dlsym (dlhandle, #X)))	\
+     goto die;
+ 
+   resolve (td_log);
+diff --git a/gdb/top.c b/gdb/top.c
+index 320c296b5b..62597cc8a9 100644
+--- a/gdb/top.c
++++ b/gdb/top.c
+@@ -1167,7 +1167,7 @@ gdb_safe_append_history (void)
+   struct cleanup *old_chain;
+ 
+   local_history_filename
+-    = xstrprintf ("%s-gdb%d~", history_filename, getpid ());
++    = xstrprintf ("%s-gdb%ld~", history_filename, (long) getpid ());
+   old_chain = make_cleanup (xfree, local_history_filename);
+ 
+   ret = rename (history_filename, local_history_filename);
+-- 
+2.11.0
+

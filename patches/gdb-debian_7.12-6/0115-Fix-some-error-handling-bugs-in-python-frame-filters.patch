@@ -1,0 +1,128 @@
+From df1fe27b672d7aa054eaad8b51f86302f7e46c65 Mon Sep 17 00:00:00 2001
+From: Tom Tromey <tom@tromey.com>
+Date: Mon, 31 Oct 2016 11:10:35 -0600
+Subject: [PATCH 115/122] Fix some error-handling bugs in python frame filters
+
+While writing a Python frame filter, I found a few bugs in the current
+frame filter code.  In particular:
+
+* One spot converts a Python long to a CORE_ADDR using PyLong_AsLong.
+  However, this can fail on overflow.  I changed this to use
+  get_addr_from_python.
+
+* Another spot is doing the same but with PyLong_AsUnsignedLongLong; I
+  changed this as well just for consistency.
+
+* Converting line numbers can print "-1" if conversion from long
+  fails.  This isn't fatal but just a bit ugly.
+
+I've included a test case for the first issue.  The line number one
+didn't seem important enough to bother with.
+
+2016-11-08  Tom Tromey  <tom@tromey.com>
+
+	* python/py-framefilter.c (py_print_frame): Use
+	get_addr_from_python.  Check for errors when getting line number.
+
+2016-11-08  Tom Tromey  <tom@tromey.com>
+
+	* gdb.python/py-framefilter.py (ElidingFrameDecorator.address):
+	New method.
+---
+ gdb/ChangeLog                              |  5 +++++
+ gdb/python/py-framefilter.c                | 18 +++++++++++++++---
+ gdb/testsuite/ChangeLog                    |  5 +++++
+ gdb/testsuite/gdb.python/py-framefilter.py |  6 ++++++
+ 4 files changed, 31 insertions(+), 3 deletions(-)
+
+diff --git a/gdb/ChangeLog b/gdb/ChangeLog
+index 0aaae46e71..397dbae160 100644
+--- a/gdb/ChangeLog
++++ b/gdb/ChangeLog
+@@ -1,3 +1,8 @@
++2017-01-12  Tom Tromey  <tom@tromey.com>
++
++	* python/py-framefilter.c (py_print_frame): Use
++	get_addr_from_python.  Check for errors when getting line number.
++
+ 2016-12-20  Pedro Alves  <palves@redhat.com>
+ 
+ 	PR gdb/20977
+diff --git a/gdb/python/py-framefilter.c b/gdb/python/py-framefilter.c
+index 0c77a150c7..b82c6d221a 100644
+--- a/gdb/python/py-framefilter.c
++++ b/gdb/python/py-framefilter.c
+@@ -1116,7 +1116,13 @@ py_print_frame (PyObject *filter, int flags,
+ 
+ 	  if (paddr != Py_None)
+ 	    {
+-	      address = PyLong_AsLong (paddr);
++	      if (get_addr_from_python (paddr, &address) < 0)
++		{
++		  Py_DECREF (paddr);
++		  do_cleanups (cleanup_stack);
++		  return EXT_LANG_BT_ERROR;
++		}
++
+ 	      has_addr = 1;
+ 	    }
+ 	  Py_DECREF (paddr);
+@@ -1213,10 +1219,10 @@ py_print_frame (PyObject *filter, int flags,
+ 	    }
+ 	  else if (PyLong_Check (py_func))
+ 	    {
+-	      CORE_ADDR addr = PyLong_AsUnsignedLongLong (py_func);
++	      CORE_ADDR addr;
+ 	      struct bound_minimal_symbol msymbol;
+ 
+-	      if (PyErr_Occurred ())
++	      if (get_addr_from_python (py_func, &addr) < 0)
+ 		{
+ 		  do_cleanups (cleanup_stack);
+ 		  return EXT_LANG_BT_ERROR;
+@@ -1340,6 +1346,12 @@ py_print_frame (PyObject *filter, int flags,
+ 	  if (py_line != Py_None)
+ 	    {
+ 	      line = PyLong_AsLong (py_line);
++	      if (PyErr_Occurred ())
++		{
++		  do_cleanups (cleanup_stack);
++		  return EXT_LANG_BT_ERROR;
++		}
++
+ 	      TRY
+ 		{
+ 		  ui_out_text (out, ":");
+diff --git a/gdb/testsuite/ChangeLog b/gdb/testsuite/ChangeLog
+index 320f48cd6a..33ee59fea2 100644
+--- a/gdb/testsuite/ChangeLog
++++ b/gdb/testsuite/ChangeLog
+@@ -1,3 +1,8 @@
++2016-11-08  Tom Tromey  <tom@tromey.com>
++
++	* gdb.python/py-framefilter.py (ElidingFrameDecorator.address):
++	New method.
++
+ 2016-10-06  Maciej W. Rozycki  <macro@imgtec.com>
+ 
+ 	* gdb.arch/mips-fcr.exp: New test.
+diff --git a/gdb/testsuite/gdb.python/py-framefilter.py b/gdb/testsuite/gdb.python/py-framefilter.py
+index fe4ca6f3f9..edd0e00fe6 100644
+--- a/gdb/testsuite/gdb.python/py-framefilter.py
++++ b/gdb/testsuite/gdb.python/py-framefilter.py
+@@ -92,6 +92,12 @@ class ElidingFrameDecorator(FrameDecorator):
+     def elided(self):
+         return iter(self.elided_frames)
+ 
++    def address (self):
++        # Regression test for an overflow in the python layer.
++        bitsize = 8 * gdb.lookup_type('void').pointer().sizeof
++        mask = (1 << bitsize) - 1
++        return 0xffffffffffffffff & mask
++
+ class ElidingIterator:
+     def __init__(self, ii):
+         self.input_iterator = ii
+-- 
+2.11.0
+
