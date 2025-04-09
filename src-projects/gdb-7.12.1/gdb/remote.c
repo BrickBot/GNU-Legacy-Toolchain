@@ -6511,7 +6511,6 @@ Packet: '%s'\n"),
 	  else if (strprefix (p, p1, "exec"))
 	    {
 	      ULONGEST ignored;
-	      char pathname[PATH_MAX];
 	      int pathlen;
 
 	      /* Determine the length of the execd pathname.  */
@@ -6520,11 +6519,12 @@ Packet: '%s'\n"),
 
 	      /* Save the pathname for event reporting and for
 		 the next run command.  */
+	      char *pathname = (char *) xmalloc (pathlen + 1);
 	      hex2bin (p1, (gdb_byte *) pathname, pathlen);
 	      pathname[pathlen] = '\0';
 
 	      /* This is freed during event handling.  */
-	      event->ws.value.execd_pathname = xstrdup (pathname);
+	      event->ws.value.execd_pathname = pathname;
 	      event->ws.kind = TARGET_WAITKIND_EXECD;
 
 	      /* Skip the registers included in this packet, since
