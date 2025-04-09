@@ -1252,6 +1252,8 @@ print_command_1 (const char *exp, int voidprint)
 
   if (exp && *exp)
     {
+      if (strcmp (exp, "errno") == 0)
+	exp = "*((int *(*) (void)) __errno_location) ()";
       expr = parse_expression (exp);
       make_cleanup (free_current_contents, &expr);
       val = evaluate_expression (expr);
