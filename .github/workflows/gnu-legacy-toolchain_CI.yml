@@ -8,7 +8,12 @@ on:
     # branches: [ master ]
 
 env:
-  BUILD_DEPENDS: make binutils gcc gcc-multilib g++ bison flex libtool gawk gettext texinfo file libisl-dev dejagnu  stow
+  UBUNTU_BUILD_DEPENDS: autoconf autopoint automake m4 make binutils gcc g++ gcc-multilib bison flex libtool gawk gettext texinfo file libisl-dev dejagnu  stow
+  # after adding i386 multiarch via `sudo dpkg --add-architecture i386`
+  UBUNTU_MULTIARCH_i386_BUILD_DEPENDS:  libc6:i386 libc6-dev:i386 linux-libc-dev:i386
+  
+  openSUSE_BUILD_DEPENDS: autoconf gettext-tools automake m4 make binutils gcc gcc-c++ gcc-objc glibc-devel glibc-devel-32bit bison flex libtool gawk gettext-runtime texinfo file libisl23 dejagnu  stow
+  # libisl23, which is a version-specific package of ISL, appeasrs to be included as a dependency of other package(s)
   
   # If these older source package releases will not build without disabling Fortify and/or run without buffer overflow errors,
   #    then "make CPPFLAGS=-U_FORTIFY_SOURCE" might be necessary
@@ -51,7 +56,7 @@ jobs:
       run:  sudo apt-get --assume-yes update
 
     - name: Install build dependencies
-      run:  sudo apt-get --assume-yes install $BUILD_DEPENDS
+      run:  sudo apt-get --assume-yes install $UBUNTU_BUILD_DEPENDS
 
     - name: Setup the build directory for an H8/300 cross-toolchain
       run:  mkdir -p $BUILD_DIR_GCC
@@ -172,7 +177,7 @@ jobs:
       run:  sudo apt-get --assume-yes update
 
     - name: Install build dependencies
-      run:  sudo apt-get --assume-yes install $BUILD_DEPENDS  python3-dev  autoconf procps  libncurses-dev libncurses5-dev libexpat1-dev
+      run:  sudo apt-get --assume-yes install $UBUNTU_BUILD_DEPENDS  python3-dev  autoconf procps  libncurses-dev libncurses5-dev libexpat1-dev
 
     - name: Setup the build folders for an H8/300 GDB
       run:  mkdir -p $BUILD_DIR_GDB
@@ -253,7 +258,7 @@ jobs:
 #      run:  sudo apt-get --assume-yes update
 #
 #    - name: Install build dependencies
-#      run:  sudo apt-get --assume-yes install $BUILD_DEPENDS
+#      run:  sudo apt-get --assume-yes install $UBUNTU_BUILD_DEPENDS
 #
 #    - name: Setup the build folders for a native gcc+binutils+gpc compiler
 #      run:  mkdir -p $BUILD_DIR_GPC
