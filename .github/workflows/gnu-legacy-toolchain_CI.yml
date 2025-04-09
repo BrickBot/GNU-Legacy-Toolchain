@@ -181,7 +181,7 @@ jobs:
       run:  |
         cd $BUILD_DIR_GDB
         echo "Current working directory: $PWD"
-        ../../src-combined/gdb/configure  CXXFLAGS='-D_GLIBCXX_USE_CXX11_ABI=0 -std=c++98'  --without-python  $CROSS_TARGET  $COMMON_PATH_ARG_PREFIX
+        ../../src-combined/gdb/configure  CXXFLAGS='-g -O2 -D_GLIBCXX_USE_CXX11_ABI=0 -std=c++98'  --without-python  $CROSS_TARGET  $COMMON_PATH_ARG_PREFIX
 
     - name: Execute the build for an H8/300 GDB
       run:  |
