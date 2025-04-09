@@ -232,41 +232,41 @@ but it did maintain a package for [version 7.12](https://sources.debian.org/src/
 
 | Applied? | Patch File Name                                                     | Notes |
 | -------- | ------------------------------------------------------------------- | ----- |
-|          | gdb-fortran-main.patch                                              |       |
-|          | solve_PATH_MAX_issue.patch                                          |       |
-|          | gdb-6.5-bz185337-resolve-tls-without-debuginfo-v2.patch             |       |
-|          | python-config.patch                                                 |       |
-|          | gdb-glibc-vdso-workaround.patch                                     |       |
-|          | load-versioned-libcc1.patch                                         |       |
+| ✔       | gdb-fortran-main.patch                                              |       |
+| ✔       | solve_PATH_MAX_issue.patch                                          |       |
+| ✔       | gdb-6.5-bz185337-resolve-tls-without-debuginfo-v2.patch             |       |
+| ✔       | python-config.patch                                                 |       |
+| ✔       | gdb-glibc-vdso-workaround.patch                                     |       |
+| ❌       | load-versioned-libcc1.patch                                         |       |
 |          |                                                                     |       |
 |          | **Hurd Support – Upstream Backports**                               |       |
-|          | 0001-Hurd-Adjust-to-Per-inferior-Inferior-qualified-threa.patch     |       |
+| ✔       | 0001-Hurd-Adjust-to-Per-inferior-Inferior-qualified-threa.patch     |       |
 | ❌       | ~~0003-Hurd-C-Explicitly-cast-void.patch~~                          | Commented out in series file |
-|          | 0004-Hurd-C-Avoid-GNU-C-nested-functions.patch                      |       |
-|          | 0005-Hurd-C-Avoid-const-char-to-char-casts.patch                    |       |
-|          | 0006-Hurd-C-kern_return_t-vs.-error_t.patch                         |       |
-|          | 0007-Hurd-C-Mach-Hurd-headers-and-MIG-stubs-are-not-yet-f.patch     |       |
-|          | 0008-Hurd-In-the-CLI-use-parse_thread_id-instead-of-globa.patch     |       |
-|          | 0021-Avoid-PATH_MAX-usage.patch                                     |       |
-|          | 0022-Hurd-Adjust-to-changes-to-push-pruning-old-threads-d.patch     |       |
-|          | explicit-cast-void.patch                                            |       |
-|          | hurd-backport-for-7.12-branch.patch                                 |       |
+| ✔       | 0004-Hurd-C-Avoid-GNU-C-nested-functions.patch                      |       |
+| ✔       | 0005-Hurd-C-Avoid-const-char-to-char-casts.patch                    |       |
+| ✔       | 0006-Hurd-C-kern_return_t-vs.-error_t.patch                         |       |
+| ✔       | 0007-Hurd-C-Mach-Hurd-headers-and-MIG-stubs-are-not-yet-f.patch     |       |
+| ✔       | 0008-Hurd-In-the-CLI-use-parse_thread_id-instead-of-globa.patch     |       |
+| ✔       | 0021-Avoid-PATH_MAX-usage.patch                                     |       |
+| ✔       | 0022-Hurd-Adjust-to-changes-to-push-pruning-old-threads-d.patch     |       |
+| ✔       | explicit-cast-void.patch                                            |       |
+| ✔       | hurd-backport-for-7.12-branch.patch                                 |       |
 |          |                                                                     |       |
 |          | **From gdb-7.12-branch**                                            |       |
-|          | 0001-Document-the-GDB-7.12-release-in-gdb-ChangeLog.patch           |       |
-|          | 0002-Bump-GDB-version-number-to-7.12.0.DATE-git.patch               |       |
-|          | 0008-AArch64-Track-FP-registers-in-prologue-analyzer.patch          |       |
-|          | 0011-Include-strings.h-where-available.patch                        |       |
-|          | 0022-GDBserver-Fix-conversion-warning.patch                         |       |
-|          | 0023-PR-gdb-20653-small-cleanup-in-string_to_explicit_loc.patch     |       |
-|          | 0025-Fix-gdb-C-compilation-on-Solaris-PR-build-20712.patch          |       |
-|          | 0026-Added-forgotten-gdb-ChangeLog-entry.patch                      |       |
-|          | 0044-sim-mips-fix-builds-for-r3900-cpus-due-to-missing-ch.patch     |       |
-|          | 0045-sim-mips-fix-dv-tx3904cpu-build-error.patch                    |       |
-|          | 0047-sim-mips-add-PR-info-to-ChangeLog.patch                        |       |
-|          | 0075-Create-tdep-rl78_psw_type-lazily.patch                         |       |
-|          | 0076-Create-tdep-rx_psw_type-and-tdep-rx_fpsw_type-lazily.patch     |       |
-|          | 0080-Remove-assert-on-exec_bfd-in-cris_delayed_get_disass.patch     |       |
-|          | 0089-Fix-longjmp-across-readline-w-enable-sjlj-exceptions.patch     |       |
-|          | 0090-gdb-Fix-C-and-C-03-builds.patch                                |       |
-|          | 0115-Fix-some-error-handling-bugs-in-python-frame-filters.patch     |       |
+| ❌       | 0001-Document-the-GDB-7.12-release-in-gdb-ChangeLog.patch           | Patch already applied in 7.12.1 |
+| ❌       | 0002-Bump-GDB-version-number-to-7.12.0.DATE-git.patch               | Patch already applied in 7.12.1 |
+| ❌       | 0008-AArch64-Track-FP-registers-in-prologue-analyzer.patch          | Patch already applied in 7.12.1 |
+| ❌       | 0011-Include-strings.h-where-available.patch                        | Patch already applied in 7.12.1 |
+| ❌       | 0022-GDBserver-Fix-conversion-warning.patch                         | Patch already applied in 7.12.1 |
+| ❌       | 0023-PR-gdb-20653-small-cleanup-in-string_to_explicit_loc.patch     | Patch already applied in 7.12.1 |
+| ❌       | 0025-Fix-gdb-C-compilation-on-Solaris-PR-build-20712.patch          | Patch already applied in 7.12.1 |
+| ❌       | 0026-Added-forgotten-gdb-ChangeLog-entry.patch                      | Patch already applied in 7.12.1 |
+| ❌       | 0044-sim-mips-fix-builds-for-r3900-cpus-due-to-missing-ch.patch     | Patch already applied in 7.12.1 |
+| ❌       | 0045-sim-mips-fix-dv-tx3904cpu-build-error.patch                    | Patch already applied in 7.12.1 |
+| ❌       | 0047-sim-mips-add-PR-info-to-ChangeLog.patch                        | Patch already applied in 7.12.1 |
+| ❌       | 0075-Create-tdep-rl78_psw_type-lazily.patch                         | Patch already applied in 7.12.1 |
+| ❌       | 0076-Create-tdep-rx_psw_type-and-tdep-rx_fpsw_type-lazily.patch     | Patch already applied in 7.12.1 |
+| ❌       | 0080-Remove-assert-on-exec_bfd-in-cris_delayed_get_disass.patch     | Patch already applied in 7.12.1 |
+| ❌       | 0089-Fix-longjmp-across-readline-w-enable-sjlj-exceptions.patch     | Patch already applied in 7.12.1 |
+| ❌       | 0090-gdb-Fix-C-and-C-03-builds.patch                                | Patch already applied in 7.12.1 |
+| ❌       | 0115-Fix-some-error-handling-bugs-in-python-frame-filters.patch     | Patch already applied in 7.12.1 |
