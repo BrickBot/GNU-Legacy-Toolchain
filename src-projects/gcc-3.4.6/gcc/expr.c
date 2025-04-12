@@ -9026,6 +9026,9 @@ expand_expr_real (tree exp, rtx target, enum machine_mode tmode,
 
 	if (! target)
 	  target = gen_reg_rtx (TYPE_MODE (TREE_TYPE (exp)));
+	else if (GET_CODE (target) == MEM
+		 && reg_overlap_mentioned_p (target, op1))
+	  op1 = force_reg (mode, op1);
 
 	start_sequence ();
 
