@@ -4339,6 +4339,9 @@ weak_finish (void)
       if (! TREE_USED (decl))
 	continue;
 
+      if (lookup_attribute ("weakref", DECL_ATTRIBUTES (decl)))
+	continue;
+
 #ifdef ASM_WEAKEN_DECL
       ASM_WEAKEN_DECL (asm_out_file, decl, name, NULL);
 #else
@@ -4451,6 +4454,18 @@ assemble_alias (tree decl, tree target ATTRIBUTE_UNUSED)
   /* We must force creation of DECL_RTL for debug info generation, even though
      we don't use it here.  */
   make_decl_rtl (decl, NULL);
+
+  if (lookup_attribute ("weakref", DECL_ATTRIBUTES (decl)))
+    {
+#ifdef ASM_OUTPUT_WEAKREF
+      ASM_OUTPUT_WEAKREF (asm_out_file, decl,
+			  IDENTIFIER_POINTER (DECL_ASSEMBLER_NAME (decl)),
+			  IDENTIFIER_POINTER (target));
+#else
+      error ("%Jweakref is not supported in this configuration", decl);
+#endif
+      return;
+    }
 
 #ifdef ASM_OUTPUT_DEF
   /* Make name accessible from other files, if appropriate.  */

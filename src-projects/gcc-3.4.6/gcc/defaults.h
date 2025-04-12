@@ -182,6 +182,25 @@ do { fputs (integer_asm_op (POINTER_SIZE / UNITS_PER_WORD, TRUE), FILE); \
 #endif
 #endif
 
+/* This is how we tell the assembler that a symbol is a weak alias to
+   another symbol that doesn't require the other symbol to be defined.
+   Uses of the former will turn into weak uses of the latter, i.e.,
+   uses that, in case the latter is undefined, will not cause errors,
+   and will add it to the symbol table as weak undefined.  However, if
+   the latter is referenced directly, a strong reference prevails.  */
+#ifndef ASM_OUTPUT_WEAKREF
+#define ASM_OUTPUT_WEAKREF(FILE, DECL, NAME, VALUE)			\
+  do									\
+    {									\
+      fprintf ((FILE), "\t.weakref\t");					\
+      assemble_name ((FILE), (NAME));					\
+      fprintf ((FILE), ",");						\
+      assemble_name ((FILE), (VALUE));					\
+      fprintf ((FILE), "\n");						\
+    }									\
+  while (0)
+#endif
+
 /* How to emit a .type directive.  */
 #ifndef ASM_OUTPUT_TYPE_DIRECTIVE
 #if defined TYPE_ASM_OP && defined TYPE_OPERAND_FMT

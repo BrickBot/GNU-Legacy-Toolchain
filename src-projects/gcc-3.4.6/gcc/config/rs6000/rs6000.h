@@ -2376,6 +2376,24 @@ extern int toc_initialized;
   while (0)
 #endif
 
+#define ASM_OUTPUT_WEAKREF(FILE, DECL, NAME, VALUE)			\
+  do									\
+    {									\
+      fputs ("\t.weakref\t", (FILE));					\
+      RS6000_OUTPUT_BASENAME ((FILE), (NAME)); 				\
+      fputs (", ", (FILE));						\
+      RS6000_OUTPUT_BASENAME ((FILE), (VALUE));				\
+      if ((DECL) && TREE_CODE (DECL) == FUNCTION_DECL			\
+	  && DEFAULT_ABI == ABI_AIX && DOT_SYMBOLS)			\
+	{								\
+	  fputs ("\n\t.weakref\t.", (FILE));				\
+	  RS6000_OUTPUT_BASENAME ((FILE), (NAME)); 			\
+	  fputs (", .", (FILE));					\
+	  RS6000_OUTPUT_BASENAME ((FILE), (VALUE));			\
+	}								\
+      fputc ('\n', (FILE));						\
+    } while (0)
+
 /* This implements the `alias' attribute.  */
 #undef	ASM_OUTPUT_DEF_FROM_DECLS
 #define	ASM_OUTPUT_DEF_FROM_DECLS(FILE, DECL, TARGET)			\
