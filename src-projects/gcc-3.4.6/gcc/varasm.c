@@ -2417,6 +2417,19 @@ copy_constant (tree exp)
 	return copy;
       }
 
+    case VECTOR_CST:
+      {
+	tree copy = copy_node (exp);
+	tree list = copy_list (TREE_VECTOR_CST_ELTS (exp));
+	tree tail;
+
+	TREE_VECTOR_CST_ELTS (copy) = list;
+	for (tail = list; tail; tail = TREE_CHAIN (tail))
+	  TREE_VALUE (tail) = copy_constant (TREE_VALUE (tail));
+
+	return copy;
+      }
+
     default:
       {
 	tree t;
