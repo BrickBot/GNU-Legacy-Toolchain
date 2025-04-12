@@ -2065,7 +2065,7 @@ corresponding operators in C or C++, but the front end will sometimes
 generate these expressions anyhow, if it can tell that strictness does
 not matter.
 
-@itemx PLUS_EXPR
+@item PLUS_EXPR
 @itemx MINUS_EXPR
 @itemx MULT_EXPR
 @itemx TRUNC_DIV_EXPR
