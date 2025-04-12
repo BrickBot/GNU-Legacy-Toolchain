@@ -48,6 +48,9 @@ but this also overlapped well with support for GPC and g77.
   + Versions 2.0 and later fail to build if targeting h8300-\*-coff
 
 
+### Updates and Modifications
+A more in-depth description is available in the [patches folder](patches/).
+
 
 ### Combined Folder Composition
 Several folders are duplicated across the various project comprising the toolchain.
