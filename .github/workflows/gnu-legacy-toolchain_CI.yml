@@ -21,12 +21,9 @@ env:
   #    the link https://www.gnu.org/software/automake/manual/html_node/Flag-Variables-Ordering.html
   CROSS_TARGET: h8300-hitachi-coff
 
-  BUILD_DIR_GCC: build/gcc
-  BUILD_DIR_GPC: build/gpc
-  BUILD_DIR_GDB: build/gdb
+  BUILD_DIR_TOOLCHAIN: build/toolchain
   SYSROOT_DIR:   sysroot
   
-  STOW_PACKAGE_NAME: h8300-hitachi-coff-toolchain
   TOOLCHAIN_INSTALL_NAME: h8300-hitachi-coff-toolchain_install
 
 jobs:
@@ -57,25 +54,25 @@ jobs:
       run:  sudo apt-get --assume-yes install $UBUNTU_BUILD_DEPENDS
 
     - name: Setup the build directory for an H8/300 cross-toolchain
-      run:  mkdir -p $BUILD_DIR_GCC
+      run:  mkdir -p $BUILD_DIR_TOOLCHAIN
 
 
     # Run the build steps
     - name: Configure the build for an H8/300 cross-toolchain
       run:  |
-        cd $BUILD_DIR_GCC
+        cd $BUILD_DIR_TOOLCHAIN
         echo "Current working directory: $PWD"
         ../../src-combined/$CROSS_TARGET-configure  --prefix=$GITHUB_WORKSPACE/$SYSROOT_DIR
 
     - name: Execute the build for a GCC H8/300 cross-compiler
       run:  |
-        cd $BUILD_DIR_GCC
+        cd $BUILD_DIR_TOOLCHAIN
         echo "Current working directory: $PWD"
         make --keep-going
 
     - name: Test install the built GCC H8/300 cross-compiler to a sysroot
       run:  |
-        cd $BUILD_DIR_GCC
+        cd $BUILD_DIR_TOOLCHAIN
         echo "Current working directory: $PWD"
         sudo make install
 
@@ -93,7 +90,7 @@ jobs:
 
     - name: Install the built GCC H8/300 cross-compiler using Stow
       run:  |
-        cd $BUILD_DIR_GCC
+        cd $BUILD_DIR_TOOLCHAIN
         echo "Current working directory: $PWD"
         sudo make stow
 
@@ -125,19 +122,19 @@ jobs:
       run:  sudo apt-get --assume-yes install $UBUNTU_BUILD_DEPENDS
 
     - name: Setup the build directory for an H8/300 cross-toolchain
-      run:  mkdir -p $BUILD_DIR_GCC
+      run:  mkdir -p $BUILD_DIR_TOOLCHAIN
 
 
     # Run the build steps
     - name: Configure the build for an H8/300 cross-toolchain
       run:  |
-        cd $BUILD_DIR_GCC
+        cd $BUILD_DIR_TOOLCHAIN
         echo "Current working directory: $PWD"
         ../../src-combined/$CROSS_TARGET-configure  --prefix=$GITHUB_WORKSPACE/$SYSROOT_DIR
 
     - name: Execute the build for a GCC H8/300 cross-compiler
       run:  |
-        cd $BUILD_DIR_GCC/gcc-combined
+        cd $BUILD_DIR_TOOLCHAIN/gcc-combined
         echo "Current working directory: $PWD"
         make --keep-going
 
@@ -161,19 +158,19 @@ jobs:
       run:  sudo apt-get --assume-yes install $UBUNTU_BUILD_DEPENDS
 
     - name: Setup the build directory for an H8/300 cross-toolchain
-      run:  mkdir -p $BUILD_DIR_GCC
+      run:  mkdir -p $BUILD_DIR_TOOLCHAIN
 
 
     # Run the build steps
     - name: Configure the build for an H8/300 cross-toolchain
       run:  |
-        cd $BUILD_DIR_GCC
+        cd $BUILD_DIR_TOOLCHAIN
         echo "Current working directory: $PWD"
         ../../src-combined/$CROSS_TARGET-configure  --prefix=$GITHUB_WORKSPACE/$SYSROOT_DIR
 
     - name: Execute the build for a GDB H8/300 debugger
       run:  |
-        cd $BUILD_DIR_GCC/gdb
+        cd $BUILD_DIR_TOOLCHAIN/gdb
         echo "Current working directory: $PWD"
         make --keep-going
 
@@ -206,23 +203,23 @@ jobs:
 #      run:  sudo apt-get --assume-yes install $UBUNTU_BUILD_DEPENDS
 #
 #    - name: Setup the build folders for a native gcc+binutils+gpc compiler
-#      run:  mkdir -p $BUILD_DIR_GPC
+#      run:  mkdir -p $BUILD_DIR_TOOLCHAIN
 #
 #    - name: Configure the build for a native gcc+binutils+gpc compiler
 #      run:  |
-#        cd $BUILD_DIR_GPC
+#        cd $BUILD_DIR_TOOLCHAIN
 #        echo "Current working directory: $PWD"
 #        ../../src-combined/gcc-combined/configure  --prefix=$GITHUB_WORKSPACE/$SYSROOT_DIR  --program-suffix=3
 #
 #    - name: Execute the build for a native gcc+binutils+gpc compiler
 #      run:  |
-#        cd $BUILD_DIR_GPC
+#        cd $BUILD_DIR_TOOLCHAIN
 #        echo "Current working directory: $PWD"
 #        make --keep-going
 #
 #    - name: Test install the built native gcc+binutils+gpc compiler
 #      run:  |
-#        cd $BUILD_DIR_GPC
+#        cd $BUILD_DIR_TOOLCHAIN
 #        echo "Current working directory: $PWD"
 #        make DESTDIR=$GITHUB_WORKSPACE/$SYSROOT_DIR install
 #
@@ -240,6 +237,6 @@ jobs:
 #
 #    - name: Install the built native gcc+binutils+gpc compiler
 #      run:  |
-#        cd $BUILD_DIR_GPC
+#        cd $BUILD_DIR_TOOLCHAIN
 #        echo "Current working directory: $PWD"
 #        sudo make install
