@@ -150,12 +150,18 @@ echo ".PHONY: $TARGETS_TO_GENERATE stow restow unstow $TARGET_LIST_VARIABLES" >>
 #   to be properly processed as a single quoted argument,
 #   the command must be eval'd instead of being executed directly.
 #   c.f. https://stackoverflow.com/q/39583838/#comment66478321_39583915
+echo "=============="
 echo "CONFIGURE: GDB"
+GDB_COMMAND="$GDB_SRC_DIR/configure $ARGS_TO_PASS  CFLAGS='-g -O2 -std=gnu89' CXXFLAGS='-g -O2 -D_GLIBCXX_USE_CXX11_ABI=0 -std=c++98'  --without-python --prefix=$prefix "
+echo "COMMAND: $GDB_COMMAND"
 mkdir -p "$GDB_BUILD_DIR" && pushd "$GDB_BUILD_DIR" > /dev/null
-eval "$GDB_SRC_DIR/configure $ARGS_TO_PASS  CFLAGS='-g -O2 -std=gnu89' CXXFLAGS='-g -O2 -D_GLIBCXX_USE_CXX11_ABI=0 -std=c++98'  --without-python --prefix=$prefix " || exit 1
+eval "$GDB_COMMAND" || exit 1
 popd > /dev/null
 
+echo "=============="
 echo "CONFIGURE: GCC"
+GCC_COMMAND="CFLAGS='-g -O2 -std=gnu89'  $GCC_SRC_DIR/configure --enable-languages=$languages $ARGS_TO_PASS --prefix=$prefix "
+echo "COMMAND: $GCC_COMMAND"
 mkdir -p "$GCC_BUILD_DIR" && pushd "$GCC_BUILD_DIR" > /dev/null
-eval "CFLAGS='-g -O2 -std=gnu89'  $GCC_SRC_DIR/configure --enable-languages=$languages $ARGS_TO_PASS --prefix=$prefix " || exit 1
+eval "$GCC_COMMAND" || exit 1
 popd > /dev/null
