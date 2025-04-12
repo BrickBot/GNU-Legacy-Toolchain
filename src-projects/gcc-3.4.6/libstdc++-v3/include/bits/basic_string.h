@@ -175,7 +175,16 @@ namespace std
 
         static _Rep&
         _S_empty_rep()
-        { return *reinterpret_cast<_Rep*>(&_S_empty_rep_storage); }
+        {
+#if __GNUC__ >= 4
+	  // Work around type-punning warning in g++4.  _S_empty_rep_storage
+	  // is never modified, so type-punning is ok.
+	  void* __p = reinterpret_cast<void*>(&_S_empty_rep_storage);
+	  return *reinterpret_cast<_Rep*>(__p);
+#else
+	  return *reinterpret_cast<_Rep*>(&_S_empty_rep_storage);
+#endif
+        }
 
         bool
 	_M_is_leaked() const

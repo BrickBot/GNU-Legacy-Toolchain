@@ -337,8 +337,12 @@ namespace _GLIBCXX_STD
       iterator
       insert(iterator __position, const value_type& __x)
       {
+#if __GNUC__ >= 4
+	return _M_t.insert_unique(__position, __x);
+#else
 	typedef typename _Rep_type::iterator _Rep_iterator;
 	return _M_t.insert_unique((_Rep_iterator&)__position, __x);
+#endif
       }
 
       /**
@@ -366,8 +370,12 @@ namespace _GLIBCXX_STD
       void
       erase(iterator __position)
       {
+#if __GNUC__ >= 4
+	_M_t.erase(__position);
+#else
 	typedef typename _Rep_type::iterator _Rep_iterator;
 	_M_t.erase((_Rep_iterator&)__position);
+#endif
       }
 
       /**
@@ -398,8 +406,12 @@ namespace _GLIBCXX_STD
       void
       erase(iterator __first, iterator __last)
       {
+#if __GNUC__ >= 4
+	_M_t.erase(__first, __last);
+#else
 	typedef typename _Rep_type::iterator _Rep_iterator;
 	_M_t.erase((_Rep_iterator&)__first, (_Rep_iterator&)__last);
+#endif
       }
 
       /**

@@ -140,7 +140,7 @@ namespace _GLIBCXX_STD
 	{
 	  const difference_type __n = __last - __first;
 	  const difference_type __elems_before = __first - this->_M_impl._M_start;
-	  if (static_cast<size_type>(__elems_before) < (size() - __n) / 2)
+	  if (static_cast<size_type>(__elems_before) <= (size() - __n) / 2)
 	    {
 	      std::copy_backward(this->_M_impl._M_start, __first, __last);
 	      iterator __new_start = this->_M_impl._M_start + __n;
