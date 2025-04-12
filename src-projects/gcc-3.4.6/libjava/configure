@@ -4128,6 +4128,9 @@ use_gtk_awt=""
 # The default toolkit to use is the first one specified.
 TOOLKIT=
 
+if test -n "${with_multisubdir}"; then
+  peerlibs=no
+fi
 
 for peer in $peerlibs ; do
   case $peer in

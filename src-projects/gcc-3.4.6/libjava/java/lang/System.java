@@ -355,6 +355,7 @@ public final class System
    * <dt> gnu.java.io.encoding_scheme_alias.latin?       <dd>8859_?
    * <dt> gnu.java.io.encoding_scheme_alias.UTF-8        <dd>UTF8
    * <dt> gnu.java.io.encoding_scheme_alias.utf-8        <dd>UTF8
+   * <dt> gnu.java.util.zoneinfo.dir	<dd>Root of zoneinfo tree
    * </dl>
    *
    * @return the system properties, will never be null
