@@ -3,6 +3,9 @@ Patches
 Known patches are listed below.  Those not marked with ~~strikethrough~~ have been applied to the code in this respository.
 Unapplied patches might be specific to a particular distribution or duplicate patches from other sources.
 
+Please note that these patches do _not_ reflect the only changes to the code.  Other changes were made as needed to
+address various build issues and can be reviewed in the commit history.
+
 
 Binutils
 --------
@@ -50,7 +53,7 @@ with patch descriptions [available here](https://udd.debian.org/patches.cgi?src=
 | ❌       | ~~131-sprintf.patch~~                | Was also included in v-10 |
 | ❌       | ~~132-texinfo-fixes.patch~~          | Was also included in v-10 |
 |          | 133-configure-signatures.patch       | New subsequent to v-10 |
-|          | 134-texinfo-fixes.patch              | New subsequent to v-10 |
+| ✔       | 134-texinfo-fixes.patch              | New subsequent to v-10 |
 |          | 135-update-autotools.patch           | New subsequent to v-10 |
 |          | 136-ld-libdir.patch                  | New subsequent to v-10 |
 |          | 137-abort-on-invalid-header.patch    | New subsequent to v-10 |
@@ -90,66 +93,66 @@ Red Hat provided [backwards compatibility patches for GCC 3.4](https://access.re
 
 | Applied? | Patch File Name                                    | Notes |
 | -------- | -------------------------------------------------- | ----- |
-|          | 001-gcc34-multi32-hack.patch                       |       |
-|          | 002-gcc34-ice-hack.patch                           |       |
-|          | 003-gcc34-ppc64-m32-m64-multilib-only.patch        |       |
-|          | 004-gcc34-ia64-lib64.patch                         |       |
-|          | 005-gcc34-java-nomulti.patch                       |       |
-|          | 006-gcc34-gnuc-rh-release.patch                    |       |
-|          | 007-gcc34-pr16104.patch                            |       |
-|          | 008-gcc34-var-tracking-fix.patch                   |       |
-|          | 009-gcc34-i386-movsi-insv.patch                    |       |
-|          | 010-gcc34-pr18925.patch                            |       |
-|          | 011-gcc34-pr14084.patch                            |       |
-|          | 012-gcc34-hashtab-recursion.patch                  |       |
-|          | 013-gcc34-java-jnilink.patch                       |       |
-|          | 014-gcc34-pr21955.patch                            |       |
-|          | 015-gcc34-vsb-stack.patch                          |       |
-|          | 016-gcc34-pr18300.patch                            |       |
-|          | 017-gcc34-rh156291.patch                           |       |
-|          | 018-gcc34-weakref.patch                            |       |
-|          | 019-gcc34-dwarf2-usefbreg.patch                    |       |
-|          | 020-gcc34-dwarf2-prefer-1elt-vartracking.patch     |       |
-|          | 021-gcc34-dwarf2-pr20268.patch                     |       |
-|          | 022-gcc34-dwarf2-inline-details.patch              |       |
-|          | 023-gcc34-dwarf2-frame_base.patch                  |       |
-|          | 024-gcc34-dwarf2-i386-multreg1.patch               |       |
-|          | 025-gcc34-dwarf2-i386-multreg2.patch               |       |
-|          | 026-gcc34-rh176182.patch                           |       |
-|          | 027-gcc34-pr11953.patch                            |       |
-|          | 028-gcc34-pr23591.patch                            |       |
-|          | 029-gcc34-pr26208.patch                            |       |
-|          | 030-gcc34-pr8788.patch                             |       |
-|          | 031-gcc34-rh137200.patch                           |       |
-|          | 032-gcc34-rh172117.patch                           |       |
-|          | 033-gcc34-rh172876.patch                           |       |
-|          | 034-gcc34-rh178062.patch                           |       |
-|          | 035-gcc34-pr21412.patch                            |       |
-|          | 036-gcc34-sw2438.patch                             |       |
-|          | 037-gcc34-pr26208-workaround.patch                 |       |
-|          | 038-gcc34-libgcc_eh-hidden.patch                   |       |
-|          | 039-gcc34-frame-base-loclist.patch                 |       |
-|          | 040-gcc34-CVE-2006-3619.patch                      |       |
-|          | 041-gcc34-dwarf2-inline-details-fix.patch          |       |
-|          | 042-gcc34-CXXABI131.patch                          |       |
-|          | 043-gcc34-rh205919.patch                           |       |
-|          | 044-gcc34-rh207277.patch                           |       |
-|          | 045-gcc34-var-tracking-coalesce.patch              |       |
-|          | 046-gcc34-java-zoneinfo.patch                      |       |
-|          | 047-gcc34-libgcc-additions.patch                   |       |
-|          | 048-gcc34-pr24975.patch                            |       |
-|          | 049-gcc34-rh233941.patch                           |       |
-|          | 050-gcc34-rh234515.patch                           |       |
-|          | 051-gcc34-rh235008.patch                           |       |
-|          | 052-gcc34-rh235255.patch                           |       |
-|          | 053-gcc34-rh242685.patch                           |       |
-|          | 100-gcc34-ldbl-hack.patch                          |       |
-|          | 101-gcc34-makeinfo.patch                           |       |
-| ✔       | 102a-gcc34-bison4.patch                            |       |
-| ✔       | 102b-gcc34-bison.patch                             |       |
-|          | 103-gcc34-pr56258.patch                            |       |
+| ❌       | 001-gcc34-multi32-hack.patch                       | Sparc optimization hack |
+| ✔       | 002-gcc34-ice-hack.patch                           | GCC compiler exit codes |
+| ✔       | 003-gcc34-ppc64-m32-m64-multilib-only.patch        | Config |
+| ✔       | 004-gcc34-ia64-lib64.patch                         | Config |
+| ✔       | 005-gcc34-java-nomulti.patch                       | Java  |
+| ❌       | 006-gcc34-gnuc-rh-release.patch                    | Red Hat specific |
+| ✔       | 007-gcc34-pr16104.patch                            | GCC   |
+|          | 008-gcc34-var-tracking-fix.patch                   | Dwarf2 |
+| ✔       | 009-gcc34-i386-movsi-insv.patch                    | Config |
+| ❌       | 010-gcc34-pr18925.patch                            | C++ vars – creates undefined reference to “determine_visibility” |
+| ✔       | 011-gcc34-pr14084.patch                            | GCC emit |
+| ✔       | 012-gcc34-hashtab-recursion.patch                  | GCC vars |
+| ✔       | 013-gcc34-java-jnilink.patch                       | Java  |
+| ❌       | 014-gcc34-pr21955.patch                            | libstdc++-v3 – Missing files referenced in Makefile |
+| ❌       | 015-gcc34-vsb-stack.patch                          | GCC – auto-patching failed |
+| ✔       | 016-gcc34-pr18300.patch                            | Config |
+| ✔       | 017-gcc34-rh156291.patch                           | GCC   |
+| ✔       | 018-gcc34-weakref.patch                            | WeakRef |
+|          | 019-gcc34-dwarf2-usefbreg.patch                    | Dwarf2 |
+|          | 020-gcc34-dwarf2-prefer-1elt-vartracking.patch     | Dwarf2 |
+|          | 021-gcc34-dwarf2-pr20268.patch                     | Dwarf2 |
+|          | 022-gcc34-dwarf2-inline-details.patch              | Dwarf2 |
+|          | 023-gcc34-dwarf2-frame_base.patch                  | Dwarf2 |
+|          | 024-gcc34-dwarf2-i386-multreg1.patch               | Dwarf2 |
+|          | 025-gcc34-dwarf2-i386-multreg2.patch               | Dwarf2 |
+|          | 026-gcc34-rh176182.patch                           | Dwarf2 |
+| ✔       | 027-gcc34-pr11953.patch                            | Config |
+| ❌       | 028-gcc34-pr23591.patch                            | libstdc++-v3 – Unsupported on H8/300 |
+|          | 029-gcc34-pr26208.patch                            | Unwind, impacting multiple: Config, Java, libstdc++-v3, GCC |
+| ✔       | 030-gcc34-pr8788.patch                             | GCC   |
+| ✔       | 031-gcc34-rh137200.patch                           | GCC   |
+| ✔       | 032-gcc34-rh172117.patch                           | GCC   |
+|          | 033-gcc34-rh172876.patch                           | Dwarf2 |
+| ✔       | 034-gcc34-rh178062.patch                           | GCC vars |
+| ✔       | 035-gcc34-pr21412.patch                            | Config |
+| ❌       | 036-gcc34-sw2438.patch                             | GCC vars – auto-patching failed |
+|          | 037-gcc34-pr26208-workaround.patch                 | Unwind |
+| ✔       | 038-gcc34-libgcc_eh-hidden.patch                   | libgcc |
+|          | 039-gcc34-frame-base-loclist.patch                 | Dwarf2 + Unwind |
+| ✔       | 040-gcc34-CVE-2006-3619.patch                      | Java  |
+|          | 041-gcc34-dwarf2-inline-details-fix.patch          | Dwarf2 |
+| ✔       | 042-gcc34-CXXABI131.patch                          | libstdc++-v3 |
+| ✔       | 043-gcc34-rh205919.patch                           | GCC   |
+| ✔       | 044-gcc34-rh207277.patch                           | GCC   |
+| ❌       | 045-gcc34-var-tracking-coalesce.patch              | GCC vars – a file to patch (var-tracking.c) does not exist |
+| ✔       | 046-gcc34-java-zoneinfo.patch                      | Java  |
+| ✔       | 047-gcc34-libgcc-additions.patch                   | libgcc |
+| ✔       | 048-gcc34-pr24975.patch                            | libstdc++-v3 |
+| ✔       | 049-gcc34-rh233941.patch                           | GCC/g77 |
+| ✔       | 050-gcc34-rh234515.patch                           | libstdc++-v3 |
+| ✔       | 051-gcc34-rh235008.patch                           | GCC   |
+| ✔       | 052-gcc34-rh235255.patch                           | GCC   |
+| ✔       | 053-gcc34-rh242685.patch                           | libstdc++-v3 |
+| ❌       | 100-gcc34-ldbl-hack.patch                          | libstdc++-v3 |
+| ✔       | 101-gcc34-makeinfo.patch                           | Config (for Makeinfo 4.10+) |
+| ✔       | 102a-gcc34-bison4.patch                            | Fixes for Bison breaking changes |
+| ✔       | 102b-gcc34-bison.patch                             | Fixes for Bison breaking changes |
+| ✔       | 103-gcc34-pr56258.patch                            | Address Makeinfo v5+ documentation errors |
 |          | dummylib.sh                                        |       |
-| ✔       | update-siginfo.sh                                  |       |
+| ✔       | update-siginfo.sh                                  | `struct siginfo` to `siginfo_t` |
 
 ### Debian
 Debian provides a [gcc-h8300-hms](https://packages.debian.org/source/stable/gcc-h8300-hms) package
