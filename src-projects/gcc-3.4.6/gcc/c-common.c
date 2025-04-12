@@ -748,6 +748,7 @@ static tree handle_section_attribute (tree *, tree, tree, int, bool *);
 static tree handle_aligned_attribute (tree *, tree, tree, int, bool *);
 static tree handle_weak_attribute (tree *, tree, tree, int, bool *) ;
 static tree handle_alias_attribute (tree *, tree, tree, int, bool *);
+static tree handle_weakref_attribute (tree *, tree, tree, int, bool *) ;
 static tree handle_visibility_attribute (tree *, tree, tree, int,
 					 bool *);
 static tree handle_tls_model_attribute (tree *, tree, tree, int,
@@ -820,6 +821,8 @@ const struct attribute_spec c_common_attribute_table[] =
 			      handle_weak_attribute },
   { "alias",                  1, 1, true,  false, false,
 			      handle_alias_attribute },
+  { "weakref",                0, 1, true,  false, false,
+			      handle_weakref_attribute },
   { "no_instrument_function", 0, 0, true,  false, false,
 			      handle_no_instrument_function_attribute },
   { "malloc",                 0, 0, true,  false, false,
@@ -4913,13 +4916,52 @@ handle_alias_attribute (tree *node, tree name, tree args,
       if (TREE_CODE (decl) == FUNCTION_DECL)
 	DECL_INITIAL (decl) = error_mark_node;
       else
-	DECL_EXTERNAL (decl) = 0;
+	{
+	  if (lookup_attribute ("weakref", DECL_ATTRIBUTES (decl)))
+	    DECL_EXTERNAL (decl) = 1;
+	  else
+	    DECL_EXTERNAL (decl) = 0;
+	}
     }
   else
     {
       warning ("`%s' attribute ignored", IDENTIFIER_POINTER (name));
       *no_add_attrs = true;
     }
+
+  return NULL_TREE;
+}
+
+/* Handle a "weakref" attribute; arguments as in struct
+   attribute_spec.handler.  */
+
+static tree
+handle_weakref_attribute (tree *node, tree name ATTRIBUTE_UNUSED, tree args,
+			  int flags, bool *no_add_attrs)
+{
+  tree attr = NULL_TREE;
+
+  /* The idea here is that `weakref("name")' mutates into `weakref,
+     alias("name")', and weakref without arguments, in turn,
+     implicitly adds weak. */
+
+  if (args)
+    {
+      attr = tree_cons (get_identifier ("alias"), args, attr);
+      attr = tree_cons (get_identifier ("weakref"), NULL_TREE, attr);
+
+      *no_add_attrs = true;
+    }
+  else
+    {
+      if (lookup_attribute ("alias", DECL_ATTRIBUTES (*node)))
+	error ("%Jweakref attribute must appear before alias attribute",
+	       *node);
+
+      attr = tree_cons (get_identifier ("weak"), NULL_TREE, attr);
+    }
+
+  decl_attributes (node, attr, flags);
 
   return NULL_TREE;
 }

@@ -532,6 +532,12 @@ namespace std
       iterator
       _M_insert(_Base_ptr __x, _Base_ptr __y, const value_type& __v);
 
+#if __GNUC__ >= 4
+      const_iterator
+      _M_insert(_Const_Base_ptr __x, _Const_Base_ptr __y,
+		const value_type& __v);
+#endif
+
       _Link_type
       _M_copy(_Const_Link_type __x, _Link_type __p);
 
@@ -631,8 +637,18 @@ namespace std
       iterator
       insert_unique(iterator __position, const value_type& __x);
 
+#if __GNUC__ >= 4
+      const_iterator
+      insert_unique(const_iterator __position, const value_type& __x);
+#endif
+
       iterator
       insert_equal(iterator __position, const value_type& __x);
+
+#if __GNUC__ >= 4
+      const_iterator
+      insert_equal(const_iterator __position, const value_type& __x);
+#endif
 
       template<typename _InputIterator>
       void
@@ -645,11 +661,21 @@ namespace std
       void
       erase(iterator __position);
 
+#if __GNUC__ >= 4
+      void
+      erase(const_iterator __position);
+#endif
+
       size_type
       erase(const key_type& __x);
 
       void
       erase(iterator __first, iterator __last);
+
+#if __GNUC__ >= 4
+      void
+      erase(const_iterator __first, const_iterator __last);
+#endif
 
       void
       erase(const key_type* __first, const key_type* __last);
@@ -793,6 +819,28 @@ namespace std
       return iterator(__z);
     }
 
+#if __GNUC__ >= 4
+  template<typename _Key, typename _Val, typename _KeyOfValue,
+           typename _Compare, typename _Alloc>
+    typename _Rb_tree<_Key,_Val,_KeyOfValue,_Compare,_Alloc>::const_iterator
+    _Rb_tree<_Key,_Val,_KeyOfValue,_Compare,_Alloc>::
+    _M_insert(_Const_Base_ptr __x, _Const_Base_ptr __p, const _Val& __v)
+    {
+      _Link_type __z = _M_create_node(__v);
+      bool __insert_left;
+
+      __insert_left = __x != 0 || __p == _M_end()
+	              || _M_impl._M_key_compare(_KeyOfValue()(__v), 
+						_S_key(__p));
+
+      _Rb_tree_insert_and_rebalance(__insert_left, __z,
+				    const_cast<_Base_ptr>(__p),  
+				    this->_M_impl._M_header);
+      ++_M_impl._M_node_count;
+      return const_iterator(__z);
+    }
+#endif
+
   template<typename _Key, typename _Val, typename _KeyOfValue,
            typename _Compare, typename _Alloc>
     typename _Rb_tree<_Key,_Val,_KeyOfValue,_Compare,_Alloc>::iterator
@@ -928,6 +976,54 @@ namespace std
 	}
     }
 
+#if __GNUC__ >= 4
+  template<typename _Key, typename _Val, typename _KeyOfValue,
+           typename _Compare, typename _Alloc>
+    typename _Rb_tree<_Key, _Val, _KeyOfValue, _Compare, _Alloc>::const_iterator
+    _Rb_tree<_Key, _Val, _KeyOfValue, _Compare, _Alloc>::
+    insert_unique(const_iterator __position, const _Val& __v)
+    {
+      if (__position._M_node == _M_leftmost())
+	{
+	  // begin()
+	  if (size() > 0
+	      && _M_impl._M_key_compare(_KeyOfValue()(__v), 
+					_S_key(__position._M_node)))
+	    return _M_insert(__position._M_node, __position._M_node, __v);
+	  // First argument just needs to be non-null.
+	  else
+	    return const_iterator(insert_unique(__v).first);
+	}
+      else if (__position._M_node == _M_end())
+	{
+	  // end()
+	  if (_M_impl._M_key_compare(_S_key(_M_rightmost()), 
+				     _KeyOfValue()(__v)))
+	    return _M_insert(0, _M_rightmost(), __v);
+	  else
+	    return const_iterator(insert_unique(__v).first);
+	}
+      else
+	{
+	  const_iterator __before = __position;
+	  --__before;
+	  if (_M_impl._M_key_compare(_S_key(__before._M_node), 
+				     _KeyOfValue()(__v))
+	      && _M_impl._M_key_compare(_KeyOfValue()(__v),
+					_S_key(__position._M_node)))
+	    {
+	      if (_S_right(__before._M_node) == 0)
+		return _M_insert(0, __before._M_node, __v);
+	      else
+		return _M_insert(__position._M_node, __position._M_node, __v);
+	      // First argument just needs to be non-null.
+	    }
+	  else
+	    return const_iterator(insert_unique(__v).first);
+	}
+    }
+#endif
+
   template<typename _Key, typename _Val, typename _KeyOfValue,
            typename _Compare, typename _Alloc>
     typename _Rb_tree<_Key,_Val,_KeyOfValue,_Compare,_Alloc>::iterator
@@ -974,6 +1070,54 @@ namespace std
 	}
     }
 
+#if __GNUC__ >= 4
+  template<typename _Key, typename _Val, typename _KeyOfValue,
+           typename _Compare, typename _Alloc>
+    typename _Rb_tree<_Key,_Val,_KeyOfValue,_Compare,_Alloc>::const_iterator
+    _Rb_tree<_Key,_Val,_KeyOfValue,_Compare,_Alloc>::
+    insert_equal(const_iterator __position, const _Val& __v)
+    {
+      if (__position._M_node == _M_leftmost())
+	{
+	  // begin()
+	  if (size() > 0
+	      && !_M_impl._M_key_compare(_S_key(__position._M_node),
+					 _KeyOfValue()(__v)))
+	    return _M_insert(__position._M_node, __position._M_node, __v);
+	  // first argument just needs to be non-null
+	  else
+	    return const_iterator(insert_equal(__v));
+	}
+      else if (__position._M_node == _M_end())
+	{
+	  // end()
+	  if (!_M_impl._M_key_compare(_KeyOfValue()(__v), 
+				      _S_key(_M_rightmost())))
+	    return _M_insert(0, _M_rightmost(), __v);
+	  else
+	    return const_iterator(insert_equal(__v));
+	}
+      else
+	{
+	  const_iterator __before = __position;
+	  --__before;
+	  if (!_M_impl._M_key_compare(_KeyOfValue()(__v), 
+				      _S_key(__before._M_node))
+	      && !_M_impl._M_key_compare(_S_key(__position._M_node),
+					 _KeyOfValue()(__v)))
+	    {
+	      if (_S_right(__before._M_node) == 0)
+		return _M_insert(0, __before._M_node, __v);
+	      else
+		return _M_insert(__position._M_node, __position._M_node, __v);
+	      // First argument just needs to be non-null.
+	    }
+	  else
+	    return const_iterator(insert_equal(__v));
+	}
+    }
+#endif
+
   template<typename _Key, typename _Val, typename _KoV,
            typename _Cmp, typename _Alloc>
     template<class _II>
@@ -1007,6 +1151,20 @@ namespace std
       destroy_node(__y);
       --_M_impl._M_node_count;
     }
+
+#if __GNUC__ >= 4
+  template<typename _Key, typename _Val, typename _KeyOfValue,
+           typename _Compare, typename _Alloc>
+    inline void
+    _Rb_tree<_Key,_Val,_KeyOfValue,_Compare,_Alloc>::erase(const_iterator __position)
+    {
+      _Link_type __y =
+	static_cast<_Link_type>(_Rb_tree_rebalance_for_erase(const_cast<_Base_ptr>(__position._M_node),
+							     this->_M_impl._M_header));
+      destroy_node(__y);
+      --_M_impl._M_node_count;
+    }
+#endif
 
   template<typename _Key, typename _Val, typename _KeyOfValue,
            typename _Compare, typename _Alloc>
@@ -1081,6 +1239,20 @@ namespace std
       else
 	while (__first != __last) erase(__first++);
     }
+
+#if __GNUC__ >= 4
+  template<typename _Key, typename _Val, typename _KeyOfValue,
+           typename _Compare, typename _Alloc>
+    void
+    _Rb_tree<_Key,_Val,_KeyOfValue,_Compare,_Alloc>::
+    erase(const_iterator __first, const_iterator __last)
+    {
+      if (__first == begin() && __last == end())
+	clear();
+      else
+	while (__first != __last) erase(__first++);
+    }
+#endif
 
   template<typename _Key, typename _Val, typename _KeyOfValue,
            typename _Compare, typename _Alloc>

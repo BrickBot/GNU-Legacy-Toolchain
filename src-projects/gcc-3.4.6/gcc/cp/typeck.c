@@ -6443,7 +6443,7 @@ casts_away_constness (tree t1, tree t2)
 tree
 non_reference (tree t)
 {
-  if (TREE_CODE (t) == REFERENCE_TYPE)
+  if (t != NULL_TREE && TREE_CODE (t) == REFERENCE_TYPE)
     t = TREE_TYPE (t);
   return t;
 }

@@ -1,0 +1,29 @@
+From 2e1825b775972192593caf73aed645b14c359e8d Mon Sep 17 00:00:00 2001
+From: Mike Frysinger <vapier@gentoo.org>
+Date: Sat, 12 Nov 2016 01:02:23 -0500
+Subject: [PATCH 047/122] sim: mips: add PR info to ChangeLog
+
+---
+ sim/mips/ChangeLog | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/sim/mips/ChangeLog b/sim/mips/ChangeLog
+index 2b1a032b08..9962a6f5f4 100644
+--- a/sim/mips/ChangeLog
++++ b/sim/mips/ChangeLog
+@@ -1,10 +1,12 @@
+ 2016-11-11  Mike Frysinger  <vapier@gentoo.org>
+ 
++	PR sim/20808
+ 	* dv-tx3904cpu.c (deliver_tx3904cpu_interrupt): Define CPU to cpu
+ 	and SD to sd.
+ 
+ 2016-11-11  Mike Frysinger  <vapier@gentoo.org>
+ 
++	PR sim/20809
+ 	* mips.igen (check_u64): Enable for `r3900'.
+ 
+ 2016-02-05  Mike Frysinger  <vapier@gentoo.org>
+-- 
+2.11.0
+

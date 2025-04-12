@@ -1,7 +1,7 @@
 #!/bin/sh
 
 SCRIPT_DIR=$(dirname $0)
-DEFAULT_PREFIX_ARG="--prefix=/usr/local/brickbot"
+DEFAULT_PREFIX_ARG="--prefix=/opt/stow/h8300-hitachi-coff-toolchain"
 
 if [ $# -gt 0 ]; then
   ALL_ARGS=$(printf -- '"%s" ' "$@")
@@ -15,11 +15,19 @@ for ARG in "$@"; do
   esac
 done
 
-# --without-gpc-shared
-CONFIGURE_ARGS="--with-gcc --with-gnu-as --with-gnu-ld --with-newlib \
-	--disable-libssp --disable-multilib \
-	--enable-target-optspace --target=h8300-hitachi-coff \
-	$DEFAULT_PREFIX_ARG $ALL_ARGS"
+CONFIGURE_ARGS=" \
+  --with-gcc \
+  --with-gnu-as \
+  --with-gnu-ld \
+  --with-newlib \
+  --disable-libssp \
+  --disable-multilib \
+  --disable-libada \
+  --without-gpc-shared \
+  --enable-target-optspace \
+  --target=h8300-hitachi-coff \
+  $DEFAULT_PREFIX_ARG \
+  $ALL_ARGS"
 
 # For any quoted substrings in variables (such as $ALL_ARGS might have)
 #   to be properly processed as a single quoted argument,

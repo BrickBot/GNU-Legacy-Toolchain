@@ -1,4 +1,9 @@
 # Use system libunwind library on IA-64 GLIBC based system.
+
+MULTILIB_OPTIONS = m64/m32
+MULTILIB_DIRNAMES = 64 32
+MULTILIB_EXCEPTIONS = m32
+MULTILIB_OSDIRNAMES = ../lib64 ../lib
 LIB2ADDEH = $(srcdir)/unwind-sjlj.c $(srcdir)/unwind-c.c \
   $(srcdir)/unwind-compat.c
 

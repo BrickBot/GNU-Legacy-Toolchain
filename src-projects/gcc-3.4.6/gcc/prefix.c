@@ -238,6 +238,105 @@ tr (char *string, int c1, int c2)
   while (*string++);
 }
 
+/* Strip dir/.. from a pathname when it makes sense, e.g., when this
+   would turn an inaccessible pathname into an accessible one.
+
+   We short-circuit dir/.. when dir does not exist, and when
+   some/dir/../thing does not exist but some/thing does.  In case
+   there are multiple possible dir/../ stripping possibilities that
+   would turn an inaccessible pathname into an accessible one, the one
+   closer to the end of the pathname is preferred.
+
+   RESULT is the pathname that might contain such dotdot sequences to
+   be stripped.  P points into RESULT, and indicates the location
+   where we should start looking for ../ sequences.
+
+   Even though RESULT is const, P is not, and that's because
+   characters in it may be temporarily overwritten, so RESULT must not
+   be in read-only storage.
+
+   The returned value is either a newly-allocated memory area, holding
+   a string that is the result of dotdot-stripping from the original
+   input strip, or RESULT itself, in which case any modifications made
+   to the string will have been undone.  */
+
+static const char *
+maybe_strip_dotdots (const char *result, char *p)
+{
+  char *temp;
+  const char *path, *before, *after;
+  size_t len;
+
+  while (1)
+    {
+      p = strchr (p, '.');
+      if (p == NULL)
+	return result;
+      /* Look for `/../'  */
+      if (p[1] == '.'
+	  && IS_DIR_SEPARATOR (p[2])
+	  && (p != result && IS_DIR_SEPARATOR (p[-1])))
+	break;
+      else
+	++p;
+    }
+
+  *p = 0;
+  if (access (result, X_OK) == 0)
+    {
+      *p = '.';
+
+      path = maybe_strip_dotdots (result, p + 3);
+      if (access (path, F_OK) == 0)
+	return path;
+      if (path != result)
+	free ((char *) path);
+    }
+  else
+    *p = '.';
+
+  /* If we couldn't access the dir, or if recursion resulted in a
+     non-accessible pathname, we try stripping out dir/../.  If `dir'
+     turns out to be `.', strip one more path component.  */
+  before = p;
+  do
+    {
+      --before;
+      while (before != result && IS_DIR_SEPARATOR (*before))
+	--before;
+      while (before != result && !IS_DIR_SEPARATOR (before[-1]))
+	--before;
+    }
+  while (before != result && *before == '.'
+	 && IS_DIR_SEPARATOR (*(before + 1)));
+  /* If we have something like `./..' or `/..', don't
+     strip anything more.  */
+  if (*before == '.' || IS_DIR_SEPARATOR (*before))
+    return result;
+
+  after = p + 3;
+  while (IS_DIR_SEPARATOR (*after))
+    ++after;
+
+  len = (after - result) + strlen (after);
+
+  temp = xmalloc (len + 1 - (after - before));
+  memcpy (temp, result, before - result);
+  memcpy (temp + (before - result), after, len + 1 - (after - result));
+
+  path = maybe_strip_dotdots (temp, temp + (before - result));
+
+  if (path != temp)
+    free (temp);
+
+  if (access (path, F_OK) == 0)
+    result = path;
+  else if (path != result)
+    free ((char *) path);
+
+  return result;
+}
+
 /* Update PATH using KEY if PATH starts with PREFIX.  The returned
    string is always malloc-ed, and the caller is responsible for
    freeing it.  */
@@ -245,7 +344,7 @@ tr (char *string, int c1, int c2)
 char *
 update_path (const char *path, const char *key)
 {
-  char *result, *p;
+  char *result, *temp;
 
   if (! strncmp (path, std_prefix, strlen (std_prefix)) && key != 0)
     {
@@ -265,62 +364,11 @@ update_path (const char *path, const char *key)
   else
     result = xstrdup (path);
 
-#ifndef ALWAYS_STRIP_DOTDOT
-#define ALWAYS_STRIP_DOTDOT 0
-#endif
+  temp = result;
+  result = (char *) maybe_strip_dotdots (temp, temp);
 
-  p = result;
-  while (1)
-    {
-      char *src, *dest;
-
-      p = strchr (p, '.');
-      if (p == NULL)
-	break;
-      /* Look for `/../'  */
-      if (p[1] == '.'
-	  && IS_DIR_SEPARATOR (p[2])
-	  && (p != result && IS_DIR_SEPARATOR (p[-1])))
-	{
-	  *p = 0;
-	  if (!ALWAYS_STRIP_DOTDOT && access (result, X_OK) == 0)
-	    {
-	      *p = '.';
-	      break;
-	    }
-	  else
-	    {
-	      /* We can't access the dir, so we won't be able to
-		 access dir/.. either.  Strip out `dir/../'.  If `dir'
-		 turns out to be `.', strip one more path component.  */
-	      dest = p;
-	      do
-		{
-		  --dest;
-		  while (dest != result && IS_DIR_SEPARATOR (*dest))
-		    --dest;
-		  while (dest != result && !IS_DIR_SEPARATOR (dest[-1]))
-		    --dest;
-		}
-	      while (dest != result && *dest == '.');
-	      /* If we have something like `./..' or `/..', don't
-		 strip anything more.  */
-	      if (*dest == '.' || IS_DIR_SEPARATOR (*dest))
-		{
-		  *p = '.';
-		  break;
-		}
-	      src = p + 3;
-	      while (IS_DIR_SEPARATOR (*src))
-		++src;
-	      p = dest;
-	      while ((*dest++ = *src++) != 0)
-		;
-	    }
-	}
-      else
-	++p;
-    }
+  if (result != temp)
+    free (temp);
 
 #ifdef UPDATE_PATH_HOST_CANONICALIZE
   /* Perform host dependent canonicalization when needed.  */

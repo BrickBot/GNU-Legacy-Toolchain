@@ -2073,6 +2073,7 @@ gnu/java/text/SentenceBreakIterator.java \
 gnu/java/text/WordBreakIterator.java \
 gnu/java/util/DoubleEnumeration.java \
 gnu/java/util/EmptyEnumeration.java \
+gnu/java/util/ZoneInfo.java \
 gnu/java/util/prefs/MemoryBasedFactory.java \
 gnu/java/util/prefs/NodeReader.java \
 gnu/java/util/prefs/MemoryBasedPreferences.java \
@@ -3331,6 +3332,7 @@ DEP_FILES =  .deps/$(srcdir)/$(CONVERT_DIR)/gen-from-JIS.P \
 .deps/gnu/java/text/WordBreakIterator.P \
 .deps/gnu/java/util/DoubleEnumeration.P \
 .deps/gnu/java/util/EmptyEnumeration.P \
+.deps/gnu/java/util/ZoneInfo.P \
 .deps/gnu/java/util/prefs/FileBasedFactory.P \
 .deps/gnu/java/util/prefs/MemoryBasedFactory.P \
 .deps/gnu/java/util/prefs/MemoryBasedPreferences.P \

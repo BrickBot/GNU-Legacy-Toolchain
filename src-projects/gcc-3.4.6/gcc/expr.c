@@ -588,7 +588,26 @@ convert_move (rtx to, rtx from, int unsignedp)
   if (VECTOR_MODE_P (to_mode) || VECTOR_MODE_P (from_mode))
     {
       if (GET_MODE_BITSIZE (from_mode) != GET_MODE_BITSIZE (to_mode))
-	abort ();
+        {
+          if (VECTOR_MODE_P (from_mode))
+            {
+              enum machine_mode new_mode;
+
+              new_mode = mode_for_size (GET_MODE_BITSIZE (from_mode),
+                                        MODE_INT, 0);
+              from = simplify_gen_subreg (new_mode, from, from_mode, 0);
+            }
+          if (VECTOR_MODE_P (to_mode))
+            {
+              enum machine_mode new_mode;
+
+              new_mode = mode_for_size (GET_MODE_BITSIZE (to_mode),
+                                        MODE_INT, 0);
+              to = simplify_gen_subreg (new_mode, to, to_mode, 0);
+            }
+          convert_move (to, from, unsignedp);
+          return;
+        }
 
       if (VECTOR_MODE_P (to_mode))
 	from = simplify_gen_subreg (to_mode, from, GET_MODE (from), 0);
@@ -9007,6 +9026,9 @@ expand_expr_real (tree exp, rtx target, enum machine_mode tmode,
 
 	if (! target)
 	  target = gen_reg_rtx (TYPE_MODE (TREE_TYPE (exp)));
+	else if (GET_CODE (target) == MEM
+		 && reg_overlap_mentioned_p (target, op1))
+	  op1 = force_reg (mode, op1);
 
 	start_sequence ();
 

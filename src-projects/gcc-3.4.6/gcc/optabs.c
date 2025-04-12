@@ -1920,16 +1920,19 @@ expand_vector_binop (enum machine_mode mode, optab binoptab, rtx op0,
 
       for (i = 0; i < elts; ++i)
 	{
-	  /* If this is part of a register, and not the first item in the
-	     word, we can't store using a SUBREG - that would clobber
-	     previous results.
+	  /* If this is part of a register, and not the first item in
+	     the word, we can't store using a SUBREG - that would
+	     clobber previous results, or even the input operands, if
+	     target matches any of them.
 	     And storing with a SUBREG is only possible for the least
 	     significant part, hence we can't do it for big endian
 	     (unless we want to permute the evaluation order.  */
 	  if (GET_CODE (target) == REG
 	      && (BYTES_BIG_ENDIAN
 		  ? subsize < UNITS_PER_WORD
-		  : ((i * subsize) % UNITS_PER_WORD) != 0))
+		  : (((i * subsize) % UNITS_PER_WORD) != 0
+		     || (subsize < UNITS_PER_WORD
+			 && (target == op0 || target == op1)))))
 	    t = NULL_RTX;
 	  else
 	    t = simplify_gen_subreg (submode, target, mode, i * subsize);

@@ -45,6 +45,26 @@ exception statement from your version. */
 #define GETCLASS(c) *(jclass*)(c)
 
 JNIEXPORT jclass JNICALL
+LINK_ReallyLinkClass	(JNIEnv * env, linkedClass * c, char * name)
+{
+	(void) env;
+	(void) c;
+	(void) name;
+	abort ();
+	return NULL;
+}
+
+JNIEXPORT jclass JNICALL
+LINK_ReallyLinkKnownClass (JNIEnv * env, linkedClass * c, jclass newClass)
+{
+	(void) env;
+	(void) c;
+	(void) newClass;
+	abort ();
+	return NULL;
+}
+
+JNIEXPORT jclass JNICALL
 LINK_RelinkClass     (JNIEnv * env, linkedClass * c, char * name) {
 	jclass found;
 	LINK_UnlinkClass(env,*c);

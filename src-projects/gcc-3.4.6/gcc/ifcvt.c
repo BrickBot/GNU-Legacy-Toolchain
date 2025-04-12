@@ -1406,7 +1406,7 @@ noce_get_alt_condition (struct noce_if_info *if_info, rtx target,
       rtx prev_insn;
 
       /* First, look to see if we put a constant in a register.  */
-      prev_insn = PREV_INSN (if_info->cond_earliest);
+      prev_insn = prev_nonnote_insn (if_info->cond_earliest);
       if (prev_insn
 	  && INSN_P (prev_insn)
 	  && GET_CODE (PATTERN (prev_insn)) == SET)
@@ -1642,25 +1642,30 @@ noce_try_abs (struct noce_if_info *if_info)
   if (rtx_equal_p (XEXP (cond, 0), b))
     c = XEXP (cond, 1);
   else if (rtx_equal_p (XEXP (cond, 1), b))
-    c = XEXP (cond, 0);
+    {
+      c = XEXP (cond, 0);
+      negate = !negate;
+    }
   else
     return FALSE;
 
-  /* Verify that C is zero.  Search backward through the block for
-     a REG_EQUAL note if necessary.  */
+  /* Verify that C is zero.  Search one step backward for a
+     REG_EQUAL note or a simple source if necessary.  */
   if (REG_P (c))
     {
-      rtx insn, note = NULL;
-      for (insn = earliest;
-	   insn != BB_HEAD (if_info->test_bb);
-	   insn = PREV_INSN (insn))
-	if (INSN_P (insn)
-	    && ((note = find_reg_note (insn, REG_EQUAL, c))
-		|| (note = find_reg_note (insn, REG_EQUIV, c))))
-	  break;
-      if (! note)
+      rtx set, insn = prev_nonnote_insn (earliest);
+      if (insn
+	  && (set = single_set (insn))
+	  && rtx_equal_p (SET_DEST (set), c))
+	{
+	  rtx note = find_reg_equal_equiv_note (insn);
+	  if (note)
+	    c = XEXP (note, 0);
+	  else
+	    c = SET_SRC (set);
+	}
+      else
 	return FALSE;
-      c = XEXP (note, 0);
     }
   if (GET_CODE (c) == MEM
       && GET_CODE (XEXP (c, 0)) == SYMBOL_REF

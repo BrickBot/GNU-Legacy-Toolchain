@@ -841,29 +841,31 @@ else
     esac
   esac
 
+  python_config=
   if test "${python_prog}" != missing; then
+    AC_CHECK_TOOL(python_config,[${python_prog}-config],[${python_prog} ${srcdir}/python/python-config.py])
     # We have a python program to use, but it may be too old.
     # Don't flag an error for --with-python=auto (the default).
     have_python_config=yes
-    python_includes=`${python_prog} ${srcdir}/python/python-config.py --includes`
+    python_includes=`${python_config} --includes`
     if test $? != 0; then
       have_python_config=failed
       if test "${with_python}" != auto; then
-        AC_ERROR(failure running python-config --includes)
+        AC_ERROR(failure running ${python_config} --includes)
       fi
     fi
-    python_libs=`${python_prog} ${srcdir}/python/python-config.py --ldflags`
+    python_libs=`${python_config} --ldflags`
     if test $? != 0; then
       have_python_config=failed
       if test "${with_python}" != auto; then
-        AC_ERROR(failure running python-config --ldflags)
+        AC_ERROR(failure running ${python_config} --ldflags)
       fi
     fi
-    python_prefix=`${python_prog} ${srcdir}/python/python-config.py --exec-prefix`
+    python_prefix=`${python_config} --exec-prefix`
     if test $? != 0; then
       have_python_config=failed
       if test "${with_python}" != auto; then
-        AC_ERROR(failure running python-config --exec-prefix)
+        AC_ERROR(failure running ${python_config} --exec-prefix)
       fi
     fi
   else
