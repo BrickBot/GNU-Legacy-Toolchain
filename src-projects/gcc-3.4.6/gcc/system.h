@@ -154,6 +154,10 @@ extern int errno;
 # endif
 #endif
 
+#ifndef ICE_EXIT_CODE
+# define ICE_EXIT_CODE 27
+#endif
+
 #ifdef HAVE_UNISTD_H
 # include <unistd.h>
 #endif

@@ -272,14 +272,14 @@ diagnostic_action_after_output (diagnostic_context *context,
 	real_abort ();
 
       fnotice (stderr, bug_report_request, bug_report_url);
-      exit (FATAL_EXIT_CODE);
+      exit (ICE_EXIT_CODE);
 
     case DK_FATAL:
       if (context->abort_on_error)
 	real_abort ();
 
       fnotice (stderr, "compilation terminated.\n");
-      exit (FATAL_EXIT_CODE);
+      exit (ICE_EXIT_CODE);
 
     default:
       real_abort ();
@@ -571,7 +571,7 @@ error_recursion (diagnostic_context *context)
   fnotice (stderr,
 	   "Internal compiler error: Error reporting routines re-entered.\n");
   fnotice (stderr, bug_report_request, bug_report_url);
-  exit (FATAL_EXIT_CODE);
+  exit (ICE_EXIT_CODE);
 }
 
 /* Report an internal compiler error in a friendly manner.  This is
