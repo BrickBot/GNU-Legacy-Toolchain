@@ -616,7 +616,7 @@ primary:
 	IDENTIFIER
 		{
 		  if (yychar == YYEMPTY)
-		    yychar = YYLEX;
+		    yychar = yylex ();
 		  $$ = build_external_ref ($1, yychar == '(');
 		}
 	| CONSTANT
@@ -2192,7 +2192,7 @@ do_stmt_start:
 
 save_location:
 		{ if (yychar == YYEMPTY)
-		    yychar = YYLEX;
+		    yychar = yylex ();
 		  $$ = input_location; }
 	;
 
