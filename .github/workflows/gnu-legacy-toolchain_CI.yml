@@ -19,21 +19,16 @@ env:
   #    then "make CPPFLAGS=-U_FORTIFY_SOURCE" might be necessary
   #    Passing that to this older configure might not work, as should otherwise seem doable per
   #    the link https://www.gnu.org/software/automake/manual/html_node/Flag-Variables-Ordering.html
-  CROSS_TARGET: --target=h8300-hitachi-coff
-  COMMON_PATH_ARG_PREFIX: --prefix=/usr/local
-  COMMON_GCC_CONFIG_ARGS: --with-gcc --with-gnu-as --with-gnu-ld --with-newlib --disable-libssp --disable-multilib --disable-libada --enable-target-optspace
+  CROSS_TARGET: h8300-hitachi-coff
 
-  BUILD_DIR_GCC: build/gcc-gpc
-  BUILD_DIR_GPC: build/gpc
-  BUILD_DIR_GDB: build/gdb
+  BUILD_DIR_TOOLCHAIN: build/toolchain
   SYSROOT_DIR:   sysroot
   
-  GCC_INSTALL_NAME: h8300-coff-gcc_install
-  TOOLCHAIN_INSTALL_NAME: h8300-coff-toolchain_install
+  TOOLCHAIN_INSTALL_NAME: h8300-hitachi-coff-toolchain_install
 
 jobs:
-  build_cross_gcc_gpc_job:
-    name:     Build gcc+binutils+newlib+ada+f77+gcj+objc+gpc cross-compiler for the H8/300
+  build_cross_toolchain_job:
+    name:     Full H8/300 Cross-Toolchain Build & Install
     runs-on:  ${{ matrix.os }}
     strategy:
       matrix:
@@ -48,7 +43,7 @@ jobs:
         # creates a shallow checkout.
         fetch-depth: 0
 
-      # Fix timestamps (needed to prevent gcc/c-parse.c from sometimes being regenerated during build)
+      # Fix timestamps (needed to prevent some files from attempting to regenerate and failing during build)
     - name: Restore source timestamps
       uses: chetan/git-restore-mtime-action@v2
 
@@ -59,51 +54,45 @@ jobs:
       run:  sudo apt-get --assume-yes install $UBUNTU_BUILD_DEPENDS
 
     - name: Setup the build directory for an H8/300 cross-toolchain
-      run:  mkdir -p $BUILD_DIR_GCC
+      run:  mkdir -p $BUILD_DIR_TOOLCHAIN
 
 
-    # Run the GCC build steps
-    - name: Configure the build for a GCC H8/300 cross-compiler
+    # Run the build steps
+    - name: Configure the build for an H8/300 cross-toolchain
       run:  |
-        cd $BUILD_DIR_GCC
+        cd $BUILD_DIR_TOOLCHAIN
         echo "Current working directory: $PWD"
-        ../../src-combined/gcc-combined/configure  --enable-languages=c,c++,ada,f77,java,objc,pascal  --without-gpc-shared  $CROSS_TARGET  $COMMON_GCC_CONFIG_ARGS  $COMMON_PATH_ARG_PREFIX
+        ../../src-combined/$CROSS_TARGET-configure  --prefix=$GITHUB_WORKSPACE/$SYSROOT_DIR
 
     - name: Execute the build for a GCC H8/300 cross-compiler
       run:  |
-        cd $BUILD_DIR_GCC
+        cd $BUILD_DIR_TOOLCHAIN
         echo "Current working directory: $PWD"
         make --keep-going
 
-    - name: Test install the built GCC H8/300 cross-compiler
+    - name: Test install the built GCC H8/300 cross-compiler to a sysroot
       run:  |
-        cd $BUILD_DIR_GCC
+        cd $BUILD_DIR_TOOLCHAIN
         echo "Current working directory: $PWD"
-        sudo make DESTDIR=$GITHUB_WORKSPACE/$SYSROOT_DIR install
+        sudo make install
 
     # Before archiving, tar the host installation output to preserve file permission
     # c.f. https://github.com/actions/upload-artifact?tab=readme-ov-file#permission-loss
     # To avoid including a "." or other unwanted directory, c.f. https://stackoverflow.com/a/39530409
     - name: Tar the host installation snapshot to preserve file permissions
-      run:  find $SYSROOT_DIR -printf "%P\n" | sort | tar --verbose --create --file build/${{ env.GCC_INSTALL_NAME }}.tar --no-recursion --directory=$SYSROOT_DIR --files-from=-
+      run:  find $SYSROOT_DIR -printf "%P\n" | sort | tar --verbose --create --file build/${{ env.TOOLCHAIN_INSTALL_NAME }}.tar --no-recursion --directory=$SYSROOT_DIR --files-from=-
 
     - name: Archive the host installation snapshot tar file
       uses: actions/upload-artifact@v4
       with:
-        name: ${{ env.GCC_INSTALL_NAME }}_[runner~${{ matrix.os }}]_run${{ github.run_id }}.${{ github.run_number }}.${{ github.run_attempt }}
-        path: build/${{ env.GCC_INSTALL_NAME }}.tar
-
-    - name: Setup the built GCC H8/300 cross-compiler for Stow
-      run:  |
-        cd $BUILD_DIR_GCC
-        echo "Current working directory: $PWD"
-        make prefix=/opt/stow/gcc3-h8 install
+        name: ${{ env.TOOLCHAIN_INSTALL_NAME }}_[runner~${{ matrix.os }}]_run${{ github.run_id }}.${{ github.run_number }}.${{ github.run_attempt }}
+        path: build/${{ env.TOOLCHAIN_INSTALL_NAME }}.tar
 
     - name: Install the built GCC H8/300 cross-compiler using Stow
       run:  |
-        cd $BUILD_DIR_GCC
+        cd $BUILD_DIR_TOOLCHAIN
         echo "Current working directory: $PWD"
-        sudo stow --dir=/opt/stow --target=/usr/local --verbose -S gcc3-h8
+        sudo make stow
 
     - name: Check always if any version-controlled files were modified
       if:   always()
@@ -114,45 +103,43 @@ jobs:
       run:  git diff
 
 
-#    # Run the GPC build steps
-#    - name: Configure the build for a GPC H8/300 cross-compiler
-#      run:  |
-#        cd $BUILD_DIR_GCC
-#        echo "Current working directory: $PWD"
-#        ../../src-combined/gcc-combined/configure --enable-languages=pascal $CROSS_TARGET  $COMMON_GCC_CONFIG_ARGS  $COMMON_PATH_ARG_PREFIX
-#
-#    - name: Execute the build for a GPC H8/300 cross-compiler
-#      run:  |
-#        cd $BUILD_DIR_GCC
-#        echo "Current working directory: $PWD"
-#        make --keep-going
-#
-#    - name: Test install the built GPC H8/300 cross-compiler
-#      run:  |
-#        cd $BUILD_DIR_GCC/gcc
-#        echo "Current working directory: $PWD"
-#        sudo make DESTDIR=$GITHUB_WORKSPACE/$SYSROOT_DIR pascal.install
-#
-#    # Before archiving, tar the host installation output to preserve file permission
-#    # c.f. https://github.com/actions/upload-artifact?tab=readme-ov-file#permission-loss
-#    # To avoid including a "." or other unwanted directory, c.f. https://stackoverflow.com/a/39530409
-#    - name: Tar the host installation snapshot to preserve file permissions
-#      run:  find $SYSROOT_DIR -printf "%P\n" | sort | tar --verbose --create --file build/${{ env.TOOLCHAIN_INSTALL_NAME }}.tar --no-recursion --directory=$SYSROOT_DIR --files-from=-
-#
-#    - name: Archive the host installation snapshot tar file
-#      uses: actions/upload-artifact@v4
-#      with:
-#        name: ${{ env.TOOLCHAIN_INSTALL_NAME }}_[runner~${{ matrix.os }}]_run${{ github.run_id }}.${{ github.run_number }}.${{ github.run_attempt }}
-#        path: build/${{ env.TOOLCHAIN_INSTALL_NAME }}.tar
-#
-#    - name: Install the built GPC H8/300 cross-compiler
-#      run:  |
-#        cd $BUILD_DIR_GCC/gcc
-#        echo "Current working directory: $PWD"
-#        sudo make pascal.install
+  # For quicker continuous integration feedback, run just the GCC build as a job
+  build_cross_gcc_job:
+    name:     Build GCC for the H8/300
+    runs-on:  ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ ubuntu-latest ]
+    
+    steps:
+    - name: Get latest from version control
+      uses: actions/checkout@v4
+
+    - name: Update build environment
+      run:  sudo apt-get --assume-yes update
+
+    - name: Install build dependencies
+      run:  sudo apt-get --assume-yes install $UBUNTU_BUILD_DEPENDS
+
+    - name: Setup the build directory for an H8/300 cross-toolchain
+      run:  mkdir -p $BUILD_DIR_TOOLCHAIN
 
 
+    # Run the build steps
+    - name: Configure the build for an H8/300 cross-toolchain
+      run:  |
+        cd $BUILD_DIR_TOOLCHAIN
+        echo "Current working directory: $PWD"
+        ../../src-combined/$CROSS_TARGET-configure  --prefix=$GITHUB_WORKSPACE/$SYSROOT_DIR
 
+    - name: Execute the build for a GCC H8/300 cross-compiler
+      run:  |
+        cd $BUILD_DIR_TOOLCHAIN/gcc-combined
+        echo "Current working directory: $PWD"
+        make --keep-going
+
+
+  # For quicker continuous integration feedback, run just the GDB build as a job
   build_cross_gdb_job:
     name:     Build GDB for the H8/300
     runs-on:  ${{ matrix.os }}
@@ -163,79 +150,34 @@ jobs:
     steps:
     - name: Get latest from version control
       uses: actions/checkout@v4
-      with:
-        # git-restore-mtime-bare uses the ref log to find the correct timestamp
-        # for each file. This requires a full git history. The default value (1)
-        # creates a shallow checkout.
-        fetch-depth: 0
-
-      # Fix timestamps (needed to prevent gcc/c-parse.c from sometimes being regenerated during build)
-    - name: Restore source timestamps
-      uses: chetan/git-restore-mtime-action@v2
 
     - name: Update build environment
       run:  sudo apt-get --assume-yes update
 
     - name: Install build dependencies
-      run:  sudo apt-get --assume-yes install $UBUNTU_BUILD_DEPENDS  python3-dev  autoconf procps  libncurses-dev libncurses5-dev libexpat1-dev
+      run:  sudo apt-get --assume-yes install $UBUNTU_BUILD_DEPENDS
 
-    - name: Setup the build folders for an H8/300 GDB
-      run:  mkdir -p $BUILD_DIR_GDB
+    - name: Setup the build directory for an H8/300 cross-toolchain
+      run:  mkdir -p $BUILD_DIR_TOOLCHAIN
 
-    - name: Configure the build for an H8/300 GDB
+
+    # Run the build steps
+    - name: Configure the build for an H8/300 cross-toolchain
       run:  |
-        cd $BUILD_DIR_GDB
+        cd $BUILD_DIR_TOOLCHAIN
         echo "Current working directory: $PWD"
-        ../../src-combined/gdb/configure  CXXFLAGS='-g -O2 -D_GLIBCXX_USE_CXX11_ABI=0 -std=c++98'  --without-python  $CROSS_TARGET  $COMMON_PATH_ARG_PREFIX
+        ../../src-combined/$CROSS_TARGET-configure  --prefix=$GITHUB_WORKSPACE/$SYSROOT_DIR
 
-    - name: Execute the build for an H8/300 GDB
+    - name: Execute the build for a GDB H8/300 debugger
       run:  |
-        cd $BUILD_DIR_GDB
+        cd $BUILD_DIR_TOOLCHAIN/gdb
         echo "Current working directory: $PWD"
         make --keep-going
 
-    - name: Test install the built H8/300 GDB
-      run:  |
-        cd $BUILD_DIR_GDB
-        echo "Current working directory: $PWD"
-        make DESTDIR=$GITHUB_WORKSPACE/$SYSROOT_DIR install
-
-    # Before archiving, tar the host installation output to preserve file permission
-    # c.f. https://github.com/actions/upload-artifact?tab=readme-ov-file#permission-loss
-    # To avoid including a "." or other unwanted directory, c.f. https://stackoverflow.com/a/39530409
-    - name: Tar the host installation snapshot to preserve file permissions
-      run:  find $SYSROOT_DIR -printf "%P\n" | sort | tar --verbose --create --file build/h8300-coff-gdb_install.tar --no-recursion --directory=$SYSROOT_DIR --files-from=-
-
-    - name: Archive the host installation snapshot tar file
-      uses: actions/upload-artifact@v4
-      with:
-        name: h8300-coff-gdb_install_[runner~${{ matrix.os }}]_run${{ github.run_id }}.${{ github.run_number }}.${{ github.run_attempt }}
-        path: build/h8300-coff-gdb_install.tar
-
-    - name: Setup the built H8/300 GDB for Stow
-      run:  |
-        cd $BUILD_DIR_GDB
-        echo "Current working directory: $PWD"
-        make prefix=/opt/stow/gdb712-h8 install
-
-    - name: Install the built H8/300 GDB using Stow
-      run:  |
-        cd $BUILD_DIR_GDB
-        echo "Current working directory: $PWD"
-        sudo stow --dir=/opt/stow --target=/usr/local --verbose -S gdb712-h8
-
-    - name: Check always if any version-controlled files were modified
-      if:   always()
-      run:  git status
-
-    - name: Show always any diffs of version-controlled files
-      if:   always()
-      run:  git diff
 
 
-
-#  build_native_gpc_job:
-#    name:     Build a native GPC compiler (non-cross-compiling)
+#  build_native_job:
+#    name:     Build a native compiler (non-cross-compiling)
 #    runs-on:  ${{ matrix.os }}
 #    strategy:
 #      matrix:
@@ -261,23 +203,23 @@ jobs:
 #      run:  sudo apt-get --assume-yes install $UBUNTU_BUILD_DEPENDS
 #
 #    - name: Setup the build folders for a native gcc+binutils+gpc compiler
-#      run:  mkdir -p $BUILD_DIR_GPC
+#      run:  mkdir -p $BUILD_DIR_TOOLCHAIN
 #
 #    - name: Configure the build for a native gcc+binutils+gpc compiler
 #      run:  |
-#        cd $BUILD_DIR_GPC
+#        cd $BUILD_DIR_TOOLCHAIN
 #        echo "Current working directory: $PWD"
-#        ../../src-combined/gcc-combined/configure --enable-languages=pascal  --with-gcc --with-gnu-as --with-gnu-ld  $COMMON_PATH_ARG_PREFIX  --program-suffix=3
+#        ../../src-combined/gcc-combined/configure  --prefix=$GITHUB_WORKSPACE/$SYSROOT_DIR  --program-suffix=3
 #
 #    - name: Execute the build for a native gcc+binutils+gpc compiler
 #      run:  |
-#        cd $BUILD_DIR_GPC
+#        cd $BUILD_DIR_TOOLCHAIN
 #        echo "Current working directory: $PWD"
 #        make --keep-going
 #
 #    - name: Test install the built native gcc+binutils+gpc compiler
 #      run:  |
-#        cd $BUILD_DIR_GPC
+#        cd $BUILD_DIR_TOOLCHAIN
 #        echo "Current working directory: $PWD"
 #        make DESTDIR=$GITHUB_WORKSPACE/$SYSROOT_DIR install
 #
@@ -295,6 +237,6 @@ jobs:
 #
 #    - name: Install the built native gcc+binutils+gpc compiler
 #      run:  |
-#        cd $BUILD_DIR_GPC
+#        cd $BUILD_DIR_TOOLCHAIN
 #        echo "Current working directory: $PWD"
 #        sudo make install
