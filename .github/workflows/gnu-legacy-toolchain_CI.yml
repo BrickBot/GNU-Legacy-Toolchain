@@ -38,9 +38,9 @@ jobs:
     - name: Get latest from version control
       uses: actions/checkout@v4
       with:
-        git-restore-mtime-bare uses the ref log to find the correct timestamp
-        for each file. This requires a full git history. The default value (1)
-        creates a shallow checkout.
+        # git-restore-mtime-bare uses the ref log to find the correct timestamp
+        # for each file. This requires a full git history. The default value (1)
+        # creates a shallow checkout.
         fetch-depth: 0
 
       # Fix timestamps (needed to prevent some files from attempting to regenerate and failing during build)
