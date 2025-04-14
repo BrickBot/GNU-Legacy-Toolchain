@@ -132,8 +132,8 @@ sh_linux_rt_sigreturn_init (const struct tramp_frame *self,
      we can find sigcontext embedded within a ucontext (offset 20 bytes).
      Then registers start after a single 'oldmask' word.  */
   sh_linux_sigtramp_cache (this_frame, this_cache, func,
-			   128 /* sizeof (struct siginfo)  */
-			   + 20 /* offsetof (struct ucontext, uc_mcontext) */
+			   128 /* sizeof (siginfo_t)  */
+			   + 20 /* offsetof (ucontext_t, uc_mcontext) */
 			   + 4 /* oldmask word at start of sigcontext */);
 }
 

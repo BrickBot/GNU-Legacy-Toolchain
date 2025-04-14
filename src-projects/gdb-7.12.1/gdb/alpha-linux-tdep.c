@@ -141,8 +141,8 @@ alpha_linux_sigcontext_addr (struct frame_info *this_frame)
   /* __NR_rt_sigreturn has a couple of structures on the stack.  This is:
 
 	struct rt_sigframe {
-	  struct siginfo info;
-	  struct ucontext uc;
+	  siginfo_t info;
+	  ucontext_t uc;
         };
 
 	offsetof (struct rt_sigframe, uc.uc_mcontext);  */

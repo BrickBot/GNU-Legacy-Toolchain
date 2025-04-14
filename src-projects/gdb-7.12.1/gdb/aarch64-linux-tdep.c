@@ -80,7 +80,7 @@
   struct rt_sigframe
   {
     siginfo_t info;
-    struct ucontext uc;
+    ucontext_t uc;
   };
 
   typedef struct
@@ -89,10 +89,10 @@
   } siginfo_t;
 
   The ucontext has the following form:
-  struct ucontext
+  ucontext_t
   {
     unsigned long uc_flags;
-    struct ucontext *uc_link;
+    ucontext_t *uc_link;
     stack_t uc_stack;
     sigset_t uc_sigmask;
     struct sigcontext uc_mcontext;

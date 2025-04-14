@@ -33,7 +33,7 @@
 
 /* The offset from rt_sigframe pointer to SP register.  */
 #define TIC6X_SP_RT_SIGFRAME 8
-/* Size of struct siginfo info.  */
+/* Size of siginfo_t info.  */
 #define TIC6X_SIGINFO_SIZE 128
 /* Size of type stack_t, which contains three fields of type void*, int, and
    size_t respectively.  */
@@ -93,7 +93,7 @@ tic6x_linux_rt_sigreturn_init (const struct tramp_frame *self,
 		    /* Pointer type *pinfo and *puc in struct rt_sigframe.  */
 		    + 4 + 4
 		    + TIC6X_SIGINFO_SIZE
-		    + 4 + 4 /* uc_flags and *uc_link in struct ucontext.  */
+		    + 4 + 4 /* uc_flags and *uc_link in ucontext_t.  */
 		    + TIC6X_STACK_T_SIZE);
   struct gdbarch_tdep *tdep = gdbarch_tdep (gdbarch);
   unsigned int reg_offset;
