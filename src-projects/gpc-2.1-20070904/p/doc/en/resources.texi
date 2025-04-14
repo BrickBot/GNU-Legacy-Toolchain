@@ -117,7 +117,7 @@ written by Frank Heckenbach. The home page of PENG is
 @cindex Text editor
 
 RHIDE is an integrated development environment (IDE) for GNU
-Compilers on DOS (DJGPP) or Linux, written by Robert Höhne. The
+Compilers on DOS (DJGPP) or Linux, written by Robert HÃ¶hne. The
 home page of RHIDE is
 @smallexample
 @uref{http://www.rhide.com}.
