@@ -1,0 +1,295 @@
+# Top level makefile fragment for CIL For GCC. -*- makefile -*-
+
+#   Copyright (C) 2006-2007 Free Software Foundation, Inc.
+
+#This file is part of GCC.
+
+#GCC is free software; you can redistribute it and/or modify
+#it under the terms of the GNU General Public License as published by
+#the Free Software Foundation; either version 2, or (at your option)
+#any later version.
+
+#GCC is distributed in the hope that it will be useful,
+#but WITHOUT ANY WARRANTY; without even the implied warranty of
+#MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#GNU General Public License for more details.
+
+#You should have received a copy of the GNU General Public License
+#along with GCC; see the file COPYING.  If not, write to
+#the Free Software Foundation, 51 Franklin Street, Fifth Floor,
+#Boston, MA 02110-1301, USA.
+
+# This file provides the language dependent support in the main Makefile.
+# Each language makefile fragment must provide the following targets:
+#
+# foo.all.build, foo.all.cross, foo.start.encap, foo.rest.encap,
+# foo.install-normal, foo.install-common, foo.install-man,
+# foo.uninstall, foo.distdir,
+# foo.mostlyclean, foo.clean, foo.distclean,
+# foo.maintainer-clean, foo.stage1, foo.stage2, foo.stage3, foo.stage4
+#
+# where `foo' is the name of the language.
+#
+# It should also provide rules for:
+#
+# - making any compiler driver (eg: gcc)
+# - the compiler proper (eg: cil1)
+# - define the names for selecting the language in LANGUAGES.
+#
+
+## note program-prefix and program-suffix options are not supported
+## just program_transform_name which is a sed script to transform the
+## names
+
+CILSED = sed
+CILSEDFLAGS = -n
+
+GCC_EXTRAS = -B./ -B$(build_tooldir)/bin/ -isystem $(build_tooldir)/include
+
+# ./xgcc is the just built compiler. See GCC_FOR_TARGET in the GCC Makefile.in.
+# If this can't be found, you probably have not done a bootstrap of GCC,
+# which you need to do.
+
+# GCC_FOR_CIL = ./xgcc $(GCC_EXTRAS)
+
+CIL_GENERATED = 
+# We need to use something other than cil here because the directory
+# is called cil
+CIL_EXES = gcil
+
+#strict warnings for cil
+#cil-warn = $(STRICT_WARN)
+cil-warn = -Wall
+
+
+MONO_CFLAGS=$(MONOINC)
+MONO_LIBS=$(MONOLIBS)
+
+#
+# Define the names for selecting cil in LANGUAGES.
+
+.phony: cil
+
+cil CIL:cil.done
+
+cil.done: gcil$(exeext) cil1$(exeext)
+	$(STAMP) cil.done
+
+# no preprocessor
+
+# core compiler
+cil1$(exeext): cil/cil1.o cil/cil-lang.o cil/bindings.o cil/parser.o cil/stack.o cil/cil-builtins.o \
+	$(BACKEND) $(LIBSDEPS) attribs.o
+	$(CC) $(ALL_CFLAGS) $(LDFLAGS) $(MONO_LIBS) -o $@ \
+	cil/cil1.o cil/cil-lang.o cil/bindings.o cil/parser.o cil/stack.o cil/cil-builtins.o \
+	$(BACKEND) $(LIBS) attribs.o
+
+# Create the compiler driver cil.
+gcil$(exeext): $(GCC_OBJS) version.o prefix.o intl.o $(EXTRA_GCC_OBJS) \
+  $(LIBDEPS) cil/spec.o
+	$(CC) $(ALL_CFLAGS) $(LDFLAGS) -o $@ cil/spec.o \
+	  $(GCC_OBJS) version.o prefix.o intl.o $(EXTRA_GCC_OBJS) $(LIBS)
+
+
+
+#
+# Compiling object files from source files.
+
+# object file makes
+
+cil/cil1.o: cil/cil1.c $(CONFIG_H) $(SYSTEM_H) coretypes.h $(TM_H) \
+  flags.h toplev.h $(GGC_H) $(TREE_H) diagnostic.h cil/cil.h \
+  input.h cil/cil-tree.h options.h opts.h \
+  gtype-cil.h
+
+cil/cil-lang.o: cil/cil-lang.c $(CONFIG_H) $(SYSTEM_H) coretypes.h \
+  $(TM_H) $(TREE_H) flags.h output.h $(RTL_H) $(GGC_H) toplev.h \
+  varray.h $(LANGHOOKS_DEF_H) langhooks.h cil/cil.h input.h
+
+cil/cil-builtins.o: cil/cil-builtins.c $(CONFIG_H) $(SYSTEM_H) coretypes.h \
+  $(TM_H) $(TREE_H) flags.h output.h $(RTL_H) $(GGC_H) toplev.h \
+  varray.h $(LANGHOOKS_DEF_H) langhooks.h cil/cil.h cil/cil-builtins.h input.h
+
+cil/bindings.o: cil/bindings.c $(CONFIG_H) $(SYSTEM_H) coretypes.h \
+  $(TM_H) $(TREE_H) flags.h output.h $(RTL_H) $(GGC_H) toplev.h \
+  varray.h $(LANGHOOKS_DEF_H) langhooks.h cil/cil.h cil/bindings.h input.h
+
+cil/stack.o: cil/stack.c $(CONFIG_H) $(SYSTEM_H) coretypes.h \
+  $(TM_H) $(TREE_H) flags.h output.h $(RTL_H) $(GGC_H) toplev.h \
+  varray.h $(LANGHOOKS_DEF_H) langhooks.h cil/cil.h cil/stack.h input.h
+
+cil/parser.o: cil/parser.c $(CONFIG_H) $(SYSTEM_H) coretypes.h \
+  $(TM_H) $(TREE_H) flags.h output.h $(RTL_H) $(GGC_H) toplev.h \
+  varray.h $(LANGHOOKS_DEF_H) langhooks.h cil/cil.h cil/parser.h cil/bindings.h input.h
+	$(CC) -c $(ALL_CFLAGS) $(ALL_CPPFLAGS) $(DRIVER_DEFINES) \
+		$(INCLUDES) $(MONO_CFLAGS) $(srcdir)/cil/parser.c $(OUTPUT_OPTION)
+
+cil/spec.o: cil/spec.c $(CONFIG_H) $(SYSTEM_H) \
+  coretypes.h diagnostic.h $(TREE_H) flags.h toplev.h langhooks.h $(TM_H)
+
+# generated files 
+cil.srcextra: 
+	-cp -p $^ $(srcdir)/cil
+
+#
+# Build hooks:
+
+cil.all.cross:
+	_error_not_here_yet - havent even thought about it - it may even work
+
+cil.start.encap:
+cil.rest.encap:
+cil.man:
+cil.srcman:
+
+cil.tags: force
+	cd $(srcdir)/cil; etags -o TAGS.sub *.y *.l *.c *.h; \
+	etags --include TAGS.sub --include ../TAGS.sub
+
+cil.info: doc/cil.info
+
+cil.srcinfo: doc/cil.info
+	-cp -p $^ $(srcdir)/doc
+
+dvi:: doc/cil.dvi
+
+TEXI_CIL_FILES = cil/cil.texi
+
+doc/cil.info: $(TEXI_CIL_FILES)
+	$(MAKEINFO) $(MAKEINFOFLAGS) -I $(docdir)/include -o $@ $<
+
+doc/cil.dvi: $(TEXI_CIL_FILES)
+	$(TEXI2DVI) -I $(abs_docdir)/include -o $@ $<
+
+html:: $(htmldir)/cil/index.html
+
+$(htmldir)/cil/index.html: $(TEXI_CIL_FILES)
+	$(mkinstalldirs) $(@D)
+	rm -f $(@D)/*
+	$(TEXI2HTML) -I $(docdir)/include -I $(srcdir)/cil -o $(@D) $<
+
+#
+# Install hooks:
+
+# Install
+.phony:cil.install.common
+.phony:cil.install
+
+cil.install cil.install.common cil.install-common: cil.install.common.done
+
+cil.install.common.done:  installdirs cil.done
+	for name in $(CIL_EXES); \
+	do \
+	   if [ -f $$name ] ; then \
+	    name2="`echo \`basename $$name\` | sed -e '$(program_transform_name)' `"; \
+	    rm -f $(DESTDIR)$(bindir)/$$name2$(exeext); \
+	    echo $(INSTALL_PROGRAM) $$name$(exeext) $(DESTDIR)$(bindir)/$$name2$(exeext); \
+	    $(INSTALL_PROGRAM) $$name$(exeext) $(DESTDIR)$(bindir)/$$name2$(exeext); \
+	    chmod a+x $(DESTDIR)$(bindir)/$$name2$(exeext); \
+	  fi ; \
+	done
+	$(STAMP) cil.install.common.done
+
+# We might not be able to build the info files
+cil.install-info: $(DESTDIR)$(infodir)/cil.info
+
+cil.install-man:
+
+cil.uninstall:
+	for name in $(CIL_EXES); \
+	do \
+	  echo $$name; \
+	  name2="`echo $$name | sed -e '$(program_transform_name)' `"; \
+	  echo becomes $$name2; \
+	  echo -rm -rf $(DESTDIR)$(bindir)/$$name2$(exeext); \
+	  rm -rf $(DESTDIR)$(bindir)/$$name2$(exeext); \
+	done
+	-rm cil.install.common.done
+
+#
+# Clean hooks:
+# A lot of the ancillary files are deleted by the main makefile.
+# We just have to delete files specific to us.
+
+cil.mostlyclean:
+	for name in $(CIL_EXES); \
+	do \
+	  echo deleting $$name; \
+	  if [ -f cil/$$name$(exeext) ] ; then \
+	    rm -f cil/$$name$(exeext); \
+	  fi ; \
+	done
+	-rm -f cil/*$(objext)
+	-rm -f cil/*$(coverageexts)
+	-rm cil.done
+
+
+cil.clean: cil.mostlyclean
+
+cil.distclean: cil.clean
+	-rm -f cil/config.status
+	-rm -f cil/*.output
+
+cil.maintainer-clean: cil.distclean
+	for name in $(CIL_GENERATED); \
+	do \
+	  if [ -f $(srcdir)/cil/$$name ] ; then \
+             echo deleting $(srcdir)/cil/$$name; \
+	     rm -f $(srcdir)/cil/$$name; \
+	  fi ; \
+	done
+	-rm -R $(srcdir)/cil/*~
+
+
+#
+# Stage hooks:
+# The main makefile has already created stage?/cil.
+
+cil.stage1: stage1-start
+	-mv cil/*$(objext) stage1/cil
+cil.stage2: stage2-start
+	-mv cil/*$(objext) stage2/cil
+cil.stage3: stage3-start
+	-mv cil/*$(objext) stage3/cil
+cil.stage4: stage4-start
+	-mv cil/*$(objext) stage4/cil
+cil.stageprofile: stageprofile-start
+	-mv cil/*$(objext) stageprofile/cil
+cil.stagefeedback: stagefeedback-start
+	-mv cil/*$(objext) stagefeedback/cil
+#
+# Maintenance hooks:
+
+# test hook
+
+check-cil: cil.check
+
+TESTSUITEDIR = testsuite
+
+cil.check: $(TESTSUITEDIR)/site.exp
+	-mkdir testsuite/cil
+
+# these three files are empty and it seems diff has trouble generating
+# patch files for new empty files as required for cvs.
+# STAMP does not cut it here as I need an empty file.
+	-rootme=`${PWD_COMMAND}`; export rootme; \
+	srcdir=`cd ${srcdir}; ${PWD_COMMAND}` ; export srcdir ; \
+	cd testsuite; \
+	EXPECT=${EXPECT} ; export EXPECT ; \
+	if [ -f $${rootme}/../expect/expect ] ; then  \
+	   TCL_LIBRARY=`cd .. ; cd ${srcdir}/../tcl/library ; ${PWD_COMMAND}` ; \
+	   export TCL_LIBRARY ; fi ; \
+	PATH=`cd ..;${PWD_COMMAND}`:$$PATH; export PATH; \
+	gcc_extras="-B`cd ..;${PWD_COMMAND}` -B`cd ..;${PWD_COMMAND}`/cil"; export gcc_extras; \
+	$(RUNTEST) --tool cil $(RUNTESTFLAGS)
+
+# copy the output files from the current test to source ie say the new results are OK
+cil.check.fix: force
+	srcdir=`cd ${srcdir}; ${PWD_COMMAND}` ; export srcdir ;
+	-cp testsuite/cil/*.out* t
+	-cp testsuite/cil/*runpgm* t
+	-rm -f t/*nofilename
+
+#
+
+config.status: cil/config-lang.in
