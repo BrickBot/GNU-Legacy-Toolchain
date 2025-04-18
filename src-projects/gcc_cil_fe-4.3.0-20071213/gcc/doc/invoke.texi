@@ -964,7 +964,7 @@ instantiation), or a library unit renaming declaration (a package,
 generic, or subprogram renaming declaration).  Such files are also
 called @dfn{specs}.
 
-@itemx @var{file}.adb
+@item @var{file}.adb
 Ada source code file containing a library unit body (a subprogram or
 package body).  Such files are also called @dfn{bodies}.
 
@@ -8403,7 +8403,7 @@ assembly code.  Permissible names are: @samp{arm2}, @samp{arm250},
 @samp{cortex-a8}, @samp{cortex-r4}, @samp{cortex-m3},
 @samp{xscale}, @samp{iwmmxt}, @samp{ep9312}.
 
-@itemx -mtune=@var{name}
+@item -mtune=@var{name}
 @opindex mtune
 This option is very similar to the @option{-mcpu=} option, except that
 instead of specifying the actual target processor type, and hence

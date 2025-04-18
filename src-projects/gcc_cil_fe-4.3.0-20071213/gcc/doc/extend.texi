@@ -4207,6 +4207,8 @@ and caught in another, the class must have default visibility.
 Otherwise the two shared objects will be unable to use the same
 typeinfo node and exception handling will break.
 
+@end table
+
 @subsection ARM Type Attributes
 
 On those ARM targets that support @code{dllimport} (such as Symbian
@@ -4235,6 +4237,8 @@ most Symbian OS code uses @code{__declspec}.)
 
 Two attributes are currently defined for i386 configurations:
 @code{ms_struct} and @code{gcc_struct}
+
+@table @code
 
 @item ms_struct
 @itemx gcc_struct
