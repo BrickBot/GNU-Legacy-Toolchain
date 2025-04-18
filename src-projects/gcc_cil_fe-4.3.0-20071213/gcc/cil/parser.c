@@ -34,11 +34,13 @@
    identifiers poisoned in GCC's system.h */
 
 #include <mono/jit/jit.h>
+#include <mono/metadata/metadata.h>
 #include <mono/metadata/assembly.h>
 #include <mono/metadata/opcodes.h>
 #include <mono/metadata/tokentype.h>
 #include <mono/metadata/debug-helpers.h>
 #include <mono/metadata/attrdefs.h>
+#include <mono/metadata/verify.h>
 
 #include "config.h"
 #include "system.h"
@@ -64,6 +66,30 @@
 #include "parser.h"
 #include "bindings.h"
 #include "stack.h"
+
+#ifndef __MONO_METADATA_INTERNALS_H__
+/* Copied from mono/metadata/metadata-internals.h
+ *   That header is not packaged by Debian,
+ *   and even if it is included, it introduces
+ *   a slew of dependencies that break other code
+ *   (c.f. the Mono header comment above).
+ */
+struct _MonoType {
+	union {
+		MonoClass *klass; /* for VALUETYPE and CLASS */
+		MonoType *type;   /* for PTR */
+		MonoArrayType *array; /* for ARRAY */
+		MonoMethodSignature *method;
+		MonoGenericParam *generic_param; /* for VAR and MVAR */
+		MonoGenericClass *generic_class; /* for GENERICINST */
+	} data;
+	unsigned int attrs    : 16; /* param attributes or field flags */
+	MonoTypeEnum type     : 8;
+	unsigned int has_cmods : 1;  
+	unsigned int byref    : 1;
+	unsigned int pinned   : 1;  /* valid when included in a local var signature */
+};
+#endif
 
 /* parse only the methods which are reachable from the entry point */
 bool flag_parse_only_reachable = FALSE;
@@ -3107,7 +3133,7 @@ parse_method_impl (MonoMethod *method)
 
       DECL_SAVED_TREE (method_decl) = cil_bindings_pop_level ();
 
-      allocate_struct_function (method_decl);
+      allocate_struct_function (method_decl, false);
 
       /* Dump the original tree to a file. */
       dump_function (TDI_original, method_decl);
@@ -3118,7 +3144,7 @@ parse_method_impl (MonoMethod *method)
 
       /* We are not inside of any scope now.  */
       current_function_decl = NULL_TREE;
-      cfun = NULL;
+      set_cfun(NULL); // cfun = NULL;
 
       /* Pass the current function off to the middle end.  */
       cgraph_finalize_function (method_decl, false);
@@ -3875,7 +3901,7 @@ parser_emit_main_function (MonoMethod *entry_point_method)
 
   DECL_SAVED_TREE (fn_decl) = cil_bindings_pop_level ();
 
-  allocate_struct_function (fn_decl);
+  allocate_struct_function (fn_decl, false);
 
   /* Dump the original tree to a file. */
   dump_function (TDI_original, fn_decl);
@@ -3886,7 +3912,7 @@ parser_emit_main_function (MonoMethod *entry_point_method)
 
   /* We are not inside of any scope now.  */
   current_function_decl = NULL_TREE;
-  cfun = NULL;
+  set_cfun(NULL); //cfun = NULL;
 
   /* Pass the current function off to the middle end.  */
   cgraph_finalize_function (fn_decl, false);
