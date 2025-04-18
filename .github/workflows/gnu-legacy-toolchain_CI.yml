@@ -26,6 +26,9 @@ env:
   BUILD_DIR_TOOLCHAIN: build/toolchain
   SYSROOT_DIR:   sysroot
   
+  # Set to "--keep-going" to apply this flag to the "make all" commands
+  COMMON_MAKE_ALL_ARGS: 
+  
   TOOLCHAIN_INSTALL_NAME: h8300-hitachi-coff-toolchain_install
 
 jobs:
@@ -69,7 +72,7 @@ jobs:
       run:  |
         cd $BUILD_DIR_TOOLCHAIN
         echo "Current working directory: $PWD"
-        make --keep-going
+        make $COMMON_MAKE_ALL_ARGS
 
     - name: Test install the built GCC H8/300 cross-compiler to a sysroot
       run:  |
@@ -145,7 +148,7 @@ jobs:
       run:  |
         cd $BUILD_DIR_TOOLCHAIN/gcc-combined
         echo "Current working directory: $PWD"
-        make --keep-going
+        make $COMMON_MAKE_ALL_ARGS
 
 
   # For quicker continuous integration feedback, run just the CIL build as a job
@@ -189,7 +192,7 @@ jobs:
       run:  |
         cd $BUILD_DIR_TOOLCHAIN/gcc-cil-fe/gcc
         echo "Current working directory: $PWD"
-        make --keep-going  cil.all
+        make $COMMON_MAKE_ALL_ARGS  cil.all
 
 
   # For quicker continuous integration feedback, run just the GDB build as a job
@@ -224,7 +227,7 @@ jobs:
       run:  |
         cd $BUILD_DIR_TOOLCHAIN/gdb
         echo "Current working directory: $PWD"
-        make --keep-going
+        make $COMMON_MAKE_ALL_ARGS
 
 
 
