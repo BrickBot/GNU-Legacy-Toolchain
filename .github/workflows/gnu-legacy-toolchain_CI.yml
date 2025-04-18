@@ -58,7 +58,6 @@ jobs:
     - name: Setup the build directory for an H8/300 cross-toolchain
       run:  mkdir -p $BUILD_DIR_TOOLCHAIN
 
-
     # Run the build steps
     - name: Configure the build for an H8/300 cross-toolchain
       run:  |
@@ -130,11 +129,10 @@ jobs:
       run:  sudo apt-get --assume-yes update
 
     - name: Install build dependencies
-      run:  sudo apt-get --assume-yes install $UBUNTU_BUILD_DEPENDS
+      run:  sudo apt-get --assume-yes install $UBUNTU_BUILD_DEPENDS $UBUNTU_CIL_BUILD_DEPENDS
 
     - name: Setup the build directory for an H8/300 cross-toolchain
       run:  mkdir -p $BUILD_DIR_TOOLCHAIN
-
 
     # Run the build steps
     - name: Configure the build for an H8/300 cross-toolchain
@@ -180,7 +178,6 @@ jobs:
     - name: Setup the build directory for an H8/300 cross-toolchain
       run:  mkdir -p $BUILD_DIR_TOOLCHAIN
 
-
     # Run the build steps
     - name: Configure the build for an H8/300 cross-toolchain
       run:  |
@@ -211,11 +208,10 @@ jobs:
       run:  sudo apt-get --assume-yes update
 
     - name: Install build dependencies
-      run:  sudo apt-get --assume-yes install $UBUNTU_BUILD_DEPENDS
+      run:  sudo apt-get --assume-yes install $UBUNTU_BUILD_DEPENDS $UBUNTU_CIL_BUILD_DEPENDS
 
     - name: Setup the build directory for an H8/300 cross-toolchain
       run:  mkdir -p $BUILD_DIR_TOOLCHAIN
-
 
     # Run the build steps
     - name: Configure the build for an H8/300 cross-toolchain
