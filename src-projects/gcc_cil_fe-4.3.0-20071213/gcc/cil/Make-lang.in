@@ -68,11 +68,11 @@ MONO_LIBS=$(MONOLIBS)
 #
 # Define the names for selecting cil in LANGUAGES.
 
-.phony: cil
+.phony: cil.all cil CIL
 
-cil CIL:cil.done
+cil.all cil CIL:cil.done
 
-cil.done: gcil$(exeext) cil1$(exeext)
+cil.done: $(CIL_EXES)$(exeext) cil1$(exeext)
 	$(STAMP) cil.done
 
 # no preprocessor
@@ -80,15 +80,20 @@ cil.done: gcil$(exeext) cil1$(exeext)
 # core compiler
 cil1$(exeext): cil/cil1.o cil/cil-lang.o cil/bindings.o cil/parser.o cil/stack.o cil/cil-builtins.o \
 	$(BACKEND) $(LIBSDEPS) attribs.o
-	$(CC) $(ALL_CFLAGS) $(LDFLAGS) $(MONO_LIBS) -o $@ \
-	cil/cil1.o cil/cil-lang.o cil/bindings.o cil/parser.o cil/stack.o cil/cil-builtins.o \
-	$(BACKEND) $(LIBS) attribs.o
+	$(CC) $(ALL_CFLAGS) -o $@ \
+	attribs.o cil/cil1.o cil/cil-lang.o cil/bindings.o cil/parser.o cil/stack.o cil/cil-builtins.o \
+	$(LDFLAGS) $(BACKEND) $(LIBS) $(GMPLIBS) $(MONO_LIBS) -lz
 
 # Create the compiler driver cil.
-gcil$(exeext): $(GCC_OBJS) version.o prefix.o intl.o $(EXTRA_GCC_OBJS) \
+$(CIL_EXES)$(exeext): $(GCC_OBJS) version.o prefix.o intl.o $(EXTRA_GCC_OBJS) \
   $(LIBDEPS) cil/spec.o
 	$(CC) $(ALL_CFLAGS) $(LDFLAGS) -o $@ cil/spec.o \
 	  $(GCC_OBJS) version.o prefix.o intl.o $(EXTRA_GCC_OBJS) $(LIBS)
+
+# Create a version of the $(CIL_EXES) driver which calls the cross-compiler.
+$(CIL_EXES)-cross$(exeext): $(CIL_EXES)$(exeext)
+	-rm -f $(CIL_EXES)-cross$(exeext)
+	cp $(CIL_EXES)$(exeext) $(CIL_EXES)-cross$(exeext)
 
 
 
@@ -134,15 +139,15 @@ cil.srcextra:
 #
 # Build hooks:
 
-cil.all.cross:
-	_error_not_here_yet - havent even thought about it - it may even work
+cil.all.cross: $(CIL_EXES)-cross$(exeext)
+
 
 cil.start.encap:
 cil.rest.encap:
 cil.man:
 cil.srcman:
 
-cil.tags: force
+cil.etags cil.tags: force
 	cd $(srcdir)/cil; etags -o TAGS.sub *.y *.l *.c *.h; \
 	etags --include TAGS.sub --include ../TAGS.sub
 
@@ -151,7 +156,9 @@ cil.info: doc/cil.info
 cil.srcinfo: doc/cil.info
 	-cp -p $^ $(srcdir)/doc
 
-dvi:: doc/cil.dvi
+cil.dvi: doc/cil.dvi
+
+dvi:: cil.dvi
 
 TEXI_CIL_FILES = cil/cil.texi
 
@@ -193,6 +200,7 @@ cil.install.common.done:  installdirs cil.done
 # We might not be able to build the info files
 cil.install-info: $(DESTDIR)$(infodir)/cil.info
 
+cil.install-plugin:
 cil.install-man:
 
 cil.uninstall:
@@ -239,6 +247,8 @@ cil.maintainer-clean: cil.distclean
 	  fi ; \
 	done
 	-rm -R $(srcdir)/cil/*~
+
+cil.realclean: cil.maintainer-clean
 
 
 #

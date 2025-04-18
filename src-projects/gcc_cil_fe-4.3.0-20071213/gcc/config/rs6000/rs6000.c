@@ -16672,6 +16672,8 @@ rs6000_output_function_epilogue (FILE *file,
 	i = 13;
       else if (! strcmp (language_string, "GNU Objective-C"))
 	i = 14;
+      else if (! strcmp (language_string, "GCC CIL"))
+	i = 35;
       else
 	gcc_unreachable ();
       fprintf (file, "%d,", i);

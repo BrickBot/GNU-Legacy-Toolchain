@@ -237,6 +237,7 @@ NORMAL_TARGET_EXPORTS = \
 HOST_GMPLIBS = @gmplibs@
 HOST_GMPINC = @gmpinc@
 
+# Where to find Mono
 HOST_MONOLIBS = @monolibs@
 HOST_MONOINC = @monoinc@
 

@@ -278,6 +278,7 @@ ZLIBINC = @zlibinc@
 GMPLIBS = @GMPLIBS@
 GMPINC = @GMPINC@
 
+# How to find MONO
 MONOLIBS = @MONOLIBS@
 MONOINC = @MONOINC@
 
@@ -3251,10 +3252,10 @@ $(genprogmd:%=build/gen%$(build_exeext)): $(BUILD_RTL) $(BUILD_ERRORS)
 build/genautomata$(build_exeext) : BUILD_LIBS += -lm
 
 # These programs are not linked with the MD reader.
-build/gengenrtl$(build_exeext) : $(BUILD_ERRORS)
+build/gengenrtl$(build_exeext): $(BUILD_ERRORS)
 build/genmodes$(build_exeext) : $(BUILD_ERRORS)
-build/gengtype$(build_exeext) : build/gengtype-lex.o build/gengtype-parse.o \
-				$(BUILD_ERRORS)
+build/gengtype$(build_exeext) : $(BUILD_ERRORS) \
+				build/gengtype-lex.o build/gengtype-parse.o
 
 # Generated source files for gengtype.
 gengtype-lex.c : gengtype-lex.l
