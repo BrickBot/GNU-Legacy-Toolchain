@@ -53,8 +53,8 @@ typedef struct sigaltstack {
  size_t ss_size;
  int ss_flags;
 } stack_t;
-typedef struct ucontext ucontext_t;
-struct ucontext {
+typedef ucontext_t ucontext_t;
+ucontext_t {
  uint_t uc_flags;
  ucontext_t *uc_link;
  sigset_t uc_sigmask;

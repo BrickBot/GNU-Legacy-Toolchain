@@ -52,11 +52,11 @@ bfin_fallback_frame_state (struct _Unwind_Context *context,
     {
       struct rt_sigframe {
 	int sig;
-	struct siginfo *pinfo;
+	siginfo_t *pinfo;
 	void *puc;
 	char retcode[8];
-	struct siginfo info;
-	struct ucontext uc;
+	siginfo_t info;
+	ucontext_t uc;
       } *rt_ = context->cfa;
 
       /* The void * cast is necessary to avoid an aliasing warning.

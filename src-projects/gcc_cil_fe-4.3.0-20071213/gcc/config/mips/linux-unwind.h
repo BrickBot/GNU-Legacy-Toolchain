@@ -35,7 +35,7 @@ Boston, MA 02110-1301, USA.  */
 
 /* The third parameter to the signal handler points to something with
  * this structure defined in asm/ucontext.h, but the name clashes with
- * struct ucontext from sys/ucontext.h so this private copy is used.  */
+ * ucontext_t from sys/ucontext.h so this private copy is used.  */
 typedef struct _sig_ucontext {
     unsigned long         uc_flags;
     struct _sig_ucontext  *uc_link;
@@ -79,7 +79,7 @@ mips_fallback_frame_state (struct _Unwind_Context *context,
       struct rt_sigframe {
 	u_int32_t ass[4];  /* Argument save space for o32.  */
 	u_int32_t trampoline[2];
-	struct siginfo info;
+	siginfo_t info;
 	_sig_ucontext_t uc;
       } *rt_ = context->cfa;
       sc = &rt_->uc.uc_mcontext;

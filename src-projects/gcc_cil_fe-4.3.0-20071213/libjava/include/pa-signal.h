@@ -24,7 +24,7 @@ static void _Jv_##_name (int _dummy, siginfo_t *_info, void *arg)
 #define MAKE_THROW_FRAME(_exception)				\
 do								\
 {								\
-  struct ucontext *uc = (struct ucontext *)arg;			\
+  ucontext_t *uc = (ucontext_t *)arg;			\
   struct sigcontext *sc = &uc->uc_mcontext;			\
   (void)_dummy;							\
   (void)_info;							\

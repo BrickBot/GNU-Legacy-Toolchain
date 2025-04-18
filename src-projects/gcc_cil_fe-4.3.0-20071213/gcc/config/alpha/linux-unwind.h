@@ -52,8 +52,8 @@ alpha_fallback_frame_state (struct _Unwind_Context *context,
   else if (pc[1] == 0x201f015f)	/* lda $0,NR_rt_sigreturn */
     {
       struct rt_sigframe {
-	struct siginfo info;
-	struct ucontext uc;
+	siginfo_t info;
+	ucontext_t uc;
       } *rt_ = context->cfa;
       sc = &rt_->uc.uc_mcontext;
     }

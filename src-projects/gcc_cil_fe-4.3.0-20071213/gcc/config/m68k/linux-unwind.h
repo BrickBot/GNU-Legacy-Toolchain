@@ -37,7 +37,7 @@ Boston, MA 02110-1301, USA.  */
 /* <sys/ucontext.h> is unfortunately broken right now.  */
 struct uw_ucontext {
 	unsigned long	  uc_flags;
-	struct ucontext  *uc_link;
+	ucontext_t  *uc_link;
 	stack_t		  uc_stack;
 	mcontext_t	  uc_mcontext;
 	unsigned long	  uc_filler[80];
