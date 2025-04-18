@@ -172,7 +172,7 @@ CIL_COMMAND="$CIL_SRC_DIR/configure --enable-languages=cil $ARGS_TO_PASS  CFLAGS
 echo "COMMAND: $CIL_COMMAND"
 mkdir -p "$CIL_BUILD_DIR" && pushd "$CIL_BUILD_DIR" > /dev/null
 eval "$CIL_COMMAND" || exit 1
-make all-libiberty all-libcpp all-libdecnumber configure-gcc
+make all-libiberty all-libcpp all-libdecnumber configure-gcc || exit 1
 popd > /dev/null
 
 echo "=============="
