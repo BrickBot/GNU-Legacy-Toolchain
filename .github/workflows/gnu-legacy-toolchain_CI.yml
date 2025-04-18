@@ -192,7 +192,7 @@ jobs:
       run:  |
         cd $BUILD_DIR_TOOLCHAIN/gcc-cil-fe/gcc
         echo "Current working directory: $PWD"
-        make $COMMON_MAKE_ALL_ARGS  cil.all
+        make $COMMON_MAKE_ALL_ARGS  build_libobjdir=".."  cil.all
 
 
   # For quicker continuous integration feedback, run just the GDB build as a job
