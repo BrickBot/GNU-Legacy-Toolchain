@@ -29,6 +29,8 @@
 # Set by autoconf to "all.internal" for a native build, or
 # "all.cross" to build a cross compiler.
 all: @ALL@
+all-gcc: all
+all-cil: cil.all
 
 # Depend on this to specify a phony target portably.
 force:
@@ -3622,6 +3624,8 @@ INFOFILES = doc/cpp.info doc/gcc.info doc/gccint.info \
             doc/gccinstall.info doc/cppinternals.info
 
 info: $(INFOFILES) lang.info @GENINSRC@ srcinfo lang.srcinfo
+info-gcc: info
+info-cil: cil.info
 
 srcinfo: $(INFOFILES)
 	-cp -p $^ $(srcdir)/doc
@@ -3704,6 +3708,8 @@ $(build_htmldir)/cppinternals/index.html: $(TEXI_CPPINT_FILES)
 
 dvi:: doc/gcc.dvi doc/gccint.dvi doc/gccinstall.dvi doc/cpp.dvi \
       doc/cppinternals.dvi lang.dvi
+dvi-gcc: dvi
+dvi-cil: cil.dvi
 
 doc/%.dvi: %.texi
 	$(TEXI2DVI) -I . -I $(abs_docdir) -I $(abs_docdir)/include -o $@ $<
@@ -3843,6 +3849,9 @@ mostlyclean: lang.mostlyclean
 # Delete genchecksum outputs
 	-rm -f *-checksum.c
 
+mostlyclean-gcc: mostlyclean
+mostlyclean-cil: cil.mostlyclean
+
 # Delete all files made by compilation
 # that don't exist in the distribution.
 clean: mostlyclean lang.clean
@@ -3863,6 +3872,9 @@ clean: mostlyclean lang.clean
 	else if [ "x$(MULTILIB_OPTIONS)" != x ] ; then \
 	  rm -rf `echo $(MULTILIB_OPTIONS) | sed -e 's/\// /g'`; \
 	fi ; fi
+
+clean-gcc: clean
+clean-cil: cil.clean
 
 # Delete all files that users would normally create
 # while building and installing GCC.
@@ -3887,6 +3899,9 @@ distclean: clean lang.distclean
 	-if [ ! -f po/exgettext ]; then rm -f po/*.gmo; fi
 	-rmdir ada cp f java objc intl po testsuite 2>/dev/null
 
+distclean-gcc: distclean
+distclean-cil: cil.distclean
+
 # Get rid of every file that's generated from some other file, except for `configure'.
 # Most of these files ARE PRESENT in the GCC distribution.
 maintainer-clean:
@@ -3896,6 +3911,15 @@ maintainer-clean:
 	-rm -f cpp.??s cpp.*aux
 	-rm -f gcc.??s gcc.*aux
 	-rm -f $(gcc_docdir)/*.info $(gcc_docdir)/*.1 $(gcc_docdir)/*.7 $(gcc_docdir)/*.dvi $(gcc_docdir)/*.pdf
+
+maintainer-clean-gcc: maintainer-clean
+maintainer-clean-cil: cil.maintainer-clean
+
+# The realclean targets do not do anything unique, but including for consistency.
+realclean: maintainer-clean
+
+realclean-gcc: realclean
+realclean-cil: cil.realclean
 #
 # Entry points `install' and `uninstall'.
 # Also use `install-collect2' to install collect2 when the config files don't.
@@ -3906,6 +3930,9 @@ maintainer-clean:
 install: install-common $(INSTALL_HEADERS) \
     install-cpp install-man install-info install-@POSUB@ \
     install-driver
+
+install-gcc: install
+install-cil: cil.install
 
 # Handle cpp installation.
 install-cpp: installdirs cpp$(exeext)
@@ -4198,6 +4225,9 @@ uninstall: lang.uninstall
 	-rm -rf $(DESTDIR)$(man1dir)/unprotoize$(man1ext)
 	-rm -f $(DESTDIR)$(infodir)/cpp.info* $(DESTDIR)$(infodir)/gcc.info*
 	-rm -f $(DESTDIR)$(infodir)/cppinternals.info* $(DESTDIR)$(infodir)/gccint.info*
+
+uninstall-gcc: uninstall
+uninstall-cil: cil.uninstall
 #
 # These targets are for the dejagnu testsuites. The file site.exp
 # contains global variables that all the testsuites will use.
@@ -4272,6 +4302,9 @@ site.exp: ./config.status Makefile
 CHECK_TARGETS = check-gcc @check_languages@
 
 check: $(CHECK_TARGETS)
+
+check-gcc: check
+check-cil: cil.check
 
 # The idea is to parallelize testing of multilibs, for example:
 #   make -j3 check-gcc//sh-hms-sim/{-m1,-m2,-m3,-m3e,-m4}/{,-nofpu}
@@ -4396,6 +4429,9 @@ TAGS: lang.tags
 	done;						\
 	etags -o TAGS.sub *.y *.h *.c; \
 	etags --include TAGS.sub $$incs)
+
+TAGS-gcc: TAGS
+TAGS-cil: cil.TAGS
 
 # -----------------------------------------------------
 # Rules for generating translated message descriptions.

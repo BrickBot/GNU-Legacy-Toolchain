@@ -2286,6 +2286,7 @@ maintainer-clean-target: maybe-maintainer-clean-target-libcilsupport
 .PHONY: install-info install-pdf install-html
 .PHONY: clean distclean mostlyclean maintainer-clean realclean
 .PHONY: local-clean local-distclean local-maintainer-clean
+.PHONY: realclean-gcc realclean-cil
 info: do-info
 installcheck: do-installcheck
 dvi: do-dvi
@@ -2335,6 +2336,9 @@ distclean: do-distclean local-clean local-distclean
 maintainer-clean: local-maintainer-clean do-maintainer-clean local-clean 
 maintainer-clean: local-distclean
 realclean: maintainer-clean
+
+realclean-gcc: maintainer-clean-gcc
+realclean-cil: maintainer-clean-cil
 
 # Check target.
 
@@ -2646,8 +2650,21 @@ install-target:  \
     maybe-install-target-libgomp \
     maybe-install-target-libcilsupport
 
+.PHONY: uninstall uninstall-gcc uninstall-cil
 uninstall:
 	@echo "the uninstall target is not supported in this tree"
+
+@if gcc
+uninstall-gcc uninstall-cil:
+	@: $(MAKE); $(unstage)
+	@r=`${PWD_COMMAND}`; export r; \
+	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
+	$(HOST_EXPORTS) \
+	(cd $(HOST_SUBDIR)/gcc && \
+	  $(MAKE) $(FLAGS_TO_PASS) $(EXTRA_GCC_FLAGS) $@)
+
+@endif gcc
+
 
 .PHONY: install.all
 install.all: install-no-fixedincludes
@@ -14076,6 +14093,9 @@ configure-gcc:
 	  $(HOST_CONFIGARGS) --build=${build_alias} --host=${host_alias} \
 	  --target=${target_alias} $${srcdiroption}  \
 	  || exit 1
+
+.PHONY: configure-cil
+configure-cil: configure-gcc
 @endif gcc
 
 
@@ -14331,7 +14351,7 @@ configure-stagefeedback-gcc:
 
 
 
-.PHONY: all-gcc maybe-all-gcc
+.PHONY: all-gcc maybe-all-gcc all-cil
 maybe-all-gcc:
 @if gcc-bootstrap
 all-gcc: stage_current
@@ -14339,12 +14359,15 @@ all-gcc: stage_current
 @if gcc
 TARGET-gcc=all
 maybe-all-gcc: all-gcc
-all-gcc: configure-gcc
+all-gcc: TARGET-gcc_LOCAL=$(TARGET-gcc)
+all-cil: all-libiberty all-libcpp all-libdecnumber
+all-cil: TARGET-gcc_LOCAL=all-cil
+all-gcc all-cil: configure-gcc
 	@r=`${PWD_COMMAND}`; export r; \
 	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
 	$(HOST_EXPORTS) \
 	(cd $(HOST_SUBDIR)/gcc && \
-	  $(MAKE) $(FLAGS_TO_PASS) $(EXTRA_GCC_FLAGS) $(TARGET-gcc))
+	  $(MAKE) $(FLAGS_TO_PASS) $(EXTRA_GCC_FLAGS) $(TARGET-gcc_LOCAL))
 @endif gcc
 
 
@@ -14630,45 +14653,47 @@ clean-stagefeedback-gcc:
 
 
 
-.PHONY: check-gcc maybe-check-gcc
+.PHONY: check-gcc maybe-check-gcc check-cil
 maybe-check-gcc:
 @if gcc
 maybe-check-gcc: check-gcc
 
-check-gcc:
+check-cil: check-libiberty check-libcpp check-libdecnumber
+check-gcc check-cil:
 	@: $(MAKE); $(unstage)
 	@r=`${PWD_COMMAND}`; export r; \
 	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
 	$(HOST_EXPORTS) \
 	(cd $(HOST_SUBDIR)/gcc && \
-	  $(MAKE) $(FLAGS_TO_PASS) $(EXTRA_GCC_FLAGS) check)
+	  $(MAKE) $(FLAGS_TO_PASS) $(EXTRA_GCC_FLAGS) $@)
 
 @endif gcc
 
-.PHONY: install-gcc maybe-install-gcc
+.PHONY: install-gcc maybe-install-gcc install-cil
 maybe-install-gcc:
 @if gcc
 maybe-install-gcc: install-gcc
 
-install-gcc: installdirs
+install-cil: install-libiberty install-libcpp install-libdecnumber
+install-gcc install-cil: installdirs
 	@: $(MAKE); $(unstage)
 	@r=`${PWD_COMMAND}`; export r; \
 	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
 	$(HOST_EXPORTS) \
 	(cd $(HOST_SUBDIR)/gcc && \
-	  $(MAKE) $(FLAGS_TO_PASS) $(EXTRA_GCC_FLAGS) install)
+	  $(MAKE) $(FLAGS_TO_PASS) $(EXTRA_GCC_FLAGS) $@)
 
 @endif gcc
 
 # Other targets (info, dvi, pdf, etc.)
 
-.PHONY: maybe-info-gcc info-gcc
+.PHONY: maybe-info-gcc info-gcc info-cil
 maybe-info-gcc:
 @if gcc
 maybe-info-gcc: info-gcc
 
-info-gcc: \
-    configure-gcc 
+info-cil: info-libiberty info-libcpp info-libdecnumber
+info-gcc info-cil: configure-gcc 
 	@[ -f ./gcc/Makefile ] || exit 0; \
 	r=`${PWD_COMMAND}`; export r; \
 	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
@@ -14682,18 +14707,18 @@ info-gcc: \
 	          "CC=$${CC}" "CXX=$${CXX}" "LD=$${LD}" "NM=$${NM}" \
 	          "RANLIB=$${RANLIB}" \
 	          "DLLTOOL=$${DLLTOOL}" "WINDRES=$${WINDRES}" "WINDMC=$${WINDMC}" \
-	          info) \
+	          $@) \
 	  || exit 1
 
 @endif gcc
 
-.PHONY: maybe-dvi-gcc dvi-gcc
+.PHONY: maybe-dvi-gcc dvi-gcc dvi-cil
 maybe-dvi-gcc:
 @if gcc
 maybe-dvi-gcc: dvi-gcc
 
-dvi-gcc: \
-    configure-gcc 
+dvi-cil: dvi-libiberty dvi-libcpp dvi-libdecnumber
+dvi-gcc dvi-cil: configure-gcc 
 	@[ -f ./gcc/Makefile ] || exit 0; \
 	r=`${PWD_COMMAND}`; export r; \
 	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
@@ -14707,7 +14732,7 @@ dvi-gcc: \
 	          "CC=$${CC}" "CXX=$${CXX}" "LD=$${LD}" "NM=$${NM}" \
 	          "RANLIB=$${RANLIB}" \
 	          "DLLTOOL=$${DLLTOOL}" "WINDRES=$${WINDRES}" "WINDMC=$${WINDMC}" \
-	          dvi) \
+	          $@) \
 	  || exit 1
 
 @endif gcc
@@ -14762,13 +14787,13 @@ html-gcc: \
 
 @endif gcc
 
-.PHONY: maybe-TAGS-gcc TAGS-gcc
+.PHONY: maybe-TAGS-gcc TAGS-gcc TAGS-cil etags-gcc tags-gcc etags-cil tags-cil
 maybe-TAGS-gcc:
 @if gcc
 maybe-TAGS-gcc: TAGS-gcc
 
-TAGS-gcc: \
-    configure-gcc 
+TAGS-cil: TAGS-libiberty TAGS-libcpp TAGS-libdecnumber
+TAGS-gcc TAGS-cil: configure-gcc 
 	@[ -f ./gcc/Makefile ] || exit 0; \
 	r=`${PWD_COMMAND}`; export r; \
 	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
@@ -14782,9 +14807,11 @@ TAGS-gcc: \
 	          "CC=$${CC}" "CXX=$${CXX}" "LD=$${LD}" "NM=$${NM}" \
 	          "RANLIB=$${RANLIB}" \
 	          "DLLTOOL=$${DLLTOOL}" "WINDRES=$${WINDRES}" "WINDMC=$${WINDMC}" \
-	          TAGS) \
+	          $@) \
 	  || exit 1
 
+etags-gcc tags-gcc: TAGS-gcc
+etags-cil tags-cil: TAGS-cil
 @endif gcc
 
 .PHONY: maybe-install-info-gcc install-info-gcc
@@ -14890,12 +14917,13 @@ installcheck-gcc: \
 
 @endif gcc
 
-.PHONY: maybe-mostlyclean-gcc mostlyclean-gcc
+.PHONY: maybe-mostlyclean-gcc mostlyclean-gcc mostlyclean-cil
 maybe-mostlyclean-gcc:
 @if gcc
 maybe-mostlyclean-gcc: mostlyclean-gcc
 
-mostlyclean-gcc: 
+mostlyclean-cil: mostlyclean-libiberty mostlyclean-libcpp mostlyclean-libdecnumber
+mostlyclean-gcc mostlyclean-cil: 
 	@[ -f ./gcc/Makefile ] || exit 0; \
 	r=`${PWD_COMMAND}`; export r; \
 	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
@@ -14909,17 +14937,18 @@ mostlyclean-gcc:
 	          "CC=$${CC}" "CXX=$${CXX}" "LD=$${LD}" "NM=$${NM}" \
 	          "RANLIB=$${RANLIB}" \
 	          "DLLTOOL=$${DLLTOOL}" "WINDRES=$${WINDRES}" "WINDMC=$${WINDMC}" \
-	          mostlyclean) \
+	          $@) \
 	  || exit 1
 
 @endif gcc
 
-.PHONY: maybe-clean-gcc clean-gcc
+.PHONY: maybe-clean-gcc clean-gcc clean-cil
 maybe-clean-gcc:
 @if gcc
 maybe-clean-gcc: clean-gcc
 
-clean-gcc: 
+clean-cil: clean-libiberty clean-libcpp clean-libdecnumber
+clean-gcc clean-cil: 
 	@[ -f ./gcc/Makefile ] || exit 0; \
 	r=`${PWD_COMMAND}`; export r; \
 	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
@@ -14933,17 +14962,18 @@ clean-gcc:
 	          "CC=$${CC}" "CXX=$${CXX}" "LD=$${LD}" "NM=$${NM}" \
 	          "RANLIB=$${RANLIB}" \
 	          "DLLTOOL=$${DLLTOOL}" "WINDRES=$${WINDRES}" "WINDMC=$${WINDMC}" \
-	          clean) \
+	          $@) \
 	  || exit 1
 
 @endif gcc
 
-.PHONY: maybe-distclean-gcc distclean-gcc
+.PHONY: maybe-distclean-gcc distclean-gcc distclean-cil
 maybe-distclean-gcc:
 @if gcc
 maybe-distclean-gcc: distclean-gcc
 
-distclean-gcc: 
+distclean-cil: distclean-libiberty distclean-libcpp distclean-libdecnumber
+distclean-gcc distclean-cil: 
 	@[ -f ./gcc/Makefile ] || exit 0; \
 	r=`${PWD_COMMAND}`; export r; \
 	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
@@ -14957,17 +14987,18 @@ distclean-gcc:
 	          "CC=$${CC}" "CXX=$${CXX}" "LD=$${LD}" "NM=$${NM}" \
 	          "RANLIB=$${RANLIB}" \
 	          "DLLTOOL=$${DLLTOOL}" "WINDRES=$${WINDRES}" "WINDMC=$${WINDMC}" \
-	          distclean) \
+	          $@) \
 	  || exit 1
 
 @endif gcc
 
-.PHONY: maybe-maintainer-clean-gcc maintainer-clean-gcc
+.PHONY: maybe-maintainer-clean-gcc maintainer-clean-gcc maintainer-clean-cil
 maybe-maintainer-clean-gcc:
 @if gcc
 maybe-maintainer-clean-gcc: maintainer-clean-gcc
 
-maintainer-clean-gcc: 
+maintainer-clean-cil: maintainer-clean-libiberty maintainer-clean-libcpp maintainer-clean-libdecnumber
+maintainer-clean-gcc maintainer-clean-cil: 
 	@[ -f ./gcc/Makefile ] || exit 0; \
 	r=`${PWD_COMMAND}`; export r; \
 	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
@@ -14981,7 +15012,7 @@ maintainer-clean-gcc:
 	          "CC=$${CC}" "CXX=$${CXX}" "LD=$${LD}" "NM=$${NM}" \
 	          "RANLIB=$${RANLIB}" \
 	          "DLLTOOL=$${DLLTOOL}" "WINDRES=$${WINDRES}" "WINDMC=$${WINDMC}" \
-	          maintainer-clean) \
+	          $@) \
 	  || exit 1
 
 @endif gcc

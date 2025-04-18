@@ -147,7 +147,7 @@ cil.rest.encap:
 cil.man:
 cil.srcman:
 
-cil.etags cil.tags: force
+cil.etags cil.tags cil.TAGS: force
 	cd $(srcdir)/cil; etags -o TAGS.sub *.y *.l *.c *.h; \
 	etags --include TAGS.sub --include ../TAGS.sub
 

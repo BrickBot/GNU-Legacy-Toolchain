@@ -118,9 +118,9 @@ for TARGET in $TARGETS_TO_GENERATE
 do
   cat >> $MAKEFILE_PATH <<MAKEFILE_TARGET_GEN
 $TARGET:
-	@cd "\$(CIL_BUILD_DIR)/gcc" && \$(MAKE) build_libobjdir=".." $CIL_MAKE_ARGS cil.\$@
-	@cd "\$(GDB_BUILD_DIR)"     && \$(MAKE) $GDB_MAKE_ARGS \$@
-	@cd "\$(GCC_BUILD_DIR)"     && \$(MAKE) $GCC_MAKE_ARGS \$@
+	@echo "MAKE: CIL - \$@" && cd "\$(CIL_BUILD_DIR)" && \$(MAKE) $CIL_MAKE_ARGS \$@-cil
+	@echo "MAKE: GDB - \$@" && cd "\$(GDB_BUILD_DIR)" && \$(MAKE) $GDB_MAKE_ARGS \$@
+	@echo "MAKE: GCC - \$@" && cd "\$(GCC_BUILD_DIR)" && \$(MAKE) $GCC_MAKE_ARGS \$@
 
 MAKEFILE_TARGET_GEN
 done
@@ -168,11 +168,10 @@ echo ".PHONY: $TARGETS_TO_GENERATE stow restow unstow $TARGET_LIST_VARIABLES" >>
 #   c.f. https://stackoverflow.com/q/39583838/#comment66478321_39583915
 echo "=============="
 echo "CONFIGURE: CIL"
-CIL_COMMAND="$CIL_SRC_DIR/configure --enable-languages=cil $ARGS_TO_PASS  CFLAGS='-g -O2 -std=gnu89 -fgnu89-inline' "
+CIL_COMMAND="$CIL_SRC_DIR/configure --enable-languages=cil $ARGS_TO_PASS  CFLAGS='-g -O2 -std=gnu89 -fgnu89-inline' --without-build-libsubdir --prefix=$prefix "
 echo "COMMAND: $CIL_COMMAND"
 mkdir -p "$CIL_BUILD_DIR" && pushd "$CIL_BUILD_DIR" > /dev/null
 eval "$CIL_COMMAND" || exit 1
-make all-libiberty all-libcpp all-libdecnumber configure-gcc || exit 1
 popd > /dev/null
 
 echo "=============="
