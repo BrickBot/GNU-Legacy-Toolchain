@@ -61,17 +61,19 @@ Taking libiberty from binutils and the combining the gcc and binutils builds doe
 which at least eliminates the complications that would otherwise arise from having to build
 gcc and binutils separately.
 
-| Folder    | gcc | binutils | newlib | gcc-cil-fe | gdb |
-| --------- | --- | -------- | ------ | ---------- | --- |
-| bfd       |     |  ×       |        |            |  ×  |
-| cpu       |     |  ×       |        |            |  ×  |
-| etc       |     |  ×       |  ×     |            |  ×  |
-| include   |  ×  |  ×       |        |  ×         |  ×  |
-| intl      |  ×  |  ×       |        |  ×         |  ×  |
-| libiberty |  ×  |  ×       |        |  ×         |  ×  |
-| opcodes   |     |  ×       |        |            |  ×  |
-| texinfo   |     |  ×       |  ×     |            |  ×  |
-| zlib      |  ×  |          |        |  ×         |  ×  |
+| Folder       | gcc 3.4.6 | gcc-cil-fe 4.3.0 | gcc 4.4.7 | binutils | newlib | gdb |
+| ------------ | --------- | ---------------- | --------- | -------- | ------ | --- |
+| bfd          |           |                  |           |  ×       |        |  ×  |
+| cpu          |           |                  |           |  ×       |        |  ×  |
+| etc          |           |                  |           |  ×       |  ×     |  ×  |
+| include      |  ×        |  ×               |  ×        |  ×       |        |  ×  |
+| intl         |  ×        |  ×               |  ×        |  ×       |        |  ×  |
+| libdecnumber |           |  ×               |  ×        |          |        |  ×  |
+| libiberty    |  ×        |  ×               |  ×        |  ×       |        |  ×  |
+| opcodes      |           |                  |           |  ×       |        |  ×  |
+| texinfo      |           |                  |           |  ×       |  ×     |  ×  |
+| zlib         |  ×        |  ×               |  ×        |          |        |  ×  |
+
 
 
 
