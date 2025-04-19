@@ -61,54 +61,53 @@ Taking libiberty from binutils and the combining the gcc and binutils builds doe
 which at least eliminates the complications that would otherwise arise from having to build
 gcc and binutils separately.
 
-| Folder    | gcc | binutils | newlib | gdb |
-| --------- | --- | -------- | ------ | --- |
-| bfd       |     |  ×       |        |  ×  |
-| cpu       |     |  ×       |        |  ×  |
-| etc       |     |  ×       |  ×     |  ×  |
-| include   |  ×  |  ×       |        |  ×  |
-| libiberty |  ×  |  ×       |        |  ×  |
-| opcodes   |     |  ×       |        |  ×  |
-| texinfo   |     |  ×       |  ×     |  ×  |
-| zlib      |  ×  |          |        |  ×  |
+| Folder    | gcc | binutils | newlib | gcc-cil-fe | gdb |
+| --------- | --- | -------- | ------ | ---------- | --- |
+| bfd       |     |  ×       |        |            |  ×  |
+| cpu       |     |  ×       |        |            |  ×  |
+| etc       |     |  ×       |  ×     |            |  ×  |
+| include   |  ×  |  ×       |        |  ×         |  ×  |
+| intl      |  ×  |  ×       |        |  ×         |  ×  |
+| libiberty |  ×  |  ×       |        |  ×         |  ×  |
+| opcodes   |     |  ×       |        |            |  ×  |
+| texinfo   |     |  ×       |  ×     |            |  ×  |
+| zlib      |  ×  |          |        |  ×         |  ×  |
 
 
 
-
-The following were soft-linked in to create the combined source folder `src-combined`,
+The following folders were soft-linked in to create the combined source folder `src-combined`,
 which is then used as the source folder for builds:
 
-Folders from GCC
-* boehm-gc
-* config
-* fastjar
-* gcc
-* include
-* intl
-* libf2c
-* libffi
-* libjava
-* libobjc
-* libstdc++-v3
-* zlib
+| Folder       | Source     | Version        |
+| ------------ | ---------- | -------------- |
+| bfd          | binutils   | 2.16.1         |
+| binutils     | binutils   | 2.16.1         |
+| boehm-gc     | gcc        | 3.4.6          |
+| cgen         | binutils   | 2.16.1         |
+| config       | gcc        | 3.4.6          |
+| cpu          | binutils   | 2.16.1         |
+| etc          | binutils   | 2.16.1         |
+| fastjar      | gcc        | 3.4.6          |
+| gas          | binutils   | 2.16.1         |
+| gcc          | gcc        | 3.4.6          |
+| gcc/p        | GPC        | 2.1-20070904   |
+| gprof        | binutils   | 2.16.1         |
+| include      | GCC CIL FE | 4.3.0-20071213 |
+| intl         | GCC CIL FE | 4.3.0-20071213 |
+| ld           | binutils   | 2.16.1         |
+| libf2c       | gcc        | 3.4.6          |
+| libffi       | gcc        | 3.4.6          |
+| libgloss     | newlib     | 1.19.0         |
+| libiberty    | GCC CIL FE | 4.3.0-20071213 |
+| libjava      | gcc        | 3.4.6          |
+| libobjc      | gcc        | 3.4.6          |
+| libstdc++-v3 | gcc        | 3.4.6          |
+| newlib       | newlib     | 1.19.0         |
+| opcodes      | binutils   | 2.16.1         |
+| texinfo      | binutils   | 2.16.1         |
+| zlib         | GCC CIL FE | 4.3.0-20071213 |
 
-Folders from BinUtils
-* bfd
-* binutils
-* cgen
-* cpu
-* etc
-* gas
-* gprof
-* ld
-* libiberty
-* opcodes
-* texinfo
-
-Folders from GPC
-* p -> gcc/p
-
-Files from GCC
+The soft-linked files under that same folder are all from GCC:
 * config.guess
 * config.if
 * config.rpath
