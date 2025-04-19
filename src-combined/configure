@@ -168,7 +168,7 @@ echo ".PHONY: $TARGETS_TO_GENERATE stow restow unstow $TARGET_LIST_VARIABLES" >>
 #   c.f. https://stackoverflow.com/q/39583838/#comment66478321_39583915
 echo "=============="
 echo "CONFIGURE: CIL"
-CIL_COMMAND="$CIL_SRC_DIR/configure --enable-languages=cil $ARGS_TO_PASS  CFLAGS='-g -O2 -std=gnu89 -fgnu89-inline' --without-build-libsubdir --prefix=$prefix "
+CIL_COMMAND="$CIL_SRC_DIR/configure --enable-languages=cil $ARGS_TO_PASS  CFLAGS='-g -O2 -std=gnu89 -fgnu89-inline' --prefix=$prefix "
 echo "COMMAND: $CIL_COMMAND"
 mkdir -p "$CIL_BUILD_DIR" && pushd "$CIL_BUILD_DIR" > /dev/null
 eval "$CIL_COMMAND" || exit 1

@@ -1929,8 +1929,8 @@ build_subdir="build-${build_noncanonical}"
 # Check whether --with-build-libsubdir or --without-build-libsubdir was given.
 if test "${with_build_libsubdir+set}" = set; then
   withval="$with_build_libsubdir"
-  if test "${withval}" != "no"; then
-    build_libsubdir="$withval"
+  if test "${withval}" = "yes"; then
+    build_libsubdir="$build_subdir"
   else
     build_libsubdir="."
   fi
