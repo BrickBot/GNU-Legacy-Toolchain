@@ -19,9 +19,9 @@ Repository Creation Notes
 ### Sources Versions Used
 The primary selection criteria was the last known versions to include support for h8300-\*-coff,
 but this also overlapped well with support for GPC and g77.
-* **BinUtils 2.16.1**
+* **[BinUtils](https://www.gnu.org/software/binutils/) 2.16.1**  (released 2005-06-12 [c.f. ChangeLog files for bfd, gas, and ld])
   + Note lack of support for h8300-\*-coff in gas/configure.tgt in later versions
-* **GCC 3.4.6**  (c.f. [full GCC release timeline](https://gcc.gnu.org/develop.html))
+* **GCC 3.4.6**  (released 2006-03-06 [c.f. [full GCC release timeline](https://gcc.gnu.org/develop.html)])
   + Last supported version is actually the GCC 4.4 series – note lack of support for h8300-\*-coff (covered by the "h8300-\*-\*" case) in libgcc/config.host in later versions
   + So why GCC 3.4.6?
     - H8/300 was supported for the duration of the full GCC version series, with 3.4.6 [closing the release series](https://gcc.gnu.org/gcc-3.4/changes.html)
@@ -34,6 +34,8 @@ but this also overlapped well with support for GPC and g77.
     - [Build and Installation Configuration Documentation](https://web.archive.org/web/20041013092023/https://gcc.gnu.org/install/configure.html)
     - [Manual](https://gcc.gnu.org/onlinedocs/gcc-3.4.6/gcc/)
       * [Manual subsets and/or other formats](https://gcc.gnu.org/onlinedocs/) (scroll down for the GCC 3.4.6 manuals section)
+* **GCC 4.4.7**  (released 2012-03-13 [c.f. [full GCC release timeline](https://gcc.gnu.org/develop.html)])
+  + Last version to support h8300-\*-coff (must use the `--enable-obsolete` flag when configuring)
 * **GPC 2.1-20070904** – note the included README files
   + [The GNU Pascal Manual](https://www.gnu-pascal.de/gpc/)
   + [GPC website](https://www.gnu-pascal.de/gpc/h-index.html)
@@ -42,8 +44,8 @@ but this also overlapped well with support for GPC and g77.
   + Source files from [hebisch/gpc](https://github.com/hebisch/gpc)
   + [Mailing list](https://www.gnu.de/mailman3/hyperkitty/list/gpc@gnu.de/latest) (no longer seems to be active)
     - [Subscribe/Unsubscribe page](https://www.gnu.de/mailman3/postorius/lists/gpc.gnu.de/)
-* **GDB 7.12.1** – note lack of support for h8300-\*-\*-coff (covered by the "h8300-\*-\*-\*" case) in bfd/config.bfd in later versions
-* **NewLib 1.19.0**
+* **[GDB](https://sourceware.org/gdb/) 7.12.1** ([released 2017-01-21](https://sourceware.org/gdb/schedule/))– note lack of support for h8300-\*-\*-coff (covered by the "h8300-\*-\*-\*" case) in bfd/config.bfd in later versions
+* **[NewLib](https://sourceware.org/newlib/) 1.19.0** (released 2010-12-16 [c.f. Downloads > Snapshots > http link within web frames])
   + Version 1.20.0 introduces incompatibilities with the binutil’s version of libiberty (c.f. [gcc list](https://gcc-patches.gcc.gnu.narkive.com/zeSeZ9N8/newlib-vs-libiberty-mismatch-breaks-build-re-patch-export-psignal-on-all-platforms#post1))
   + Versions 2.0 and later fail to build if targeting h8300-\*-coff
 
