@@ -34,6 +34,11 @@ but this also overlapped well with support for GPC and g77.
     - [Build and Installation Configuration Documentation](https://web.archive.org/web/20041013092023/https://gcc.gnu.org/install/configure.html)
     - [Manual](https://gcc.gnu.org/onlinedocs/gcc-3.4.6/gcc/)
       * [Manual subsets and/or other formats](https://gcc.gnu.org/onlinedocs/) (scroll down for the GCC 3.4.6 manuals section)
+* **[GCC CIL Front End](https://gcc.gnu.org/projects/cli.html) 4.3.0-2007-12-13 (final commit [2011-06-20](https://gcc.gnu.org/git/?p=gcc.git;a=shortlog;h=refs/vendors/st/heads/cli-fe))**
+  + Work was done on separate branches
+  + A fork was made for the front end
+    - Initial split was done based on GCC 4.3.0 but then updated to something post GCC 4.4 (h8300-\*-coff) no longer supported
+    - Started from the last commit based on GCC 4.3.0 and then worked forward
 * **GCC 4.4.7**  (released 2012-03-13 [c.f. [full GCC release timeline](https://gcc.gnu.org/develop.html)])
   + Last version to support h8300-\*-coff (must use the `--enable-obsolete` flag when configuring)
 * **GPC 2.1-20070904** – note the included README files
@@ -44,10 +49,10 @@ but this also overlapped well with support for GPC and g77.
   + Source files from [hebisch/gpc](https://github.com/hebisch/gpc)
   + [Mailing list](https://www.gnu.de/mailman3/hyperkitty/list/gpc@gnu.de/latest) (no longer seems to be active)
     - [Subscribe/Unsubscribe page](https://www.gnu.de/mailman3/postorius/lists/gpc.gnu.de/)
-* **[GDB](https://sourceware.org/gdb/) 7.12.1** ([released 2017-01-21](https://sourceware.org/gdb/schedule/))– note lack of support for h8300-\*-\*-coff (covered by the "h8300-\*-\*-\*" case) in bfd/config.bfd in later versions
 * **[NewLib](https://sourceware.org/newlib/) 1.19.0** (released 2010-12-16 [c.f. Downloads > Snapshots > http link within web frames])
   + Version 1.20.0 introduces incompatibilities with the binutil’s version of libiberty (c.f. [gcc list](https://gcc-patches.gcc.gnu.narkive.com/zeSeZ9N8/newlib-vs-libiberty-mismatch-breaks-build-re-patch-export-psignal-on-all-platforms#post1))
   + Versions 2.0 and later fail to build if targeting h8300-\*-coff
+* **[GDB](https://sourceware.org/gdb/) 7.12.1** ([released 2017-01-21](https://sourceware.org/gdb/schedule/))– note lack of support for h8300-\*-\*-coff (covered by the "h8300-\*-\*-\*" case) in bfd/config.bfd in later versions
 
 
 ### Updates and Modifications
