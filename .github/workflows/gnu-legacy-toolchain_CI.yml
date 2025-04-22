@@ -8,11 +8,13 @@ on:
     # branches: [ master ]
 
 env:
+  # Debian package search:  https://www.debian.org/distrib/packages
   UBUNTU_BUILD_DEPENDS: autoconf autopoint automake m4 make binutils gcc g++ gcc-multilib bison flex libtool gawk gettext texinfo file libisl-dev dejagnu  stow
   UBUNTU_CIL_BUILD_DEPENDS: libmono-2.0-dev mono-runtime libgmp-dev libmpfr-dev libmpc-dev libglib2.0-dev
   # after adding i386 multiarch via `sudo dpkg --add-architecture i386`
   UBUNTU_MULTIARCH_i386_BUILD_DEPENDS:  libc6:i386 libc6-dev:i386 linux-libc-dev:i386
   
+  # RPM package search:  https://rpm.pbone.net/search_simple_2
   openSUSE_BUILD_DEPENDS: autoconf gettext-tools automake m4 make binutils gcc gcc-c++ gcc-objc glibc-devel glibc-devel-32bit bison flex libtool gawk gettext-runtime texinfo file libisl23 dejagnu  stow
   openSUSE_CIL_BUILD_DEPENDS: 
   # libisl23, which is a version-specific package of ISL, appeasrs to be included as a dependency of other package(s)
