@@ -62,8 +62,8 @@ xtensa_fallback_frame_state (struct _Unwind_Context *context,
   struct sigcontext *sc;
 
   struct rt_sigframe {
-    struct siginfo info;
-    struct ucontext uc;
+    siginfo_t info;
+    ucontext_t uc;
   } *rt_;
 
   /* movi a2, __NR_rt_sigreturn; syscall */

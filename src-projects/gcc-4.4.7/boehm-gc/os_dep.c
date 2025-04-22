@@ -2271,7 +2271,7 @@ GC_bool is_ptrfree;
 # if defined(HPUX) || defined(FREEBSD)
 #   define SIGINFO_T siginfo_t
 # else
-#   define SIGINFO_T struct siginfo
+#   define SIGINFO_T siginfo_t
 # endif
 # ifdef __STDC__
     typedef void (* REAL_SIG_PF)(int, SIGINFO_T *, void *);

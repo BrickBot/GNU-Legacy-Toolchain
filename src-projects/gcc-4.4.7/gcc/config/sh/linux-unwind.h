@@ -77,10 +77,10 @@ shmedia_fallback_frame_state (struct _Unwind_Context *context,
 	   && (*(unsigned long *) (pc+11)  == 0x6ff0fff0))
     {
       struct rt_sigframe {
-	struct siginfo *pinfo;
+	siginfo_t *pinfo;
 	void *puc;
-	struct siginfo info;
-	struct ucontext uc;
+	siginfo_t info;
+	ucontext_t uc;
       } *rt_ = context->cfa;
       /* The void * cast is necessary to avoid an aliasing warning.
          The aliasing warning is correct, but should not be a problem
@@ -176,8 +176,8 @@ sh_fallback_frame_state (struct _Unwind_Context *context,
 		&& (*(unsigned short *) (pc+14)  == 0x00ad))))
     {
       struct rt_sigframe {
-	struct siginfo info;
-	struct ucontext uc;
+	siginfo_t info;
+	ucontext_t uc;
       } *rt_ = context->cfa;
       /* The void * cast is necessary to avoid an aliasing warning.
          The aliasing warning is correct, but should not be a problem

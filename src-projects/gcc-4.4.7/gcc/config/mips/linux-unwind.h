@@ -75,7 +75,7 @@ mips_fallback_frame_state (struct _Unwind_Context *context,
       struct rt_sigframe {
 	u_int32_t ass[4];  /* Argument save space for o32.  */
 	u_int32_t trampoline[2];
-	struct siginfo info;
+	siginfo_t info;
 	_sig_ucontext_t uc;
       } *rt_ = context->cfa;
       sc = &rt_->uc.uc_mcontext;
