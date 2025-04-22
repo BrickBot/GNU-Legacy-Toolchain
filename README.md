@@ -101,20 +101,20 @@ which is then used as the source folder for builds:
 | gcc          | gcc        | 3.4.6          |
 | gcc/p        | GPC        | 2.1-20070904   |
 | gprof        | binutils   | 2.16.1         |
-| include      | GCC CIL FE | 4.3.0-20071213 |
-| intl         | GCC CIL FE | 4.3.0-20071213 |
+| include      | GCC        | 4.4.7          |
+| intl         | GCC        | 4.4.7          |
 | ld           | binutils   | 2.16.1         |
 | libf2c       | gcc        | 3.4.6          |
 | libffi       | gcc        | 3.4.6          |
 | libgloss     | newlib     | 1.19.0         |
-| libiberty    | GCC CIL FE | 4.3.0-20071213 |
+| libiberty    | GCC        | 4.4.7          |
 | libjava      | gcc        | 3.4.6          |
 | libobjc      | gcc        | 3.4.6          |
 | libstdc++-v3 | gcc        | 3.4.6          |
 | newlib       | newlib     | 1.19.0         |
 | opcodes      | binutils   | 2.16.1         |
 | texinfo      | binutils   | 2.16.1         |
-| zlib         | GCC CIL FE | 4.3.0-20071213 |
+| zlib         | GCC        | 4.4.7          |
 
 The soft-linked files under that same folder are all from GCC:
 * config.guess
