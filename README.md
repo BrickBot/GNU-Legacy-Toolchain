@@ -41,6 +41,7 @@ but this also overlapped well with support for GPC and g77.
     - Started from the last commit based on GCC 4.3.0 and then worked forward
 * **GCC 4.4.7**  (released 2012-03-13 [c.f. [full GCC release timeline](https://gcc.gnu.org/develop.html)])
   + Last version to support h8300-\*-coff (must use the `--enable-obsolete` flag when configuring)
+  + Support for “Generic COFF” in general was [dropped following the GCC 4.4 release series](https://gcc.gnu.org/gcc-4.4/changes.html)
 * **GPC 2.1-20070904** – note the included README files
   + [The GNU Pascal Manual](https://www.gnu-pascal.de/gpc/)
   + [GPC website](https://www.gnu-pascal.de/gpc/h-index.html)
