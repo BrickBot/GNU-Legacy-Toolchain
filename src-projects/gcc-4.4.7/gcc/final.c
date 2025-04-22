@@ -2210,7 +2210,11 @@ final_scan_insn (rtx insn, FILE *file, int optimize ATTRIBUTE_UNUSED,
 	    /* Make sure we flush any queued register saves in case this
 	       clobbers affected registers.  */
 	    if (dwarf2out_do_frame ())
+	      {
+#if defined (DWARF2_DEBUGGING_INFO)
 	      dwarf2out_frame_debug (insn, false);
+#endif
+	      }
 
 	    /* There's no telling what that did to the condition codes.  */
 	    CC_STATUS_INIT;
