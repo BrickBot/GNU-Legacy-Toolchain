@@ -55,7 +55,7 @@ jobs:
       # While a GitHub Action is available, we will use the Git command directly (after installing its package)
       #   as a reference for those who might be replicating this build locally
       # uses: chetan/git-restore-mtime-action@v2
-    - #name: Restore source timestamps
+    #- name: Restore source timestamps
       #uses: chetan/git-restore-mtime-action@v2
 
     - name: Update build environment
