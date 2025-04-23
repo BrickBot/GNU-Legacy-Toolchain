@@ -52,17 +52,22 @@ jobs:
         fetch-depth: 0
 
       # Fix timestamps (needed to prevent some files from attempting to regenerate and failing during build)
-    - name: Restore source timestamps
-      # While a GitHub Action is available, use the Git command directly
+      # While a GitHub Action is available, we will use the Git command directly (after installing its package)
       #   as a reference for those who might be replicating this build locally
       # uses: chetan/git-restore-mtime-action@v2
-      run:  git restore-mtime
+    - #name: Restore source timestamps
+      #uses: chetan/git-restore-mtime-action@v2
 
     - name: Update build environment
       run:  sudo apt-get --assume-yes update
 
     - name: Install build dependencies
       run:  sudo apt-get --assume-yes install $UBUNTU_BUILD_DEPENDS $UBUNTU_GCC4_BUILD_DEPENDS
+
+    - name: Restore source timestamps
+      # While a GitHub Action is available, use the Git command directly
+      #   as a reference for those who might be replicating this build locally
+      run:  git restore-mtime
 
     - name: Setup the build directory
       run:  mkdir -p $BUILD_DIR_TOOLCHAIN
