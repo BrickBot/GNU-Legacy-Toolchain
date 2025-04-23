@@ -84,38 +84,38 @@ gcc and binutils separately.
 
 
 
-
-The following folders were soft-linked in to create the combined source folder `src-combined`,
+The following folders were soft-linked in to create the corresponding directory
+under the combined source folder (`src-combined`),
 which is then used as the source folder for builds:
 
-| Folder       | Source     | Version        |
-| ------------ | ---------- | -------------- |
-| bfd          | binutils   | 2.16.1         |
-| binutils     | binutils   | 2.16.1         |
-| boehm-gc     | gcc        | 3.4.6          |
-| cgen         | binutils   | 2.16.1         |
-| config       | gcc        | 3.4.6          |
-| cpu          | binutils   | 2.16.1         |
-| etc          | binutils   | 2.16.1         |
-| fastjar      | gcc        | 3.4.6          |
-| gas          | binutils   | 2.16.1         |
-| gcc          | gcc        | 3.4.6          |
-| gcc/p        | GPC        | 2.1-20070904   |
-| gprof        | binutils   | 2.16.1         |
-| include      | GCC        | 4.4.7          |
-| intl         | GCC        | 4.4.7          |
-| ld           | binutils   | 2.16.1         |
-| libf2c       | gcc        | 3.4.6          |
-| libffi       | gcc        | 3.4.6          |
-| libgloss     | newlib     | 1.19.0         |
-| libiberty    | GCC        | 4.4.7          |
-| libjava      | gcc        | 3.4.6          |
-| libobjc      | gcc        | 3.4.6          |
-| libstdc++-v3 | gcc        | 3.4.6          |
-| newlib       | newlib     | 1.19.0         |
-| opcodes      | binutils   | 2.16.1         |
-| texinfo      | binutils   | 2.16.1         |
-| zlib         | GCC        | 4.4.7          |
+| Folder       | Source     | GCC3-Based Version | GCC4.4-Based Version |
+| ------------ | ---------- | ------------------ | -------------------- |
+| bfd          | binutils   | 2.16.1             | 2.16.1               |
+| binutils     | binutils   | 2.16.1             | 2.16.1               |
+| boehm-gc     | gcc        | 3.4.6              | 4.4.7                |
+| cgen         | binutils   | 2.16.1             | 2.16.1               |
+| config       | gcc        | 3.4.6              | 4.4.7                |
+| cpu          | binutils   | 2.16.1             | 2.16.1               |
+| etc          | binutils   | 2.16.1             | 2.16.1               |
+| fastjar      | gcc        | 3.4.6              | 4.4.7                |
+| gas          | binutils   | 2.16.1             | 2.16.1               |
+| gcc          | gcc        | 3.4.6              | 4.4.7                |
+| gcc/p        | GPC        | 2.1-20070904       | 2.1-20070904         |
+| gprof        | binutils   | 2.16.1             | 2.16.1               |
+| include      | GCC (libs) | 4.4.7              | 4.4.7                |
+| intl         | GCC (libs) | 4.4.7              | 4.4.7                |
+| ld           | binutils   | 2.16.1             | 2.16.1               |
+| libf2c       | gcc        | 3.4.6              | 4.4.7                |
+| libffi       | gcc        | 3.4.6              | 4.4.7                |
+| libgloss     | newlib     | 1.19.0             | 1.19.0               |
+| libiberty    | GCC (libs) | 4.4.7              | 4.4.7                |
+| libjava      | gcc        | 3.4.6              | 4.4.7                |
+| libobjc      | gcc        | 3.4.6              | 4.4.7                |
+| libstdc++-v3 | gcc        | 3.4.6              | 4.4.7                |
+| newlib       | newlib     | 1.19.0             | 1.19.0               |
+| opcodes      | binutils   | 2.16.1             | 2.16.1               |
+| texinfo      | binutils   | 2.16.1             | 2.16.1               |
+| zlib         | GCC (libs) | 4.4.7              | 4.4.7                |
 
 The soft-linked files under that same folder are all from GCC:
 * config.guess
