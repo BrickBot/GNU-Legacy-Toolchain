@@ -3,7 +3,7 @@ GNU Legacy Toolchain
 A legacy GNU toolchain that includes binutils, gcc, gpc, gdb, and newlib.
 
 Multiple use cases exist for continuing to maintain a legacy toolchain:
-* **H8/300 Processor Targets**
+* **COFF targets, such as for the H8/300 Processor**
 * **GNU Pascal Compiler (GPC)**
 * **Fortran77 / G77 Compiler**
 
