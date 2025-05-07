@@ -155,7 +155,7 @@ jobs:
       run:  |
         cd $BUILD_DIR_TOOLCHAIN
         echo "Current working directory: $PWD"
-        ../../src-combined/$CROSS_TARGET-configure  --prefix=$GITHUB_WORKSPACE/$SYSROOT_DIR  --toolchain-set=$Toolchain
+        ../../src-combined/$CROSS_TARGET-configure  --prefix=$GITHUB_WORKSPACE/$SYSROOT_DIR  --toolchain-sets=$Toolchain
 
     - name: Execute the build
       run:  |
@@ -201,7 +201,7 @@ jobs:
       run:  |
         cd $BUILD_DIR_TOOLCHAIN
         echo "Current working directory: $PWD"
-        ../../src-combined/$CROSS_TARGET-configure  --prefix=$GITHUB_WORKSPACE/$SYSROOT_DIR  --toolchain-set=$Toolchain
+        ../../src-combined/$CROSS_TARGET-configure  --prefix=$GITHUB_WORKSPACE/$SYSROOT_DIR  --toolchain-sets=$Toolchain
 
     - name: Execute the build
       run:  |
@@ -247,7 +247,7 @@ jobs:
       run:  |
         cd $BUILD_DIR_TOOLCHAIN
         echo "Current working directory: $PWD"
-        ../../src-combined/$CROSS_TARGET-configure  --prefix=$GITHUB_WORKSPACE/$SYSROOT_DIR  --toolchain-set=$Toolchain
+        ../../src-combined/$CROSS_TARGET-configure  --prefix=$GITHUB_WORKSPACE/$SYSROOT_DIR  --toolchain-sets=$Toolchain
 
     - name: Execute the build
       run:  |
@@ -284,7 +284,7 @@ jobs:
       run:  |
         cd $BUILD_DIR_TOOLCHAIN
         echo "Current working directory: $PWD"
-        ../../src-combined/$CROSS_TARGET-configure  --prefix=$GITHUB_WORKSPACE/$SYSROOT_DIR  --toolchain-set=$Toolchain
+        ../../src-combined/$CROSS_TARGET-configure  --prefix=$GITHUB_WORKSPACE/$SYSROOT_DIR  --toolchain-sets=$Toolchain
 
     - name: Execute the build
       run:  |
