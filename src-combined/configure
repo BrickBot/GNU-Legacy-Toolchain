@@ -111,13 +111,13 @@ cat > $MAKEFILE_PATH <<MAKEFILE_HEADER
 prefix ?= $prefix
 
 # Normalize for path prepending (remove any trailing slash)
-# Cannot use \$(realpath \$(dir)) since this path might not exist
-ifneq (\$(DESTDIR),)
-DESTDIR_PREPEND = \$(patsubst %/,%,\$(DESTDIR))
+# Use $(abspath dir) instead of $(realpath dir) since this path might not exist
+ifdef DESTDIR
+DESTDIR := \$(abspath \$(DESTDIR))
 endif
 
-ifneq (\$(prefix),)
-prefix := \$(patsubst %/,%,\$(prefix))
+ifdef prefix
+prefix := \$(abspath \$(prefix))
 endif
 
 # The outer realpath is needed to remove the trailing slash that dir leaves behind
@@ -132,10 +132,9 @@ CIL_BUILD_DIR = \$(BUILD_DIR)/\$(CIL_SUBDIR)
 GDB_BUILD_DIR = \$(BUILD_DIR)/\$(GDB_SUBDIR)
 
 STOW_TARGET ?= $STOW_TARGET
-STOW_PACKAGE_PATH ?= \$(DESTDIR_PREPEND)\$(prefix)
-STOW_DIR ?= \$(dir \$(STOW_PACKAGE_PATH))
-STOW_PACKAGE = \$(shell basename \$(STOW_PACKAGE_PATH))
-STOW_STANDARD_ARGS = --dir=\$(STOW_DIR) --target=\$(STOW_TARGET) --verbose
+STOW_DIR ?= \$(dir \$(prefix))
+STOW_PACKAGE = \$(shell basename \$(prefix))
+STOW_STANDARD_ARGS = --dir=\$(DESTDIR)\$(STOW_DIR) --target=\$(DESTDIR)\$(STOW_TARGET) --verbose
 
 # Targets
 
@@ -165,7 +164,7 @@ dist:
 #  configured as an order-only prerequisite.  Thus,
 #  we check for STOW_DIR and trigger install manually.
 stow:
-ifeq (,\$(wildcard \$(STOW_PACKAGE_PATH)))
+ifeq (,\$(wildcard \$(DESTDIR)\$(STOW_DIR)))
 	\$(MAKE)  install
 endif
 	stow \$(STOW_STANDARD_ARGS) --stow "\$(STOW_PACKAGE)"
