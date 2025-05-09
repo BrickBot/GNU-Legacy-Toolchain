@@ -50,6 +50,14 @@ for ARG in "${ARGS[@]}"; do
       # Don't directly pass this argument along to sub-configures
       unset ARGS[i]
       ;;
+    --program-prefix=*)
+      program_prefix="${ARG#*=}"
+      # We only need to read this value (if it was provided)
+      ;;
+    --target=*)
+      target="${ARG#*=}"
+      # We only need to read this value (if it was provided)
+      ;;
     --enable-languages=*)
       languages="${ARG#*=}"
       # Don't directly pass this argument along to sub-configures
@@ -79,14 +87,22 @@ for ARG in "${ARGS[@]}"; do
   ((++i))
 done
 
-if [ ${#ARGS[@]} -gt 0 ]; then
-  if [ ${#ARGS[@]} -ne ${#@} ]; then
+if [ ${#ARGS[@]} -gt 0 ] ; then
+  if [ ${#ARGS[@]} -ne ${#@} ] ; then
     # Rebuild the array indices following array modification
     ARGS=("${ARGS[@]}")
   fi
   ARGS_TO_PASS=$(printf -- '"%s" ' "${ARGS[@]}")
 fi
 
+# If a program suffix is provided, GNU will not automatically make the target
+#   alias the program prefix.  Given that we are working with legacy versions,
+#   specifying a program suffix can be useful. So, if a program prefix has not
+#   aleady been specified by the user, we need to manually make the target
+#   alias the program prefix.
+if [ -n "$target" -a -z "$program_prefix" ] ; then
+  ARGS_TO_PASS="$ARGS_TO_PASS \"--program-prefix=$target-\""
+fi
 
 # Generate Makefile
 echo "Generate top-level Makefile"
@@ -187,7 +203,7 @@ cp "$SRC_DIR/Makefile.utility" "$BUILD_DIR/"
 if isIncluded "$toolchain_sets" "CIL" ; then
   echo "==================="
   echo "CONFIGURE: CIL v4.3"
-  CIL_COMMAND="$CIL_SRC_DIR/configure --enable-languages=cil $ARGS_TO_PASS  CFLAGS='-g -O2 -std=gnu89 -fgnu89-inline' --without-build-libsubdir --prefix=$prefix "
+  CIL_COMMAND="$CIL_SRC_DIR/configure --enable-languages=cil $ARGS_TO_PASS  CFLAGS='-g -O2 -std=gnu89 -fgnu89-inline' --without-build-libsubdir --prefix=$prefix --program-suffix=-4.3 "
   echo "COMMAND: $CIL_COMMAND"
   mkdir -p "$CIL_BUILD_DIR" && pushd "$CIL_BUILD_DIR" > /dev/null
   eval "$CIL_COMMAND" || exit 1
@@ -197,7 +213,7 @@ fi
 if isIncluded "$toolchain_sets" "GDB" ; then
   echo "================="
   echo "CONFIGURE: GDB v7"
-  GDB_COMMAND="$GDB_SRC_DIR/configure $ARGS_TO_PASS  CFLAGS='-g -O2 -std=gnu89' CXXFLAGS='-g -O2 -D_GLIBCXX_USE_CXX11_ABI=0 -std=c++98'  --without-python --prefix=$prefix "
+  GDB_COMMAND="$GDB_SRC_DIR/configure $ARGS_TO_PASS  CFLAGS='-g -O2 -std=gnu89' CXXFLAGS='-g -O2 -D_GLIBCXX_USE_CXX11_ABI=0 -std=c++98'  --without-python --prefix=$prefix --program-suffix=-7 "
   echo "COMMAND: $GDB_COMMAND"
   mkdir -p "$GDB_BUILD_DIR" && pushd "$GDB_BUILD_DIR" > /dev/null
   eval "$GDB_COMMAND" || exit 1
@@ -207,7 +223,7 @@ fi
 if isIncluded "$toolchain_sets" "GCC3" ; then
   echo "================="
   echo "CONFIGURE: GCC v3"
-  GCC3_COMMAND="CFLAGS='-g -O2 -std=gnu89'  $GCC3_SRC_DIR/configure --enable-languages=$languages $ARGS_TO_PASS --prefix=$prefix "
+  GCC3_COMMAND="CFLAGS='-g -O2 -std=gnu89'  $GCC3_SRC_DIR/configure --enable-languages=$languages $ARGS_TO_PASS --prefix=$prefix --program-suffix=-3 "
   echo "COMMAND: $GCC3_COMMAND"
   mkdir -p "$GCC3_BUILD_DIR" && pushd "$GCC3_BUILD_DIR" > /dev/null
   eval "$GCC3_COMMAND" || exit 1
@@ -217,7 +233,7 @@ fi
 if isIncluded "$toolchain_sets" "GCC44" ; then
   echo "==================="
   echo "CONFIGURE: GCC v4.4"
-  GCC44_COMMAND="$GCC44_SRC_DIR/configure  CFLAGS='-g -O2 -std=gnu89'  --enable-languages=c,c++,java $ARGS_TO_PASS --enable-obsolete --prefix=$prefix "
+  GCC44_COMMAND="$GCC44_SRC_DIR/configure  CFLAGS='-g -O2 -std=gnu89'  --enable-languages=c,c++,java $ARGS_TO_PASS --enable-obsolete --prefix=$prefix --program-suffix=-4.4 "
   echo "COMMAND: $GCC44_COMMAND"
   mkdir -p "$GCC44_BUILD_DIR" && pushd "$GCC44_BUILD_DIR" > /dev/null
   eval "$GCC44_COMMAND" || exit 1
