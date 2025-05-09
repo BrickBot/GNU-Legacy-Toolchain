@@ -66,7 +66,7 @@ libdir='${exec_prefix}/lib'
 includedir='${prefix}/include'
 oldincludedir='/usr/include'
 infodir='${prefix}/info'
-mandir='${prefix}/man'
+mandir='${datadir}/man'
 
 # Initialize some other variables.
 subdirs=
