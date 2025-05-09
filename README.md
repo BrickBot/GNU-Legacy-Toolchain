@@ -55,6 +55,14 @@ but this also overlapped well with support for GPC and g77.
   + Versions 2.0 and later fail to build if targeting h8300-\*-coff
 * **[GDB](https://sourceware.org/gdb/) 7.12.1** ([released 2017-01-21](https://sourceware.org/gdb/schedule/))– note lack of support for h8300-\*-\*-coff (covered by the "h8300-\*-\*-\*" case) in bfd/config.bfd in later versions
 
+#### Difference in Generated File Sizes between GCC 3.4.6 and GCC 4.4.7
+For the exact same kernel source code and build configuration:
+
+| GCC Version | Kernel Binary File Size (bytes) | App Start (BASE1) Address |
+| ----------- | ------------------------------- | ------------------------- |
+|  `3.4.6`    |  `13,108`                       |  `0xace4`                 |
+|  `4.4.7`    |  `14,322`                       |  `0xb0c4`                 |
+
 
 ### Updates and Modifications
 A more in-depth description is available in the [patches folder](patches/).
