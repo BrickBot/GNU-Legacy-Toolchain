@@ -348,7 +348,7 @@ localstatedir='${prefix}/var'
 libdir='${exec_prefix}/lib'
 includedir='${prefix}/include'
 oldincludedir='/usr/include'
-infodir='${prefix}/info'
+infodir='${datadir}/info'
 mandir='${datadir}/man'
 
 ac_prev=
