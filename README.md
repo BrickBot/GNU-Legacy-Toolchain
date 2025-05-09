@@ -56,7 +56,7 @@ but this also overlapped well with support for GPC and g77.
 * **[GDB](https://sourceware.org/gdb/) 7.12.1** ([released 2017-01-21](https://sourceware.org/gdb/schedule/))– note lack of support for h8300-\*-\*-coff (covered by the "h8300-\*-\*-\*" case) in bfd/config.bfd in later versions
 
 #### Difference in Generated File Sizes between GCC 3.4.6 and GCC 4.4.7
-For the exact same kernel source code and build configuration:
+For the exact same [brickOS-bibo](https://github.com/BrickBot/brickOS-bibo) kernel source code and build configuration:
 
 | GCC Version | Kernel Binary File Size (bytes) | App Start (BASE1) Address |
 | ----------- | ------------------------------- | ------------------------- |
