@@ -5250,6 +5250,11 @@ that enable them.  The directory name is separated from the switches by
 @samp{-}, without spaces between multiple switches.  This is supposed to
 ease shell-processing.
 
+@item -print-multiarch
+@opindex print-multiarch
+Print the path to OS libraries for the selected multiarch,
+relative to some @file{lib} subdirectory.
+
 @item -print-prog-name=@var{program}
 @opindex print-prog-name
 Like @option{-print-file-name}, but searches for a program such as @samp{cpp}.

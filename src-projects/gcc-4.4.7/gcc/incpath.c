@@ -51,7 +51,7 @@
 static const char dir_separator_str[] = { DIR_SEPARATOR, 0 };
 
 static void add_env_var_paths (const char *, int);
-static void add_standard_paths (const char *, const char *, const char *, int);
+static void add_standard_paths (const char *, const char *, const char *, const char *, int);
 static void free_path (struct cpp_dir *, int);
 static void merge_include_chains (const char *, cpp_reader *, int);
 static void add_sysroot_to_chain (const char *, int);
@@ -127,7 +127,8 @@ add_env_var_paths (const char *env_var, int chain)
 /* Append the standard include chain defined in cppdefault.c.  */
 static void
 add_standard_paths (const char *sysroot, const char *iprefix,
-		    const char *imultilib, int cxx_stdinc)
+		    const char *imultilib, const char *imultiarch,
+		    int cxx_stdinc)
 {
   const struct default_include *p;
   int relocated = cpp_relocated();
@@ -150,8 +151,14 @@ add_standard_paths (const char *sysroot, const char *iprefix,
 	      if (!strncmp (p->fname, cpp_GCC_INCLUDE_DIR, len))
 		{
 		  char *str = concat (iprefix, p->fname + len, NULL);
-		  if (p->multilib && imultilib)
+		  if (p->multilib == 1 && imultilib)
 		    str = concat (str, dir_separator_str, imultilib, NULL);
+		  else if (p->multilib == 2)
+		    {
+		      if (!imultiarch)
+			continue;
+		      str = concat (str, dir_separator_str, imultiarch, NULL);
+		    }
 		  add_path (str, SYSTEM, p->cxx_aware, false);
 		}
 	    }
@@ -195,8 +202,14 @@ add_standard_paths (const char *sysroot, const char *iprefix,
 	  else
 	    str = update_path (p->fname, p->component);
 
-	  if (p->multilib && imultilib)
+	  if (p->multilib == 1 && imultilib)
 	    str = concat (str, dir_separator_str, imultilib, NULL);
+	  else if (p->multilib == 2)
+	    {
+	      if (!imultiarch)
+		continue;
+	      str = concat (str, dir_separator_str, imultiarch, NULL);
+	    }
 
 	  add_path (str, SYSTEM, p->cxx_aware, false);
 	}
@@ -425,6 +438,7 @@ add_path (char *path, int chain, int cxx_aware, bool user_supplied_p)
 void
 register_include_chains (cpp_reader *pfile, const char *sysroot,
 			 const char *iprefix, const char *imultilib,
+			 const char *imultiarch,
 			 int stdinc, int cxx_stdinc, int verbose)
 {
   static const char *const lang_env_vars[] =
@@ -447,7 +461,7 @@ register_include_chains (cpp_reader *pfile, const char *sysroot,
 
   /* Finally chain on the standard directories.  */
   if (stdinc)
-    add_standard_paths (sysroot, iprefix, imultilib, cxx_stdinc);
+    add_standard_paths (sysroot, iprefix, imultilib, imultiarch, cxx_stdinc);
 
   target_c_incpath.extra_includes (sysroot, iprefix, stdinc);
 

@@ -857,6 +857,10 @@ imultilib
 C ObjC C++ ObjC++ Joined Separate
 -imultilib <dir> Set <dir> to be the multilib include subdirectory
 
+imultiarch
+C ObjC C++ ObjC++ Joined Separate
+-imultiarch <dir> Set <dir> to be the multiarch include subdirectory
+
 include
 C ObjC C++ ObjC++ Joined Separate
 -include <file>	Include the contents of <file> before other files

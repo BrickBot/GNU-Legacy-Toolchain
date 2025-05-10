@@ -671,7 +671,7 @@ read_scan_file (char *in_fname, int argc, char **argv)
     exit (FATAL_EXIT_CODE);
 
   register_include_chains (scan_in, NULL /* sysroot */, NULL /* iprefix */,
-			   NULL /* imultilib */, true /* stdinc */,
+			   NULL /* imultilib */, NULL /* imultiarch */, true /* stdinc */,
 			   false /* cxx_stdinc */, false /* verbose */);
 
   /* We are scanning a system header, so mark it as such.  */
