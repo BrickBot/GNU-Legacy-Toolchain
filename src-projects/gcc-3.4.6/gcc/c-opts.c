@@ -73,6 +73,9 @@ static const char *deps_file;
 /* The prefix given by -iprefix, if any.  */
 static const char *iprefix;
 
+/* The multiarch directory given by -imultiarch, if any.  */
+static const char *imultiarch;
+
 /* The system root, if any.  Overridden by -isysroot.  */
 static const char *sysroot = TARGET_SYSTEM_ROOT;
 
@@ -942,6 +945,10 @@ c_common_handle_option (size_t scode, const char *arg, int value)
       defer_opt (code, arg);
       break;
 
+    case OPT_imultiarch:
+      imultiarch = arg;
+      break;
+
     case OPT_iprefix:
       iprefix = arg;
       break;
@@ -1081,7 +1088,7 @@ c_common_post_options (const char **pfilename)
 
   sanitize_cpp_opts ();
 
-  register_include_chains (parse_in, sysroot, iprefix,
+  register_include_chains (parse_in, sysroot, iprefix, imultiarch,
 			   std_inc, std_cxx_inc && c_dialect_cxx (), verbose);
 
   flag_inline_trees = 1;

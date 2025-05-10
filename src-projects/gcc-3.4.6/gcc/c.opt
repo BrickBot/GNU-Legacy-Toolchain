@@ -696,6 +696,10 @@ imacros
 C ObjC C++ ObjC++ Joined Separate
 -imacros <file>	Accept definition of macros in <file>
 
+imultiarch
+C ObjC C++ ObjC++ Joined Separate
+-imultiarch <dir> Set <dir> to be the multiarch include subdirectory
+
 include
 C ObjC C++ ObjC++ Joined Separate
 -include <file>	Include the contents of <file> before other files
