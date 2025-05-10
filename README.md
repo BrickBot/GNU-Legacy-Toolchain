@@ -3,7 +3,7 @@ GNU Legacy Toolchain
 A legacy GNU toolchain that includes binutils, gcc, gpc, gdb, and newlib.
 
 Multiple use cases exist for continuing to maintain a legacy toolchain:
-* **H8/300 Processor Targets**
+* **COFF targets, such as for the H8/300 Processor**
 * **GNU Pascal Compiler (GPC)**
 * **Fortran77 / G77 Compiler**
 
@@ -19,9 +19,9 @@ Repository Creation Notes
 ### Sources Versions Used
 The primary selection criteria was the last known versions to include support for h8300-\*-coff,
 but this also overlapped well with support for GPC and g77.
-* **BinUtils 2.16.1**
+* **[BinUtils](https://www.gnu.org/software/binutils/) 2.16.1**  (released 2005-06-12 [c.f. ChangeLog files for bfd, gas, and ld])
   + Note lack of support for h8300-\*-coff in gas/configure.tgt in later versions
-* **GCC 3.4.6**  (c.f. [full GCC release timeline](https://gcc.gnu.org/develop.html))
+* **GCC 3.4.6**  (released 2006-03-06 [c.f. [full GCC release timeline](https://gcc.gnu.org/develop.html)])
   + Last supported version is actually the GCC 4.4 series – note lack of support for h8300-\*-coff (covered by the "h8300-\*-\*" case) in libgcc/config.host in later versions
   + So why GCC 3.4.6?
     - H8/300 was supported for the duration of the full GCC version series, with 3.4.6 [closing the release series](https://gcc.gnu.org/gcc-3.4/changes.html)
@@ -34,6 +34,14 @@ but this also overlapped well with support for GPC and g77.
     - [Build and Installation Configuration Documentation](https://web.archive.org/web/20041013092023/https://gcc.gnu.org/install/configure.html)
     - [Manual](https://gcc.gnu.org/onlinedocs/gcc-3.4.6/gcc/)
       * [Manual subsets and/or other formats](https://gcc.gnu.org/onlinedocs/) (scroll down for the GCC 3.4.6 manuals section)
+* **[GCC CIL Front End](https://gcc.gnu.org/projects/cli.html) 4.3.0-2007-12-13 (final commit [2011-06-20](https://gcc.gnu.org/git/?p=gcc.git;a=shortlog;h=refs/vendors/st/heads/cli-fe))**
+  + Work was done on separate branches
+  + A fork was made for the front end
+    - Initial split was done based on GCC 4.3.0 but then updated to something post GCC 4.4 (h8300-\*-coff) no longer supported
+    - Started from the last commit based on GCC 4.3.0 and then worked forward
+* **GCC 4.4.7**  (released 2012-03-13 [c.f. [full GCC release timeline](https://gcc.gnu.org/develop.html)])
+  + Last version to support h8300-\*-coff (must use the `--enable-obsolete` flag when configuring)
+  + Support for “Generic COFF” in general was [dropped following the GCC 4.4 release series](https://gcc.gnu.org/gcc-4.4/changes.html)
 * **GPC 2.1-20070904** – note the included README files
   + [The GNU Pascal Manual](https://www.gnu-pascal.de/gpc/)
   + [GPC website](https://www.gnu-pascal.de/gpc/h-index.html)
@@ -42,10 +50,18 @@ but this also overlapped well with support for GPC and g77.
   + Source files from [hebisch/gpc](https://github.com/hebisch/gpc)
   + [Mailing list](https://www.gnu.de/mailman3/hyperkitty/list/gpc@gnu.de/latest) (no longer seems to be active)
     - [Subscribe/Unsubscribe page](https://www.gnu.de/mailman3/postorius/lists/gpc.gnu.de/)
-* **GDB 7.12.1** – note lack of support for h8300-\*-\*-coff (covered by the "h8300-\*-\*-\*" case) in bfd/config.bfd in later versions
-* **NewLib 1.19.0**
+* **[NewLib](https://sourceware.org/newlib/) 1.19.0** (released 2010-12-16 [c.f. Downloads > Snapshots > http link within web frames])
   + Version 1.20.0 introduces incompatibilities with the binutil’s version of libiberty (c.f. [gcc list](https://gcc-patches.gcc.gnu.narkive.com/zeSeZ9N8/newlib-vs-libiberty-mismatch-breaks-build-re-patch-export-psignal-on-all-platforms#post1))
   + Versions 2.0 and later fail to build if targeting h8300-\*-coff
+* **[GDB](https://sourceware.org/gdb/) 7.12.1** ([released 2017-01-21](https://sourceware.org/gdb/schedule/))– note lack of support for h8300-\*-\*-coff (covered by the "h8300-\*-\*-\*" case) in bfd/config.bfd in later versions
+
+#### Difference in Generated File Sizes between GCC 3.4.6 and GCC 4.4.7
+For the exact same [brickOS-bibo](https://github.com/BrickBot/brickOS-bibo) kernel source code and build configuration:
+
+| GCC Version | Kernel Binary File Size (bytes) | App Start (BASE1) Address |
+| ----------- | ------------------------------- | ------------------------- |
+|  `3.4.6`    |  `13,108`                       |  `0xace4`                 |
+|  `4.4.7`    |  `14,322`                       |  `0xb0c4`                 |
 
 
 ### Updates and Modifications
@@ -61,54 +77,55 @@ Taking libiberty from binutils and the combining the gcc and binutils builds doe
 which at least eliminates the complications that would otherwise arise from having to build
 gcc and binutils separately.
 
-| Folder    | gcc | binutils | newlib | gdb |
-| --------- | --- | -------- | ------ | --- |
-| bfd       |     |  ×       |        |  ×  |
-| cpu       |     |  ×       |        |  ×  |
-| etc       |     |  ×       |  ×     |  ×  |
-| include   |  ×  |  ×       |        |  ×  |
-| libiberty |  ×  |  ×       |        |  ×  |
-| opcodes   |     |  ×       |        |  ×  |
-| texinfo   |     |  ×       |  ×     |  ×  |
-| zlib      |  ×  |          |        |  ×  |
+| Folder       | gcc 3.4.6 | gcc-cil-fe 4.3.0 | gcc 4.4.7 | binutils | newlib | gdb |
+| ------------ | --------- | ---------------- | --------- | -------- | ------ | --- |
+| bfd          |           |                  |           |  ×       |        |  ×  |
+| cpu          |           |                  |           |  ×       |        |  ×  |
+| etc          |           |                  |           |  ×       |  ×     |  ×  |
+| include      |  ×        |  ×               |  ×        |  ×       |        |  ×  |
+| intl         |  ×        |  ×               |  ×        |  ×       |        |  ×  |
+| libdecnumber |           |  ×               |  ×        |          |        |  ×  |
+| libiberty    |  ×        |  ×               |  ×        |  ×       |        |  ×  |
+| opcodes      |           |                  |           |  ×       |        |  ×  |
+| texinfo      |           |                  |           |  ×       |  ×     |  ×  |
+| zlib         |  ×        |  ×               |  ×        |          |        |  ×  |
 
 
 
-
-The following were soft-linked in to create the combined source folder `src-combined`,
+The following folders were soft-linked in to create the corresponding directory
+under the combined source folder (`src-combined`),
 which is then used as the source folder for builds:
 
-Folders from GCC
-* boehm-gc
-* config
-* fastjar
-* gcc
-* include
-* intl
-* libf2c
-* libffi
-* libjava
-* libobjc
-* libstdc++-v3
-* zlib
+| Folder       | Source     | GCC3-Based Version | GCC4.4-Based Version |
+| ------------ | ---------- | ------------------ | -------------------- |
+| bfd          | binutils   | 2.16.1             | 2.16.1               |
+| binutils     | binutils   | 2.16.1             | 2.16.1               |
+| boehm-gc     | gcc        | 3.4.6              | 4.4.7                |
+| cgen         | binutils   | 2.16.1             | 2.16.1               |
+| config       | gcc        | 3.4.6              | 4.4.7                |
+| cpu          | binutils   | 2.16.1             | 2.16.1               |
+| etc          | binutils   | 2.16.1             | 2.16.1               |
+| fastjar      | gcc        | 3.4.6              | 4.4.7                |
+| gas          | binutils   | 2.16.1             | 2.16.1               |
+| gcc          | gcc        | 3.4.6              | 4.4.7                |
+| gcc/p        | GPC        | 2.1-20070904       | 2.1-20070904         |
+| gprof        | binutils   | 2.16.1             | 2.16.1               |
+| include      | GCC (libs) | 4.4.7              | 4.4.7                |
+| intl         | GCC (libs) | 4.4.7              | 4.4.7                |
+| ld           | binutils   | 2.16.1             | 2.16.1               |
+| libf2c       | gcc        | 3.4.6              | 4.4.7                |
+| libffi       | gcc        | 3.4.6              | 4.4.7                |
+| libgloss     | newlib     | 1.19.0             | 1.19.0               |
+| libiberty    | GCC (libs) | 4.4.7              | 4.4.7                |
+| libjava      | gcc        | 3.4.6              | 4.4.7                |
+| libobjc      | gcc        | 3.4.6              | 4.4.7                |
+| libstdc++-v3 | gcc        | 3.4.6              | 4.4.7                |
+| newlib       | newlib     | 1.19.0             | 1.19.0               |
+| opcodes      | binutils   | 2.16.1             | 2.16.1               |
+| texinfo      | binutils   | 2.16.1             | 2.16.1               |
+| zlib         | GCC (libs) | 4.4.7              | 4.4.7                |
 
-Folders from BinUtils
-* bfd
-* binutils
-* cgen
-* cpu
-* etc
-* gas
-* gprof
-* ld
-* libiberty
-* opcodes
-* texinfo
-
-Folders from GPC
-* p -> gcc/p
-
-Files from GCC
+The soft-linked files under that same folder are all from GCC:
 * config.guess
 * config.if
 * config.rpath

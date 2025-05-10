@@ -1024,13 +1024,13 @@ static const struct tramp_frame micromips_linux_n64_rt_sigframe = {
    struct rt_sigframe {
      u32 rs_ass[4];            [argument save space for o32]
      u32 rs_code[2]            [signal trampoline or fill]
-     struct siginfo rs_info;
-     struct ucontext rs_uc;
+     siginfo_t rs_info;
+     ucontext_t rs_uc;
    };
 
-   struct ucontext {
+   ucontext_t {
      unsigned long     uc_flags;
-     struct ucontext  *uc_link;
+     ucontext_t  *uc_link;
      stack_t           uc_stack;
      [Alignment hole of four bytes]
      struct sigcontext uc_mcontext;
@@ -1189,11 +1189,11 @@ mips_linux_o32_sigframe_init (const struct tramp_frame *self,
   struct rt_sigframe_n32 {
     u32 rs_ass[4];                  [ argument save space for o32 ]
     u32 rs_code[2];                 [ signal trampoline or fill ]
-    struct siginfo rs_info;
-    struct ucontextn32 rs_uc;
+    siginfo_t rs_info;
+    ucontext_tn32 rs_uc;
   };
 
-  struct ucontextn32 {
+  ucontext_tn32 {
     u32                 uc_flags;
     s32                 uc_link;
     stack32_t           uc_stack;
@@ -1204,13 +1204,13 @@ mips_linux_o32_sigframe_init (const struct tramp_frame *self,
   struct rt_sigframe {
     u32 rs_ass[4];                  [ argument save space for o32 ]
     u32 rs_code[2];                 [ signal trampoline ]
-    struct siginfo rs_info;
-    struct ucontext rs_uc;
+    siginfo_t rs_info;
+    ucontext_t rs_uc;
   };
 
-  struct ucontext {
+  ucontext_t {
     unsigned long     uc_flags;
-    struct ucontext  *uc_link;
+    ucontext_t  *uc_link;
     stack_t           uc_stack;
     struct sigcontext uc_mcontext;
     sigset_t          uc_sigmask;   [ mask last for extensibility ]

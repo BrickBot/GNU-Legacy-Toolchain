@@ -180,11 +180,11 @@ hppa_linux_sigtramp_find_sigcontext (struct gdbarch *gdbarch, CORE_ADDR pc)
     }
 
   /* sp + sfoffs[try] points to a struct rt_sigframe, which contains
-     a struct siginfo and a struct ucontext.  struct ucontext contains
+     a siginfo_t and a ucontext_t.  ucontext_t contains
      a struct sigcontext.  Return an offset to this sigcontext here.  Too 
      bad we cannot include system specific headers :-(.
-     sizeof(struct siginfo) == 128
-     offsetof(struct ucontext, uc_mcontext) == 24.  */
+     sizeof(siginfo_t) == 128
+     offsetof(ucontext_t, uc_mcontext) == 24.  */
   return sp + sfoffs[attempt] + 128 + 24;
 }
 

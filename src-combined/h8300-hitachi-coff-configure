@@ -20,6 +20,7 @@ CONFIGURE_ARGS=" \
   --with-gnu-as \
   --with-gnu-ld \
   --with-newlib \
+  --disable-bootstrap \
   --disable-libssp \
   --disable-multilib \
   --disable-libada \

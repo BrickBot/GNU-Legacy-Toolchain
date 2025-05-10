@@ -94,18 +94,18 @@ frv_linux_pc_in_sigtramp (struct gdbarch *gdbarch, CORE_ADDR pc,
       {
 	      void (*pretcode)(void);
 	      int sig;
-	      struct siginfo *pinfo;
+	      siginfo_t *pinfo;
 	      void *puc;
-	      struct siginfo info;
-	      struct ucontext uc;
+	      siginfo_t info;
+	      ucontext_t uc;
 	      uint32_t retcode[2];
       };
 
    From include/asm-frv/ucontext.h:
 
-      struct ucontext {
+      ucontext_t {
 	      unsigned long		uc_flags;
-	      struct ucontext		*uc_link;
+	      ucontext_t		*uc_link;
 	      stack_t			uc_stack;
 	      struct sigcontext	uc_mcontext;
 	      sigset_t		uc_sigmask;
@@ -201,7 +201,7 @@ frv_linux_sigcontext_reg_addr (struct frame_info *this_frame, int regno,
 	  /* For a realtime sigtramp frame, SP + 12 contains a pointer
  	     to a ucontext struct.  The ucontext struct contains a
  	     sigcontext struct starting 24 bytes in.  (The offset of
- 	     uc_mcontext within struct ucontext is derived as follows: 
+ 	     uc_mcontext within ucontext_t is derived as follows: 
  	     stack_t is a 12-byte struct and struct sigcontext is
  	     8-byte aligned.  This gives an offset of 8 + 12 + 4 (for
  	     padding) = 24.)  */

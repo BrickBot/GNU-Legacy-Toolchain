@@ -529,19 +529,19 @@ struct rt_sigframe
 {
 	void (*pretcode)(void);
 	int sig;
-	struct siginfo *pinfo;
+	siginfo_t *pinfo;
 	void *puc;
-	struct siginfo info;
-	struct ucontext uc;
+	siginfo_t info;
+	ucontext_t uc;
 	struct fpucontext fpuctx;
 	char retcode[8];
 };
 
 From include/asm-mn10300/ucontext.h:
 
-struct ucontext {
+ucontext_t {
 	unsigned long	  uc_flags;
-	struct ucontext  *uc_link;
+	ucontext_t  *uc_link;
 	stack_t		  uc_stack;
 	struct sigcontext uc_mcontext;
 	sigset_t	  uc_sigmask;
