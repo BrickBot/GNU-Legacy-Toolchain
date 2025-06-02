@@ -566,6 +566,7 @@ configure-host: maybe-configure-gcc  \
     maybe-configure-tcl \
     maybe-configure-itcl \
     maybe-configure-ld \
+    maybe-configure-libdecnumber \
     maybe-configure-libgui \
     maybe-configure-libiberty \
     maybe-configure-libtool \
@@ -655,6 +656,7 @@ all-host: maybe-all-gcc  \
     maybe-all-tcl \
     maybe-all-itcl \
     maybe-all-ld \
+    maybe-all-libdecnumber \
     maybe-all-libgui \
     maybe-all-libiberty \
     maybe-all-libtool \
@@ -748,6 +750,7 @@ info-host: maybe-info-gcc  \
     maybe-info-tcl \
     maybe-info-itcl \
     maybe-info-ld \
+    maybe-info-libdecnumber \
     maybe-info-libgui \
     maybe-info-libiberty \
     maybe-info-libtool \
@@ -1498,6 +1501,28 @@ info-ld: \
 	done; \
 	echo "Doing info in ld" ; \
 	(cd ld && \
+	  $(MAKE) $(BASE_FLAGS_TO_PASS) "AR=$${AR}" "AS=$${AS}" \
+	          "CC=$${CC}" "CXX=$${CXX}" "LD=$${LD}" "NM=$${NM}" \
+	          "RANLIB=$${RANLIB}" \
+	          "DLLTOOL=$${DLLTOOL}" "WINDRES=$${WINDRES}" \
+	          info) \
+	  || exit 1
+
+
+.PHONY: maybe-info-libdecnumber info-libdecnumber
+maybe-info-libdecnumber:
+
+info-libdecnumber: \
+    configure-libdecnumber 
+	@[ -f ./libdecnumber/Makefile ] || exit 0; \
+	r=`${PWD_COMMAND}`; export r; \
+	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
+	$(SET_LIB_PATH) \
+	for flag in $(EXTRA_HOST_FLAGS); do \
+	  eval `echo "$$flag" | sed -e "s|^\([^=]*\)=\(.*\)|\1='\2'; export \1|"`; \
+	done; \
+	echo "Doing info in libdecnumber" ; \
+	(cd libdecnumber && \
 	  $(MAKE) $(BASE_FLAGS_TO_PASS) "AR=$${AR}" "AS=$${AS}" \
 	          "CC=$${CC}" "CXX=$${CXX}" "LD=$${LD}" "NM=$${NM}" \
 	          "RANLIB=$${RANLIB}" \
@@ -2624,6 +2649,7 @@ dvi-host: maybe-dvi-gcc  \
     maybe-dvi-tcl \
     maybe-dvi-itcl \
     maybe-dvi-ld \
+    maybe-dvi-libdecnumber \
     maybe-dvi-libgui \
     maybe-dvi-libiberty \
     maybe-dvi-libtool \
@@ -3374,6 +3400,28 @@ dvi-ld: \
 	done; \
 	echo "Doing dvi in ld" ; \
 	(cd ld && \
+	  $(MAKE) $(BASE_FLAGS_TO_PASS) "AR=$${AR}" "AS=$${AS}" \
+	          "CC=$${CC}" "CXX=$${CXX}" "LD=$${LD}" "NM=$${NM}" \
+	          "RANLIB=$${RANLIB}" \
+	          "DLLTOOL=$${DLLTOOL}" "WINDRES=$${WINDRES}" \
+	          dvi) \
+	  || exit 1
+
+
+.PHONY: maybe-dvi-libdecnumber dvi-libdecnumber
+maybe-dvi-libdecnumber:
+
+dvi-libdecnumber: \
+    configure-libdecnumber 
+	@[ -f ./libdecnumber/Makefile ] || exit 0; \
+	r=`${PWD_COMMAND}`; export r; \
+	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
+	$(SET_LIB_PATH) \
+	for flag in $(EXTRA_HOST_FLAGS); do \
+	  eval `echo "$$flag" | sed -e "s|^\([^=]*\)=\(.*\)|\1='\2'; export \1|"`; \
+	done; \
+	echo "Doing dvi in libdecnumber" ; \
+	(cd libdecnumber && \
 	  $(MAKE) $(BASE_FLAGS_TO_PASS) "AR=$${AR}" "AS=$${AS}" \
 	          "CC=$${CC}" "CXX=$${CXX}" "LD=$${LD}" "NM=$${NM}" \
 	          "RANLIB=$${RANLIB}" \
@@ -4500,6 +4548,7 @@ TAGS-host: maybe-TAGS-gcc  \
     maybe-TAGS-tcl \
     maybe-TAGS-itcl \
     maybe-TAGS-ld \
+    maybe-TAGS-libdecnumber \
     maybe-TAGS-libgui \
     maybe-TAGS-libiberty \
     maybe-TAGS-libtool \
@@ -5250,6 +5299,28 @@ TAGS-ld: \
 	done; \
 	echo "Doing TAGS in ld" ; \
 	(cd ld && \
+	  $(MAKE) $(BASE_FLAGS_TO_PASS) "AR=$${AR}" "AS=$${AS}" \
+	          "CC=$${CC}" "CXX=$${CXX}" "LD=$${LD}" "NM=$${NM}" \
+	          "RANLIB=$${RANLIB}" \
+	          "DLLTOOL=$${DLLTOOL}" "WINDRES=$${WINDRES}" \
+	          TAGS) \
+	  || exit 1
+
+
+.PHONY: maybe-TAGS-libdecnumber TAGS-libdecnumber
+maybe-TAGS-libdecnumber:
+
+TAGS-libdecnumber: \
+    configure-libdecnumber 
+	@[ -f ./libdecnumber/Makefile ] || exit 0; \
+	r=`${PWD_COMMAND}`; export r; \
+	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
+	$(SET_LIB_PATH) \
+	for flag in $(EXTRA_HOST_FLAGS); do \
+	  eval `echo "$$flag" | sed -e "s|^\([^=]*\)=\(.*\)|\1='\2'; export \1|"`; \
+	done; \
+	echo "Doing TAGS in libdecnumber" ; \
+	(cd libdecnumber && \
 	  $(MAKE) $(BASE_FLAGS_TO_PASS) "AR=$${AR}" "AS=$${AS}" \
 	          "CC=$${CC}" "CXX=$${CXX}" "LD=$${LD}" "NM=$${NM}" \
 	          "RANLIB=$${RANLIB}" \
@@ -6376,6 +6447,7 @@ install-info-host: maybe-install-info-gcc  \
     maybe-install-info-tcl \
     maybe-install-info-itcl \
     maybe-install-info-ld \
+    maybe-install-info-libdecnumber \
     maybe-install-info-libgui \
     maybe-install-info-libiberty \
     maybe-install-info-libtool \
@@ -7158,6 +7230,29 @@ install-info-ld: \
 	done; \
 	echo "Doing install-info in ld" ; \
 	(cd ld && \
+	  $(MAKE) $(BASE_FLAGS_TO_PASS) "AR=$${AR}" "AS=$${AS}" \
+	          "CC=$${CC}" "CXX=$${CXX}" "LD=$${LD}" "NM=$${NM}" \
+	          "RANLIB=$${RANLIB}" \
+	          "DLLTOOL=$${DLLTOOL}" "WINDRES=$${WINDRES}" \
+	          install-info) \
+	  || exit 1
+
+
+.PHONY: maybe-install-info-libdecnumber install-info-libdecnumber
+maybe-install-info-libdecnumber:
+
+install-info-libdecnumber: \
+    configure-libdecnumber \
+    info-libdecnumber 
+	@[ -f ./libdecnumber/Makefile ] || exit 0; \
+	r=`${PWD_COMMAND}`; export r; \
+	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
+	$(SET_LIB_PATH) \
+	for flag in $(EXTRA_HOST_FLAGS); do \
+	  eval `echo "$$flag" | sed -e "s|^\([^=]*\)=\(.*\)|\1='\2'; export \1|"`; \
+	done; \
+	echo "Doing install-info in libdecnumber" ; \
+	(cd libdecnumber && \
 	  $(MAKE) $(BASE_FLAGS_TO_PASS) "AR=$${AR}" "AS=$${AS}" \
 	          "CC=$${CC}" "CXX=$${CXX}" "LD=$${LD}" "NM=$${NM}" \
 	          "RANLIB=$${RANLIB}" \
@@ -8333,6 +8428,7 @@ installcheck-host: maybe-installcheck-gcc  \
     maybe-installcheck-tcl \
     maybe-installcheck-itcl \
     maybe-installcheck-ld \
+    maybe-installcheck-libdecnumber \
     maybe-installcheck-libgui \
     maybe-installcheck-libiberty \
     maybe-installcheck-libtool \
@@ -9083,6 +9179,28 @@ installcheck-ld: \
 	done; \
 	echo "Doing installcheck in ld" ; \
 	(cd ld && \
+	  $(MAKE) $(BASE_FLAGS_TO_PASS) "AR=$${AR}" "AS=$${AS}" \
+	          "CC=$${CC}" "CXX=$${CXX}" "LD=$${LD}" "NM=$${NM}" \
+	          "RANLIB=$${RANLIB}" \
+	          "DLLTOOL=$${DLLTOOL}" "WINDRES=$${WINDRES}" \
+	          installcheck) \
+	  || exit 1
+
+
+.PHONY: maybe-installcheck-libdecnumber installcheck-libdecnumber
+maybe-installcheck-libdecnumber:
+
+installcheck-libdecnumber: \
+    configure-libdecnumber 
+	@[ -f ./libdecnumber/Makefile ] || exit 0; \
+	r=`${PWD_COMMAND}`; export r; \
+	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
+	$(SET_LIB_PATH) \
+	for flag in $(EXTRA_HOST_FLAGS); do \
+	  eval `echo "$$flag" | sed -e "s|^\([^=]*\)=\(.*\)|\1='\2'; export \1|"`; \
+	done; \
+	echo "Doing installcheck in libdecnumber" ; \
+	(cd libdecnumber && \
 	  $(MAKE) $(BASE_FLAGS_TO_PASS) "AR=$${AR}" "AS=$${AS}" \
 	          "CC=$${CC}" "CXX=$${CXX}" "LD=$${LD}" "NM=$${NM}" \
 	          "RANLIB=$${RANLIB}" \
@@ -10209,6 +10327,7 @@ mostlyclean-host: maybe-mostlyclean-gcc  \
     maybe-mostlyclean-tcl \
     maybe-mostlyclean-itcl \
     maybe-mostlyclean-ld \
+    maybe-mostlyclean-libdecnumber \
     maybe-mostlyclean-libgui \
     maybe-mostlyclean-libiberty \
     maybe-mostlyclean-libtool \
@@ -10913,6 +11032,27 @@ mostlyclean-ld:
 	done; \
 	echo "Doing mostlyclean in ld" ; \
 	(cd ld && \
+	  $(MAKE) $(BASE_FLAGS_TO_PASS) "AR=$${AR}" "AS=$${AS}" \
+	          "CC=$${CC}" "CXX=$${CXX}" "LD=$${LD}" "NM=$${NM}" \
+	          "RANLIB=$${RANLIB}" \
+	          "DLLTOOL=$${DLLTOOL}" "WINDRES=$${WINDRES}" \
+	          mostlyclean) \
+	  || exit 1
+
+
+.PHONY: maybe-mostlyclean-libdecnumber mostlyclean-libdecnumber
+maybe-mostlyclean-libdecnumber:
+
+mostlyclean-libdecnumber: 
+	@[ -f ./libdecnumber/Makefile ] || exit 0; \
+	r=`${PWD_COMMAND}`; export r; \
+	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
+	$(SET_LIB_PATH) \
+	for flag in $(EXTRA_HOST_FLAGS); do \
+	  eval `echo "$$flag" | sed -e "s|^\([^=]*\)=\(.*\)|\1='\2'; export \1|"`; \
+	done; \
+	echo "Doing mostlyclean in libdecnumber" ; \
+	(cd libdecnumber && \
 	  $(MAKE) $(BASE_FLAGS_TO_PASS) "AR=$${AR}" "AS=$${AS}" \
 	          "CC=$${CC}" "CXX=$${CXX}" "LD=$${LD}" "NM=$${NM}" \
 	          "RANLIB=$${RANLIB}" \
@@ -11962,6 +12102,7 @@ clean-host: maybe-clean-gcc  \
     maybe-clean-tcl \
     maybe-clean-itcl \
     maybe-clean-ld \
+    maybe-clean-libdecnumber \
     maybe-clean-libgui \
     maybe-clean-libiberty \
     maybe-clean-libtool \
@@ -12680,6 +12821,27 @@ clean-ld:
 	done; \
 	echo "Doing clean in ld" ; \
 	(cd ld && \
+	  $(MAKE) $(BASE_FLAGS_TO_PASS) "AR=$${AR}" "AS=$${AS}" \
+	          "CC=$${CC}" "CXX=$${CXX}" "LD=$${LD}" "NM=$${NM}" \
+	          "RANLIB=$${RANLIB}" \
+	          "DLLTOOL=$${DLLTOOL}" "WINDRES=$${WINDRES}" \
+	          clean) \
+	  || exit 1
+
+
+.PHONY: maybe-clean-libdecnumber clean-libdecnumber
+maybe-clean-libdecnumber:
+
+clean-libdecnumber: 
+	@[ -f ./libdecnumber/Makefile ] || exit 0; \
+	r=`${PWD_COMMAND}`; export r; \
+	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
+	$(SET_LIB_PATH) \
+	for flag in $(EXTRA_HOST_FLAGS); do \
+	  eval `echo "$$flag" | sed -e "s|^\([^=]*\)=\(.*\)|\1='\2'; export \1|"`; \
+	done; \
+	echo "Doing clean in libdecnumber" ; \
+	(cd libdecnumber && \
 	  $(MAKE) $(BASE_FLAGS_TO_PASS) "AR=$${AR}" "AS=$${AS}" \
 	          "CC=$${CC}" "CXX=$${CXX}" "LD=$${LD}" "NM=$${NM}" \
 	          "RANLIB=$${RANLIB}" \
@@ -13729,6 +13891,7 @@ distclean-host: maybe-distclean-gcc  \
     maybe-distclean-tcl \
     maybe-distclean-itcl \
     maybe-distclean-ld \
+    maybe-distclean-libdecnumber \
     maybe-distclean-libgui \
     maybe-distclean-libiberty \
     maybe-distclean-libtool \
@@ -14447,6 +14610,27 @@ distclean-ld:
 	done; \
 	echo "Doing distclean in ld" ; \
 	(cd ld && \
+	  $(MAKE) $(BASE_FLAGS_TO_PASS) "AR=$${AR}" "AS=$${AS}" \
+	          "CC=$${CC}" "CXX=$${CXX}" "LD=$${LD}" "NM=$${NM}" \
+	          "RANLIB=$${RANLIB}" \
+	          "DLLTOOL=$${DLLTOOL}" "WINDRES=$${WINDRES}" \
+	          distclean) \
+	  || exit 1
+
+
+.PHONY: maybe-distclean-libdecnumber distclean-libdecnumber
+maybe-distclean-libdecnumber:
+
+distclean-libdecnumber: 
+	@[ -f ./libdecnumber/Makefile ] || exit 0; \
+	r=`${PWD_COMMAND}`; export r; \
+	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
+	$(SET_LIB_PATH) \
+	for flag in $(EXTRA_HOST_FLAGS); do \
+	  eval `echo "$$flag" | sed -e "s|^\([^=]*\)=\(.*\)|\1='\2'; export \1|"`; \
+	done; \
+	echo "Doing distclean in libdecnumber" ; \
+	(cd libdecnumber && \
 	  $(MAKE) $(BASE_FLAGS_TO_PASS) "AR=$${AR}" "AS=$${AS}" \
 	          "CC=$${CC}" "CXX=$${CXX}" "LD=$${LD}" "NM=$${NM}" \
 	          "RANLIB=$${RANLIB}" \
@@ -15496,6 +15680,7 @@ maintainer-clean-host: maybe-maintainer-clean-gcc  \
     maybe-maintainer-clean-tcl \
     maybe-maintainer-clean-itcl \
     maybe-maintainer-clean-ld \
+    maybe-maintainer-clean-libdecnumber \
     maybe-maintainer-clean-libgui \
     maybe-maintainer-clean-libiberty \
     maybe-maintainer-clean-libtool \
@@ -16214,6 +16399,27 @@ maintainer-clean-ld:
 	done; \
 	echo "Doing maintainer-clean in ld" ; \
 	(cd ld && \
+	  $(MAKE) $(BASE_FLAGS_TO_PASS) "AR=$${AR}" "AS=$${AS}" \
+	          "CC=$${CC}" "CXX=$${CXX}" "LD=$${LD}" "NM=$${NM}" \
+	          "RANLIB=$${RANLIB}" \
+	          "DLLTOOL=$${DLLTOOL}" "WINDRES=$${WINDRES}" \
+	          maintainer-clean) \
+	  || exit 1
+
+
+.PHONY: maybe-maintainer-clean-libdecnumber maintainer-clean-libdecnumber
+maybe-maintainer-clean-libdecnumber:
+
+maintainer-clean-libdecnumber: 
+	@[ -f ./libdecnumber/Makefile ] || exit 0; \
+	r=`${PWD_COMMAND}`; export r; \
+	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
+	$(SET_LIB_PATH) \
+	for flag in $(EXTRA_HOST_FLAGS); do \
+	  eval `echo "$$flag" | sed -e "s|^\([^=]*\)=\(.*\)|\1='\2'; export \1|"`; \
+	done; \
+	echo "Doing maintainer-clean in libdecnumber" ; \
+	(cd libdecnumber && \
 	  $(MAKE) $(BASE_FLAGS_TO_PASS) "AR=$${AR}" "AS=$${AS}" \
 	          "CC=$${CC}" "CXX=$${CXX}" "LD=$${LD}" "NM=$${NM}" \
 	          "RANLIB=$${RANLIB}" \
@@ -17320,6 +17526,7 @@ do-check: maybe-check-gcc  \
     maybe-check-tcl \
     maybe-check-itcl \
     maybe-check-ld \
+    maybe-check-libdecnumber \
     maybe-check-libgui \
     maybe-check-libiberty \
     maybe-check-libtool \
@@ -17429,6 +17636,7 @@ install-host-nogcc:  \
     maybe-install-tcl \
     maybe-install-itcl \
     maybe-install-ld \
+    maybe-install-libdecnumber \
     maybe-install-libgui \
     maybe-install-libiberty \
     maybe-install-libtool \
@@ -17496,6 +17704,7 @@ install-host: maybe-install-gcc  \
     maybe-install-tcl \
     maybe-install-itcl \
     maybe-install-ld \
+    maybe-install-libdecnumber \
     maybe-install-libgui \
     maybe-install-libiberty \
     maybe-install-libtool \
@@ -19760,6 +19969,73 @@ install-ld: installdirs
 	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
 	$(SET_LIB_PATH) \
 	(cd ld && $(MAKE) $(FLAGS_TO_PASS) install)
+
+
+.PHONY: configure-libdecnumber maybe-configure-libdecnumber
+maybe-configure-libdecnumber:
+configure-libdecnumber:
+	@test ! -f libdecnumber/Makefile || exit 0; \
+	[ -d libdecnumber ] || mkdir libdecnumber; \
+	r=`${PWD_COMMAND}`; export r; \
+	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
+	CC="$(CC)"; export CC; \
+	CFLAGS="$(CFLAGS)"; export CFLAGS; \
+	CONFIG_SHELL="$(SHELL)"; export CONFIG_SHELL; \
+	CXX="$(CXX)"; export CXX; \
+	CXXFLAGS="$(CXXFLAGS)"; export CXXFLAGS; \
+	AR="$(AR)"; export AR; \
+	AS="$(AS)"; export AS; \
+	CC_FOR_BUILD="$(CC_FOR_BUILD)"; export CC_FOR_BUILD; \
+	DLLTOOL="$(DLLTOOL)"; export DLLTOOL; \
+	LD="$(LD)"; export LD; \
+	NM="$(NM)"; export NM; \
+	RANLIB="$(RANLIB)"; export RANLIB; \
+	WINDRES="$(WINDRES)"; export WINDRES; \
+	OBJCOPY="$(OBJCOPY)"; export OBJCOPY; \
+	OBJDUMP="$(OBJDUMP)"; export OBJDUMP; \
+	echo Configuring in libdecnumber; \
+	cd libdecnumber || exit 1; \
+	case $(srcdir) in \
+	  \.) \
+	    srcdiroption="--srcdir=."; \
+	    libsrcdir=".";; \
+	  /* | [A-Za-z]:[\\/]*) \
+	    srcdiroption="--srcdir=$(srcdir)/libdecnumber"; \
+	    libsrcdir="$$s/libdecnumber";; \
+	  *) \
+	    srcdiroption="--srcdir=../$(srcdir)/libdecnumber"; \
+	    libsrcdir="$$s/libdecnumber";; \
+	esac; \
+	$(SHELL) $${libsrcdir}/configure \
+	  $(HOST_CONFIGARGS) $${srcdiroption} \
+	  || exit 1
+
+.PHONY: all-libdecnumber maybe-all-libdecnumber
+maybe-all-libdecnumber:
+all-libdecnumber: configure-libdecnumber
+	@r=`${PWD_COMMAND}`; export r; \
+	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
+	$(SET_LIB_PATH) \
+	(cd libdecnumber && $(MAKE) $(FLAGS_TO_PASS) all)
+
+.PHONY: check-libdecnumber maybe-check-libdecnumber
+maybe-check-libdecnumber:
+
+check-libdecnumber:
+	@r=`${PWD_COMMAND}`; export r; \
+	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
+	$(SET_LIB_PATH) \
+	(cd libdecnumber && $(MAKE) $(FLAGS_TO_PASS) check)
+
+
+.PHONY: install-libdecnumber maybe-install-libdecnumber
+maybe-install-libdecnumber:
+
+install-libdecnumber: installdirs
+	@r=`${PWD_COMMAND}`; export r; \
+	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
+	$(SET_LIB_PATH) \
+	(cd libdecnumber && $(MAKE) $(FLAGS_TO_PASS) install)
 
 
 .PHONY: configure-libgui maybe-configure-libgui
