@@ -1,3 +1,12 @@
+2007-07-12  Kai Tietz   <kai.tietz@onevision.com>
+
+	Matthew Sheets: Backporting of Kai Teitz's BFD_HOSTPTR_T definition,
+	as packaged with GDB 6.8:
+	* bfd-in.h: (BFD_HOST_64BIT_LONG_LONG): New.
+	(BFD_HOSTPTR_T): Host pointer type for casting a
+	pointer to an integer type.
+	(bfd_hostptr_t): The typedef of BFD_HOSTPTR_T.
+
 2005-05-02  Daniel Jacobowitz  <dan@codesourcery.com>
 
 	* Makefile.am: Set RELEASE.
