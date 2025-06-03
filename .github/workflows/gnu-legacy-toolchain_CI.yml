@@ -256,43 +256,6 @@ jobs:
         make $COMMON_MAKE_ALL_ARGS  all-$Toolchain
 
 
-  # For quicker continuous integration feedback, run just the GDB build as a job
-  build_cross_gdb_job:
-    name:     Build GDB v7 for the H8/300
-    env:
-      Toolchain: gdb
-    runs-on:  ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ ubuntu-latest ]
-    
-    steps:
-    - name: Get latest from version control
-      uses: actions/checkout@v4
-
-    - name: Update build environment
-      run:  sudo apt-get --assume-yes update
-
-    - name: Install build dependencies
-      run:  sudo apt-get --assume-yes install $UBUNTU_BUILD_DEPENDS $UBUNTU_GCC4_BUILD_DEPENDS
-
-    - name: Setup the build directory
-      run:  mkdir -p $BUILD_DIR_TOOLCHAIN
-
-    # Run the build steps
-    - name: Configure the build
-      run:  |
-        cd $BUILD_DIR_TOOLCHAIN
-        echo "Current working directory: $PWD"
-        ../../src-combined/$CROSS_TARGET-configure  --prefix=$GITHUB_WORKSPACE/$SYSROOT_DIR  --toolchain-sets=$Toolchain
-
-    - name: Execute the build
-      run:  |
-        cd $BUILD_DIR_TOOLCHAIN
-        echo "Current working directory: $PWD"
-        make $COMMON_MAKE_ALL_ARGS all-$Toolchain
-
-
 
 #  build_native_job:
 #    name:     Build a native compiler (non-cross-compiling)
