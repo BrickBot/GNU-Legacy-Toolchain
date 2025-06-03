@@ -25,7 +25,6 @@ src-projects/gpc-*/p/units/crtc.h
 # Linker Output
 *.ilk
 *.map
-*.exp
 
 # Precompiled Headers
 *.gch
