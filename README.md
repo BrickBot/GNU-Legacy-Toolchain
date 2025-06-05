@@ -20,7 +20,7 @@ The primary selection criteria was the last known versions to include support fo
 but this also overlapped well with support for GPC and Fortran77/g77.
 
 | Project  | Version  | Release Date | High-Level Notes |
-| ======== | ======== | ============ | ================ |
+| -------- | -------- | ------------ | ---------------- |
 | [BinUtils](https://gnu.org/software/binutils/) | 2.16.1   | [2005-06-12](https://sourceware.org/pub/binutils/releases/) ¹ | Note lack of support for h8300-\*-coff in gas/configure.tgt in later versions |
 | [GCC](https://gnu.org/software/gcc/)      | 3.4.6    | [2006-03-06](https://gcc.gnu.org/develop.html) ² | Last _full_ version series to support h8300-\*-coff |
 | [GCC](https://gnu.org/software/gcc/)      | 4.4.7    | [2012-03-13](https://gcc.gnu.org/develop.html) ² | Support for “Generic COFF” in general was [dropped following the GCC 4.4 release series](https://gcc.gnu.org/gcc-4.4/changes.html) |
@@ -150,7 +150,7 @@ which is then used as the source folder for builds:
 The soft-linked files under that same folder are all from the respective GCC version:
 
 | File              | In GCC 3 | In GCC 4.4 |
-| ================= | ======== | ========== |
+| ----------------- | -------- | ---------- |
 | Makefile.def      | ×        | ×          |
 | Makefile.in       | ×        | ×          |
 | Makefile.tpl      | ×        | ×          |
