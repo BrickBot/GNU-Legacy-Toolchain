@@ -2540,7 +2540,7 @@ test "${CCASFLAGS+set}" = set || CCASFLAGS=$CFLAGS
 
 
 case "${target}" in
-  *-*-elf | *-*-eabi)
+  *-*-elf | *-*-eabi | *-*-gnueabi)
 	objtype=elf-
 	;;
   *-*-coff)
