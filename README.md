@@ -30,13 +30,19 @@ but this also overlapped well with support for GPC and Fortran77/g77.
 | [GDB](https://sourceware.org/gdb/)      | 6.8      | [released 2008-02-29](https://sourceware.org/gdb/schedule/) | While GDB 7.12.1 seems to indicate that h8300-\*-\*-coff targets are supported (note lack of support for h8300-\*-\*-coff [covered by the "h8300-\*-\*-\*" case] in bfd/config.bfd in later versions), in practice this is broken and will trigger various malloc errors on attempting to initiate a debug session. |
 
 Additional Notes:
+
  ¹ BinUtils: For the BinUtils release date, see also the ChangeLog files for bfd, gas, and ld.
+
  ² GCC: Link includes the full GCC release timeline.
+
  ³ GCC 4.4.7: As the last GCC release to support h8300-\*-coff (c.f. also the lack of support for h8300-\*-coff [covered by the "h8300-\*-\*" case] in libgcc/config.host in later versions), the flag `--enable-obsolete` must be used when configuring.
+
  ⁴ NewLib: Version 1.20.0 introduces incompatibilities with libiberty 
      (c.f. [gcc list](https://gcc-patches.gcc.gnu.narkive.com/zeSeZ9N8/newlib-vs-libiberty-mismatch-breaks-build-re-patch-export-psignal-on-all-platforms#post1)).
+
  ⁵ NewLib:  Release history link opens in a subframe; at the site,
      navigate to [Download](https://sourceware.org/newlib/download.html) > [Snapshots](https://sourceware.org/ftp/newlib/index.html) to view the release timeline history subframe.
+
 
 * **[GCC CIL Front End](https://gcc.gnu.org/projects/cli.html) 4.3.0-2007-12-13 (final commit [2011-06-20](https://gcc.gnu.org/git/?p=gcc.git;a=shortlog;h=refs/vendors/st/heads/cli-fe))**
   + Work was done on separate branches
@@ -161,7 +167,7 @@ The soft-linked files under that same folder are all from the respective GCC ver
 | config.rpath      | ×        | ×          |
 | config.sub        | ×        | ×          |
 | configure         | ×        | ×          |
-| configure.[in|ac] | ×        | ×          |
+| configure.[in\|ac] | ×        | ×          |
 | depcomp           |          | ×          |
 | install-sh        | ×        | ×          |
 | libtool-ldflags   |          | ×          |
