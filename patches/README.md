@@ -216,6 +216,7 @@ Patch descriptions for these are [available here](https://udd.debian.org/patches
 |          | 0033-Remove-AC_CONFIG_AUX_DIR-in-libiberty-configure-temp.patch | New subsequent to dfsg2-4.2 |
 | ✔       | 0034-Fix-c-parse.y-build-error.patch                            | New subsequent to dfsg2-4.2 |
 
+
 ### GNU Pascal Compiler (GPC)
 The GNU Pascal Compiler (GPC) [patch](https://github.com/hebisch/gpc/blob/master/p/diffs) most applicable to this particular GCC version were also applied.
 The other patches for more general GCC modernization (such as for multiarch and ucontext, as noted in the [GPC ReadMe](https://github.com/hebisch/gpc)) are covered by other patches and updates.
@@ -225,9 +226,62 @@ The other patches for more general GCC modernization (such as for multiarch and 
 | ✔       | gcc-3.4.4.diff  |       |
 
 
-GNU Debugger (GDB)
-------------------
-The last version of GDB to support the h8300-hitachi-coff was 7.12.1.
+NewLib 1.19.0
+-------------
+While newlib-1.20.0 was technically the last version to support h8300-\*-coff,
+version 1.20.0 introduces incompatibilities with version of libiberty used by the other tools supporting h8300-\*-coff
+     (c.f. [gcc list](https://gcc-patches.gcc.gnu.narkive.com/zeSeZ9N8/newlib-vs-libiberty-mismatch-breaks-build-re-patch-export-psignal-on-all-platforms#post1)),
+so newlib-1.19.0 is effectively the last version of NewLib to support h8300-\*-coff.
+
+### Debian
+While Debian did not provide a newlib-1.19.0 package, all
+[patches from Debian’s packaging of newlib-1.18.0](https://sources.debian.org/src/newlib/1.18.0-6.2/debian/)
+appear applicable to newlib-1.19.0 as well.
+
+| Applied? | Patch File Name                | Notes |
+| -------- | ------------------------------ | ----- |
+| ✔       | 60_newlib-libgloss-eabi.patch  |       |
+| ✔       | 61_newlib_arm_include.patch    |       |
+| ✔       | 62_long_double_infinity.patch  |       |
+| ✔       | 65_multiarch-headers.patch     |       |
+
+
+GNU Debugger 6.8 (GDB)
+----------------------
+GDB 6.8 is able to be built together with the rest of the GNU toolchain as part of a combined build.
+
+### Debian
+The [patches listed below are from Debian’s packing of gdb-6.8](https://sources.debian.org/src/gdb/6.8-3/debian/patches/).
+Patch order is based on the “series” file.
+
+| Applied? | Patch File Name                       | Notes |
+| -------- | ------------------------------------- | ----- |
+| ✔       | 05_member-field-symtab.patch          | Patch for Debian bug #239535 |
+|        | 10_thread-db-multiple-libraries.patch | Support loading two libthread_db DSOs |
+| ❌       | ~~15_dwarf2-cfi-warning.patch~~       | Eliminate “noisy” CIE warning; not suitable for upstream |
+| ❌       | ~~20_gdbinit-ownership.patch~~        | gdbinit; while concept seemed acceptable, implementation was not popular upstream |
+|        | 25_gdb-pascal-support.patch           | Pascal support |
+|        | 30_gdb-fortran-main.patch             | Set the main function in Fortran programs to "MAIN__" to help with recognizing as Fortran |
+|        | 35_linux-clear-thread-list.patch      | Patch for Debian bug #303736, but the change might not be in the right place? |
+|        | 40_man-page-args.patch                | Man page updates for arguments |
+|        | 45_bfd-get-mtime-less.patch           | Updates for bfd mtime; applied upstream after GBD 6.8 |
+|        | 50_gdb-rbreak-quoting.patch           | Quote symbol name before passing it to break_command; backported from trunk after GDB 6.8 |
+|        | 55_ia64-array-bound.patch             | Correct array access |
+|        | 60_cp-support-uninit.patch            | Initialize storage |
+|        | 65_m68k-nat-build-fix.patch           | Fix typo |
+
+
+GNU Debugger 7.12.1 (GDB)
+-------------------------
+The last version of GDB to technically support the h8300-hitachi-coff was 7.12.1.
+While GDB 7.12.1 seems to indicate that h8300-\*-\*-coff targets are supported
+(note lack of support for h8300-\*-\*-coff [covered by the "h8300-\*-\*-\*" case] in bfd/config.bfd in later versions),
+in practice this is broken and will trigger various malloc errors on attempting to initiate a debug session.
+GDB 6 has not exhibited this issue.
+
+Additionally, GDB 7 is incompatible with the shared libraries that are part of the GNU toolchain and must be built separately,
+but GDB 6 does maintain that compatibility and is able to built together with the rest of the GNU toolchain.
+
 ### Debian
 Debian never released a corresponding package for GDB 7.12.1 (c.f. [list](https://sources.debian.org/src/gdb/)),
 but it did maintain a package for [version 7.12](https://sources.debian.org/src/gdb/7.12-6/) which included a number of patches
