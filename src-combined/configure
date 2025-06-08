@@ -214,7 +214,7 @@ fi
 if isIncluded "$toolchain_sets" "GCC44" ; then
   echo "==================="
   echo "CONFIGURE: GCC v4.4"
-  GCC44_COMMAND="$GCC44_SRC_DIR/configure  CFLAGS='-g -O2 -std=gnu89'  --enable-languages=c,c++,java $ARGS_TO_PASS --disable-werror --enable-obsolete --prefix=$prefix --program-suffix=-4.4 "
+  GCC44_COMMAND="$GCC44_SRC_DIR/configure  CFLAGS='-g -O2 -std=gnu89'  --enable-languages=c,c++,java,cil $ARGS_TO_PASS --disable-werror --enable-obsolete --prefix=$prefix --program-suffix=-4.4 "
   echo "COMMAND: $GCC44_COMMAND"
   mkdir -p "$GCC44_BUILD_DIR" && pushd "$GCC44_BUILD_DIR" > /dev/null
   eval "$GCC44_COMMAND" || exit 1
