@@ -1438,4 +1438,13 @@ pie
 Common RejectNegative Negative(shared)
 Create a position independent executable
 
+fcil-use-libstd
+Common Var(cil_use_libstd) Init(1)
+CIL calls to libstd are modified to be linked with the portable libstd library. Otherwise the host library is used. Disabling it can be dangerous, since structures in the host library may differ to the ones expected by the CIL object. (enabled by default)
+
+fcil-use-libstd-builtins
+Common Var(cil_use_libstd_builtins) Init(1)
+CIL calls to libstd builtins are modified to be linked with the portable libstd (disabled by default)
+
+
 ; This comment is to ensure we retain the blank line above.

@@ -204,6 +204,8 @@ HOST_EXPORTS = \
 	PPLINC="$(HOST_PPLINC)"; export PPLINC; \
 	CLOOGLIBS="$(HOST_CLOOGLIBS)"; export CLOOGLIBS; \
 	CLOOGINC="$(HOST_CLOOGINC)"; export CLOOGINC; \
+	MONOLIBS="$(HOST_MONOLIBS)"; export MONOLIBS; \
+	MONOINC="$(HOST_MONOINC)"; export MONOINC; \
 @if gcc-bootstrap
 	$(RPATH_ENVVAR)=`echo "$(TARGET_LIB_PATH)$$$(RPATH_ENVVAR)" | sed 's,::*,:,g;s,^:*,,;s,:*$$,,'`; export $(RPATH_ENVVAR); \
 @endif gcc-bootstrap
@@ -270,6 +272,10 @@ HOST_PPLINC = @pplinc@
 # Where to find CLOOG
 HOST_CLOOGLIBS = @clooglibs@
 HOST_CLOOGINC = @clooginc@
+
+# Where to find Mono
+HOST_MONOLIBS = @monolibs@
+HOST_MONOINC = @monoinc@
 
 # ----------------------------------------------
 # Programs producing files for the BUILD machine

@@ -1441,6 +1441,36 @@ fi
 AC_SUBST(clooglibs)
 AC_SUBST(clooginc)
 
+# Check for MONO
+monolibs=
+monoinc=
+have_mono=yes
+
+AC_ARG_WITH(mono, [  --with-mono=PATH         Specify directory for installed MONO library])
+
+if test "x$with_mono" != x; then
+  monolibs="-L$with_mono/lib -Wl,--export-dynamic -pthread -lmono -lpthread -lm -lgmodule-2.0 -ldl -lgthread-2.0 -lglib-2.0"
+  monoinc="-I$with_mono/include/mono-2.0 -D_REENTRANT -pthread -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include"
+else
+  monoinc="$(pkg-config --cflags mono-2 glib-2.0)"
+  monolibs="$(pkg-config --libs mono-2 glib-2.0)"
+fi
+
+saved_CFLAGS="$CFLAGS"
+CFLAGS="$CFLAGS $monoinc"
+saved_LIBS="$LIBS"
+LIBS="$LIBS $monolibs"
+AC_MSG_CHECKING([for correct version of mono.h])
+AC_TRY_LINK([#include "mono/jit/jit.h"],[
+mono_jit_init ("foo");
+], [AC_MSG_RESULT([yes])],
+  [AC_MSG_RESULT([no]); have_mono=no])
+CFLAGS="$saved_CFLAGS"
+LIBS="$saved_LIBS"
+
+# Flags needed for both MONO
+AC_SUBST(monolibs)
+AC_SUBST(monoinc)
 
 # By default, C is the only stage 1 language.
 stage1_languages=,c,
