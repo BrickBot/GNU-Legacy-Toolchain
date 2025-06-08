@@ -2881,9 +2881,11 @@ struct tree_label_decl GTY(())
   struct tree_decl_with_rtl common;
 };
 
+struct var_ann_d;
 struct tree_result_decl GTY(())
 {
   struct tree_decl_with_rtl common;
+  struct var_ann_d *ann;
 };
 
 struct tree_const_decl GTY(())
@@ -2903,6 +2905,7 @@ struct tree_parm_decl GTY(())
 {
   struct tree_decl_with_rtl common;
   rtx incoming_rtl;
+  struct var_ann_d *ann;
 };
 
 
@@ -3032,6 +3035,7 @@ struct tree_decl_with_vis GTY(())
  struct tree_decl_with_rtl common;
  tree assembler_name;
  tree section_name;
+ tree comdat_group;
 
  /* Belong to VAR_DECL exclusively.  */
  unsigned defer_output:1;
@@ -3136,6 +3140,7 @@ extern void decl_fini_priority_insert (tree, priority_type);
 struct tree_var_decl GTY(())
 {
   struct tree_decl_with_vis common;
+  struct var_ann_d *ann;
 };
 
 
@@ -3295,6 +3300,9 @@ struct tree_function_decl GTY(())
   struct tree_decl_non_common common;
 
   struct function *f;
+
+  /* The personality function. Used for stack unwinding. */
+  tree personality;
 
   /* Function specific options that are used by this function.  */
   tree function_specific_target;	/* target options */
@@ -5183,6 +5191,7 @@ extern bool in_gimple_form;
 
 /* In tree-gimple.c.  */
 extern tree get_base_address (tree t);
+extern void mark_addressable (tree);
 
 /* In tree-vectorizer.c.  */
 extern void vect_set_verbosity_level (const char *);
