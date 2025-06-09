@@ -1,4 +1,0 @@
-# Custom multilibs for RTEMS
-M68K_MLIB_CPU += && (match(MLIB, "^68") \
-		     || MLIB == "cpu32" \
-		     || MLIB == "5206")

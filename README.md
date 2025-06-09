@@ -6,6 +6,7 @@ Multiple use cases exist for continuing to maintain a legacy toolchain:
 * **COFF targets, such as for the H8/300 Processor**
 * **GNU Pascal Compiler (GPC)**
 * **Fortran77 / G77 Compiler**
+* **Common Language Infrastructure (CLI) Common Intermediate Language (CIL) Front End**
 
 While primary goal of this respository is to build a cross-toolchain targeting Hitachi/Renesas H8/300 processors with the COFF format, this should work for other targets as well.
 Though this H8/300 target has colloquially been referred to as h8300-hitachi-hms, it is more properly identified as
