@@ -2143,8 +2143,8 @@ guess_structure_name (struct partial_die_info *struct_pdi,
 				    strlen (actual_class_name),
 				    &cu->comp_unit_obstack);
 		  xfree (actual_class_name);
+		  break;
 		}
-	      break;
 	    }
 
 	  child_pdi = child_pdi->die_sibling;
@@ -7778,7 +7778,8 @@ determine_prefix (struct die_info *die, struct dwarf2_cu *cu)
   struct die_info *parent;
 
   if (cu->language != language_cplus
-      && cu->language != language_java)
+      && cu->language != language_java
+      && cu->language != language_pascal)
     return NULL;
 
   parent = die->parent;

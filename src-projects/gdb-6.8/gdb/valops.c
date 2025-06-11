@@ -2276,8 +2276,10 @@ check_field_in (struct type *type, const char *name)
 	return 1;
     }
 
+  /* Check each baseclass.  Call check_typedef, which will follow typedefs
+     and do opaque/stub type resolution.  */
   for (i = TYPE_N_BASECLASSES (type) - 1; i >= 0; i--)
-    if (check_field_in (TYPE_BASECLASS (type, i), name))
+    if (check_field_in (check_typedef (TYPE_BASECLASS (type, i)), name))
       return 1;
 
   return 0;

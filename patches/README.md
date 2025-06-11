@@ -7,8 +7,13 @@ Please note that these patches do _not_ reflect the only changes to the code.  O
 address various build issues and can be reviewed in the commit history.
 
 
-Binutils
---------
+Binutils 2.16.1
+---------------
+### BFD from GDB 6.8
+With two minor tweaks to binutil’s bfd (adding BFD_HOSTPTR_T and bfd_fopen()),
+GDB 6.8 can also be included in this combined build.  Both of these have been
+backported from the version of bfd that shipped with GDB 6.8.
+
 ### Debian
 Debian provides a [binutils-h8300-hms](https://packages.debian.org/source/stable/binutils-h8300-hms) package
 based on binutils 2.16.1 that bundles several patches.
@@ -16,6 +21,7 @@ From the `patches/series` file in that archive (c.f. [release versions here](htt
 available Debian patches include those lised below.
 Use [this link](https://sources.debian.org/src/binutils-h8300-hms/stable/debian/patches/) to be redirected to the latest collection of stable patches.
 Generally, unapplied patches are more Debian specific.
+
 #### Patches through Debian release v-10
 Patches maintained up through Debian release [2.16.1-10](https://sources.debian.org/src/binutils-h8300-hms/2.16.1-10/debian/patches/),
 with patch descriptions [available here](https://udd.debian.org/patches.cgi?src=binutils-h8300-hms&version=2.16.1-10).
@@ -307,18 +313,18 @@ Patch order is based on the “series” file.
 | Applied? | Patch File Name                       | Notes |
 | -------- | ------------------------------------- | ----- |
 | ✔       | 05_member-field-symtab.patch          | Patch for Debian bug #239535 |
-|        | 10_thread-db-multiple-libraries.patch | Support loading two libthread_db DSOs |
+| ✔       | 10_thread-db-multiple-libraries.patch | Support loading two libthread_db DSOs |
 | ❌       | ~~15_dwarf2-cfi-warning.patch~~       | Eliminate “noisy” CIE warning; not suitable for upstream |
 | ❌       | ~~20_gdbinit-ownership.patch~~        | gdbinit; while concept seemed acceptable, implementation was not popular upstream |
-|        | 25_gdb-pascal-support.patch           | Pascal support |
-|        | 30_gdb-fortran-main.patch             | Set the main function in Fortran programs to "MAIN__" to help with recognizing as Fortran |
+| ✔       | 25_gdb-pascal-support.patch           | Pascal support |
+| ✔       | 30_gdb-fortran-main.patch             | Set the main function in Fortran programs to "MAIN__" to help with recognizing as Fortran |
 |        | 35_linux-clear-thread-list.patch      | Patch for Debian bug #303736, but the change might not be in the right place? |
-|        | 40_man-page-args.patch                | Man page updates for arguments |
-|        | 45_bfd-get-mtime-less.patch           | Updates for bfd mtime; applied upstream after GBD 6.8 |
-|        | 50_gdb-rbreak-quoting.patch           | Quote symbol name before passing it to break_command; backported from trunk after GDB 6.8 |
-|        | 55_ia64-array-bound.patch             | Correct array access |
-|        | 60_cp-support-uninit.patch            | Initialize storage |
-|        | 65_m68k-nat-build-fix.patch           | Fix typo |
+| ✔       | 40_man-page-args.patch                | Man page updates for arguments |
+| ✔       | 45_bfd-get-mtime-less.patch           | Updates for bfd mtime; applied upstream after GBD 6.8 |
+| ✔       | 50_gdb-rbreak-quoting.patch           | Quote symbol name before passing it to break_command; backported from trunk after GDB 6.8 |
+| ✔       | 55_ia64-array-bound.patch             | Correct array access |
+| ✔       | 60_cp-support-uninit.patch            | Initialize storage |
+| ✔       | 65_m68k-nat-build-fix.patch           | Fix typo |
 
 
 GNU Debugger 7.12.1 (GDB)
