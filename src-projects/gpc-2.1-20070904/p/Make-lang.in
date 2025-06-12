@@ -195,7 +195,7 @@ PASCAL_INSTALL_DOC=pascal.real-install-doc
 
 # Where to install the documentation and demos (relative to the prefix)
 P_DOC_DIR=doc/gpc
-p_inst_docdir=$(prefix)/$(P_DOC_DIR)
+p_inst_docdir=$(datadir)/$(P_DOC_DIR)
 p_inst_demodir=$(p_inst_docdir)/demos
 p_inst_docdemodir=$(p_inst_docdir)/docdemos
 
