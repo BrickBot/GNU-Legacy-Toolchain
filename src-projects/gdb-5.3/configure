@@ -101,8 +101,8 @@ localstatedir='${prefix}/var'
 libdir='${exec_prefix}/lib'
 includedir='${prefix}/include'
 oldincludedir='/usr/include'
-infodir='${prefix}/info'
-mandir='${prefix}/man'
+infodir='${datadir}/info'
+mandir='${datadir}/man'
 
 ### we might need to use some other shell than /bin/sh for running subshells
 
