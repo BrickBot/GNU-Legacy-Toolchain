@@ -4,7 +4,6 @@
 ALL_TOOLCHAIN_SETS="gcc3 gcc44"
 
 # Variable declarations and initializations
-TOOLCHAIN_DIR_SUFFIX=-combined
 SRC_DIR=$(realpath -s $(dirname $0))
 BUILD_DIR=$PWD
 
@@ -158,7 +157,7 @@ do
   do
     cat >> $MAKEFILE_PATH <<MAKEFILE_TARGET_GEN
 $TARGET-$TOOLCHAIN_SET:
-	@echo "MAKE: $TOOLCHAIN_SET - $TARGET"   && cd "\$(BUILD_DIR)/${TOOLCHAIN_SET}${TOOLCHAIN_DIR_SUFFIX}"  && \$(MAKE) \$(${TOOLCHAIN_SET}_MAKE_ARGS)  $TARGET
+	@echo "MAKE: $TOOLCHAIN_SET - $TARGET"   && cd "\$(BUILD_DIR)/${TOOLCHAIN_SET}"  && \$(MAKE) \$(${TOOLCHAIN_SET}_MAKE_ARGS)  $TARGET
 MAKEFILE_TARGET_GEN
   done
 
