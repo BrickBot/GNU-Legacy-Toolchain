@@ -114,6 +114,11 @@ Summary:
 extern "C" {
 #endif
 
+/* 2025-06-10: Work around C lvalue syntax change.
+ *   c.f. https://askubuntu.com/a/1326085
+ */
+#define LVALUE_FIX(type,lvalue) (*((type*)((void*)(&lvalue))))
+
 /* We use subtraction of (char *) 0 instead of casting to int
    because on word-addressable machines a simple cast to int
    may ignore the byte-within-word field of the pointer.  */
@@ -423,7 +428,7 @@ __extension__								\
 ({ struct obstack *__o = (OBSTACK);					\
    if (__o->next_free + sizeof (void *) > __o->chunk_limit)		\
      _obstack_newchunk (__o, sizeof (void *));				\
-   *((void **)__o->next_free)++ = ((void *)datum);			\
+   *(LVALUE_FIX(void **,__o->next_free))++ = ((void *)datum);	\
    (void) 0; })
 
 # define obstack_int_grow(OBSTACK,datum)				\

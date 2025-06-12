@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Constants
-ALL_TOOLCHAIN_SETS="gcc3 gcc44"
+ALL_TOOLCHAIN_SETS="gdb5 gcc3 gcc44"
 
 # Variable declarations and initializations
 SRC_DIR=$(realpath -s $(dirname $0))
@@ -192,6 +192,20 @@ cp "$SRC_DIR/Makefile.utility" "$BUILD_DIR/"
 #   to be properly processed as a single quoted argument,
 #   the command must be eval'd instead of being executed directly.
 #   c.f. https://stackoverflow.com/q/39583838/#comment66478321_39583915
+if isIncluded "$toolchain_sets" "GDB5" ; then
+  toolchain_set_id=gdb5
+  echo "================="
+  echo "CONFIGURE: GDB v5"
+  GCC3_COMMAND="CFLAGS='-g -O2 -std=gnu89'  $SRC_DIR/${toolchain_set_id}/configure $ARGS_TO_PASS --disable-werror --prefix=$prefix --program-suffix=-5 "
+  echo "COMMAND: $GCC3_COMMAND"
+  mkdir -p "${BUILD_DIR}/${toolchain_set_id}" && pushd "${BUILD_DIR}/${toolchain_set_id}" > /dev/null
+  eval "$GCC3_COMMAND" || exit 1
+  popd > /dev/null
+  
+  # Since we are building GDB v5, set flags to exclude GDB v6 from the GCC-combined builds
+  FLAGS_IF_GDB5="--disable-sim --disable-gdb"
+fi
+
 if isIncluded "$toolchain_sets" "GCC3" ; then
   toolchain_set_id=gcc3
   echo "================="
