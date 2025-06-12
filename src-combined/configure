@@ -197,9 +197,9 @@ if isIncluded "$toolchain_sets" "GCC3" ; then
   toolchain_set_id=gcc3
   echo "================="
   echo "CONFIGURE: GCC v3"
-  GCC3_COMMAND="CFLAGS='-g -O2 -std=gnu89'  $SRC_DIR/${toolchain_set_id}${TOOLCHAIN_DIR_SUFFIX}/configure --enable-languages=$languages $ARGS_TO_PASS --disable-werror --prefix=$prefix --program-suffix=-3 "
+  GCC3_COMMAND="CFLAGS='-g -O2 -std=gnu89'  $SRC_DIR/${toolchain_set_id}/configure --enable-languages=$languages $FLAGS_IF_GDB5 $ARGS_TO_PASS --disable-werror --prefix=$prefix --program-suffix=-3 "
   echo "COMMAND: $GCC3_COMMAND"
-  mkdir -p "${BUILD_DIR}/${toolchain_set_id}${TOOLCHAIN_DIR_SUFFIX}" && pushd "${BUILD_DIR}/${toolchain_set_id}${TOOLCHAIN_DIR_SUFFIX}" > /dev/null
+  mkdir -p "${BUILD_DIR}/${toolchain_set_id}" && pushd "${BUILD_DIR}/${toolchain_set_id}" > /dev/null
   eval "$GCC3_COMMAND" || exit 1
   popd > /dev/null
 fi
@@ -208,9 +208,9 @@ if isIncluded "$toolchain_sets" "GCC44" ; then
   toolchain_set_id=gcc44
   echo "==================="
   echo "CONFIGURE: GCC v4.4"
-  GCC44_COMMAND="$SRC_DIR/${toolchain_set_id}${TOOLCHAIN_DIR_SUFFIX}/configure  CFLAGS='-g -O2 -std=gnu89'  --enable-languages=c,c++,java,cil $ARGS_TO_PASS --disable-werror --enable-obsolete --prefix=$prefix --program-suffix=-4.4 "
+  GCC44_COMMAND="$SRC_DIR/${toolchain_set_id}/configure  CFLAGS='-g -O2 -std=gnu89'  --enable-languages=c,c++,java,cil $FLAGS_IF_GDB5 $ARGS_TO_PASS --disable-werror --enable-obsolete --prefix=$prefix --program-suffix=-4.4 "
   echo "COMMAND: $GCC44_COMMAND"
-  mkdir -p "${BUILD_DIR}/${toolchain_set_id}${TOOLCHAIN_DIR_SUFFIX}" && pushd "${BUILD_DIR}/${toolchain_set_id}${TOOLCHAIN_DIR_SUFFIX}" > /dev/null
+  mkdir -p "${BUILD_DIR}/${toolchain_set_id}" && pushd "${BUILD_DIR}/${toolchain_set_id}" > /dev/null
   eval "$GCC44_COMMAND" || exit 1
   popd > /dev/null
 fi
