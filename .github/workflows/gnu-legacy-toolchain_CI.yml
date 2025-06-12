@@ -122,6 +122,52 @@ jobs:
       run:  git diff
 
 
+  # For quicker continuous integration feedback, run just the GDB v5 build as a job
+  build_cross_gdb5_job:
+    name:     Build GDB v5 for the H8/300
+    env:
+      Toolchain: gdb5
+    runs-on:  ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ ubuntu-latest ]
+    
+    steps:
+    - name: Get latest from version control
+      uses: actions/checkout@v4
+      with:
+        # git-restore-mtime-bare uses the ref log to find the correct timestamp
+        # for each file. This requires a full git history. The default value (1)
+        # creates a shallow checkout.
+        fetch-depth: 0
+
+      # Fix timestamps (needed to prevent some files from attempting to regenerate and failing during build)
+    - name: Restore source timestamps
+      uses: chetan/git-restore-mtime-action@v2
+
+    - name: Update build environment
+      run:  sudo apt-get --assume-yes update
+
+    - name: Install build dependencies
+      run:  sudo apt-get --assume-yes install $UBUNTU_BUILD_DEPENDS
+
+    - name: Setup the build directory
+      run:  mkdir -p $BUILD_DIR_TOOLCHAIN
+
+    # Run the build steps
+    - name: Configure the build
+      run:  |
+        cd $BUILD_DIR_TOOLCHAIN
+        echo "Current working directory: $PWD"
+        ../../src-combined/$CROSS_TARGET-configure  --prefix=$GITHUB_WORKSPACE/$SYSROOT_DIR  --toolchain-sets=$Toolchain
+
+    - name: Execute the build
+      run:  |
+        cd $BUILD_DIR_TOOLCHAIN
+        echo "Current working directory: $PWD"
+        make $COMMON_MAKE_ALL_ARGS all-$Toolchain
+
+
   # For quicker continuous integration feedback, run just the GCC v3 build as a job
   build_cross_gcc3_job:
     name:     Build GCC v3 for the H8/300
@@ -149,7 +195,7 @@ jobs:
       run:  sudo apt-get --assume-yes update
 
     - name: Install build dependencies
-      run:  sudo apt-get --assume-yes install $UBUNTU_BUILD_DEPENDS $UBUNTU_GCC4_BUILD_DEPENDS
+      run:  sudo apt-get --assume-yes install $UBUNTU_BUILD_DEPENDS
 
     - name: Setup the build directory
       run:  mkdir -p $BUILD_DIR_TOOLCHAIN
@@ -195,7 +241,7 @@ jobs:
       run:  sudo apt-get --assume-yes update
 
     - name: Install build dependencies
-      run:  sudo apt-get --assume-yes install $UBUNTU_BUILD_DEPENDS
+      run:  sudo apt-get --assume-yes install $UBUNTU_BUILD_DEPENDS $UBUNTU_GCC4_BUILD_DEPENDS
 
     - name: Setup the build directory
       run:  mkdir -p $BUILD_DIR_TOOLCHAIN
