@@ -2,6 +2,9 @@
 
 # Constants
 ALL_TOOLCHAIN_SETS="gdb5 gcc3 gcc44"
+gcc3_languages=c,c++,f77,java,objc,treelang,pascal
+gcc44_languages=c,c++,java,cil
+# NOTE: Ada is excluded from the language lists because it cannot bootstrap
 
 # Variable declarations and initializations
 SRC_DIR=$(realpath -s $(dirname $0))
@@ -10,11 +13,6 @@ BUILD_DIR=$PWD
 MAKEFILE_PATH=$BUILD_DIR/Makefile
 
 ARG_DELIM=,
-
-# Define defaults
-prefix=/opt/stow/gnu-legacy-toolchain
-# Ada excluded from languages because it cannot bootstrap
-languages=c,c++,f77,java,objc,treelang,pascal
 
 # Check if a high-level component should be included.
 # In this case, the function return value is treated as an exit code,
@@ -34,7 +32,7 @@ isIncluded() {
 # Process command-line arguments
 ARGS=( "$@" )
 i=0
-for ARG in "${ARGS[@]}"; do
+for ARG in "${ARGS[@]}" ; do
   case "$ARG" in
     --prefix=*)
       prefix="${ARG#*=}"
@@ -78,6 +76,9 @@ for ARG in "${ARGS[@]}"; do
   i=$(expr $i + 1)
 done
 
+# Additional argument processing now that all command-line arguments have been identified
+
+# Prepare pass-through arguments, ensuring that there is proper argument quoting
 if [ ${#ARGS[@]} -gt 0 ] ; then
   if [ ${#ARGS[@]} -ne ${#@} ] ; then
     # Rebuild the array indices following array modification
@@ -92,7 +93,24 @@ fi
 #   aleady been specified by the user, we need to manually make the target
 #   alias the program prefix.
 if [ -n "$target" -a -z "$program_prefix" ] ; then
-  ARGS_TO_PASS="$ARGS_TO_PASS \"--program-prefix=$target-\""
+  program_prefix="${target}-"
+  ARGS_TO_PASS="$ARGS_TO_PASS \"--program-prefix=${program_prefix}\""
+fi
+
+# Set the default prefix if one has not been specified
+if [ "$prefix" == "" ] ; then
+  for TOOLCHAIN_SET in $(echo "$ALL_TOOLCHAIN_SETS" | sed -e "s, ,\n,g" | tac)
+  do
+    if isIncluded "$toolchain_sets" "$TOOLCHAIN_SET" ; then
+      if [ "$INSTALL_DIR_NAME" != "" ] ; then
+        INSTALL_DIR_NAME="${INSTALL_DIR_NAME}+${TOOLCHAIN_SET}"
+      else
+        INSTALL_DIR_NAME="${TOOLCHAIN_SET}"
+      fi
+    fi
+  done
+  
+  prefix="/opt/stow/${program_prefix}${INSTALL_DIR_NAME}"
 fi
 
 # Generate Makefile
@@ -138,7 +156,7 @@ for TARGET in $TARGETS_TO_GENERATE
 do
   # Output the primary target
   echo -n "$TARGET: " >> $MAKEFILE_PATH
-  for TOOLCHAIN_SET in $ALL_TOOLCHAIN_SETS
+  for TOOLCHAIN_SET in "$ALL_TOOLCHAIN_SETS"
   do
     if isIncluded "$toolchain_sets" "$TOOLCHAIN_SET" ; then
       if [ "$TARGET" == "install" ] ; then
@@ -163,7 +181,7 @@ MAKEFILE_TARGET_GEN
 
   # Output the .PHONY target
   echo -n ".PHONY: $TARGET" >> $MAKEFILE_PATH
-  for TOOLCHAIN_SET in $ALL_TOOLCHAIN_SETS
+  for TOOLCHAIN_SET in "$ALL_TOOLCHAIN_SETS"
   do
     echo -n " $TARGET-$TOOLCHAIN_SET" >> $MAKEFILE_PATH
   done
@@ -217,7 +235,7 @@ if isIncluded "$toolchain_sets" "GCC3" ; then
   toolchain_set_id=gcc3
   echo "================="
   echo "CONFIGURE: GCC v3"
-  GCC3_COMMAND="CFLAGS='-g -O2 -std=gnu89'  $SRC_DIR/${toolchain_set_id}/configure --enable-languages=$languages $GCC3_FLAGS_IF_GDB5 $ARGS_TO_PASS --disable-werror --prefix=$prefix --program-suffix=-3 "
+  GCC3_COMMAND="CFLAGS='-g -O2 -std=gnu89'  $SRC_DIR/${toolchain_set_id}/configure --enable-languages=$gcc3_languages $GCC3_FLAGS_IF_GDB5 $ARGS_TO_PASS --disable-werror --prefix=$prefix --program-suffix=-3 "
   echo "COMMAND: $GCC3_COMMAND"
   mkdir -p "${BUILD_DIR}/${toolchain_set_id}" && pushd "${BUILD_DIR}/${toolchain_set_id}" > /dev/null
   eval "$GCC3_COMMAND" || exit 1
@@ -228,7 +246,7 @@ if isIncluded "$toolchain_sets" "GCC44" ; then
   toolchain_set_id=gcc44
   echo "==================="
   echo "CONFIGURE: GCC v4.4"
-  GCC44_COMMAND="$SRC_DIR/${toolchain_set_id}/configure  CFLAGS='-g -O2 -std=gnu89'  --enable-languages=c,c++,java,cil $FLAGS_IF_GDB5 $ARGS_TO_PASS --disable-werror --enable-obsolete --prefix=$prefix --program-suffix=-4.4 "
+  GCC44_COMMAND="$SRC_DIR/${toolchain_set_id}/configure  CFLAGS='-g -O2 -std=gnu89'  --enable-languages=$gcc44_languages $FLAGS_IF_GDB5 $ARGS_TO_PASS --disable-werror --enable-obsolete --prefix=$prefix --program-suffix=-4.4 "
   echo "COMMAND: $GCC44_COMMAND"
   mkdir -p "${BUILD_DIR}/${toolchain_set_id}" && pushd "${BUILD_DIR}/${toolchain_set_id}" > /dev/null
   eval "$GCC44_COMMAND" || exit 1

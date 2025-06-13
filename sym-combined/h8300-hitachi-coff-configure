@@ -1,7 +1,6 @@
 #!/bin/sh
 
 SCRIPT_DIR=$(dirname $0)
-DEFAULT_PREFIX_ARG="--prefix=/opt/stow/h8300-hitachi-coff-toolchain"
 
 if [ $# -gt 0 ]; then
   ALL_ARGS=$(printf -- '"%s" ' "$@")
@@ -27,7 +26,6 @@ CONFIGURE_ARGS=" \
   --without-gpc-shared \
   --enable-target-optspace \
   --target=h8300-hitachi-coff \
-  $DEFAULT_PREFIX_ARG \
   $ALL_ARGS"
 
 # For any quoted substrings in variables (such as $ALL_ARGS might have)
