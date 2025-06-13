@@ -202,15 +202,22 @@ if isIncluded "$toolchain_sets" "GDB5" ; then
   eval "$GCC3_COMMAND" || exit 1
   popd > /dev/null
   
-  # Since we are building GDB v5, set flags to exclude GDB v6 from the GCC-combined builds
+  # Since we are building GDB v5, set flags to exclude GDB v6 from the GCC-combined builds for GCC v3 and GCC v4.4
   FLAGS_IF_GDB5="--disable-sim --disable-gdb"
 fi
 
 if isIncluded "$toolchain_sets" "GCC3" ; then
+  # If building a separate GDB v5 instead of the combined GDB v6, then we can also skip building libdecnumber with GCC v3
+  if [ "$FLAGS_IF_GDB5" != "" ] ; then
+    GCC3_FLAGS_IF_GDB5="--disable-libdecnumber $FLAGS_IF_GDB5"
+  else
+    GCC3_FLAGS_IF_GDB5="$FLAGS_IF_GDB5"
+  fi
+  
   toolchain_set_id=gcc3
   echo "================="
   echo "CONFIGURE: GCC v3"
-  GCC3_COMMAND="CFLAGS='-g -O2 -std=gnu89'  $SRC_DIR/${toolchain_set_id}/configure --enable-languages=$languages $FLAGS_IF_GDB5 $ARGS_TO_PASS --disable-werror --prefix=$prefix --program-suffix=-3 "
+  GCC3_COMMAND="CFLAGS='-g -O2 -std=gnu89'  $SRC_DIR/${toolchain_set_id}/configure --enable-languages=$languages $GCC3_FLAGS_IF_GDB5 $ARGS_TO_PASS --disable-werror --prefix=$prefix --program-suffix=-3 "
   echo "COMMAND: $GCC3_COMMAND"
   mkdir -p "${BUILD_DIR}/${toolchain_set_id}" && pushd "${BUILD_DIR}/${toolchain_set_id}" > /dev/null
   eval "$GCC3_COMMAND" || exit 1

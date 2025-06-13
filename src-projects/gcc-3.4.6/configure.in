@@ -227,6 +227,11 @@ if test x$with_gnu_as = xno ; then
   noconfigdirs="$noconfigdirs gas"
 fi
 
+# Make sure we don't let libdecnumber be added if we didn't want it.
+if test x$enable_libdecnumber = xno ; then
+  noconfigdirs="$noconfigdirs libdecnumber"
+fi
+
 # Make sure we don't let Sim be added if we didn't want it.
 if test x$enable_sim = xno ; then
   noconfigdirs="$noconfigdirs sim"
