@@ -1,0 +1,107 @@
+2012-10-09  Benjamin Kosnik  <bkoz@redhat.com>
+
+	* testsuite/20_util/specialized_algorithms/uninitialized_copy/808590.cc:
+	Fix constant value.
+
+2012-04-17  Benjamin Kosnik  <bkoz@redhat.com>
+
+	* testsuite/20_util/specialized_algorithms/uninitialized_copy/
+	808590.cc: New.
+
+2009-09-02  Paolo Carlini  <paolo.carlini@oracle.com>
+
+	* include/bits/stl_uninitialized.h
+	(__uninitialized_copy::uninitialized_copy): Just call (the now 
+	forwarding) _Construct.
+
+2009-08-29  Benjamin Kosnik  <bkoz@redhat.com>
+	    Chris Jefferson  <chris@bubblescope.net>
+
+	* include/bits/stl_construct.h (_Construct(_T1*, _T2&&)): Add in
+	C++0x mode.
+
+--- libstdc++-v3/include/bits/stl_construct.h	(revision 186113)
++++ libstdc++-v3/include/bits/stl_construct.h	(working copy)
+@@ -67,12 +67,19 @@
+    */
+   template<typename _T1, typename _T2>
+     inline void
++#ifdef __GXX_EXPERIMENTAL_CXX0X__
++    _Construct(_T1* __p, _T2&& __value)
++    {
++      ::new(static_cast<void*>(__p)) _T1(std::forward<_T2>(__value));
++    }
++#else
+     _Construct(_T1* __p, const _T2& __value)
+     {
+       // _GLIBCXX_RESOLVE_LIB_DEFECTS
+       // 402. wrong new expression in [some_]allocator::construct
+       ::new(static_cast<void*>(__p)) _T1(__value);
+     }
++#endif
+ 
+   /**
+    * Destroy the object pointed to by a pointer type.
+--- libstdc++-v3/include/bits/stl_uninitialized.h	(revision 186113)
++++ libstdc++-v3/include/bits/stl_uninitialized.h	(working copy)
+@@ -71,8 +71,7 @@
+ 	  __try
+ 	    {
+ 	      for (; __first != __last; ++__first, ++__cur)
+-		::new(static_cast<void*>(&*__cur)) typename
+-		    iterator_traits<_ForwardIterator>::value_type(*__first);
++		std::_Construct(&*__cur, *__first);
+ 	      return __cur;
+ 	    }
+ 	  __catch(...)
+--- libstdc++-v3/testsuite/20_util/specialized_algorithms/uninitialized_copy/808590.cc	(revision 0)
++++ libstdc++-v3/testsuite/20_util/specialized_algorithms/uninitialized_copy/808590.cc	(revision 186539)
+@@ -0,0 +1,48 @@
++// Copyright (C) 2012 Free Software Foundation, Inc.
++//
++// This file is part of the GNU ISO C++ Library.  This library is free
++// software; you can redistribute it and/or modify it under the
++// terms of the GNU General Public License as published by the
++// Free Software Foundation; either version 3, or (at your option)
++// any later version.
++
++// This library is distributed in the hope that it will be useful,
++// but WITHOUT ANY WARRANTY; without Pred the implied warranty of
++// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++// GNU General Public License for more details.
++
++// You should have received a copy of the GNU General Public License along
++// with this library; see the file COPYING3.  If not see
++// <http://www.gnu.org/licenses/>.
++
++#include <vector>
++#include <stdexcept>
++
++// 4.4.x only
++struct c 
++{
++  void *m;
++
++  c(void* o = 0) : m(o) {}
++  c(const c &r) : m(r.m) {}
++
++  template<class T>
++    explicit c(T &o) : m((void*)0xdeadbeef) { }
++};
++
++int main() 
++{
++  std::vector<c> cbs;
++  const c cb((void*)0xcafebabe);
++
++  for (int fd = 62; fd < 67; ++fd) 
++    {
++      cbs.resize(fd + 1);
++      cbs[fd] = cb;
++    }
++
++  for (int fd = 62; fd< 67; ++fd)
++    if (cb.m != cbs[fd].m)
++      throw std::runtime_error("wrong");
++  return 0;
++}
