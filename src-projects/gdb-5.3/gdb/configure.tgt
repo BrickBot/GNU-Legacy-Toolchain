@@ -83,6 +83,8 @@ hppa*64*-*-hpux11*)	gdb_target=hppa64 ;;
 hppa*-*-hpux*)		gdb_target=hppahpux ;;
 hppa*-*-hiux*)		gdb_target=hppahpux ;;
 hppa*-*-osf*)		gdb_target=hppaosf ;;
+hppa*64*-*-linux* | parisc*64*-*-linux*)        gdb_target=pa64-linux ;;
+hppa*-*-linux* | parisc*-*-linux*)              gdb_target=pa-linux ;;
 hppa*-*-*)		gdb_target=hppa ;;
 
 i[3456]86-sequent-bsd*)	gdb_target=symmetry ;;
