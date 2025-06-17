@@ -1,0 +1,45 @@
+Submitted upstream.
+
+
+
+2002-04-01  Daniel Jacobowitz  <drow@mvista.com>
+
+	* gdb.java/jmisc.java: Add ``void foo (int len)''.  Call it.
+	* gdb.java/jmisc.exp (ptype jmisc): Update to match.
+
+Index: gdb.java/jmisc.exp
+===================================================================
+RCS file: /cvs/src/src/gdb/testsuite/gdb.java/jmisc.exp,v
+retrieving revision 1.2
+diff -u -p -r1.2 jmisc.exp
+--- gdb/gdb/testsuite/gdb.java/jmisc.exp	2001/03/06 08:21:58	1.2
++++ gdb/gdb/testsuite/gdb.java/jmisc.exp	2002/04/01 21:45:07
+@@ -70,7 +70,7 @@ if ![set_lang_java] then {
+ 
+     send_gdb "ptype jmisc\n"   
+     gdb_expect {   
+-	-re "type = class jmisc  extends java.lang.Object \{\[\r\n\ \t]+void main\\(java\.lang\.String\\\[]\\);\[\r\n\ \t]+void <init>\\(void\\);\[\r\n\ \t]+\}\[\r\n\ \t]+$gdb_prompt $"               { pass "ptype jmisc" }
++	-re "type = class jmisc  extends java.lang.Object \{\[\r\n\ \t\]+void foo\\(int\\);\[\r\n\ \t\]+void main\\(java\.lang\.String\\\[]\\);\[\r\n\ \t]+jmisc\\(\\);\[\r\n\ \t]+\}\[\r\n\ \t]+$gdb_prompt $"               { pass "ptype jmisc" }
+ 	-re ".*$gdb_prompt $"             { fail "ptype jmisc" }
+ 	timeout { fail "ptype jmisc (timeout)" ; return }
+     }
+Index: gdb.java/jmisc.java
+===================================================================
+RCS file: /cvs/src/src/gdb/testsuite/gdb.java/jmisc.java,v
+retrieving revision 1.1
+diff -u -p -r1.1 jmisc.java
+--- gdb/gdb/testsuite/gdb.java/jmisc.java	2000/07/24 04:34:52	1.1
++++ gdb/gdb/testsuite/gdb.java/jmisc.java	2002/04/01 21:45:07
+@@ -1,7 +1,12 @@
+ public class jmisc
+ {
++  public static void foo (int len)
++  {
++    return;
++  }
+   public static void main (String[] args)
+   {
++    foo (args.length);
+     return;
+   }
+ }
