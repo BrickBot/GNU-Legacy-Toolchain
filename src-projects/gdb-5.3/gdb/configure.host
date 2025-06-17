@@ -49,6 +49,8 @@ hppa*64*-*-hpux11*)	gdb_host=hpux11w ;;
 hppa*-*-hpux11*)	gdb_host=hpux11 ;;
 hppa*-*-hpux*)		gdb_host=hppahpux ;;
 hppa*-*-osf*)		gdb_host=hppaosf ;;
+hppa*64*-*-linux* | parisc*64*-*-linux*) gdb_host=pa64-linux ;;
+hppa*-*-linux* | parisc*-*-linux*)       gdb_host=pa-linux ;;
 
 i[3456]86-ncr-*)	gdb_host=ncr3000 ;;
 i[3456]86-sequent-bsd*)	gdb_host=symmetry ;;  # dynix
