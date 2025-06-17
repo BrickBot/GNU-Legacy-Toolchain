@@ -1,0 +1,70 @@
+# DP: Correctly handle va_list types on 64bit systems in gdc
+
+--- a/src/gcc/d/d-builtins2.cc	2010-08-24 21:59:38.307687102 +0000
++++ b/src/gcc/d/d-builtins2.cc	2010-08-25 14:25:00.954899222 +0000
+@@ -49,15 +49,6 @@
+     }
+     // generate ctype if it doesn't already exist
+     d_gcc_builtin_va_list_d_type->toCtype();
+-
+-#if D_GCC_VER >= 44
+-    /* GCC-4.4 checks that this field actually points at the same tree
+-       as va_list_type_node. the ctype may well have equivalent values
+-       but that does not work with gcc/builtins.c
+-     */
+-    tree type = d_gcc_builtin_va_list_d_type->toCtype();
+-    TYPE_MAIN_VARIANT(type) = TYPE_MAIN_VARIANT(va_list_type_node);
+-#endif
+ }
+ 
+ /*
+@@ -80,7 +71,11 @@
+ 	// for built-in functions, so this is all that needs to be done for
+ 	// chars/string.
+ 	if (TYPE_MAIN_VARIANT(TREE_TYPE(t)) == char_type_node)
+-	    return Type::tchar->pointerTo();
++	{
++	    d = Type::tchar;
++	    d->ctype = TREE_TYPE(t);
++	    return d->pointerTo();
++	}
+ 	d = gcc_type_to_d_type(TREE_TYPE(t));
+ 	if (d)
+ 	{
+--- a/src/gcc/d/d-codegen.h	2010-08-19 11:30:20.000000000 +0000
++++ b/src/gcc/d/d-codegen.h	2010-08-25 15:38:18.364898368 +0000
+@@ -294,6 +294,11 @@
+ 	    t = nop(TREE_OPERAND(exp, 0), build_pointer_type(TREE_TYPE(exp)));
+ 	else
+ #endif
++	/* Just convert arrays (struct[]) to pointers (struct *), rather than
++	   creating a new pointer to the array (struct[] *)  */
++	if (TREE_CODE (TREE_TYPE (exp)) == ARRAY_TYPE)
++	    t = build1(ADDR_EXPR, build_pointer_type(TREE_TYPE(TREE_TYPE(exp))), exp);
++	else
+ 	    t = build1(ADDR_EXPR, build_pointer_type(TREE_TYPE(exp)), exp);
+ #if D_NO_TRAMPOLINES
+ 	if (TREE_CODE( exp ) == FUNCTION_DECL)
+--- a/src/gcc/d/d-lang.cc	2010-08-24 11:44:21.000000000 +0000
++++ b/src/gcc/d/d-lang.cc	2010-08-25 14:25:00.964901334 +0000
+@@ -1917,16 +1917,11 @@
+     /* Is compatible if aggregates are same type or share the same
+        attributes. The frontend should have already ensured that types
+        aren't wildly different anyway... */
+-    if (AGGREGATE_TYPE_P (t1) && AGGREGATE_TYPE_P (t2) &&
+-	TREE_CODE (t1) == TREE_CODE (t2))
++    if (AGGREGATE_TYPE_P (t1) && AGGREGATE_TYPE_P (t2)
++	&& TREE_CODE (t1) == TREE_CODE (t2))
+     {
+-	tree type1 = TREE_TYPE (t1);
+-	tree type2 = TREE_TYPE (t2);
+-
+-	if (TREE_CODE (t1) == ARRAY_TYPE
+-	    || TREE_CODE (t2) == ARRAY_TYPE) {
+-	    return (TREE_CODE (type1) == TREE_CODE (type2));
+-	}
++	if (TREE_CODE (t1) == ARRAY_TYPE)
++	    return (TREE_TYPE (t1) == TREE_TYPE (t2));
+ 	
+ 	return (TYPE_ATTRIBUTES (t1) == TYPE_ATTRIBUTES (t2));
+     }

@@ -1,0 +1,18 @@
+# DP: Set cross include path to .../include, not .../sys-include
+# DP: This should be a fix for famous limits.h issue
+
+---
+ gcc/configure.ac |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+--- a/src/gcc/configure.ac
++++ b/src/gcc/configure.ac
+@@ -764,7 +764,7 @@ AC_ARG_WITH(sysroot,
+ ], [
+  TARGET_SYSTEM_ROOT=
+  TARGET_SYSTEM_ROOT_DEFINE=
+- CROSS_SYSTEM_HEADER_DIR='$(gcc_tooldir)/sys-include'
++ CROSS_SYSTEM_HEADER_DIR='$(prefix)/$(target_noncanonical)/include'
+ ])
+ AC_SUBST(TARGET_SYSTEM_ROOT)
+ AC_SUBST(TARGET_SYSTEM_ROOT_DEFINE)

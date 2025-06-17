@@ -1,0 +1,54 @@
+# DP: Turn on -Wformat -Wformat-security by  default for C, C++, ObjC, ObjC++.
+
+---
+ gcc/c-common.c      |    2 +-
+ gcc/c.opt           |    2 +-
+ gcc/doc/invoke.texi |    8 ++++++++
+ 3 files changed, 10 insertions(+), 2 deletions(-)
+
+--- a/src/gcc/c-common.c
++++ b/src/gcc/c-common.c
+@@ -300,7 +300,7 @@ int warn_unknown_pragmas; /* Tri state variable.  */
+ /* Warn about format/argument anomalies in calls to formatted I/O functions
+    (*printf, *scanf, strftime, strfmon, etc.).  */
+ 
+-int warn_format;
++int warn_format = 1;
+ 
+ /* Warn about using __null (as NULL in C++) as sentinel.  For code compiled
+    with GCC this doesn't matter as __null is guaranteed to have the right
+--- a/src/gcc/c.opt
++++ b/src/gcc/c.opt
+@@ -236,7 +236,7 @@ C ObjC C++ ObjC++ Var(warn_format_contains_nul) Warning
+ Warn about format strings that contain NUL bytes
+ 
+ Wformat-security
+-C ObjC C++ ObjC++ Var(warn_format_security) Warning
++C ObjC C++ ObjC++ Var(warn_format_security) Init(1) Warning
+ Warn about possible security problems with format functions
+ 
+ Wformat-y2k
+--- a/src/gcc/doc/invoke.texi
++++ b/src/gcc/doc/invoke.texi
+@@ -2864,6 +2864,9 @@ aspects of format checking, the options @option{-Wformat-y2k},
+ @option{-Wformat-nonliteral}, @option{-Wformat-security}, and
+ @option{-Wformat=2} are available, but are not included in @option{-Wall}.
+ 
++NOTE: In Ubuntu 8.10 and later versions this option is enabled by default
++for C, C++, ObjC, ObjC++.  To disable, use @option{-Wformat=0}.
++
+ @item -Wformat-y2k
+ @opindex Wformat-y2k
+ @opindex Wno-format-y2k
+@@ -2917,6 +2920,11 @@ currently a subset of what @option{-Wformat-nonliteral} warns about, but
+ in future warnings may be added to @option{-Wformat-security} that are not
+ included in @option{-Wformat-nonliteral}.)
+ 
++NOTE: In Ubuntu 8.10 and later versions this option is enabled by default
++for C, C++, ObjC, ObjC++.  To disable, use @option{-Wno-format-security},
++or disable all format warnings with @option{-Wformat=0}.  To make format
++security warnings fatal, specify @option{-Werror=format-security}.
++
+ @item -Wformat=2
+ @opindex Wformat=2
+ @opindex Wno-format=2

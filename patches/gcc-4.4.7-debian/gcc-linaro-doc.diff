@@ -1,0 +1,1617 @@
+# DP: Changes for the Linaro 4.4-2011.01-0 release (documentation).
+
+--- a/src/INSTALL/configure.html
++++ b/src/INSTALL/configure.html
+@@ -423,6 +423,46 @@
+ 
+      </dl>
+ 
++     <br><dt><code>--with-multilib-list=</code><var>list</var><dt><code>--without-multilib-list</code><dd>Specify what multilibs to build. 
++Currently only implemented for sh*-*-*.
++
++     <p><var>list</var> is a comma separated list of CPU names.  These must be of the
++form <code>sh*</code> or <code>m*</code> (in which case they match the compiler option
++for that processor).  The list should not contain any endian options -
++these are handled by <samp><span class="option">--with-endian</span></samp>.
++
++     <p>If <var>list</var> is empty, then there will be no multilibs for extra
++processors.  The multilib for the secondary endian remains enabled.
++
++     <p>As a special case, if an entry in the list starts with a <code>!</code>
++(exclamation point), then it is added to the list of excluded multilibs. 
++Entries of this sort should be compatible with &lsquo;<samp><span class="samp">MULTILIB_EXCLUDES</span></samp>&rsquo;
++(once the leading <code>!</code> has been stripped).
++
++     <p>If <samp><span class="option">--with-multilib-list</span></samp> is not given, then a default set of
++multilibs is selected based on the value of <samp><span class="option">--target</span></samp>.  This is
++usually the complete set of libraries, but some targets imply a more
++specialized subset.
++
++     <p>Example 1: to configure a compiler for SH4A only, but supporting both
++endians, with little endian being the default:
++     <pre class="smallexample">          --with-cpu=sh4a --with-endian=little,big --with-multilib-list=
++</pre>
++     <p>Example 2: to configure a compiler for both SH4A and SH4AL-DSP, but with
++only little endian SH4AL:
++     <pre class="smallexample">          --with-cpu=sh4a --with-endian=little,big --with-multilib-list=sh4al,!mb/m4al
++</pre>
++     <br><dt><code>--with-endian=</code><var>endians</var><dd>Specify what endians to use. 
++Currently only implemented for sh*-*-*.
++
++     <p><var>endians</var> may be one of the following:
++          <dl>
++<dt><code>big</code><dd>Use big endian exclusively. 
++<br><dt><code>little</code><dd>Use little endian exclusively. 
++<br><dt><code>big,little</code><dd>Use big endian by default.  Provide a multilib for little endian. 
++<br><dt><code>little,big</code><dd>Use little endian by default.  Provide a multilib for big endian. 
++</dl>
++
+      <br><dt><code>--enable-threads</code><dd>Specify that the target
+ supports threads.  This affects the Objective-C compiler and runtime
+ library, and exception handling for other languages like C++ and Java. 
+@@ -764,6 +804,9 @@
+ 128-bit <code>long double</code> when built against GNU C Library 2.4 and later,
+ 64-bit <code>long double</code> otherwise.
+ 
++     <br><dt><code>--enable-fdpic</code><dd>On SH uClinux systems, generate ELF FDPIC code rather than code
++expected to be postprocessed into the FLT binary format.
++
+      <br><dt><code>--with-gmp=</code><var>pathname</var><dt><code>--with-gmp-include=</code><var>pathname</var><dt><code>--with-gmp-lib=</code><var>pathname</var><dt><code>--with-mpfr=</code><var>pathname</var><dt><code>--with-mpfr-include=</code><var>pathname</var><dt><code>--with-mpfr-lib=</code><var>pathname</var><dd>If you do not have GMP (the GNU Multiple Precision library) and the
+ MPFR Libraries installed in a standard location and you want to build
+ GCC, you can explicitly specify the directory where they are installed
+--- a/src/gcc/doc/arm-neon-intrinsics.texi
++++ b/src/gcc/doc/arm-neon-intrinsics.texi
+@@ -43,20 +43,18 @@
+ 
+ 
+ @itemize @bullet
+-@item uint64x1_t vadd_u64 (uint64x1_t, uint64x1_t)
+-@*@emph{Form of expected instruction(s):} @code{vadd.i64 @var{d0}, @var{d0}, @var{d0}}
++@item float32x2_t vadd_f32 (float32x2_t, float32x2_t)
++@*@emph{Form of expected instruction(s):} @code{vadd.f32 @var{d0}, @var{d0}, @var{d0}}
+ @end itemize
+ 
+ 
+ @itemize @bullet
+-@item int64x1_t vadd_s64 (int64x1_t, int64x1_t)
+-@*@emph{Form of expected instruction(s):} @code{vadd.i64 @var{d0}, @var{d0}, @var{d0}}
++@item uint64x1_t vadd_u64 (uint64x1_t, uint64x1_t)
+ @end itemize
+ 
+ 
+ @itemize @bullet
+-@item float32x2_t vadd_f32 (float32x2_t, float32x2_t)
+-@*@emph{Form of expected instruction(s):} @code{vadd.f32 @var{d0}, @var{d0}, @var{d0}}
++@item int64x1_t vadd_s64 (int64x1_t, int64x1_t)
+ @end itemize
+ 
+ 
+@@ -1013,20 +1011,18 @@
+ 
+ 
+ @itemize @bullet
+-@item uint64x1_t vsub_u64 (uint64x1_t, uint64x1_t)
+-@*@emph{Form of expected instruction(s):} @code{vsub.i64 @var{d0}, @var{d0}, @var{d0}}
++@item float32x2_t vsub_f32 (float32x2_t, float32x2_t)
++@*@emph{Form of expected instruction(s):} @code{vsub.f32 @var{d0}, @var{d0}, @var{d0}}
+ @end itemize
+ 
+ 
+ @itemize @bullet
+-@item int64x1_t vsub_s64 (int64x1_t, int64x1_t)
+-@*@emph{Form of expected instruction(s):} @code{vsub.i64 @var{d0}, @var{d0}, @var{d0}}
++@item uint64x1_t vsub_u64 (uint64x1_t, uint64x1_t)
+ @end itemize
+ 
+ 
+ @itemize @bullet
+-@item float32x2_t vsub_f32 (float32x2_t, float32x2_t)
+-@*@emph{Form of expected instruction(s):} @code{vsub.f32 @var{d0}, @var{d0}, @var{d0}}
++@item int64x1_t vsub_s64 (int64x1_t, int64x1_t)
+ @end itemize
+ 
+ 
+@@ -4696,7 +4692,7 @@
+ 
+ @itemize @bullet
+ @item uint32_t vget_lane_u32 (uint32x2_t, const int)
+-@*@emph{Form of expected instruction(s):} @code{vmov.u32 @var{r0}, @var{d0}[@var{0}]}
++@*@emph{Form of expected instruction(s):} @code{vmov.32 @var{r0}, @var{d0}[@var{0}]}
+ @end itemize
+ 
+ 
+@@ -4714,7 +4710,7 @@
+ 
+ @itemize @bullet
+ @item int32_t vget_lane_s32 (int32x2_t, const int)
+-@*@emph{Form of expected instruction(s):} @code{vmov.s32 @var{r0}, @var{d0}[@var{0}]}
++@*@emph{Form of expected instruction(s):} @code{vmov.32 @var{r0}, @var{d0}[@var{0}]}
+ @end itemize
+ 
+ 
+@@ -4732,7 +4728,7 @@
+ 
+ @itemize @bullet
+ @item float32_t vget_lane_f32 (float32x2_t, const int)
+-@*@emph{Form of expected instruction(s):} @code{vmov.f32 @var{r0}, @var{d0}[@var{0}]}
++@*@emph{Form of expected instruction(s):} @code{vmov.32 @var{r0}, @var{d0}[@var{0}]}
+ @end itemize
+ 
+ 
+@@ -4750,19 +4746,17 @@
+ 
+ @itemize @bullet
+ @item uint64_t vget_lane_u64 (uint64x1_t, const int)
+-@*@emph{Form of expected instruction(s):} @code{vmov @var{r0}, @var{r0}, @var{d0}}
+ @end itemize
+ 
+ 
+ @itemize @bullet
+ @item int64_t vget_lane_s64 (int64x1_t, const int)
+-@*@emph{Form of expected instruction(s):} @code{vmov @var{r0}, @var{r0}, @var{d0}}
+ @end itemize
+ 
+ 
+ @itemize @bullet
+ @item uint32_t vgetq_lane_u32 (uint32x4_t, const int)
+-@*@emph{Form of expected instruction(s):} @code{vmov.u32 @var{r0}, @var{d0}[@var{0}]}
++@*@emph{Form of expected instruction(s):} @code{vmov.32 @var{r0}, @var{d0}[@var{0}]}
+ @end itemize
+ 
+ 
+@@ -4780,7 +4774,7 @@
+ 
+ @itemize @bullet
+ @item int32_t vgetq_lane_s32 (int32x4_t, const int)
+-@*@emph{Form of expected instruction(s):} @code{vmov.s32 @var{r0}, @var{d0}[@var{0}]}
++@*@emph{Form of expected instruction(s):} @code{vmov.32 @var{r0}, @var{d0}[@var{0}]}
+ @end itemize
+ 
+ 
+@@ -4798,7 +4792,7 @@
+ 
+ @itemize @bullet
+ @item float32_t vgetq_lane_f32 (float32x4_t, const int)
+-@*@emph{Form of expected instruction(s):} @code{vmov.f32 @var{r0}, @var{d0}[@var{0}]}
++@*@emph{Form of expected instruction(s):} @code{vmov.32 @var{r0}, @var{d0}[@var{0}]}
+ @end itemize
+ 
+ 
+@@ -4886,13 +4880,11 @@
+ 
+ @itemize @bullet
+ @item uint64x1_t vset_lane_u64 (uint64_t, uint64x1_t, const int)
+-@*@emph{Form of expected instruction(s):} @code{vmov @var{d0}, @var{r0}, @var{r0}}
+ @end itemize
+ 
+ 
+ @itemize @bullet
+ @item int64x1_t vset_lane_s64 (int64_t, int64x1_t, const int)
+-@*@emph{Form of expected instruction(s):} @code{vmov @var{d0}, @var{r0}, @var{r0}}
+ @end itemize
+ 
+ 
+@@ -5081,13 +5073,11 @@
+ 
+ @itemize @bullet
+ @item uint64x1_t vdup_n_u64 (uint64_t)
+-@*@emph{Form of expected instruction(s):} @code{vmov @var{d0}, @var{r0}, @var{r0}}
+ @end itemize
+ 
+ 
+ @itemize @bullet
+ @item int64x1_t vdup_n_s64 (int64_t)
+-@*@emph{Form of expected instruction(s):} @code{vmov @var{d0}, @var{r0}, @var{r0}}
+ @end itemize
+ 
+ 
+@@ -5147,13 +5137,11 @@
+ 
+ @itemize @bullet
+ @item uint64x2_t vdupq_n_u64 (uint64_t)
+-@*@emph{Form of expected instruction(s):} @code{vmov @var{d0}, @var{r0}, @var{r0}}
+ @end itemize
+ 
+ 
+ @itemize @bullet
+ @item int64x2_t vdupq_n_s64 (int64_t)
+-@*@emph{Form of expected instruction(s):} @code{vmov @var{d0}, @var{r0}, @var{r0}}
+ @end itemize
+ 
+ 
+@@ -5213,13 +5201,11 @@
+ 
+ @itemize @bullet
+ @item uint64x1_t vmov_n_u64 (uint64_t)
+-@*@emph{Form of expected instruction(s):} @code{vmov @var{d0}, @var{r0}, @var{r0}}
+ @end itemize
+ 
+ 
+ @itemize @bullet
+ @item int64x1_t vmov_n_s64 (int64_t)
+-@*@emph{Form of expected instruction(s):} @code{vmov @var{d0}, @var{r0}, @var{r0}}
+ @end itemize
+ 
+ 
+@@ -5279,13 +5265,11 @@
+ 
+ @itemize @bullet
+ @item uint64x2_t vmovq_n_u64 (uint64_t)
+-@*@emph{Form of expected instruction(s):} @code{vmov @var{d0}, @var{r0}, @var{r0}}
+ @end itemize
+ 
+ 
+ @itemize @bullet
+ @item int64x2_t vmovq_n_s64 (int64_t)
+-@*@emph{Form of expected instruction(s):} @code{vmov @var{d0}, @var{r0}, @var{r0}}
+ @end itemize
+ 
+ 
+@@ -5572,32 +5556,30 @@
+ 
+ 
+ @itemize @bullet
+-@item uint64x1_t vget_low_u64 (uint64x2_t)
++@item float32x2_t vget_low_f32 (float32x4_t)
+ @*@emph{Form of expected instruction(s):} @code{vmov @var{d0}, @var{d0}}
+ @end itemize
+ 
+ 
+ @itemize @bullet
+-@item int64x1_t vget_low_s64 (int64x2_t)
++@item poly16x4_t vget_low_p16 (poly16x8_t)
+ @*@emph{Form of expected instruction(s):} @code{vmov @var{d0}, @var{d0}}
+ @end itemize
+ 
+ 
+ @itemize @bullet
+-@item float32x2_t vget_low_f32 (float32x4_t)
++@item poly8x8_t vget_low_p8 (poly8x16_t)
+ @*@emph{Form of expected instruction(s):} @code{vmov @var{d0}, @var{d0}}
+ @end itemize
+ 
+ 
+ @itemize @bullet
+-@item poly16x4_t vget_low_p16 (poly16x8_t)
+-@*@emph{Form of expected instruction(s):} @code{vmov @var{d0}, @var{d0}}
++@item uint64x1_t vget_low_u64 (uint64x2_t)
+ @end itemize
+ 
+ 
+ @itemize @bullet
+-@item poly8x8_t vget_low_p8 (poly8x16_t)
+-@*@emph{Form of expected instruction(s):} @code{vmov @var{d0}, @var{d0}}
++@item int64x1_t vget_low_s64 (int64x2_t)
+ @end itemize
+ 
+ 
+@@ -9727,13 +9709,11 @@
+ 
+ @itemize @bullet
+ @item uint64x1_t vand_u64 (uint64x1_t, uint64x1_t)
+-@*@emph{Form of expected instruction(s):} @code{vand @var{d0}, @var{d0}, @var{d0}}
+ @end itemize
+ 
+ 
+ @itemize @bullet
+ @item int64x1_t vand_s64 (int64x1_t, int64x1_t)
+-@*@emph{Form of expected instruction(s):} @code{vand @var{d0}, @var{d0}, @var{d0}}
+ @end itemize
+ 
+ 
+@@ -9827,13 +9807,11 @@
+ 
+ @itemize @bullet
+ @item uint64x1_t vorr_u64 (uint64x1_t, uint64x1_t)
+-@*@emph{Form of expected instruction(s):} @code{vorr @var{d0}, @var{d0}, @var{d0}}
+ @end itemize
+ 
+ 
+ @itemize @bullet
+ @item int64x1_t vorr_s64 (int64x1_t, int64x1_t)
+-@*@emph{Form of expected instruction(s):} @code{vorr @var{d0}, @var{d0}, @var{d0}}
+ @end itemize
+ 
+ 
+@@ -9927,13 +9905,11 @@
+ 
+ @itemize @bullet
+ @item uint64x1_t veor_u64 (uint64x1_t, uint64x1_t)
+-@*@emph{Form of expected instruction(s):} @code{veor @var{d0}, @var{d0}, @var{d0}}
+ @end itemize
+ 
+ 
+ @itemize @bullet
+ @item int64x1_t veor_s64 (int64x1_t, int64x1_t)
+-@*@emph{Form of expected instruction(s):} @code{veor @var{d0}, @var{d0}, @var{d0}}
+ @end itemize
+ 
+ 
+@@ -10027,13 +10003,11 @@
+ 
+ @itemize @bullet
+ @item uint64x1_t vbic_u64 (uint64x1_t, uint64x1_t)
+-@*@emph{Form of expected instruction(s):} @code{vbic @var{d0}, @var{d0}, @var{d0}}
+ @end itemize
+ 
+ 
+ @itemize @bullet
+ @item int64x1_t vbic_s64 (int64x1_t, int64x1_t)
+-@*@emph{Form of expected instruction(s):} @code{vbic @var{d0}, @var{d0}, @var{d0}}
+ @end itemize
+ 
+ 
+@@ -10127,13 +10101,11 @@
+ 
+ @itemize @bullet
+ @item uint64x1_t vorn_u64 (uint64x1_t, uint64x1_t)
+-@*@emph{Form of expected instruction(s):} @code{vorn @var{d0}, @var{d0}, @var{d0}}
+ @end itemize
+ 
+ 
+ @itemize @bullet
+ @item int64x1_t vorn_s64 (int64x1_t, int64x1_t)
+-@*@emph{Form of expected instruction(s):} @code{vorn @var{d0}, @var{d0}, @var{d0}}
+ @end itemize
+ 
+ 
+--- a/src/gcc/doc/extend.texi
++++ b/src/gcc/doc/extend.texi
+@@ -35,6 +35,7 @@
+ * Long Long::           Double-word integers---@code{long long int}.
+ * Complex::             Data types for complex numbers.
+ * Floating Types::      Additional Floating Types.
++* Half-Precision::      Half-Precision Floating Point.
+ * Decimal Float::       Decimal Floating Types. 
+ * Hex Floats::          Hexadecimal floating-point constants.
+ * Fixed-Point::         Fixed-Point Types.
+@@ -916,6 +917,56 @@
+ Not all targets support additional floating point types.  @code{__float80}
+ and @code{__float128} types are supported on i386, x86_64 and ia64 targets.
+ 
++@node Half-Precision
++@section Half-Precision Floating Point
++@cindex half-precision floating point
++@cindex @code{__fp16} data type
++
++On ARM targets, GCC supports half-precision (16-bit) floating point via
++the @code{__fp16} type.  You must enable this type explicitly 
++with the @option{-mfp16-format} command-line option in order to use it.
++
++ARM supports two incompatible representations for half-precision
++floating-point values.  You must choose one of the representations and
++use it consistently in your program.
++
++Specifying @option{-mfp16-format=ieee} selects the IEEE 754-2008 format.
++This format can represent normalized values in the range of @math{2^{-14}} to 65504.
++There are 11 bits of significand precision, approximately 3
++decimal digits.
++
++Specifying @option{-mfp16-format=alternative} selects the ARM
++alternative format.  This representation is similar to the IEEE
++format, but does not support infinities or NaNs.  Instead, the range
++of exponents is extended, so that this format can represent normalized
++values in the range of @math{2^{-14}} to 131008.
++
++The @code{__fp16} type is a storage format only.  For purposes
++of arithmetic and other operations, @code{__fp16} values in C or C++
++expressions are automatically promoted to @code{float}.  In addition,
++you cannot declare a function with a return value or parameters 
++of type @code{__fp16}.
++
++Note that conversions from @code{double} to @code{__fp16}
++involve an intermediate conversion to @code{float}.  Because
++of rounding, this can sometimes produce a different result than a
++direct conversion.
++
++ARM provides hardware support for conversions between 
++@code{__fp16} and @code{float} values
++as an extension to VFP and NEON (Advanced SIMD).  GCC generates
++code using these hardware instructions if you compile with
++options to select an FPU that provides them; 
++for example, @option{-mfpu=neon-fp16 -mfloat-abi=softfp},
++in addition to the @option{-mfp16-format} option to select
++a half-precision format.  
++
++Language-level support for the @code{__fp16} data type is
++independent of whether GCC generates code using hardware floating-point
++instructions.  In cases where hardware support is not specified, GCC
++implements conversions between @code{__fp16} and @code{float} values
++as library calls.
++
+ @node Decimal Float
+ @section Decimal Floating Types
+ @cindex decimal floating types
+@@ -2397,7 +2448,7 @@
+ 
+ @item interrupt
+ @cindex interrupt handler functions
+-Use this attribute on the ARM, AVR, CRX, M32C, M32R/D, m68k,
++Use this attribute on the ARM, AVR, CRX, M32C, M32R/D, m68k, MIPS
+ and Xstormy16 ports to indicate that the specified function is an
+ interrupt handler.  The compiler will generate function entry and exit
+ sequences suitable for use in an interrupt handler when this attribute
+@@ -2420,6 +2471,42 @@
+ On ARMv7-M the interrupt type is ignored, and the attribute means the function
+ may be called with a word aligned stack pointer.
+ 
++On MIPS targets, you can use the following attributes to modify the behavior
++of an interrupt handler:
++@table @code
++@item use_shadow_register_set
++@cindex @code{use_shadow_register_set} attribute
++Assume that the handler uses a shadow register set, instead of
++the main general-purpose registers.
++
++@item keep_interrupts_masked
++@cindex @code{keep_interrupts_masked} attribute
++Keep interrupts masked for the whole function.  Without this attribute,
++GCC tries to reenable interrupts for as much of the function as it can.
++
++@item use_debug_exception_return
++@cindex @code{use_debug_exception_return} attribute
++Return using the @code{deret} instruction.  Interrupt handlers that don't
++have this attribute return using @code{eret} instead.
++@end table
++
++You can use any combination of these attributes, as shown below:
++@smallexample
++void __attribute__ ((interrupt)) v0 ();
++void __attribute__ ((interrupt, use_shadow_register_set)) v1 ();
++void __attribute__ ((interrupt, keep_interrupts_masked)) v2 ();
++void __attribute__ ((interrupt, use_debug_exception_return)) v3 ();
++void __attribute__ ((interrupt, use_shadow_register_set,
++		     keep_interrupts_masked)) v4 ();
++void __attribute__ ((interrupt, use_shadow_register_set,
++		     use_debug_exception_return)) v5 ();
++void __attribute__ ((interrupt, keep_interrupts_masked,
++		     use_debug_exception_return)) v6 ();
++void __attribute__ ((interrupt, use_shadow_register_set,
++		     keep_interrupts_masked,
++		     use_debug_exception_return)) v7 ();
++@end smallexample
++
+ @item interrupt_handler
+ @cindex interrupt handler functions on the Blackfin, m68k, H8/300 and SH processors
+ Use this attribute on the Blackfin, m68k, H8/300, H8/300H, H8S, and SH to
+@@ -2518,6 +2605,25 @@
+ may interact badly with some GCC extensions such as @code{__builtin_apply}
+ (@pxref{Constructing Calls}).
+ 
++@item micromips/nomicromips
++@cindex @code{micromips} attribute
++@cindex @code{nomicromips} attribute
++
++On MIPS targets, you can use the @code{micromips} and @code{nomicromips}
++function attributes to locally select or turn off microMIPS code generation.
++A function with the @code{micromips} attribute is emitted as microMIPS code,
++while microMIPS code generation is disabled for functions with the
++@code{nomicromips} attribute.  These attributes override the
++@option{-mmicromips} and @option{-mno-micromips} options on the command line
++(@pxref{MIPS Options}).
++
++When compiling files containing mixed microMIPS and non-microMIPS code, the
++preprocessor symbol @code{__mips_micromips} reflects the setting on the
++command line,
++not that within individual functions.  Mixed microMIPS and non-microMIPS code
++may interact badly with some GCC extensions such as @code{__builtin_apply}
++(@pxref{Constructing Calls}).
++
+ @item model (@var{model-name})
+ @cindex function addressability on the M32R/D
+ @cindex variable addressability on the IA-64
+--- a/src/gcc/doc/fragments.texi
++++ b/src/gcc/doc/fragments.texi
+@@ -143,6 +143,22 @@
+ *mthumb/*mhard-float*
+ @end smallexample
+ 
++@findex MULTILIB_ALIASES
++@item MULTILIB_ALIASES
++Sometimes it is desirable to support a large set of multilib options, but
++only build libraries for a subset of those multilibs.  The remaining
++combinations use a sutiable alternative multilb.  In that case, set
++@code{MULTILIB_ALIASES} to a list of the form @samp{realname=aliasname}.
++
++For example, consider a little-endian ARM toolchain with big-endian and
++Thumb multilibs.  If a big-endian Thumb multilib is not wanted, then
++setting @code{MULTILIB_ALIASES} to @samp{mbig-endian=mbig-endian/mthumb} 
++makes this combination use the big-endian ARM libraries instead.
++
++If the multilib is instead excluded by setting @code{MULTILIB_EXCEPTIONS}
++then big-endian Thumb code uses the default multilib as none of the
++remaining multilibs match.
++
+ @findex MULTILIB_EXTRA_OPTS
+ @item MULTILIB_EXTRA_OPTS
+ Sometimes it is desirable that when building multiple versions of
+--- a/src/gcc/doc/install.texi
++++ b/src/gcc/doc/install.texi
+@@ -988,6 +988,57 @@
+ 
+ @end table
+ 
++@item --with-multilib-list=@var{list}
++@itemx --without-multilib-list
++Specify what multilibs to build.
++Currently only implemented for sh*-*-*.
++
++@var{list} is a comma separated list of CPU names.  These must be of the
++form @code{sh*} or @code{m*} (in which case they match the compiler option
++for that processor).  The list should not contain any endian options -
++these are handled by @option{--with-endian}.
++
++If @var{list} is empty, then there will be no multilibs for extra
++processors.  The multilib for the secondary endian remains enabled.
++
++As a special case, if an entry in the list starts with a @code{!}
++(exclamation point), then it is added to the list of excluded multilibs.
++Entries of this sort should be compatible with @samp{MULTILIB_EXCLUDES}
++(once the leading @code{!} has been stripped).
++
++If @option{--with-multilib-list} is not given, then a default set of
++multilibs is selected based on the value of @option{--target}.  This is
++usually the complete set of libraries, but some targets imply a more
++specialized subset.
++
++Example 1: to configure a compiler for SH4A only, but supporting both
++endians, with little endian being the default:
++@smallexample
++--with-cpu=sh4a --with-endian=little,big --with-multilib-list=
++@end smallexample
++
++Example 2: to configure a compiler for both SH4A and SH4AL-DSP, but with
++only little endian SH4AL:
++@smallexample
++--with-cpu=sh4a --with-endian=little,big --with-multilib-list=sh4al,!mb/m4al
++@end smallexample
++
++@item --with-endian=@var{endians}
++Specify what endians to use.
++Currently only implemented for sh*-*-*.
++
++@var{endians} may be one of the following:
++@table @code
++@item big
++Use big endian exclusively.
++@item little
++Use little endian exclusively.
++@item big,little
++Use big endian by default.  Provide a multilib for little endian.
++@item little,big
++Use little endian by default.  Provide a multilib for big endian.
++@end table
++
+ @item --enable-threads
+ Specify that the target
+ supports threads.  This affects the Objective-C compiler and runtime
+@@ -1436,6 +1487,10 @@
+ 128-bit @code{long double} when built against GNU C Library 2.4 and later,
+ 64-bit @code{long double} otherwise.
+ 
++@item --enable-fdpic
++On SH uClinux systems, generate ELF FDPIC code rather than code
++expected to be postprocessed into the FLT binary format.
++
+ @item --with-gmp=@var{pathname}
+ @itemx --with-gmp-include=@var{pathname}
+ @itemx --with-gmp-lib=@var{pathname}
+--- a/src/gcc/doc/invoke.texi
++++ b/src/gcc/doc/invoke.texi
+@@ -251,6 +251,7 @@
+ -Woverlength-strings  -Wpacked  -Wpacked-bitfield-compat  -Wpadded @gol
+ -Wparentheses  -Wpedantic-ms-format -Wno-pedantic-ms-format @gol
+ -Wpointer-arith  -Wno-pointer-to-int-cast @gol
++-Wno-poison-system-directories @gol
+ -Wredundant-decls @gol
+ -Wreturn-type  -Wsequence-point  -Wshadow @gol
+ -Wsign-compare  -Wsign-conversion  -Wstack-protector @gol
+@@ -321,7 +322,7 @@
+ @item Optimization Options
+ @xref{Optimize Options,,Options that Control Optimization}.
+ @gccoptlist{
+--falign-functions[=@var{n}] -falign-jumps[=@var{n}] @gol
++-falign-arrays -falign-functions[=@var{n}] -falign-jumps[=@var{n}] @gol
+ -falign-labels[=@var{n}] -falign-loops[=@var{n}] -fassociative-math @gol
+ -fauto-inc-dec -fbranch-probabilities -fbranch-target-load-optimize @gol
+ -fbranch-target-load-optimize2 -fbtr-bb-exclusive -fcaller-saves @gol
+@@ -438,8 +439,11 @@
+ -msched-prolog  -mno-sched-prolog @gol
+ -mlittle-endian  -mbig-endian  -mwords-little-endian @gol
+ -mfloat-abi=@var{name}  -msoft-float  -mhard-float  -mfpe @gol
++-mfp16-format=@var{name}
+ -mthumb-interwork  -mno-thumb-interwork @gol
++-mfix-janus-2cc @gol
+ -mcpu=@var{name}  -march=@var{name}  -mfpu=@var{name}  @gol
++-mmarvell-div @gol
+ -mstructure-size-boundary=@var{n} @gol
+ -mabort-on-noreturn @gol
+ -mlong-calls  -mno-long-calls @gol
+@@ -452,6 +456,7 @@
+ -mtpcs-frame  -mtpcs-leaf-frame @gol
+ -mcaller-super-interworking  -mcallee-super-interworking @gol
+ -mtp=@var{name} @gol
++-mlow-irq-latency @gol
+ -mword-relocations @gol
+ -mfix-cortex-m3-ldrd}
+ 
+@@ -574,7 +579,7 @@
+ -mno-wide-multiply  -mrtd  -malign-double @gol
+ -mpreferred-stack-boundary=@var{num}
+ -mincoming-stack-boundary=@var{num}
+--mcld -mcx16 -msahf -mrecip @gol
++-mcld -mcx16 -msahf -mmovbe -mrecip @gol
+ -mmmx  -msse  -msse2 -msse3 -mssse3 -msse4.1 -msse4.2 -msse4 -mavx @gol
+ -maes -mpclmul @gol
+ -msse4a -m3dnow -mpopcnt -mabm -msse5 @gol
+@@ -584,7 +589,7 @@
+ -m96bit-long-double  -mregparm=@var{num}  -msseregparm @gol
+ -mveclibabi=@var{type} -mpc32 -mpc64 -mpc80 -mstackrealign @gol
+ -momit-leaf-frame-pointer  -mno-red-zone -mno-tls-direct-seg-refs @gol
+--mcmodel=@var{code-model} @gol
++-mcmodel=@var{code-model} -mabi=@var{name} @gol
+ -m32  -m64 -mlarge-data-threshold=@var{num} @gol
+ -mfused-madd -mno-fused-madd -msse2avx}
+ 
+@@ -652,12 +657,13 @@
+ @gccoptlist{-EL  -EB  -march=@var{arch}  -mtune=@var{arch} @gol
+ -mips1  -mips2  -mips3  -mips4  -mips32  -mips32r2 @gol
+ -mips64  -mips64r2 @gol
+--mips16  -mno-mips16  -mflip-mips16 @gol
++-mips16  -mips16e  -mno-mips16  -mflip-mips16 @gol
+ -minterlink-mips16  -mno-interlink-mips16 @gol
+ -mabi=@var{abi}  -mabicalls  -mno-abicalls @gol
+ -mshared  -mno-shared  -mplt  -mno-plt  -mxgot  -mno-xgot @gol
+ -mgp32  -mgp64  -mfp32  -mfp64  -mhard-float  -msoft-float @gol
+ -msingle-float  -mdouble-float  -mdsp  -mno-dsp  -mdspr2  -mno-dspr2 @gol
++-mmicromips -mno-micromips -mmcu -mmno-mcu @gol
+ -mfpu=@var{fpu-type} @gol
+ -msmartmips  -mno-smartmips @gol
+ -mpaired-single  -mno-paired-single  -mdmx  -mno-mdmx @gol
+@@ -673,6 +679,7 @@
+ -mcheck-zero-division  -mno-check-zero-division @gol
+ -mdivide-traps  -mdivide-breaks @gol
+ -mmemcpy  -mno-memcpy  -mlong-calls  -mno-long-calls @gol
++-mjals -mno-jals @gol
+ -mmad  -mno-mad  -mfused-madd  -mno-fused-madd  -nocpp @gol
+ -mfix-r4000  -mno-fix-r4000  -mfix-r4400  -mno-fix-r4400 @gol
+ -mfix-r10000 -mno-fix-r10000  -mfix-vr4120  -mno-fix-vr4120 @gol
+@@ -778,12 +785,12 @@
+ -m5-32media  -m5-32media-nofpu @gol
+ -m5-compact  -m5-compact-nofpu @gol
+ -mb  -ml  -mdalign  -mrelax @gol
+--mbigtable  -mfmovd  -mhitachi -mrenesas -mno-renesas -mnomacsave @gol
++-mbigtable -mfmovd -mhitachi -mrenesas -mno-renesas -mnomacsave @gol
+ -mieee  -mbitops  -misize  -minline-ic_invalidate -mpadstruct  -mspace @gol
+ -mprefergot  -musermode -multcost=@var{number} -mdiv=@var{strategy} @gol
+ -mdivsi3_libfunc=@var{name} -mfixed-range=@var{register-range} @gol
+ -madjust-unroll -mindexed-addressing -mgettrcost=@var{number} -mpt-fixed @gol
+--minvalid-symbols}
++-minvalid-symbols  -mfdpic}
+ 
+ @emph{SPARC Options}
+ @gccoptlist{-mcpu=@var{cpu-type} @gol
+@@ -1189,8 +1196,8 @@
+ option.
+ 
+ @item @var{language}
+-This will display the options supported for @var{language}, where 
+-@var{language} is the name of one of the languages supported in this 
++This will display the options supported for @var{language}, where
++@var{language} is the name of one of the languages supported in this
+ version of GCC.
+ 
+ @item @samp{common}
+@@ -1390,7 +1397,7 @@
+ @opindex std
+ Determine the language standard. @xref{Standards,,Language Standards
+ Supported by GCC}, for details of these standard versions.  This option
+-is currently only supported when compiling C or C++. 
++is currently only supported when compiling C or C++.
+ 
+ The compiler can accept several base standards, such as @samp{c89} or
+ @samp{c++98}, and GNU dialects of those standards, such as
+@@ -2816,21 +2823,21 @@
+ A pointer is compared against integer zero with @samp{<}, @samp{<=},
+ @samp{>}, or @samp{>=}.
+ 
+-@item 
++@item
+ (C++ only) An enumerator and a non-enumerator both appear in a
+ conditional expression.
+ 
+-@item 
++@item
+ (C++ only) Ambiguous virtual bases.
+ 
+-@item 
++@item
+ (C++ only) Subscripting an array which has been declared @samp{register}.
+ 
+-@item 
++@item
+ (C++ only) Taking the address of a variable which has been declared
+ @samp{register}.
+ 
+-@item 
++@item
+ (C++ only) A base class is not initialized in a derived class' copy
+ constructor.
+ 
+@@ -3366,9 +3373,9 @@
+ 
+ Level 1: Most aggressive, quick, least accurate.
+ Possibly useful when higher levels
+-do not warn but -fstrict-aliasing still breaks the code, as it has very few 
++do not warn but -fstrict-aliasing still breaks the code, as it has very few
+ false negatives.  However, it has many false positives.
+-Warns for all pointer conversions between possibly incompatible types, 
++Warns for all pointer conversions between possibly incompatible types,
+ even if never dereferenced.  Runs in the frontend only.
+ 
+ Level 2: Aggressive, quick, not too precise.
+@@ -3377,12 +3384,12 @@
+ Unlike level 1, it only warns when an address is taken.  Warns about
+ incomplete types.  Runs in the frontend only.
+ 
+-Level 3 (default for @option{-Wstrict-aliasing}): 
+-Should have very few false positives and few false 
++Level 3 (default for @option{-Wstrict-aliasing}):
++Should have very few false positives and few false
+ negatives.  Slightly slower than levels 1 or 2 when optimization is enabled.
+ Takes care of the common punn+dereference pattern in the frontend:
+ @code{*(int*)&some_float}.
+-If optimization is enabled, it also runs in the backend, where it deals 
++If optimization is enabled, it also runs in the backend, where it deals
+ with multiple statement cases using flow-sensitive points-to information.
+ Only warns when the converted pointer is dereferenced.
+ Does not warn about incomplete types.
+@@ -3469,6 +3476,14 @@
+ option will @emph{not} warn about unknown pragmas in system
+ headers---for that, @option{-Wunknown-pragmas} must also be used.
+ 
++@item -Wno-poison-system-directories
++@opindex Wno-poison-system-directories
++Do not warn for @option{-I} or @option{-L} options using system
++directories such as @file{/usr/include} when cross compiling.  This
++option is intended for use in chroot environments when such
++directories contain the correct headers and libraries for the target
++system rather than the host.
++
+ @item -Wfloat-equal
+ @opindex Wfloat-equal
+ @opindex Wno-float-equal
+@@ -4563,7 +4578,7 @@
+ 
+ @item -fdbg-cnt=@var{counter-value-list}
+ @opindex fdbg-cnt
+-Set the internal debug counter upperbound. @var{counter-value-list} 
++Set the internal debug counter upperbound. @var{counter-value-list}
+ is a comma-separated list of @var{name}:@var{value} pairs
+ which sets the upperbound of each debug counter @var{name} to @var{value}.
+ All debug counters have the initial upperbound of @var{UINT_MAX},
+@@ -4643,7 +4658,7 @@
+ @opindex fdump-rtl-ce3
+ @option{-fdump-rtl-ce1}, @option{-fdump-rtl-ce2}, and
+ @option{-fdump-rtl-ce3} enable dumping after the three
+-if conversion passes. 
++if conversion passes.
+ 
+ @itemx -fdump-rtl-cprop_hardreg
+ @opindex fdump-rtl-cprop_hardreg
+@@ -4772,7 +4787,7 @@
+ 
+ @item -fdump-rtl-seqabstr
+ @opindex fdump-rtl-seqabstr
+-Dump after common sequence discovery. 
++Dump after common sequence discovery.
+ 
+ @item -fdump-rtl-shorten
+ @opindex fdump-rtl-shorten
+@@ -5345,7 +5360,13 @@
+ each of them.
+ 
+ Not all optimizations are controlled directly by a flag.  Only
+-optimizations that have a flag are listed.
++optimizations that have a flag are listed in this section.
++
++Depending on the target and how GCC was configured, a slightly different
++set of optimizations may be enabled at each @option{-O} level than
++those listed here.  You can invoke GCC with @samp{-Q --help=optimizers}
++to find out the exact set of optimizations that are enabled at each level.
++@xref{Overall Options}, for examples.
+ 
+ @table @gcctabopt
+ @item -O
+@@ -5949,7 +5970,7 @@
+ by allowing other instructions to be issued until the result of the load
+ or floating point instruction is required.
+ 
+-Enabled at levels @option{-O2}, @option{-O3}, @option{-Os}.
++Enabled at levels @option{-O2}, @option{-O3}.
+ 
+ @item -fschedule-insns2
+ @opindex fschedule-insns2
+@@ -6054,8 +6075,8 @@
+ 
+ @item -fsel-sched-pipelining
+ @opindex fsel-sched-pipelining
+-Enable software pipelining of innermost loops during selective scheduling.  
+-This option has no effect until one of @option{-fselective-scheduling} or 
++Enable software pipelining of innermost loops during selective scheduling.
++This option has no effect until one of @option{-fselective-scheduling} or
+ @option{-fselective-scheduling2} is turned on.
+ 
+ @item -fsel-sched-pipelining-outer-loops
+@@ -6119,9 +6140,9 @@
+ 
+ @item -fipa-struct-reorg
+ @opindex fipa-struct-reorg
+-Perform structure reorganization optimization, that change C-like structures 
+-layout in order to better utilize spatial locality.  This transformation is 
+-effective for programs containing arrays of structures.  Available in two 
++Perform structure reorganization optimization, that change C-like structures
++layout in order to better utilize spatial locality.  This transformation is
++effective for programs containing arrays of structures.  Available in two
+ compilation modes: profile-based (enabled with @option{-fprofile-generate})
+ or static (which uses built-in heuristics).  Require @option{-fipa-type-escape}
+ to provide the safety of this transformation.  It works only in whole program
+@@ -6140,7 +6161,7 @@
+ @opindex fipa-cp
+ Perform interprocedural constant propagation.
+ This optimization analyzes the program to determine when values passed
+-to functions are constants and then optimizes accordingly.  
++to functions are constants and then optimizes accordingly.
+ This optimization can substantially increase performance
+ if the application has constants passed to functions.
+ This flag is enabled by default at @option{-O2}, @option{-Os} and @option{-O3}.
+@@ -6164,10 +6185,9 @@
+ of the matrix. The second optimization is matrix transposing that
+ attempts to change the order of the matrix's dimensions in order to
+ improve cache locality.
+-Both optimizations need the @option{-fwhole-program} flag. 
++Both optimizations need the @option{-fwhole-program} flag.
+ Transposing is enabled only if profiling information is available.
+ 
+-
+ @item -ftree-sink
+ @opindex ftree-sink
+ Perform forward store motion  on trees.  This flag is
+@@ -6191,9 +6211,9 @@
+ 
+ @item -ftree-builtin-call-dce
+ @opindex ftree-builtin-call-dce
+-Perform conditional dead code elimination (DCE) for calls to builtin functions 
+-that may set @code{errno} but are otherwise side-effect free.  This flag is 
+-enabled by default at @option{-O2} and higher if @option{-Os} is not also 
++Perform conditional dead code elimination (DCE) for calls to builtin functions
++that may set @code{errno} but are otherwise side-effect free.  This flag is
++enabled by default at @option{-O2} and higher if @option{-Os} is not also
+ specified.
+ 
+ @item -ftree-dominator-opts
+@@ -6258,8 +6278,8 @@
+ 
+ @item -floop-strip-mine
+ Perform loop strip mining transformations on loops.  Strip mining
+-splits a loop into two nested loops.  The outer loop has strides 
+-equal to the strip size and the inner loop has strides of the 
++splits a loop into two nested loops.  The outer loop has strides
++equal to the strip size and the inner loop has strides of the
+ original loop within a strip.  For example, given a loop like:
+ @smallexample
+ DO I = 1, N
+@@ -6621,6 +6641,14 @@
+ The @option{-fstrict-overflow} option is enabled at levels
+ @option{-O2}, @option{-O3}, @option{-Os}.
+ 
++@item -falign-arrays
++@opindex falign-arrays
++Set the minimum alignment for array variables to be the largest power
++of two less than or equal to their total storage size, or the biggest
++alignment used on the machine, whichever is smaller.  This option may be
++helpful when compiling legacy code that uses type punning on arrays that
++does not strictly conform to the C standard.
++
+ @item -falign-functions
+ @itemx -falign-functions=@var{n}
+ @opindex falign-functions
+@@ -6756,7 +6784,7 @@
+ Set the directory to search the profile data files in to @var{path}.
+ This option affects only the profile data generated by
+ @option{-fprofile-generate}, @option{-ftest-coverage}, @option{-fprofile-arcs}
+-and used by @option{-fprofile-use} and @option{-fbranch-probabilities} 
++and used by @option{-fprofile-use} and @option{-fbranch-probabilities}
+ and its related options.
+ By default, GCC will use the current directory as @var{path}
+ thus the profile data file will appear in the same directory as the object file.
+@@ -7185,6 +7213,21 @@
+ 
+ Not all targets support this option.
+ 
++@item -fremove-local-statics
++@opindex fremove-local-statics
++Converts function-local static variables to automatic variables when it
++is safe to do so.  This transformation can reduce the number of
++instructions executed due to automatic variables being cheaper to
++read/write than static variables.
++
++@item -fpromote-loop-indices
++@opindex fpromote-loop-indices
++Converts loop indices that have a type shorter than the word size to
++word-sized quantities.  This transformation can reduce the overhead
++associated with sign/zero-extension and truncation of such variables.
++Using @option{-funsafe-loop-optimizations} with this option may result
++in more effective optimization.
++
+ @item --param @var{name}=@var{value}
+ @opindex param
+ In some places, GCC uses various constants to control the amount of
+@@ -7218,8 +7261,8 @@
+ The threshold ratio (as a percentage) between a structure frequency
+ and the frequency of the hottest structure in the program.  This parameter
+ is used by struct-reorg optimization enabled by @option{-fipa-struct-reorg}.
+-We say that if the ratio of a structure frequency, calculated by profiling, 
+-to the hottest structure frequency in the program is less than this 
++We say that if the ratio of a structure frequency, calculated by profiling,
++to the hottest structure frequency in the program is less than this
+ parameter, then structure reorganization is not applied to this structure.
+ The default is 10.
+ 
+@@ -7692,8 +7735,8 @@
+ The default value is 50.
+ 
+ @item selsched-max-sched-times
+-The maximum number of times that an instruction will be scheduled during 
+-selective scheduling.  This is the limit on the number of iterations 
++The maximum number of times that an instruction will be scheduled during
++selective scheduling.  This is the limit on the number of iterations
+ through which the instruction may be pipelined.  The default value is 2.
+ 
+ @item selsched-max-insns-to-rename
+@@ -8065,7 +8108,7 @@
+ @cindex linker script
+ Use @var{script} as the linker script.  This option is supported by most
+ systems using the GNU linker.  On some targets, such as bare-board
+-targets without an operating system, the @option{-T} option may be required 
++targets without an operating system, the @option{-T} option may be required
+ when linking to avoid references to undefined symbols.
+ 
+ @item -Xlinker @var{option}
+@@ -8081,7 +8124,7 @@
+ @option{-Xlinker "-assert definitions"}, because this passes the entire
+ string as a single argument, which is not what the linker expects.
+ 
+-When using the GNU linker, it is usually more convenient to pass 
++When using the GNU linker, it is usually more convenient to pass
+ arguments to linker options using the @option{@var{option}=@var{value}}
+ syntax than as separate arguments.  For example, you can specify
+ @samp{-Xlinker -Map=output.map} rather than
+@@ -8092,7 +8135,7 @@
+ @opindex Wl
+ Pass @var{option} as an option to the linker.  If @var{option} contains
+ commas, it is split into multiple options at the commas.  You can use this
+-syntax to pass an argument to the option.  
++syntax to pass an argument to the option.
+ For example, @samp{-Wl,-Map,output.map} passes @samp{-Map output.map} to the
+ linker.  When using the GNU linker, you can also get the same effect with
+ @samp{-Wl,-Map=output.map}.
+@@ -8740,6 +8783,12 @@
+ @code{,}, @code{!}, @code{|}, and @code{*} as needed.
+ 
+ 
++@item -mlow-irq-latency
++@opindex mlow-irq-latency
++Avoid instructions with high interrupt latency when generating
++code.  This can increase code size and reduce performance.
++The option is off by default.
++
+ @end table
+ 
+ The conditional text @code{X} in a %@{@code{S}:@code{X}@} or similar
+@@ -9019,11 +9068,6 @@
+ @samp{hard} allows generation of floating-point instructions 
+ and uses FPU-specific calling conventions.
+ 
+-Using @option{-mfloat-abi=hard} with VFP coprocessors is not supported.
+-Use @option{-mfloat-abi=softfp} with the appropriate @option{-mfpu} option
+-to allow the compiler to generate code that makes use of the hardware
+-floating-point capabilities for these CPUs.
+-
+ The default depends on the specific target configuration.  Note that
+ the hard-float and soft-float ABIs are not link-compatible; you must
+ compile your entire program with the same ABI, and link with a
+@@ -9077,10 +9121,10 @@
+ @samp{arm10e}, @samp{arm1020e}, @samp{arm1022e},
+ @samp{arm1136j-s}, @samp{arm1136jf-s}, @samp{mpcore}, @samp{mpcorenovfp},
+ @samp{arm1156t2-s}, @samp{arm1176jz-s}, @samp{arm1176jzf-s},
+-@samp{cortex-a8}, @samp{cortex-a9},
+-@samp{cortex-r4}, @samp{cortex-r4f}, @samp{cortex-m3},
+-@samp{cortex-m1},
+-@samp{xscale}, @samp{iwmmxt}, @samp{iwmmxt2}, @samp{ep9312}.
++@samp{cortex-a5}, @samp{cortex-a8}, @samp{cortex-a9},
++@samp{cortex-r4}, @samp{cortex-r4f}, @samp{cortex-m4}, @samp{cortex-m3},
++@samp{cortex-m1}, @samp{cortex-m0},
++@samp{xscale}, @samp{iwmmxt}, @samp{iwmmxt2}, @samp{ep9312}, @samp{marvell-f}.
+ 
+ @item -mtune=@var{name}
+ @opindex mtune
+@@ -9114,14 +9158,26 @@
+ @opindex mfp
+ This specifies what floating point hardware (or hardware emulation) is
+ available on the target.  Permissible names are: @samp{fpa}, @samp{fpe2},
+-@samp{fpe3}, @samp{maverick}, @samp{vfp}, @samp{vfpv3}, @samp{vfpv3-d16} and
+-@samp{neon}.  @option{-mfp} and @option{-mfpe}
++@samp{fpe3}, @samp{maverick}, @samp{vfp}, @samp{vfpv3}, @samp{vfpv3-fp16},
++@samp{vfpv3-d16}, @samp{vfpv3-d16-fp16}, @samp{vfpv4}, @samp{vfpv4-d16}, @samp{neon}, @samp{neon-fp16} and @samp{neon-vfpv4}.
++@option{-mfp} and @option{-mfpe}
+ are synonyms for @option{-mfpu}=@samp{fpe}@var{number}, for compatibility
+ with older versions of GCC@.
+ 
+ If @option{-msoft-float} is specified this specifies the format of
+ floating point values.
+ 
++@item -mfp16-format=@var{name}
++@opindex mfp16-format
++Specify the format of the @code{__fp16} half-precision floating-point type.
++Permissible names are @samp{none}, @samp{ieee}, and @samp{alternative}; 
++the default is @samp{none}, in which case the @code{__fp16} type is not 
++defined.  @xref{Half-Precision}, for more information.
++
++@item -mmarvell-div
++@opindex mmarvell-div
++Generate hardware integer division instructions supported by some Marvell cores.
++
+ @item -mstructure-size-boundary=@var{n}
+ @opindex mstructure-size-boundary
+ The size of all structures and unions will be rounded up to a multiple
+@@ -9225,6 +9281,10 @@
+ mixed 16/32-bit Thumb-2 instructions based on the @option{-mcpu=@var{name}}
+ and @option{-march=@var{name}} options.
+ 
++@item -mfix-janus-2cc
++@opindex mfix-janus-2cc
++Work around hardware errata for Avalent Janus 2CC cores.
++
+ @item -mtpcs-frame
+ @opindex mtpcs-frame
+ Generate a stack frame that is compliant with the Thumb Procedure Call
+@@ -9513,7 +9573,7 @@
+ and link scripts will be used to support Core B. This option
+ defines @code{__BFIN_COREB}. When this option is used, coreb_main
+ should be used instead of main. It must be used with
+-@option{-mmulticore}. 
++@option{-mmulticore}.
+ 
+ @item -msdram
+ @opindex msdram
+@@ -10980,6 +11040,9 @@
+ @item core2
+ Intel Core2 CPU with 64-bit extensions, MMX, SSE, SSE2, SSE3 and SSSE3
+ instruction set support.
++@item atom
++Intel Atom CPU with 64-bit extensions, MMX, SSE, SSE2, SSE3 and SSSE3
++instruction set support.
+ @item k6
+ AMD K6 CPU with MMX instruction set support.
+ @item k6-2, k6-3
+@@ -11247,7 +11310,7 @@
+ libraries assume that extended precision (80 bit) floating-point operations
+ are enabled by default; routines in such libraries could suffer significant
+ loss of accuracy, typically through so-called "catastrophic cancellation",
+-when this option is used to set the precision to less than extended precision. 
++when this option is used to set the precision to less than extended precision.
+ 
+ @item -mstackrealign
+ @opindex mstackrealign
+@@ -11379,6 +11442,11 @@
+ In 64-bit mode, SAHF instruction is used to optimize @code{fmod}, @code{drem}
+ or @code{remainder} built-in functions: see @ref{Other Builtins} for details.
+ 
++@item -mmovbe
++@opindex mmovbe
++This option will enable GCC to use movbe instruction to implement
++@code{__builtin_bswap32} and @code{__builtin_bswap64}.
++
+ @item -mrecip
+ @opindex mrecip
+ This option will enable GCC to use RCPSS and RSQRTSS instructions (and their
+@@ -11415,6 +11483,16 @@
+ @option{-funsafe-math-optimizations} have to be enabled. A SVML or ACML ABI
+ compatible library will have to be specified at link time.
+ 
++@item -mabi=@var{name}
++@opindex mabi
++Generate code for the specified calling convention.  Permissible values
++are: @samp{sysv} for the ABI used on GNU/Linux and other systems and
++@samp{ms} for the Microsoft ABI.  The default is to use the Microsoft
++ABI when targeting Windows.  On all other systems, the default is the
++SYSV ABI.  You can control this behavior for a specific function by
++using the function attribute @samp{ms_abi}/@samp{sysv_abi}.
++@xref{Function Attributes}.
++
+ @item -mpush-args
+ @itemx -mno-push-args
+ @opindex mpush-args
+@@ -11612,6 +11690,15 @@
+ specifies that a GUI application is to be generated by
+ instructing the linker to set the PE header subsystem type
+ appropriately.
++
++@item -mpe-aligned-commons
++@opindex mpe-aligned-commons
++This option is available for Cygwin and MinGW targets.  It
++specifies that the GNU extension to the PE file format that
++permits the correct alignment of COMMON variables should be
++used when generating code.  It will be enabled by default if
++GCC detects that the target assembler found during configuration
++supports the feature.
+ @end table
+ 
+ See also under @ref{i386 and x86-64 Options} for standard options.
+@@ -12068,7 +12155,7 @@
+ 
+ @multitable @columnfractions 0.20 0.80
+ @item @strong{Family} @tab @strong{@samp{-mcpu} arguments}
+-@item @samp{51qe} @tab @samp{51qe}
++@item @samp{51} @tab @samp{51} @samp{51ac} @samp{51cn} @samp{51em} @samp{51qe}
+ @item @samp{5206} @tab @samp{5202} @samp{5204} @samp{5206}
+ @item @samp{5206e} @tab @samp{5206e}
+ @item @samp{5208} @tab @samp{5207} @samp{5208}
+@@ -12077,6 +12164,7 @@
+ @item @samp{5216} @tab @samp{5214} @samp{5216}
+ @item @samp{52235} @tab @samp{52230} @samp{52231} @samp{52232} @samp{52233} @samp{52234} @samp{52235}
+ @item @samp{5225} @tab @samp{5224} @samp{5225}
++@item @samp{52259} @tab @samp{52252} @samp{52254} @samp{52255} @samp{52256} @samp{52258} @samp{52259}
+ @item @samp{5235} @tab @samp{5232} @samp{5233} @samp{5234} @samp{5235} @samp{523x}
+ @item @samp{5249} @tab @samp{5249}
+ @item @samp{5250} @tab @samp{5250}
+@@ -12084,6 +12172,7 @@
+ @item @samp{5272} @tab @samp{5272}
+ @item @samp{5275} @tab @samp{5274} @samp{5275}
+ @item @samp{5282} @tab @samp{5280} @samp{5281} @samp{5282} @samp{528x}
++@item @samp{53017} @tab @samp{53011} @samp{53012} @samp{53013} @samp{53014} @samp{53015} @samp{53016} @samp{53017}
+ @item @samp{5307} @tab @samp{5307}
+ @item @samp{5329} @tab @samp{5327} @samp{5328} @samp{5329} @samp{532x}
+ @item @samp{5373} @tab @samp{5372} @samp{5373} @samp{537x}
+@@ -12583,8 +12672,9 @@
+ @samp{24kec}, @samp{24kef2_1}, @samp{24kef1_1},
+ @samp{34kc}, @samp{34kf2_1}, @samp{34kf1_1},
+ @samp{74kc}, @samp{74kf2_1}, @samp{74kf1_1}, @samp{74kf3_2},
++@samp{1004kc}, @samp{1004kf2_1}, @samp{1004kf1_1},
+ @samp{loongson2e}, @samp{loongson2f},
+-@samp{m4k},
++@samp{m4k}, @samp{m14k},
+ @samp{octeon},
+ @samp{orion},
+ @samp{r2000}, @samp{r3000}, @samp{r3900}, @samp{r4000}, @samp{r4400},
+@@ -12682,11 +12772,14 @@
+ Equivalent to @samp{-march=mips64r2}.
+ 
+ @item -mips16
++@itemx -mips16e
+ @itemx -mno-mips16
+ @opindex mips16
++@opindex mips16e
+ @opindex mno-mips16
+ Generate (do not generate) MIPS16 code.  If GCC is targetting a
+ MIPS32 or MIPS64 architecture, it will make use of the MIPS16e ASE@.
++@option{-mips16e} is a deprecated alias for @option{-mips16}.
+ 
+ MIPS16 code generation can also be controlled on a per-function basis
+ by means of @code{mips16} and @code{nomips16} attributes.  
+@@ -12702,13 +12795,14 @@
+ @itemx -mno-interlink-mips16
+ @opindex minterlink-mips16
+ @opindex mno-interlink-mips16
+-Require (do not require) that non-MIPS16 code be link-compatible with
+-MIPS16 code.
++Require (do not require) that non-MIPS16/non-microMIPS code be link-compatible
++with MIPS16/microMIPS code.
+ 
+-For example, non-MIPS16 code cannot jump directly to MIPS16 code;
++For example, non-MIPS16/non-microMIPS code cannot jump directly to
++MIPS16/microMIPS code;
+ it must either use a call or an indirect jump.  @option{-minterlink-mips16}
+ therefore disables direct jumps unless GCC knows that the target of the
+-jump is not MIPS16.
++jump is not MIPS16/non microMIPS.
+ 
+ @item -mabi=32
+ @itemx -mabi=o64
+@@ -12911,12 +13005,29 @@
+ Use (do not use) the MIPS-3D ASE@.  @xref{MIPS-3D Built-in Functions}.
+ The option @option{-mips3d} implies @option{-mpaired-single}.
+ 
++@item -mmicromips
++@itemx -mno-micromips
++@opindex mmicromips
++@opindex mno-mmicromips
++Generate (do not generate) microMIPS code.  If GCC is targetting a
++MIPS32 or MIPS64 architecture, it will make use of the microMIPS ASE@.
++
++MicroMIPS code generation can also be controlled on a per-function basis
++by means of @code{micromips} and @code{nomicromips} attributes.
++@xref{Function Attributes}, for more information.
++
+ @item -mmt
+ @itemx -mno-mt
+ @opindex mmt
+ @opindex mno-mt
+ Use (do not use) MT Multithreading instructions.
+ 
++@item -mmcu
++@itemx -mno-mcu
++@opindex mmcu
++@opindex mno-mcu
++Use (do not use) the MIPS MCU ASE instructions.
++
+ @item -mlong64
+ @opindex mlong64
+ Force @code{long} types to be 64 bits wide.  See @option{-mlong32} for
+@@ -13112,6 +13223,16 @@
+ This option has no effect on abicalls code.  The default is
+ @option{-mno-long-calls}.
+ 
++@item -mjals
++@itemx -mno-jals
++@opindex mjals
++@opindex mno-jals
++Generate (do not generate) the @code{jals} instruction for microMIPS
++by recognizing that the branch delay slot instruction can be 16 bits.
++This implies that the funciton call cannot switch the current mode
++during the linking stage, because we don't have the @code{jalxs}
++instruction that supports 16-bit branch delay slot instructions.
++
+ @item -mmad
+ @itemx -mno-mad
+ @opindex mmad
+@@ -14033,8 +14154,8 @@
+ @itemx -mdouble-float
+ @opindex msingle-float
+ @opindex mdouble-float
+-Generate code for single or double-precision floating point operations. 
+-@option{-mdouble-float} implies @option{-msingle-float}. 
++Generate code for single or double-precision floating point operations.
++@option{-mdouble-float} implies @option{-msingle-float}.
+ 
+ @item -msimple-fpu
+ @opindex msimple-fpu
+@@ -14042,7 +14163,7 @@
+ 
+ @item -mfpu
+ @opindex mfpu
+-Specify type of floating point unit.  Valid values are @var{sp_lite} 
++Specify type of floating point unit.  Valid values are @var{sp_lite}
+ (equivalent to -msingle-float -msimple-fpu), @var{dp_lite} (equivalent
+ to -mdouble-float -msimple-fpu), @var{sp_full} (equivalent to -msingle-float),
+ and @var{dp_full} (equivalent to -mdouble-float).
+@@ -14678,7 +14799,7 @@
+ 
+ @item -mel
+ @opindex mel
+-Compile code for little endian mode. 
++Compile code for little endian mode.
+ 
+ @item -mnhwloop
+ @opindex mnhwloop
+@@ -14690,7 +14811,7 @@
+ 
+ @item -mmac
+ @opindex mmac
+-Enable the use of multiply-accumulate instructions. Disabled by default. 
++Enable the use of multiply-accumulate instructions. Disabled by default.
+ 
+ @item -mscore5
+ @opindex mscore5
+@@ -14807,7 +14928,8 @@
+ 
+ @item -mfmovd
+ @opindex mfmovd
+-Enable the use of the instruction @code{fmovd}.
++Enable the use of the instruction @code{fmovd}.  Check @option{-mdalign} for
++alignment constraints.
+ 
+ @item -mhitachi
+ @opindex mhitachi
+@@ -14982,6 +15104,11 @@
+ This option is only meaningful when @option{-mno-pt-fixed} is in effect.
+ It will then prevent cross-basic-block cse, hoisting and most scheduling
+ of symbol loads.  The default is @option{-mno-invalid-symbols}.
++
++@item -mfdpic
++@opindex fdpic
++Generate code using the FDPIC ABI for uClinux, as documented at
++@w{@uref{http://www.codesourcery.com/public/docs/sh-fdpic/sh-fdpic-abi.txt}}.
+ @end table
+ 
+ @node SPARC Options
+@@ -15343,7 +15470,7 @@
+ @opindex mhint-max-distance
+ The encoding of the branch hint instruction limits the hint to be within
+ 256 instructions of the branch it is effecting.  By default, GCC makes
+-sure it is within 125. 
++sure it is within 125.
+ 
+ @item -msafe-hints
+ @opindex msafe-hints
+@@ -15810,19 +15937,19 @@
+ In C code, controls the placement of uninitialized global variables.
+ Unix C compilers have traditionally permitted multiple definitions of
+ such variables in different compilation units by placing the variables
+-in a common block.  
+-This is the behavior specified by @option{-fcommon}, and is the default 
+-for GCC on most targets.  
++in a common block.
++This is the behavior specified by @option{-fcommon}, and is the default
++for GCC on most targets.
+ On the other hand, this behavior is not required by ISO C, and on some
+ targets may carry a speed or code size penalty on variable references.
+-The @option{-fno-common} option specifies that the compiler should place 
++The @option{-fno-common} option specifies that the compiler should place
+ uninitialized global variables in the data section of the object file,
+ rather than generating them as common blocks.
+-This has the effect that if the same variable is declared 
++This has the effect that if the same variable is declared
+ (without @code{extern}) in two different compilations,
+ you will get a multiple-definition error when you link them.
+-In this case, you must compile with @option{-fcommon} instead.  
+-Compiling with @option{-fno-common} is useful on targets for which 
++In this case, you must compile with @option{-fcommon} instead.
++Compiling with @option{-fno-common} is useful on targets for which
+ it provides better performance, or if you wish to verify that the
+ program will work on other systems which always treat uninitialized
+ variable declarations this way.
+--- a/src/gcc/doc/md.texi
++++ b/src/gcc/doc/md.texi
+@@ -2574,6 +2574,9 @@
+ 
+ @item R
+ An address that can be used in a non-macro load or store.
++
++@item YC
++For MIPS, it is the same as the constraint @code{R}.  For microMIPS, it matches an address within a 12-bit offset that can be used for microMIPS @code{ll}, @code{sc}, etc.
+ @end table
+ 
+ @item Motorola 680x0---@file{config/m68k/constraints.md}
+@@ -7504,6 +7507,11 @@
+ recognize complicated bypasses, e.g.@: when the consumer is only an address
+ of insn @samp{store} (not a stored value).
+ 
++If there are more one bypass with the same output and input insns, the
++chosen bypass is the first bypass with a guard in description whose
++guard function returns nonzero.  If there is no such bypass, then
++bypass without the guard function is chosen.
++
+ @findex exclusion_set
+ @findex presence_set
+ @findex final_presence_set
+--- a/src/gcc/doc/tm.texi
++++ b/src/gcc/doc/tm.texi
+@@ -2472,6 +2472,15 @@
+ added to another register (as well as added to a displacement).
+ @end defmac
+ 
++@defmac MODE_INDEX_REG_CLASS (@var{mode})
++This is a variation of the @code{INDEX_REG_CLASS} macro which allows
++the selection of an index register in a mode dependent manner.  It can
++return @code{NO_REGS} for modes that do not support any form of index
++register.  If @var{mode} is @code{VOIDmode} then the macro should
++return a class of registers that is suitable for all addresses in
++which an index register of some form is allowed.
++@end defmac
++
+ @defmac REGNO_OK_FOR_BASE_P (@var{num})
+ A C expression which is nonzero if register number @var{num} is
+ suitable for use as a base register in operand addresses.  It may be
+@@ -2531,6 +2540,14 @@
+ only if neither labeling works.
+ @end defmac
+ 
++@defmac REGNO_MODE_OK_FOR_INDEX_P (@var{num}, @var{mode})
++A C expression that is just like @code{REGNO_OK_FOR_INDEX_P}, except
++that the expression may examine the mode of the memory reference
++in @var{mode}.  If @var{mode} is @code{VOIDmode}, the macro should
++return true if @var{x} is suitable for all modes in which some
++form of index register is allowed.
++@end defmac
++
+ @defmac PREFERRED_RELOAD_CLASS (@var{x}, @var{class})
+ A C expression that places additional restrictions on the register class
+ to use when it is necessary to copy value @var{x} into a register in class
+@@ -3266,7 +3283,8 @@
+ @code{INCOMING_FRAME_SP_OFFSET}.  Which is unfortunately not usable
+ during virtual register instantiation.
+ 
+-The default value for this macro is @code{FIRST_PARM_OFFSET (fundecl)},
++The default value for this macro is
++@code{FIRST_PARM_OFFSET (fundecl) + crtl->args.pretend_args_size},
+ which is correct for most machines; in general, the arguments are found
+ immediately before the stack frame.  Note that this is not the case on
+ some targets that save registers into the caller's frame, such as SPARC
+@@ -4332,6 +4350,18 @@
+ compiled.
+ @end defmac
+ 
++@deftypefn {Target Hook} rtx TARGET_LIBCALL_VALUE (enum machine_mode
++@var{mode}, rtx @var{fun})
++Define this hook if the back-end needs to know the name of the libcall
++function in order to determine where the result should be returned.  
++
++The mode of the result is given by @var{mode} and the name of the called
++library function is given by @var{fun}.  The hook should return an RTX 
++representing the place where the library function result will be returned.
++
++If this hook is not defined, then LIBCALL_VALUE will be used.
++@end deftypefn
++
+ @defmac FUNCTION_VALUE_REGNO_P (@var{regno})
+ A C expression that is nonzero if @var{regno} is the number of a hard
+ register in which the values of called function may come back.
+@@ -6851,8 +6881,9 @@
+ @end defmac
+ 
+ @defmac PIC_OFFSET_TABLE_REG_CALL_CLOBBERED
+-Define this macro if the register defined by
+-@code{PIC_OFFSET_TABLE_REGNUM} is clobbered by calls.  Do not define
++A C expression that is nonzero if the register defined by
++@code{PIC_OFFSET_TABLE_REGNUM} is clobbered by calls.  If not defined,
++the default is zero.  Do not define
+ this macro if @code{PIC_OFFSET_TABLE_REGNUM} is not defined.
+ @end defmac
+ 
+@@ -7250,7 +7281,14 @@
+ A C statement (sans semicolon) to output to the stdio stream
+ @var{stream} the assembler definition of a common-label named
+ @var{name} whose size is @var{size} bytes.  The variable @var{rounded}
+-is the size rounded up to whatever alignment the caller wants.
++is the size rounded up to whatever alignment the caller wants.  It is
++possible that @var{size} may be zero, for instance if a struct with no
++other member than a zero-length array is defined.  In this case, the
++backend must output a symbol definition that allocates at least one
++byte, both so that the address of the resulting object does not compare
++equal to any other, and because some object formats cannot even express
++the concept of a zero-sized common symbol, as that is how they represent
++an ordinary undefined external.
+ 
+ Use the expression @code{assemble_name (@var{stream}, @var{name})} to
+ output the name itself; before and after that, output the additional
+@@ -8107,6 +8145,22 @@
+ to registers using alternate names.
+ @end defmac
+ 
++@defmac OVERLAPPING_REGISTER_NAMES
++If defined, a C initializer for an array of structures containing a
++name, a register number and a count of the number of consecutive
++machine registers the name overlaps.  This macro defines additional
++names for hard registers, thus allowing the @code{asm} option in
++declarations to refer to registers using alternate names.  Unlike
++@code{ADDITIONAL_REGISTER_NAMES}, this macro should be used when the
++register name implies multiple underlying registers.
++
++This macro should be used when it is important that a clobber in an
++@code{asm} statement clobbers all the underlying values implied by the
++register name.  For example, on ARM, clobbering the double-precision
++VFP register ``d0'' implies clobbering both single-precision registers
++``s0'' and ``s1''.
++@end defmac
++
+ @defmac ASM_OUTPUT_OPCODE (@var{stream}, @var{ptr})
+ Define this macro if you are using an unusual assembler that
+ requires different names for the machine instructions.
+@@ -8156,6 +8210,19 @@
+ If this macro is not defined, it is equivalent to a null statement.
+ @end defmac
+ 
++@deftypefn {Target Hook} void TARGET_ASM_FINAL_POSTSCAN_INSN (FILE *@var{FILE}, rtx @var{insn}, rtx *@var{opvec}, int @var{noperands})
++If defined, this target hook is a function which is executed just after the
++output of assembler code for @var{insn}, to change the mode of the assembler
++if necessary.
++
++Here the argument @var{opvec} is the vector containing the operands
++extracted from @var{insn}, and @var{noperands} is the number of
++elements of the vector which contain meaningful data for this insn.
++The contents of this vector are what was used to convert the insn
++template into assembler code, so you can change the assembler mode
++by checking the contents of the vector.
++@end deftypefn
++
+ @defmac PRINT_OPERAND (@var{stream}, @var{x}, @var{code})
+ A C compound statement to output to stdio stream @var{stream} the
+ assembler syntax for an instruction operand @var{x}.  @var{x} is an
+@@ -10426,6 +10493,18 @@
+ passed along.
+ @end deftypefn
+ 
++@deftypefn {Target Hook} int TARGET_COMMUTATIVE_OPERAND_PRECEDENCE (const_rtx @var{op}, int @var{value})
++This target hook returns a value indicating whether @var{OP}, an operand of
++a commutative operation, is preferred as the first or second operand.
++The higher the value, the stronger the preference for being the first operand.
++Negative values are used to indicate a preference for the first operand
++and positive values for the second operand.  Usually the hook will return
++@var{VALUE}, which is the default precedence for @var{OP}
++(see @file{rtlanal.c}:@code{commutative_operand_precedence()}), but sometimes
++backends may wish certain operands to appear at the right places within
++instructions.
++@end deftypefn
++
+ @deftypefn {Target Hook} void TARGET_SET_CURRENT_FUNCTION (tree @var{decl})
+ The compiler invokes this hook whenever it changes its current function 
+ context (@code{cfun}).  You can define this function if
+@@ -10622,6 +10701,38 @@
+ the front end.
+ @end deftypefn
+ 
++@deftypefn {Target Hook} {const char *} TARGET_INVALID_PARAMETER_TYPE (tree @var{type})
++If defined, this macro returns the diagnostic message when it is
++invalid for functions to include parameters of type @var{type}, 
++or @code{NULL} if validity should be determined by
++the front end.  This is currently used only by the C and C++ front ends.
++@end deftypefn
++
++@deftypefn {Target Hook} {const char *} TARGET_INVALID_RETURN_TYPE (tree @var{type})
++If defined, this macro returns the diagnostic message when it is
++invalid for functions to have return type @var{type}, 
++or @code{NULL} if validity should be determined by
++the front end.  This is currently used only by the C and C++ front ends.
++@end deftypefn
++
++@deftypefn {Target Hook} {tree} TARGET_PROMOTED_TYPE (tree @var{type})
++If defined, this target hook returns the type to which values of 
++@var{type} should be promoted when they appear in expressions, 
++analogous to the integer promotions, or @code{NULL_TREE} to use the
++front end's normal promotion rules.  This hook is useful when there are
++target-specific types with special promotion rules.
++This is currently used only by the C and C++ front ends.
++@end deftypefn
++
++@deftypefn {Target Hook} {tree} TARGET_CONVERT_TO_TYPE (tree @var{type}, tree @var{expr})
++If defined, this hook returns the result of converting @var{expr} to 
++@var{type}.  It should return the converted expression, 
++or @code{NULL_TREE} to apply the front end's normal conversion rules.
++This hook is useful when there are target-specific types with special 
++conversion rules.
++This is currently used only by the C and C++ front ends.
++@end deftypefn
++
+ @defmac TARGET_USE_JCR_SECTION
+ This macro determines whether to use the JCR section to register Java
+ classes. By default, TARGET_USE_JCR_SECTION is defined to 1 if both
+--- a/src/gcc/java/gcj.texi
++++ b/src/gcc/java/gcj.texi
+@@ -607,6 +607,13 @@
+ accessing an object via a reference.  On other systems you won't need
+ this because null pointer accesses are caught automatically by the
+ processor.
++
++@item -fuse-atomic-builtins
++On some systems, gcc can generate code for built-in atomic operations.
++Use this option to force gcj to use these builtins when compiling Java
++code.  Where this capability is present it should be automatically
++detected, so you won't usually need to use this option.
++
+ @end table
+ 
+ @c man end
+--- a/src/libgomp/libgomp.texi
++++ b/src/libgomp/libgomp.texi
+@@ -94,7 +94,7 @@
+                                How you can copy and share this manual.
+ * Funding::                    How to help assure continued work for free 
+                                software.
+-* Index::                      Index of this documentation.
++* Library Index::              Index of this documentation.
+ @end menu
+ 
+ 
+@@ -1713,8 +1713,8 @@
+ @c Index
+ @c ---------------------------------------------------------------------
+ 
+-@node Index
+-@unnumbered Index
++@node Library Index
++@unnumbered Library Index
+ 
+ @printindex cp
+ 

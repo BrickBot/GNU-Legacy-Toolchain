@@ -1,0 +1,69 @@
+# DP: Install libjava libraries to multiarch location
+
+Index: b/src/libjava/classpath/m4/acinclude.m4
+===================================================================
+--- a/src/libjava/classpath/m4/acinclude.m4
++++ b/src/libjava/classpath/m4/acinclude.m4
+@@ -282,6 +282,10 @@
+ 	.) toolexeclibdir=$toolexecmainlibdir ;; # Avoid trailing /.
+ 	*) toolexeclibdir=$toolexecmainlibdir/$multi_os_directory ;;
+       esac
++      multiarch=`$CC -print-multiarch`
++      if test -n "$multiarch"; then
++        toolexeclibdir=${libdir}/${multiarch}
++      fi
+       ;;
+   esac
+   AC_SUBST(toolexecdir)
+Index: b/src/libjava/configure.ac
+===================================================================
+--- a/src/libjava/configure.ac
++++ b/src/libjava/configure.ac
+@@ -1503,6 +1503,10 @@
+       ../lib*) toolexeclibdir='$(subst /lib/../lib,/lib,'$toolexecmainlibdir/$multi_os_directory')' ;;
+       *) toolexeclibdir=$toolexecmainlibdir/$multi_os_directory ;;
+     esac
++    multiarch=`$CC -print-multiarch`
++    if test -n "$multiarch"; then
++        toolexeclibdir=$toolexecmainlibdir/$multiarch
++    fi
+     ;;
+ esac
+ AC_SUBST(toolexecdir)
+@@ -1529,6 +1533,10 @@
+    dbexecdir='$(toolexeclibdir)/'$multi_os_directory/$gcjsubdir
+    ;;
+ esac
++multiarch=`$CC -print-multiarch`
++if test -n "$multiarch"; then
++    dbexecdir='$(libdir)/'$multiarch/$gcjsubdir
++fi
+ AC_SUBST(dbexecdir)
+ AC_SUBST(gcjsubdir)
+ 
+Index: b/src/libjava/Makefile.am
+===================================================================
+--- a/src/libjava/Makefile.am
++++ b/src/libjava/Makefile.am
+@@ -168,7 +168,7 @@
+ 	-DGCJ_VERSIONED_LIBDIR="\"$(dbexecdir)\"" \
+ 	-DPATH_SEPARATOR="\"$(CLASSPATH_SEPARATOR)\"" \
+ 	-DECJ_JAR_FILE="\"$(ECJ_JAR)\"" \
+-	-DLIBGCJ_DEFAULT_DATABASE="\"/var/lib/gcj-4.4/$(db_name)\"" \
++	-DLIBGCJ_DEFAULT_DATABASE="\"/var/lib/$(MULTIARCH_DIR)/gcj-4.4/$(db_name)\"" \
+ 	-DLIBGCJ_DEFAULT_DATABASE_PATH_TAIL="\"$(db_pathtail)\""
+ 
+ AM_GCJFLAGS = \
+Index: b/src/libjava/Makefile.in
+===================================================================
+--- a/src/libjava/Makefile.in
++++ b/src/libjava/Makefile.in
+@@ -877,7 +877,7 @@
+ 	-DGCJ_VERSIONED_LIBDIR="\"$(dbexecdir)\"" \
+ 	-DPATH_SEPARATOR="\"$(CLASSPATH_SEPARATOR)\"" \
+ 	-DECJ_JAR_FILE="\"$(ECJ_JAR)\"" \
+-	-DLIBGCJ_DEFAULT_DATABASE="\"/var/lib/gcj-4.4/$(db_name)\"" \
++	-DLIBGCJ_DEFAULT_DATABASE="\"/var/lib/$(MULTIARCH_DIR)/gcj-4.4/$(db_name)\"" \
+ 	-DLIBGCJ_DEFAULT_DATABASE_PATH_TAIL="\"$(db_pathtail)\""
+ 
+ AM_GCJFLAGS = \

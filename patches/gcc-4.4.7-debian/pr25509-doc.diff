@@ -1,0 +1,47 @@
+# DP: Backport of PR c/25509, new option -Wno-unused-result (documentation)
+
+gcc/
+
+2009-07-10  Manuel López-Ibáñez  <manu@gcc.gnu.org>
+
+	PR 25509
+	PR 40614
+	* c.opt (Wunused-result): New.
+	* doc/invoke.texi: Document it.
+	* c-common.c (c_warn_unused_result): Use it.
+
+gcc/testsuite/
+
+2009-07-10  Manuel López-Ibáñez  <manu@gcc.gnu.org>
+
+	PR 25509
+	PR 40614
+	* g++.dg/warn/unused-result1-Werror.c: New.
+
+Index: gcc/doc/invoke.texi
+===================================================================
+--- a/src/gcc/doc/invoke.texi	(revision 149591)
++++ b/src/gcc/doc/invoke.texi	(working copy)
+@@ -260,7 +260,7 @@
+ -Wsystem-headers  -Wtrigraphs  -Wtype-limits  -Wundef  -Wuninitialized @gol
+ -Wunknown-pragmas  -Wno-pragmas -Wunreachable-code @gol
+ -Wunused  -Wunused-function  -Wunused-label  -Wunused-parameter @gol
+--Wunused-value  -Wunused-variable @gol
++-Wno-unused-result -Wunused-value  -Wunused-variable @gol
+ -Wvariadic-macros -Wvla @gol
+ -Wvolatile-register-var  -Wwrite-strings}
+ 
+@@ -3193,6 +3193,13 @@
+ To suppress this warning use the @samp{unused} attribute
+ (@pxref{Variable Attributes}).
+ 
++@item -Wno-unused-result
++@opindex Wunused-result
++@opindex Wno-unused-result
++Do not warn if a caller of a function marked with attribute
++@code{warn_unused_result} (@pxref{Variable Attributes}) does not use
++its return value. The default is @option{-Wunused-result}.
++
+ @item -Wunused-variable
+ @opindex Wunused-variable
+ @opindex Wno-unused-variable

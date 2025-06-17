@@ -1,0 +1,16 @@
+# DP: Select which multiarch/multilib targets to build.
+# DP: Apparently, cpu32 and fidoa (the other two) aren't
+# DP: classical m68k-linux targets, plus they trouble us.
+
+--- a/src/gcc/config/m68k/t-linux	2010-11-03 21:30:58.000000000 +0000
++++ b/src/gcc/config/m68k/t-linux	2010-11-03 21:31:38.000000000 +0000
+@@ -3,6 +3,9 @@ EXTRA_MULTILIB_PARTS=crtbegin.o crtend.o
+ # Only include multilibs for CPUs with an MMU.
+ M68K_MLIB_CPU += && match(FLAGS, "FL_MMU")
+ 
++# Limit to "classical" 680x0 CPUs with FPU and all bells and whistles.
++M68K_MLIB_CPU += && match(MLIB, "^68")
++
+ # This rule uses MULTILIB_MATCHES to generate a definition of
+ # SYSROOT_SUFFIX_SPEC.
+ sysroot-suffix.h: $(srcdir)/config/m68k/print-sysroot-suffix.sh

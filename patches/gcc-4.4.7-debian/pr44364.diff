@@ -1,0 +1,41 @@
+# DP: PR target/44364:
+# DP: This patch made it into trunk. Not on the 4.4 branch
+# DP: because not proved that it is a regression since 4.3.
+
+Index: gcc/caller-save.c
+===================================================================
+--- a/src/gcc/caller-save.c	(revision 160245)
++++ b/src/gcc/caller-save.c	(working copy)
+@@ -1080,7 +1080,7 @@ insert_restore (struct insn_chain *chain
+       /* Check that insn to restore REGNO in save_mode[regno] is
+ 	 correct.  */
+       && reg_save_code (regno, save_mode[regno]) >= 0)
+-    mem = adjust_address (mem, save_mode[regno], 0);
++    mem = adjust_address_nv (mem, save_mode[regno], 0);
+   else
+     mem = copy_rtx (mem);
+ 
+@@ -1161,7 +1161,7 @@ insert_save (struct insn_chain *chain, i
+       /* Check that insn to save REGNO in save_mode[regno] is
+ 	 correct.  */
+       && reg_save_code (regno, save_mode[regno]) >= 0)
+-    mem = adjust_address (mem, save_mode[regno], 0);
++    mem = adjust_address_nv (mem, save_mode[regno], 0);
+   else
+     mem = copy_rtx (mem);
+ 
+Index: gcc/config/rs6000/e500.h
+===================================================================
+--- a/src/gcc/config/rs6000/e500.h	(revision 160245)
++++ b/src/gcc/config/rs6000/e500.h	(working copy)
+@@ -43,3 +43,10 @@
+ 	  error ("E500 and FPRs not supported");			\
+       }									\
+   } while (0)
++
++/* When setting up caller-save slots (MODE == VOIDmode) ensure we
++   allocate space for DFmode.  Save gprs in the correct mode too.  */
++#define HARD_REGNO_CALLER_SAVE_MODE(REGNO, NREGS, MODE) \
++  (TARGET_E500_DOUBLE && ((MODE) == VOIDmode || (MODE) == DFmode)	\
++   ? DFmode								\
++   : choose_hard_reg_mode ((REGNO), (NREGS), false))
