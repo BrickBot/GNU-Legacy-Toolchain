@@ -2,6 +2,8 @@
 
 SCRIPT_DIR=$(dirname $0)
 
+DEFAULT_TOOLCHAIN_SETS_ARG="--toolchain-sets=gdb5,gcc3"
+
 
 # Process any command-line arguments
 if [ $# -gt 0 ]; then
@@ -11,7 +13,7 @@ fi
 for ARG in "$@"; do
   case "$ARG" in
     --toolchain-sets=*)
-      # unset DEFAULT_TOOLCHAIN_SETS_ARG
+      unset DEFAULT_TOOLCHAIN_SETS_ARG
       ;;
   esac
 done
@@ -19,21 +21,11 @@ done
 
 # Enumerate default H8/300 arguments for configure
 CONFIGURE_ARGS=" \
-  --with-gcc \
-  --with-gnu-as \
-  --with-gnu-ld \
-  --with-newlib \
-  --disable-bootstrap \
-  --disable-libssp \
-  --disable-multilib \
-  --disable-libada \
-  --without-gpc-shared \
-  --enable-target-optspace \
-  --target=h8300-hitachi-coff \
+  $DEFAULT_TOOLCHAIN_SETS_ARG \
   $ALL_ARGS"
 
 # For any quoted substrings in variables (such as $ALL_ARGS might have)
 #   to be properly processed as a single quoted argument,
 #   the command must be eval'd instead of being executed directly.
 #   c.f. https://stackoverflow.com/q/39583838/#comment66478321_39583915
-eval "$SCRIPT_DIR/configure $CONFIGURE_ARGS"
+eval "$SCRIPT_DIR/h8300-hitachi-coff-configure $CONFIGURE_ARGS"
