@@ -264,7 +264,7 @@ jobs:
 
   # For quicker continuous integration feedback, run just the RCX-configured build as a job
   build_cross_RCX_job:
-    name:     Build GCC v3 with GDB v5 for the RCX
+    name:     Build GCC v3 w/GDB v5 for the RCX
     env:
       Toolchain: gdb5,gcc3
     runs-on:  ${{ matrix.os }}
