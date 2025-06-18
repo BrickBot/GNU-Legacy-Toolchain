@@ -1,4 +1,8 @@
-GNU Legacy Toolchain &nbsp; &nbsp; &nbsp; [![GNU Legacy Toolchain CI](https://github.com/BrickBot/GNU-Legacy-Toolchain/actions/workflows/gnu-legacy-toolchain_CI.yml/badge.svg)](https://github.com/BrickBot/GNU-Legacy-Toolchain/actions/workflows/gnu-legacy-toolchain_CI.yml)
+GNU Legacy Toolchain
+&nbsp; &nbsp; &nbsp;
+[![GNU Legacy Toolchain CI](https://github.com/BrickBot/GNU-Legacy-Toolchain/actions/workflows/gnu-legacy-toolchain_CI.yml/badge.svg)](https://github.com/BrickBot/GNU-Legacy-Toolchain/actions/workflows/gnu-legacy-toolchain_CI.yml)
+&nbsp;
+![GitHub License](https://img.shields.io/github/license/BrickBot/GNU-Legacy-Toolchain)
 ====================
 A legacy GNU toolchain that includes BinUtils, GCC, GPC, GDB, and NewLib.
 
