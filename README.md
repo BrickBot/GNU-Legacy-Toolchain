@@ -1,8 +1,8 @@
+[![GNU Legacy Toolchain CI](https://github.com/BrickBot/GNU-Legacy-Toolchain/actions/workflows/gnu-legacy-toolchain_CI.yml/badge.svg)](https://github.com/BrickBot/GNU-Legacy-Toolchain/actions/workflows/gnu-legacy-toolchain_CI.yml)
+
 GNU Legacy Toolchain
 ====================
 A legacy GNU toolchain that includes BinUtils, GCC, GPC, GDB, and NewLib.
-
-[![GNU Legacy Toolchain CI](https://github.com/BrickBot/GNU-Legacy-Toolchain/actions/workflows/gnu-legacy-toolchain_CI.yml/badge.svg)](https://github.com/BrickBot/GNU-Legacy-Toolchain/actions/workflows/gnu-legacy-toolchain_CI.yml)
 
 Multiple use cases exist for continuing to maintain a legacy toolchain:
 * **COFF targets, such as for the H8/300 Processor**
@@ -15,23 +15,25 @@ Though this H8/300 target has colloquially been referred to as h8300-hitachi-hms
 h8300-hitachi-coff ([ref 1](https://tracker.debian.org/pkg/gcc-h8300-hms), [ref 2](https://sources.debian.org/src/gcc-h8300-hms/1%3A3.4.6%2Bdfsg2-4.2/debian/rules/#L30)).
 
 
-Quick Start
------------
+Quick Start Build Guide
+-----------------------
 Build instructions are essentially the same as those for GCC, with a few additional options:
 1. Create a folder for building that is outside of the source tree
-2. From that build folder, run either `configure` or one of the following use-case-specific wrappers:
-  + `h8300-hitachi-coff-configure`:  For use with COFF targets for the Hitachi H8/300, which defaults to an integrated toolchain based on GCC v3.
-  + `rcx-lego-configure`:  Created for use with the LEGO MindStorms RCX, which defaults to an integrated toolchain based on GCC v3 but with a separate GDB (v5).
+2. From that build folder, run either `configure` or one of the following use-case-specific wrapper helpers:
+   1. `h8300-hitachi-coff-configure`:  For use with COFF targets for the Hitachi H8/300, which defaults to an integrated toolchain based on GCC v3.
+   2. `rcx-lego-configure`:  Created for use with the LEGO MindStorms RCX, which defaults to an integrated toolchain based on GCC v3 but with a separate GDB (v5).
 3. Run `make`
-4. Run `make install` to copy the files into an installation structure; by default, this will be to a separate folder for [Stow](https://www.gnu.org/software/stow/).
-5. Run `make stow` to then link into your system installation.  Stow facilitates a cleaner and easier way to manage installs of local builds.
+4. Run `make install` to copy the files into an installation structure.
+   1. By default, the install will be to a separate folder from which [Stow](https://www.gnu.org/software/stow/) can then be used to link the files into your system installation.
+   2. In this manner, [Stow](https://www.gnu.org/software/stow/) facilitates a cleaner and easier way to manage installs of locally-built software.
+5. Run `make stow` to then link the files into your system installation.
 
 
-Advanced Configure Options
---------------------------
-Toolchain sets selection: `--toolchain-sets=<comma-separated list of options>`
+Advanced Options for Configure
+------------------------------
+Toolchain sets selection: `--toolchain-sets=<comma-separated list of set(s)>`
 
-| Option | Description |
+| Set(s) | Description |
 | ------ | ----------- |
 | gdb5   | Builds an independent GDB only, based on GDB 5.3 |
 | gcc3   | Builds a combined toolchain set based on GCC 3.4.6 |
@@ -108,7 +110,7 @@ Additional Details and Information
 ----------------------------------
 
 ### Updates and Modifications
-For patches and updates applied from other sources, a more in-depth description is available in the [`patches` folder](patches/).
+For patches and updates applied from other sources, a more in-depth description is available in the [`patches`](patches/) folder.
 
 
 ### Change Log for Included Source Projects
@@ -131,4 +133,4 @@ By appropriately mixing and matching folder versions, it is possible to establis
 a combined source folder through which a single, combined build can be executed.
 
 More information on how projects were “mixed and matched” to create combined
-source folders is available in the [`sym-combined` folder](sym-combined/).
+source folders is available in the [`sym-combined`](sym-combined/) folder.
