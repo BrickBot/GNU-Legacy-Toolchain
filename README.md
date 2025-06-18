@@ -1,6 +1,8 @@
 GNU Legacy Toolchain
 ====================
-A legacy GNU toolchain that includes binutils, gcc, gpc, gdb, and newlib.
+A legacy GNU toolchain that includes BinUtils, GCC, GPC, GDB, and NewLib.
+
+[![GNU Legacy Toolchain CI](https://github.com/BrickBot/GNU-Legacy-Toolchain/actions/workflows/gnu-legacy-toolchain_CI.yml/badge.svg)](https://github.com/BrickBot/GNU-Legacy-Toolchain/actions/workflows/gnu-legacy-toolchain_CI.yml)
 
 Multiple use cases exist for continuing to maintain a legacy toolchain:
 * **COFF targets, such as for the H8/300 Processor**
@@ -13,44 +15,60 @@ Though this H8/300 target has colloquially been referred to as h8300-hitachi-hms
 h8300-hitachi-coff ([ref 1](https://tracker.debian.org/pkg/gcc-h8300-hms), [ref 2](https://sources.debian.org/src/gcc-h8300-hms/1%3A3.4.6%2Bdfsg2-4.2/debian/rules/#L30)).
 
 
-Repository Creation Notes
--------------------------
+Quick Start
+-----------
+Build instructions are essentially the same as those for GCC, with a few additional options:
+1. Create a folder for building that is outside of the source tree
+2. From that build folder, run either `configure` or one of the following use-case-specific wrappers:
+  + `h8300-hitachi-coff-configure`:  For use with COFF targets for the Hitachi H8/300, which defaults to an integrated toolchain based on GCC v3.
+  + `rcx-lego-configure`:  Created for use with the LEGO MindStorms RCX, which defaults to an integrated toolchain based on GCC v3 but with a separate GDB (v5).
+3. Run `make`
+4. Run `make install` to copy the files into an installation structure; by default, this will be to a separate folder for [Stow](https://www.gnu.org/software/stow/).
+5. Run `make stow` to then link into your system installation.  Stow facilitates a cleaner and easier way to manage installs of local builds.
 
-### Sources Versions Used
+
+Advanced Configure Options
+--------------------------
+Toolchain sets selection: `--toolchain-sets=<comma-separated list of options>`
+
+| Option | Description |
+| ------ | ----------- |
+| gdb5   | Builds an independent GDB only, based on GDB 5.3 |
+| gcc3   | Builds a combined toolchain set based on GCC 3.4.6 |
+| gcc44  | Builds a combined toolchain set based on GCC 4.4.7 |
+| gdb5,gcc3  | Builds a combined toolchain set based on GCC 3.4.6 but uses an independent GDB based on GDB 5.3 |
+| gdb5,gcc44 | Builds a combined toolchain set based on GCC 4.4.7 but uses an independent GDB based on GDB 5.3 |
+| gdb5,gcc3,gcc44 | Builds all three.  If combining into a single install, files conflicts are resolved as follows: GCC 4.4 takes precedence over GCC 3, which takes precedence over GDB 5 |
+
+
+Repository Composition Notes
+----------------------------
 The primary selection criteria was the last known versions to include support for h8300-\*-coff,
-but this also overlapped well with support for GPC and Fortran77/g77.
+but this also overlapped well with support for GPC, Fortran77/g77, and the CLI CIL front end.
 
 | Project  | Version  | Release Date | High-Level Notes |
 | -------- | -------- | ------------ | ---------------- |
+| [Config](https://cgit.git.savannah.gnu.org/cgit/config.git/tree/) | 2024-07-27 | 2024-07-27 | Copies of the latest `config.guess` and `config.sub` files.  **All** config.guess and config.sub files in **all** included source projects are sym-linked to these latest files. |
 | [BinUtils](https://gnu.org/software/binutils/) | 2.16.1   | [2005-06-12](https://sourceware.org/pub/binutils/releases/) ¹ | Note lack of support for h8300-\*-coff in gas/configure.tgt in later versions |
 | [GCC](https://gnu.org/software/gcc/)      | 3.4.6    | [2006-03-06](https://gcc.gnu.org/develop.html) ² | Last _full_ version series to support h8300-\*-coff |
-| [GCC](https://gnu.org/software/gcc/)      | 4.4.7    | [2012-03-13](https://gcc.gnu.org/develop.html) ² | Support for “Generic COFF” in general was [dropped following the GCC 4.4 release series](https://gcc.gnu.org/gcc-4.4/changes.html) |
-| [GCC CIL Front End](https://gcc.gnu.org/projects/cli.html) | 4.3.0-2007-12-13 | [2011-06-20](https://gcc.gnu.org/git/?p=gcc.git;a=shortlog;h=refs/vendors/st/heads/cli-fe) (final commit) | Earlier coding was against GCC 4.3 and later updated to GCC 4.5 |
-| [GPC](https://www.gnu-pascal.de/gpc/h-index.html)      | 2.1-20070904 | 2007-09-04 | See the included README files for further details |
-| [NewLib](https://sourceware.org/newlib/)  | 1.19.0 ⁴ | [2010-12-16](https://sourceware.org/newlib/) ⁵ | Versions 2.0 and later fail to build if targeting h8300-\*-coff |
-| [GDB](https://sourceware.org/gdb/)      | 6.8      | [released 2008-02-29](https://sourceware.org/gdb/schedule/) | While GDB 7.12.1 seems to indicate that h8300-\*-\*-coff targets are supported (note lack of support for h8300-\*-\*-coff [covered by the "h8300-\*-\*-\*" case] in bfd/config.bfd in later versions), in practice this is broken and will trigger various malloc errors on attempting to initiate a debug session. |
+| [GCC](https://gnu.org/software/gcc/)      | 4.4.7    | [2012-03-13](https://gcc.gnu.org/develop.html) ² | Support for “Generic COFF” in general was [dropped following the GCC 4.4 release series](https://gcc.gnu.org/gcc-4.4/changes.html).  As the last GCC release to support h8300-\*-coff (c.f. the lack of support for h8300-\*-coff [covered by the "h8300-\*-\*" case] in libgcc/config.host in later versions), the flag `--enable-obsolete` _must_ be used when configuring. |
+| [GCC CIL Front End](https://gcc.gnu.org/projects/cli.html) | 4.3.0-2007-12-13 | [2011-06-20](https://gcc.gnu.org/git/?p=gcc.git;a=shortlog;h=refs/vendors/st/heads/cli-fe) (final commit) | Work was done on separate branches, and front end work was later forked off from back end work.  Earlier coding was against GCC 4.3 before later skipping to GCC 4.5 (in which h8300-\*-coff was no longer supported). |
+| [GPC](https://www.gnu-pascal.de/gpc/h-index.html)      | 2.1-20070904 | 2007-09-04 | See the links and included README files for further details. ³ |
+| [NewLib](https://sourceware.org/newlib/)  | 1.19.0 | [2010-12-16](https://sourceware.org/newlib/) ⁴ | Version 1.20.0 introduces [incompatibilities with libiberty](https://gcc-patches.gcc.gnu.narkive.com/zeSeZ9N8/newlib-vs-libiberty-mismatch-breaks-build-re-patch-export-psignal-on-all-platforms#post1).  Versions 2.0 and later fail to build if targeting h8300-\*-coff |
+| [GDB](https://sourceware.org/gdb/)      | 5.3      | [released 2002-12-12](https://sourceware.org/gdb/schedule/) | While a few later versions still supported h8300-\*-coff targets, the debugging capabilities built into BrickEmu (an emulator for the LEGO MindStorms RCX) are based on a built-in GDB server that implements the GDB 5 protocol. |
+| [GDB](https://sourceware.org/gdb/)      | 6.8      | [released 2008-02-29](https://sourceware.org/gdb/schedule/) | This version of GDB best aligns with the other packages in the GCC toolchain, in that it is able to be included in a combined toolchain build.  (Neither GDB 5.3 nor GDB 7.12.1 are able to be built that way.) |
+| [GDB](https://sourceware.org/gdb/)      | 7.12.1   | [released 2017-01-21](https://sourceware.org/gdb/schedule/) | While GDB 7.12.1 seems to indicate that h8300-\*-\*-coff targets are supported (note lack of support for h8300-\*-\*-coff [covered by the "h8300-\*-\*-\*" case] in bfd/config.bfd in later versions), compatibility has not been fully validated, as it was released well after h8300-\*-coff support had been dropped from other packages (for example, BinUtils and GDB are both developed in a single, common source repository). |
 
-Additional Notes:
+ ¹ BinUtils:  Release date based on the ChangeLog files for bfd, gas, and ld.
 
- ¹ BinUtils: For the BinUtils release date, see also the ChangeLog files for bfd, gas, and ld.
+ ² GCC:  Link includes the full GCC release timeline, with additional resources as follows:
+  + [Build and Installation Configuration Documentation for GCC 3.4.6](https://web.archive.org/web/20041013092023/https://gcc.gnu.org/install/configure.html)
+  + [GCC 3.4.6 Manual](https://gcc.gnu.org/onlinedocs/gcc-3.4.6/gcc/)
+  + [GCC 4.4.7 Manual](https://gcc.gnu.org/onlinedocs/gcc-4.4.7/gcc/)
+  + [Manual subsets and/or other formats](https://gcc.gnu.org/onlinedocs/) (scroll down for the GCC 3.4.6 and 4.4.7 manuals section)
+  + The Ada programming language apparently does not support bootstrapping, so it is not currently available with either GCC v3 or GCC v4.4.
 
- ² GCC: Link includes the full GCC release timeline.
-
- ³ GCC 4.4.7: As the last GCC release to support h8300-\*-coff (c.f. also the lack of support for h8300-\*-coff [covered by the "h8300-\*-\*" case] in libgcc/config.host in later versions), the flag `--enable-obsolete` must be used when configuring.
-
- ⁴ NewLib: Version 1.20.0 introduces incompatibilities with libiberty 
-     (c.f. [gcc list](https://gcc-patches.gcc.gnu.narkive.com/zeSeZ9N8/newlib-vs-libiberty-mismatch-breaks-build-re-patch-export-psignal-on-all-platforms#post1)).
-
- ⁵ NewLib:  Release history link opens in a subframe; at the site,
-     navigate to [Download](https://sourceware.org/newlib/download.html) > [Snapshots](https://sourceware.org/ftp/newlib/index.html) to view the release timeline history subframe.
-
-
-* **[GCC CIL Front End](https://gcc.gnu.org/projects/cli.html) 4.3.0-2007-12-13 (final commit [2011-06-20](https://gcc.gnu.org/git/?p=gcc.git;a=shortlog;h=refs/vendors/st/heads/cli-fe))**
-  + Work was done on separate branches
-  + A fork was made for the front end
-    - Initial split was done based on GCC 4.3.0 but then updated to something post GCC 4.4 (h8300-\*-coff) no longer supported
-    - Started from the last commit based on GCC 4.3.0 and then worked forward
-* **GPC 2.1-20070904** – note the included README files
+ ³ GPC:  Additional links and information—
   + [The GNU Pascal Manual](https://www.gnu-pascal.de/gpc/)
   + [GPC website](https://www.gnu-pascal.de/gpc/h-index.html)
     - [Compilation and installation guide](https://www.gnu-pascal.de/gpc/Compiling-GPC.html#Compiling-GPC):  Note the section covering `pascal.install` at the end
@@ -59,132 +77,58 @@ Additional Notes:
   + [Mailing list](https://www.gnu.de/mailman3/hyperkitty/list/gpc@gnu.de/latest) (no longer seems to be active)
     - [Subscribe/Unsubscribe page](https://www.gnu.de/mailman3/postorius/lists/gpc.gnu.de/)
 
+ ⁴ NewLib:  Release history link opens in a subframe; at the site,
+     navigate to [Download](https://sourceware.org/newlib/download.html) > [Snapshots](https://sourceware.org/ftp/newlib/index.html) to view the release timeline history subframe.
 
-#### GCC 3.4.6 versus GCC 4.4.7
-Why GCC 3.4.6?
+
+
+### GCC 3.4.6 versus GCC 4.4.7
+Use of GCC 3.4.6 generally seems preferable to GCC 4.4.7:
 * H8/300 was supported for the duration of the full GCC version series, with 3.4.6 [closing the release series](https://gcc.gnu.org/gcc-3.4/changes.html)
-* GPC integration is less robust in GCC 4
-* Fortran77/g77 support was not included in later GCC versions, and some older code is not well suited to being built by newer Fortran compilers such as `gfortran` ([ref 1](https://github.com/weevington/gcc-3.4.6-41-compat), [ref 2](https://forums.linuxmint.com/viewtopic.php?t=261066)).
+* More programming languages supported
+  + GPC integration is less robust in GCC 4
+  + Fortran77/g77 support was not included in later GCC versions, and some older code is not well suited to being built by newer Fortran compilers such as `gfortran` ([ref 1](https://github.com/weevington/gcc-3.4.6-41-compat), [ref 2](https://forums.linuxmint.com/viewtopic.php?t=261066)).
 * Multiple ongoing patch sources were provided by Linux distributions such as RedHat and Debian
 * Creates smaller binaries compared to builds of the same code created using GCC 4
   + This is especially important on memory-constrained devices such as the LEGO MindStorms RCX
   + Example: For the exact same [brickOS-bibo](https://github.com/BrickBot/brickOS-bibo) kernel source code and build configuration, the generated binaries are notably smaller with GCC 3.4.6—
 
-| GCC Version | Kernel Binary File Size (bytes) | App Start (BASE1) Address |
-| ----------- | ------------------------------- | ------------------------- |
-|  `3.4.6`    |  `13,108`                       |  `0xace4`                 |
-|  `4.4.7`    |  `14,322`                       |  `0xb0c4`                 |
+| GCC Version | Supported Programming Languages                       | Kernel Binary File Size | App Start Address |
+| ----------- | ----------------------------------------------------- | ----------------------- | ----------------- |
+|  `3.4.6`    | C, C++, Java, ObjectiveC, Fortran77, Pascal, TreeLang |  `13,108` bytes         | BASE1: `0xace4`   |
+|  `4.4.7`    | C, C++, Java, CLI CLI front end, possibly Pascal (?)  |  `14,322` bytes         | BASE1: `0xb0c4`   |
 
-Resources for GCC 3.4.6
-* [Build and Installation Configuration Documentation](https://web.archive.org/web/20041013092023/https://gcc.gnu.org/install/configure.html)
-* [Manual](https://gcc.gnu.org/onlinedocs/gcc-3.4.6/gcc/)
-  + [Manual subsets and/or other formats](https://gcc.gnu.org/onlinedocs/) (scroll down for the GCC 3.4.6 manuals section)
+
+Potential advantages of GCC 4.4.7 over GCC 3.4.6:
+* A more complete backporting of multiarch was possible for GCC 4.4.7 compared to GCC 3.4.6.
+* Common Language Infrastructure (CLI) Common Intermediate Language (CIL) Front End support is only available in GCC 4.4.7.
+
+
+Additional Details and Information
+----------------------------------
 
 ### Updates and Modifications
-For patches applied from other sources, a more in-depth description is available in the [patches folder](patches/).
+For patches and updates applied from other sources, a more in-depth description is available in the [`patches` folder](patches/).
 
 
-### Combined Folder Composition
+### Change Log for Included Source Projects
+Changes to each of the source projects as compared to their last official releases can be reviewed as follows:
+* [Config](https://github.com/BrickBot/GNU-Legacy-Toolchain/commits/master/src-projects/config):  Currently still able to use the latest from upstream
+* [BinUtils 2.16.1](https://github.com/BrickBot/GNU-Legacy-Toolchain/commits/master/src-projects/binutils-2.16.1)
+* [GCC 3.4.6](https://github.com/BrickBot/GNU-Legacy-Toolchain/commits/master/src-projects/gcc-3.4.6)
+* [GCC 4.4.7](https://github.com/BrickBot/GNU-Legacy-Toolchain/commits/master/src-projects/gcc-4.4.7)
+* [GPC 2.1-20070904](https://github.com/BrickBot/GNU-Legacy-Toolchain/commits/master/src-projects/gpc-2.1-20070904)
+  + [Short, earlier history](https://github.com/BrickBot/GNU-Legacy-Toolchain/commits/master/src-projects/gpc-master):  No substantive changes, but included for completeness
+* [NewLib 1.19.0](https://github.com/BrickBot/GNU-Legacy-Toolchain/commits/master/src-projects/newlib-1.19.0)
+* [GDB 5.3](https://github.com/BrickBot/GNU-Legacy-Toolchain/commits/master/src-projects/gdb-5.3)
+* [GDB 6.8](https://github.com/BrickBot/GNU-Legacy-Toolchain/commits/master/src-projects/gdb-6.8)
+* [GDB 7.12.1](https://github.com/BrickBot/GNU-Legacy-Toolchain/commits/master/src-projects/gdb-7.12.1):  Currently not used
+
+
+### Compostion of Combined Folders
 Several folders are duplicated across the various project comprising the toolchain.
 By appropriately mixing and matching folder versions, it is possible to establish
 a combined source folder through which a single, combined build can be executed.
 
-Additionally, with two minor tweaks to binutil’s bfd
-(adding BFD_HOSTPTR_T and bfd_fopen()),
-gdb 6.8 can also be included in this combined build.
-
-| Folder       | gcc 3.4.6 | gcc-cil-fe 4.3.0 | gcc 4.4.7 | binutils | newlib | gdb |
-| ------------ | --------- | ---------------- | --------- | -------- | ------ | --- |
-| bfd          |           |                  |           |  ×       |        |  ×  |
-| cpu          |           |                  |           |  ×       |        |  ×  |
-| etc          |           |                  |           |  ×       |  ×     |  ×  |
-| include      |  ×        |  ×               |  ×        |  ×       |        |  ×  |
-| intl         |  ×        |  ×               |  ×        |  ×       |        |  ×  |
-| libdecnumber |           |  ×               |  ×        |          |        |  ×  |
-| libiberty    |  ×        |  ×               |  ×        |  ×       |        |  ×  |
-| opcodes      |           |                  |           |  ×       |        |  ×  |
-| texinfo      |           |                  |           |  ×       |  ×     |  ×  |
-| zlib         |  ×        |  ×               |  ×        |          |        |  ×  |
-
-
-
-The following folders were soft-linked in to create the corresponding directory
-under the combined source folder (`src-combined`),
-which is then used as the source folder for builds:
-
-| Folder       | Source     | GCC3-Based Version | GCC4.4-Based Version |
-| ------------ | ---------- | ------------------ | -------------------- |
-| bfd          | binutils   | 2.16.1             | 2.16.1               |
-| binutils     | binutils   | 2.16.1             | 2.16.1               |
-| boehm-gc     | GCC (libs) | 4.4.7              | 4.4.7                |
-| cgen         | binutils   | 2.16.1             | 2.16.1               |
-| config       | gcc        | 3.4.6              | 4.4.7                |
-| contrib      | gcc        | (n/a)              | 4.4.7                |
-| cpu          | binutils   | 2.16.1             | 2.16.1               |
-| etc          | binutils   | 2.16.1             | 2.16.1               |
-| fastjar      | gcc        | 3.4.6              | (n/a)                |
-| fixincludes  | gcc        | (n/a)              | 4.4.7                |
-| gas          | binutils   | 2.16.1             | 2.16.1               |
-| gcc          | gcc        | 3.4.6              | 4.4.7                |
-| gcc/p        | GPC        | 2.1-20070904       | 2.1-20070904         |
-| gdb          | gdb        | 6.8                | 6.8                  |
-| gnattools    | gdb        | (n/a)              | 6.8                  |
-| gprof        | binutils   | 2.16.1             | 2.16.1               |
-| include      | GCC (libs) | 4.4.7              | 4.4.7                |
-| intl         | GCC (libs) | 4.4.7              | 4.4.7                |
-| ld           | binutils   | 2.16.1             | 2.16.1               |
-| libada       | gcc        | (n/a)              | 4.4.7                |
-| libcpp       | gcc        | (n/a)              | 4.4.7                |
-| libdecnumber | GCC (libs) | 4.4.7              | 4.4.7                |
-| libf2c       | gcc        | 3.4.6              | (n/a)                |
-| libffi       | GCC (libs) | 4.4.7              | 4.4.7                |
-| libgcc       | gcc        | (n/a)              | 4.4.7                |
-| libgfortran  | gcc        | (n/a)              | 4.4.7                |
-| libgloss     | newlib     | 1.19.0             | 1.19.0               |
-| libgomp      | gcc        | (n/a)              | 4.4.7                |
-| libiberty    | GCC (libs) | 4.4.7              | 4.4.7                |
-| libjava      | GCC (libs) | 4.4.7              | 4.4.7                |
-| libmudflap   | gcc        | (n/a)              | 4.4.7                |
-| libobjc      | gcc        | 3.4.6              | 4.4.7                |
-| libstdc++-v3 | gcc        | 3.4.6              | 4.4.7                |
-| newlib       | newlib     | 1.19.0             | 1.19.0               |
-| opcodes      | binutils   | 2.16.1             | 2.16.1               |
-| readline     | gdb        | 6.8                | 6.8                  |
-| sim          | gdb        | 6.8                | 6.8                  |
-| texinfo      | binutils   | 2.16.1             | 2.16.1               |
-| zlib         | GCC (libs) | 4.4.7              | 4.4.7                |
-
-The soft-linked files under that same folder are all from the respective GCC version:
-
-| File              | In GCC 3 | In GCC 4.4 |
-| ----------------- | -------- | ---------- |
-| Makefile.def      | ×        | ×          |
-| Makefile.in       | ×        | ×          |
-| Makefile.tpl      | ×        | ×          |
-| compile           |          | ×          |
-| config-ml.in      | ×        | ×          |
-| config.guess      | ×        | ×          |
-| config.if         | ×        |            |
-| config.rpath      | ×        | ×          |
-| config.sub        | ×        | ×          |
-| configure         | ×        | ×          |
-| configure.[in\|ac] | ×        | ×          |
-| depcomp           |          | ×          |
-| install-sh        | ×        | ×          |
-| libtool-ldflags   |          | ×          |
-| libtool.m4        | ×        | ×          |
-| ltgcc.m4          |          | ×          |
-| ltcf-c.sh         | ×        |            |
-| ltcf-cxx.sh       | ×        |            |
-| ltcf-gcj.sh       | ×        |            |
-| ltconfig          | ×        |            |
-| ltmain.sh         | ×        | ×          |
-| ltoptions.m4      |          | ×          |
-| ltsugar.m4        |          | ×          |
-| ltversion.m4      |          | ×          |
-| missing           | ×        | ×          |
-| mkdep             |          | ×          |
-| mkinstalldirs     | ×        | ×          |
-| move-if-change    | ×        | ×          |
-| symlink-tree      | ×        | ×          |
-| ylwrap            | ×        | ×          |
+More information on how projects were “mixed and matched” to create combined
+source folders is available in the [`sym-combined` folder](sym-combined/).
