@@ -41,6 +41,8 @@ env:
 jobs:
   build_cross_toolchain_job:
     name:     Full H8/300 Cross-Toolchain Build & Install
+    env:
+      Toolchain: gdb5,gcc3,gcc44
     runs-on:  ${{ matrix.os }}
     strategy:
       matrix:
@@ -81,7 +83,7 @@ jobs:
       run:  |
         cd $BUILD_DIR_TOOLCHAIN
         echo "Current working directory: $PWD"
-        ../../sym-combined/$CROSS_TARGET-configure  --prefix=$GITHUB_WORKSPACE/$SYSROOT_DIR
+        ../../sym-combined/$CROSS_TARGET-configure  --prefix=$GITHUB_WORKSPACE/$SYSROOT_DIR  --toolchain-sets=$Toolchain
 
     - name: Execute the build
       run:  |
@@ -159,7 +161,7 @@ jobs:
       run:  |
         cd $BUILD_DIR_TOOLCHAIN
         echo "Current working directory: $PWD"
-        ../../sym-combined/$CROSS_TARGET-configure  --prefix=$GITHUB_WORKSPACE/$SYSROOT_DIR  --toolchain-sets=$Toolchain
+        ../../sym-combined/$CROSS_TARGET-configure  --toolchain-sets=$Toolchain
 
     - name: Execute the build
       run:  |
@@ -205,7 +207,7 @@ jobs:
       run:  |
         cd $BUILD_DIR_TOOLCHAIN
         echo "Current working directory: $PWD"
-        ../../sym-combined/$CROSS_TARGET-configure  --prefix=$GITHUB_WORKSPACE/$SYSROOT_DIR  --toolchain-sets=$Toolchain
+        ../../sym-combined/$CROSS_TARGET-configure  --toolchain-sets=$Toolchain
 
     - name: Execute the build
       run:  |
@@ -251,7 +253,7 @@ jobs:
       run:  |
         cd $BUILD_DIR_TOOLCHAIN
         echo "Current working directory: $PWD"
-        ../../sym-combined/$CROSS_TARGET-configure  --prefix=$GITHUB_WORKSPACE/$SYSROOT_DIR  --toolchain-sets=$Toolchain
+        ../../sym-combined/$CROSS_TARGET-configure  --toolchain-sets=$Toolchain
 
     - name: Execute the build
       run:  |
@@ -260,6 +262,50 @@ jobs:
         make $COMMON_MAKE_ALL_ARGS all-$Toolchain
 
 
+  # For quicker continuous integration feedback, run just the RCX-configured build as a job
+  build_cross_RCX_job:
+    name:     Build GCC v3 with GDB v5 for the RCX
+    env:
+      Toolchain: gdb5,gcc3
+    runs-on:  ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ ubuntu-latest ]
+    
+    steps:
+    - name: Get latest from version control
+      uses: actions/checkout@v4
+      with:
+        # git-restore-mtime-bare uses the ref log to find the correct timestamp
+        # for each file. This requires a full git history. The default value (1)
+        # creates a shallow checkout.
+        fetch-depth: 0
+
+      # Fix timestamps (needed to prevent some files from attempting to regenerate and failing during build)
+    - name: Restore source timestamps
+      uses: chetan/git-restore-mtime-action@v2
+
+    - name: Update build environment
+      run:  sudo apt-get --assume-yes update
+
+    - name: Install build dependencies
+      run:  sudo apt-get --assume-yes install $UBUNTU_BUILD_DEPENDS
+
+    - name: Setup the build directory
+      run:  mkdir -p $BUILD_DIR_TOOLCHAIN
+
+    # Run the build steps
+    - name: Configure the build
+      run:  |
+        cd $BUILD_DIR_TOOLCHAIN
+        echo "Current working directory: $PWD"
+        ../../sym-combined/rcx-lego-configure
+
+    - name: Execute the build
+      run:  |
+        cd $BUILD_DIR_TOOLCHAIN
+        echo "Current working directory: $PWD"
+        make $COMMON_MAKE_ALL_ARGS all
 
 
 #  build_native_job:
