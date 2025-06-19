@@ -52,7 +52,7 @@ but this also overlapped well with support for GPC, Fortran77/g77, and the CLI C
 
 | Project  | Version  | Release Date | High-Level Notes |
 | -------- | -------- | ------------ | ---------------- |
-| [Config](https://cgit.git.savannah.gnu.org/cgit/config.git/tree/) | 2024-07-27 | 2024-07-27 | Copies of the latest `config.guess` and `config.sub` files.  **All** config.guess and config.sub files in **all** included source projects are sym-linked to these latest files. |
+| [Config](https://cgit.git.savannah.gnu.org/cgit/config.git/tree/) | 2024-07-27 | 2024-07-27 | Copies of the latest `config.guess` and `config.sub` files.  **All** config.guess and config.sub files in **all** included source projects are sym-linked to the latest files here. |
 | [BinUtils](https://gnu.org/software/binutils/) | 2.16.1   | [2005-06-12](https://sourceware.org/pub/binutils/releases/) ¹ | Note lack of support for h8300-\*-coff in gas/configure.tgt in later versions |
 | [GCC](https://gnu.org/software/gcc/)      | 3.4.6    | [2006-03-06](https://gcc.gnu.org/develop.html) ² | Last _full_ version series to support h8300-\*-coff |
 | [GCC](https://gnu.org/software/gcc/)      | 4.4.7    | [2012-03-13](https://gcc.gnu.org/develop.html) ² | Support for “Generic COFF” in general was [dropped following the GCC 4.4 release series](https://gcc.gnu.org/gcc-4.4/changes.html).  As the last GCC release to support h8300-\*-coff (c.f. the lack of support for h8300-\*-coff [covered by the "h8300-\*-\*" case] in libgcc/config.host in later versions), the flag `--enable-obsolete` _must_ be used when configuring. |
@@ -117,16 +117,18 @@ For patches and updates applied from other sources, a more in-depth description 
 
 ### Change Log for Included Source Projects
 Changes to each of the source projects as compared to their last official releases can be reviewed as follows:
-* [Config](https://github.com/BrickBot/GNU-Legacy-Toolchain/commits/master/src-projects/config):  Currently still able to use the latest from upstream
+* [Config](https://github.com/BrickBot/GNU-Legacy-Toolchain/commits/master/src-projects/config)
+  + Currently still able to use the latest config.guess and config.sub from upstream.
+  + All config.guess and config.sub files in all included source projects are sym-linked to the files here.
 * [BinUtils 2.16.1](https://github.com/BrickBot/GNU-Legacy-Toolchain/commits/master/src-projects/binutils-2.16.1)
 * [GCC 3.4.6](https://github.com/BrickBot/GNU-Legacy-Toolchain/commits/master/src-projects/gcc-3.4.6)
 * [GCC 4.4.7](https://github.com/BrickBot/GNU-Legacy-Toolchain/commits/master/src-projects/gcc-4.4.7)
 * [GPC 2.1-20070904](https://github.com/BrickBot/GNU-Legacy-Toolchain/commits/master/src-projects/gpc-2.1-20070904)
-  + [Short, earlier history](https://github.com/BrickBot/GNU-Legacy-Toolchain/commits/master/src-projects/gpc-master):  No substantive changes, but included for completeness
+  + [Short, earlier history](https://github.com/BrickBot/GNU-Legacy-Toolchain/commits/master/src-projects/gpc-master):  No substantive changes here, but included for completeness
 * [NewLib 1.19.0](https://github.com/BrickBot/GNU-Legacy-Toolchain/commits/master/src-projects/newlib-1.19.0)
 * [GDB 5.3](https://github.com/BrickBot/GNU-Legacy-Toolchain/commits/master/src-projects/gdb-5.3)
 * [GDB 6.8](https://github.com/BrickBot/GNU-Legacy-Toolchain/commits/master/src-projects/gdb-6.8)
-* [GDB 7.12.1](https://github.com/BrickBot/GNU-Legacy-Toolchain/commits/master/src-projects/gdb-7.12.1):  Currently not used
+* [GDB 7.12.1](https://github.com/BrickBot/GNU-Legacy-Toolchain/commits/master/src-projects/gdb-7.12.1):  Not currently used in this project, but included for reference
 
 
 ### Compostion of Combined Folders
