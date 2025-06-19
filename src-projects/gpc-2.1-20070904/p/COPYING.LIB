@@ -6,7 +6,7 @@ DO NOT CHANGE THIS FILE MANUALLY!
 
                       Version 2.1, February 1999
 
-     Copyright (C) 1991, 1999 Free Software Foundation, Inc.
+     Copyright © 1991, 1999 Free Software Foundation, Inc.
      59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
 
      Everyone is permitted to copy and distribute verbatim copies
@@ -85,7 +85,7 @@ combination fits its criteria of freedom.  The Lesser General Public
 License permits more lax criteria for linking other code with the
 library.
 
-   We call this license the "Lesser" General Public License because it
+   We call this license the “Lesser” General Public License because it
 does _Less_ to protect the user's freedom than the ordinary General
 Public License.  It also provides other free software developers Less of
 an advantage over competing non-free programs.  These disadvantages are
@@ -376,7 +376,7 @@ be combined with the library in order to run.
      to do so, and all its terms and conditions for copying,
      distributing or modifying the Library or works based on it.
 
- 10. Each time you redistribute the Library (or any work based on the
+  10. Each time you redistribute the Library (or any work based on the
      Library), the recipient automatically receives a license from the
      original licensor to copy, distribute, link with or modify the
      Library subject to these terms and conditions.  You may not impose
@@ -384,7 +384,7 @@ be combined with the library in order to run.
      granted herein.  You are not responsible for enforcing compliance
      by third parties with this License.
 
- 11. If, as a consequence of a court judgment or allegation of patent
+  11. If, as a consequence of a court judgment or allegation of patent
      infringement or for any other reason (not limited to patent
      issues), conditions are imposed on you (whether by court order,
      agreement or otherwise) that contradict the conditions of this
@@ -417,7 +417,7 @@ be combined with the library in order to run.
      This section is intended to make thoroughly clear what is believed
      to be a consequence of the rest of this License.
 
- 12. If the distribution and/or use of the Library is restricted in
+  12. If the distribution and/or use of the Library is restricted in
      certain countries either by patents or by copyrighted interfaces,
      the original copyright holder who places the Library under this
      License may add an explicit geographical distribution limitation
@@ -426,7 +426,7 @@ be combined with the library in order to run.
      License incorporates the limitation as if written in the body of
      this License.
 
- 13. The Free Software Foundation may publish revised and/or new
+  13. The Free Software Foundation may publish revised and/or new
      versions of the Lesser General Public License from time to time.
      Such new versions will be similar in spirit to the present version,
      but may differ in detail to address new problems or concerns.
@@ -439,7 +439,7 @@ be combined with the library in order to run.
      specify a license version number, you may choose any version ever
      published by the Free Software Foundation.
 
- 14. If you wish to incorporate parts of the Library into other free
+  14. If you wish to incorporate parts of the Library into other free
      programs whose distribution conditions are incompatible with these,
      write to the author to ask for permission.  For software which is
      copyrighted by the Free Software Foundation, write to the Free
@@ -450,9 +450,9 @@ be combined with the library in order to run.
 
                               NO WARRANTY
 
- 15. BECAUSE THE LIBRARY IS LICENSED FREE OF CHARGE, THERE IS NO
+  15. BECAUSE THE LIBRARY IS LICENSED FREE OF CHARGE, THERE IS NO
      WARRANTY FOR THE LIBRARY, TO THE EXTENT PERMITTED BY APPLICABLE
-     LAW. EXCEPT WHEN OTHERWISE STATED IN WRITING THE COPYRIGHT HOLDERS
+     LAW.  EXCEPT WHEN OTHERWISE STATED IN WRITING THE COPYRIGHT HOLDERS
      AND/OR OTHER PARTIES PROVIDE THE LIBRARY "AS IS" WITHOUT WARRANTY
      OF ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING, BUT NOT
      LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
@@ -461,7 +461,7 @@ be combined with the library in order to run.
      DEFECTIVE, YOU ASSUME THE COST OF ALL NECESSARY SERVICING, REPAIR
      OR CORRECTION.
 
- 16. IN NO EVENT UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN
+  16. IN NO EVENT UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN
      WRITING WILL ANY COPYRIGHT HOLDER, OR ANY OTHER PARTY WHO MAY
      MODIFY AND/OR REDISTRIBUTE THE LIBRARY AS PERMITTED ABOVE, BE
      LIABLE TO YOU FOR DAMAGES, INCLUDING ANY GENERAL, SPECIAL,
