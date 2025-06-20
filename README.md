@@ -35,14 +35,17 @@ Advanced Options for Configure
 ------------------------------
 Toolchain sets selection: `--toolchain-sets=<comma-separated list of set(s)>`
 
-| Set(s) | Description |
-| ------ | ----------- |
-| gdb5   | Builds an independent GDB only, based on GDB 5.3 |
-| gcc3   | Builds a combined toolchain set based on GCC 3.4.6 |
-| gcc44  | Builds a combined toolchain set based on GCC 4.4.7 |
-| gdb5,gcc3  | Builds a combined toolchain set based on GCC 3.4.6 but uses an independent GDB based on GDB 5.3 |
-| gdb5,gcc44 | Builds a combined toolchain set based on GCC 4.4.7 but uses an independent GDB based on GDB 5.3 |
-| gdb5,gcc3,gcc44 | Builds all three.  If combining into a single install, files conflicts are resolved as follows: GCC 4.4 takes precedence over GCC 3, which takes precedence over GDB 5 |
+To allow different toolchain sets to be installed side-by-side,
+each toolchain set is configured to be build with a different program suffix.
+
+| Set(s)     | Program Suffix | Description |
+| ---------- | -------------- | ----------- |
+| gdb5       | `-5`           | Builds an independent GDB only, based on GDB 5.3 |
+| gcc3       | `-3`           | Builds a combined toolchain set based on GCC 3.4.6 |
+| gcc44      | `-4.4`         | Builds a combined toolchain set based on GCC 4.4.7 |
+| gdb5,gcc3  | (_respective_) | Builds a combined toolchain set based on GCC 3.4.6 but uses an independent GDB based on GDB 5.3 |
+| gdb5,gcc44 | (_respective_) | Builds a combined toolchain set based on GCC 4.4.7 but uses an independent GDB based on GDB 5.3 |
+| gdb5,gcc3,gcc44 | (_respective_) | Builds all three.  If combining into a single install, files conflicts not already resolved by the differing toolchain program suffixes are resolved as follows: GCC 4.4 takes precedence over GCC 3, which takes precedence over GDB 5 |
 
 
 Repository Composition Notes
