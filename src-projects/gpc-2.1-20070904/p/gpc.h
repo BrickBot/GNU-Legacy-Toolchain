@@ -1472,13 +1472,13 @@ extern int comp_target_types (tree, tree);
 extern int comp_object_or_schema_pointer_types (tree, tree, int);
 extern int lvalue_p (tree);
 #ifdef GCC_3_3
-extern bool mark_addressable (tree);
-extern bool mark_addressable2 (tree, int);
+extern bool pas_mark_addressable (tree);
+extern bool pas_mark_addressable2 (tree, int);
 #else
-extern int mark_addressable2 (tree, int);
+extern int pas_mark_addressable2 (tree, int);
 #endif
 #ifndef EGCS
-extern int mark_addressable (tree);
+extern int pas_mark_addressable (tree);
 #endif
 extern tree convert_for_assignment (tree, tree, const char *, tree, int);
 extern tree initializer_constant_valid_p (tree, tree);

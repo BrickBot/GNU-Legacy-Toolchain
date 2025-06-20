@@ -1746,7 +1746,7 @@ check_identifier (tree id)
   else if (DECL_P (decl) && DECL_CONTEXT (decl) && DECL_CONTEXT (decl) != current_function_decl)
     {
       DECL_NONLOCAL (decl) = 1;
-      mark_addressable (decl);
+      pas_mark_addressable (decl);
     }
   if (TREE_CODE (TREE_TYPE (decl)) == REFERENCE_TYPE && !PASCAL_PROCEDURAL_TYPE (TREE_TYPE (decl)))
     decl = build_indirect_ref (decl, NULL);
@@ -2755,7 +2755,7 @@ declare_routine (tree heading, tree directives, int interface)
 
   /* Prevent the optimizer from removing it if it is public. */
   if (TREE_PUBLIC (d))
-    mark_addressable (d);
+    pas_mark_addressable (d);
 
   t = DECL_INITIAL (heading);
   SET_DECL_LANG_OPERATOR_DECL (d, t);
@@ -2783,7 +2783,7 @@ build_implicit_routine_decl (tree id, tree res_type, tree args, int attributes)
     TREE_THIS_VOLATILE (d) = 1;
   if (attributes & ER_CONST)
     TREE_READONLY (d) = 1;
-  mark_addressable (d);
+  pas_mark_addressable (d);
 #ifndef GCC_4_0
   rest_of_decl_compilation (d, NULL, 1, 1);
 #endif

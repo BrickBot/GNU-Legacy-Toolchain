@@ -989,7 +989,7 @@ init_any (tree thing, int the_end, int implicit)
           gcc_assert (vmt_field && vmt);
           if (TYPE_LANG_CODE (TREE_TYPE (thing)) == PASCAL_LANG_ABSTRACT_OBJECT)
             error ("trying to instantiate an abstract object type");
-          mark_addressable (thing);
+          pas_mark_addressable (thing);
           /* Assign the address of the VMT to the object's VMT field. */
           expand_expr_stmt (build_modify_expr (get_vmt_field (thing),
             INIT_EXPR, build_pascal_unary_op (ADDR_EXPR, vmt)));
@@ -1750,7 +1750,7 @@ finish_constructor (void)
 {
   poplevel_expand (0, 1);
   expand_end_cond ();  /* close the open `if' from start_constructor */
-  mark_addressable (current_function_decl);
+  pas_mark_addressable (current_function_decl);
   finish_routine (NULL_TREE);
 }
 
