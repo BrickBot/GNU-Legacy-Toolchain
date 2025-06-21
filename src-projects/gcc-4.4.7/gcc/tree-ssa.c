@@ -1071,6 +1071,10 @@ delete_tree_ssa (void)
 static bool
 useless_type_conversion_p_1 (tree outer_type, tree inner_type)
 {
+  long cnt = 0;
+  long ocnt = 0;
+  tree ootype = outer_type, oitype = inner_type;
+ recurse:
   /* Do the following before stripping toplevel qualifiers.  */
   if (POINTER_TYPE_P (inner_type)
       && POINTER_TYPE_P (outer_type))
@@ -1162,8 +1166,18 @@ useless_type_conversion_p_1 (tree outer_type, tree inner_type)
 	 to types are effectively the same.  We can strip qualifiers
 	 on pointed-to types for further comparison, which is done in
 	 the callee.  */
-      return useless_type_conversion_p_1 (TREE_TYPE (outer_type),
-				          TREE_TYPE (inner_type));
+      outer_type = TREE_TYPE (outer_type);
+      inner_type = TREE_TYPE (inner_type);
+      if (ootype == outer_type || oitype == inner_type)
+        return false;
+      if (cnt > ocnt) {
+        ocnt += cnt;
+        ootype = outer_type;
+        oitype = inner_type;
+      } else {
+        cnt++;
+      }
+      goto recurse;
     }
 
   /* Recurse for complex types.  */
