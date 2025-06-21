@@ -655,7 +655,11 @@ string_may_be_char (tree expr, int assignment_compatibility)
           /* Assigning an empty string to a char.
              According to Extended Pascal this is allowed. (Ouch!) */
           if (pedantic || !(co->pascal_dialect & E_O_PASCAL))
+#ifdef GCC_4_4
+            pedwarn_default ("assignment of empty string to a char yields a space");
+#else
             pedwarn ("assignment of empty string to a char yields a space");
+#endif
           ch = ' ';
         }
 #ifndef GCC_4_0
@@ -2754,9 +2758,17 @@ build_array_ref (tree array, tree index)
       if (pedantic && !lvalue)
         {
           if (DECL_REGISTER (array))
+#ifdef GCC_4_4
+            pedwarn_default ("indexing of `register' array");
+#else
             pedwarn ("indexing of `register' array");
+#endif
           else
+#ifdef GCC_4_4
+            pedwarn_default ("indexing of non-lvalue array");
+#else
             pedwarn ("indexing of non-lvalue array");
+#endif
         }
 
       if (pedantic)
@@ -2765,7 +2777,11 @@ build_array_ref (tree array, tree index)
           while (TREE_CODE (foo) == COMPONENT_REF)
             foo = TREE_OPERAND (foo, 0);
           if (TREE_CODE (foo) == VAR_DECL && DECL_REGISTER (foo))
+#ifdef GCC_4_4
+            pedwarn_default ("indexing of non-lvalue array");
+#else
             pedwarn ("indexing of non-lvalue array");
+#endif
         }
 
       type = TYPE_MAIN_VARIANT (TREE_TYPE (TREE_TYPE (array)));

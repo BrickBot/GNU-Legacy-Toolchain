@@ -2799,7 +2799,11 @@ build_binary_op (enum tree_code code, tree op0, tree op1)
                    && !comp_object_or_schema_pointer_types (TREE_TYPE (type1), TREE_TYPE (type0), 0))
             {
               result_type = ptr_type_node;
+#ifdef GCC_4_4
+              pedwarn_default ("comparison of distinct pointer types lacks a cast");
+#else
               pedwarn ("comparison of distinct pointer types lacks a cast");
+#endif
             }
         }
       break;
@@ -2821,14 +2825,22 @@ build_binary_op (enum tree_code code, tree op0, tree op1)
               result_type = common_type (type0, type1);
               if (COMPLETE_OR_VOID_TYPE_P (TREE_TYPE (type0))
                   != COMPLETE_OR_VOID_TYPE_P (TREE_TYPE (type1)))
+#ifdef GCC_4_4
+                pedwarn_default ("comparison of complete and incomplete pointers");
+#else
                 pedwarn ("comparison of complete and incomplete pointers");
+#endif
               else if (pedantic && TREE_CODE (TREE_TYPE (type0)) == FUNCTION_TYPE)
                 gpc_warning ("ordered comparision of pointers to routines");
             }
           else
             {
               result_type = ptr_type_node;
+#ifdef GCC_4_4
+              pedwarn_default ("comparison of distinct pointer types lacks a cast");
+#else
               pedwarn ("comparison of distinct pointer types lacks a cast");
+#endif
             }
         }
       else if (code0 == ARRAY_TYPE && code1 == ARRAY_TYPE)
@@ -3470,9 +3482,17 @@ build_type_cast (tree type, tree value)
   if (warn_cast_qual && TREE_CODE (type) == POINTER_TYPE && TREE_CODE (otype) == POINTER_TYPE)
     {
       if (TYPE_VOLATILE (TREE_TYPE (otype)) && !TYPE_VOLATILE (TREE_TYPE (type)))
+#ifdef GCC_4_4
+        pedwarn_default ("cast discards `volatile' from pointer target type");
+#else
         pedwarn ("cast discards `volatile' from pointer target type");
+#endif
       if (TYPE_READONLY (TREE_TYPE (otype)) && !TYPE_READONLY (TREE_TYPE (type)))
+#ifdef GCC_4_4
+        pedwarn_default ("cast discards `const' from pointer target type");
+#else
         pedwarn ("cast discards `const' from pointer target type");
+#endif
     }
 #endif
 

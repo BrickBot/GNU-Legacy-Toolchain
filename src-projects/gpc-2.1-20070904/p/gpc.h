@@ -74,11 +74,37 @@ extern long lineno;
 #define CALL_EXPR_FN(f) TREE_OPERAND (f, 0)
 #endif
 
+#ifdef GCC_4_4
+#define DEFAULT_GPC_OPT_W OPT_Wwarnings
+
+/* pedwarn now requires multiple parameters:
+ *   Format: pedwarn (location_t, OPT_W* [an int], and the message);
+ *   Remove pedwarn0, which only required a message parameter
+ *     - https://gcc.gnu.org/cgit/gcc/commit/?id=71205d170c59ae70323aa7d0b93ff5c13044fd57
+ *   Inclusion of third parameter:
+ *     - https://gcc.gnu.org/cgit/gcc/commit/?id=509c9d60e430b84903eb1232a70871aa93150623
+ */
+#define pedwarn_default(msg...) pedwarn(UNKNOWN_LOCATION, DEFAULT_GPC_OPT_W, ## msg )
+
+/* warning0 removed as part of GCC PR 36901
+ * Must now use warning, which takes an OPT_W* as the first parameter
+ *   - https://gcc.gnu.org/bugzilla/show_bug.cgi?format=multiple&id=36901
+ *   - https://gcc.gnu.org/cgit/gcc/commit/?id=71205d170c59ae70323aa7d0b93ff5c13044fd57
+ *   - https://www.gnu.org/software/libc/manual/html_node/Variable-Arguments-Output.html
+ */
+#define gpc_warning(msg...) warning(DEFAULT_GPC_OPT_W, ## msg)
+#else
+#define pedwarn_default pedwarn
 #ifdef GCC_4_1
 #define gpc_warning warning0
-#define SET_CONSTRUCTOR_ELTS(t) TREE_OPERAND (t, 0)
 #else
 #define gpc_warning warning
+#endif
+#endif
+
+#ifdef GCC_4_1
+#define SET_CONSTRUCTOR_ELTS(t) TREE_OPERAND (t, 0)
+#else
 #define PASCAL_SET_CONSTRUCTOR CONSTRUCTOR
 #define SET_CONSTRUCTOR_ELTS(t) CONSTRUCTOR_ELTS (t)
 #define CONSTRUCTOR_APPEND_ELT(C, I, V) do \

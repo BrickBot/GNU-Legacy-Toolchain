@@ -1958,7 +1958,11 @@ check_simple_pascal_initializer (tree init, tree type)
       if (TREE_CODE (string_length) == INTEGER_CST && const_lt (capacity, string_length))
         {
           if (co->truncate_strings)
+#ifdef GCC_4_4
+            pedwarn_default ("string constant exceeds capacity -- truncated");
+#else
             pedwarn ("string constant exceeds capacity -- truncated");
+#endif
           else
             error ("string constant exceeds capacity");
           /* Truncate the string. */
@@ -2044,7 +2048,11 @@ check_simple_pascal_initializer (tree init, tree type)
                   > (unsigned HOST_WIDE_INT) TREE_INT_CST_LOW (capacity))
                 {
                   if (co->truncate_strings)
+#ifdef GCC_4_4
+                    pedwarn_default ("string constant exceeds capacity -- truncated");
+#else
                     pedwarn ("string constant exceeds capacity -- truncated");
+#endif
                   else
                     error ("string constant exceeds capacity");
                 }
@@ -2887,8 +2895,13 @@ pas_mark_addressable2 (tree exp, int allow_packed)
                        IDENTIFIER_NAME (DECL_NAME (x)));
                 return 0;
               }
+#ifdef GCC_4_4
+            pedwarn_default ("register variable `%s' used in local function",
+                     IDENTIFIER_NAME (DECL_NAME (x)));
+#else
             pedwarn ("register variable `%s' used in local function",
                      IDENTIFIER_NAME (DECL_NAME (x)));
+#endif
           }
         else if (DECL_REGISTER (x) && !TREE_ADDRESSABLE (x))
           {

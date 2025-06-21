@@ -3831,7 +3831,13 @@ declare_variables (tree name_list, tree type, tree init, int qualifiers, tree at
   if (TYPE_VOLATILE (type))
     {
       if (qualifiers & VQ_VOLATILE)
-        pedwarn ("duplicate `volatile'");
+        {
+#ifdef GCC_4_4
+          pedwarn_default ("duplicate `volatile'");
+#else
+          pedwarn ("duplicate `volatile'");
+#endif
+        }
       else
         qualifiers |= VQ_VOLATILE;
     }

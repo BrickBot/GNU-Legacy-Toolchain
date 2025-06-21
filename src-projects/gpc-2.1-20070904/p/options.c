@@ -674,7 +674,11 @@ process_pascal_directive (char *name, int length)
   if (PEDANTIC (U_B_D_M_PASCAL) && !notified)
     {
       notified = 1;
+#ifdef GCC_4_4
+      pedwarn_default ("compiler directives are a UCSD Pascal extension");
+#else
       pedwarn ("compiler directives are a UCSD Pascal extension");
+#endif
     }
   while (length > 0 &&
          (name[length - 1] == ' ' || name[length - 1] == '\t'
