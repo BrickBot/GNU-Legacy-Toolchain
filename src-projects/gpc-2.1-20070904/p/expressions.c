@@ -29,7 +29,11 @@
 #include "gpc.h"
 
 #ifdef GCC_4_0
+#ifdef GCC_4_4
+#include "gimple.h"
+#else
 #include "tree-gimple.h"
+#endif
 #endif
 
 

@@ -50,7 +50,11 @@ static GTY(()) varray_type gimplified_size_addrs = 0;
 
 #ifdef GCC_4_0
 #include "cgraph.h"
+#ifdef GCC_4_4
+#include "gimple.h"
+#else
 #include "tree-gimple.h"
+#endif
 #include "tree-dump.h"
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@ */

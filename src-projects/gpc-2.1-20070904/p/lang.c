@@ -35,7 +35,9 @@
 #include "gtype-p.h"
 #endif
 
-#ifdef GCC_4_0
+#if defined(GCC_4_4)
+#include "gimple.h"
+#elif defined(GCC_4_0)
 #include "tree-gimple.h"
 #endif
 
