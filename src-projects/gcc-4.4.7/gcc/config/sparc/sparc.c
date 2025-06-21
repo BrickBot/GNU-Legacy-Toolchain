@@ -7229,7 +7229,11 @@ sparc_type_code (register tree type)
 	  return (qualifiers | 7);	/* Who knows? */
 
 	case VECTOR_TYPE:
+#if 0
+        case CHAR_TYPE:         /* GNU Pascal CHAR type.  Not used in C.  */
+#endif
 	case BOOLEAN_TYPE:	/* Boolean truth value type.  */
+        case SET_TYPE:          /* GNU Pascal SET type.  */
 	case LANG_TYPE:		/* ? */
 	  return qualifiers;
   

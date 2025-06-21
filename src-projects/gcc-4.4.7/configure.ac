@@ -189,8 +189,9 @@ target_libraries="target-libgcc \
 		target-boehm-gc \
 		${libgcj} \
 		target-libobjc \
-		target-libada"
 		target-libcilsupport \
+		target-libada \
+		target-libgpc"
 
 # these tools are built using the target libraries, and are intended to
 # run only in the target environment

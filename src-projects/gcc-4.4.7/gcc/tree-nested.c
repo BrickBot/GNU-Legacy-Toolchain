@@ -1706,6 +1706,10 @@ convert_nl_goto_receiver (gimple_stmt_iterator *gsi, bool *handled_ops_p,
       return NULL_TREE;
     }
 
+#if 0
+  DECL_CONTEXT (new_label) = DECL_CONTEXT (label);
+#endif
+
   /* If there's any possibility that the previous statement falls through,
      then we must branch around the new non-local label.  */
   tmp_gsi = wi->gsi;

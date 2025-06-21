@@ -3508,10 +3508,10 @@ gimplify_init_ctor_eval (tree object, VEC(constructor_elt,gc) *elts,
 
       if (array_elt_type)
 	{
+          tree td = TYPE_DOMAIN (TREE_TYPE (object));
 	  /* Do not use bitsizetype for ARRAY_REF indices.  */
-	  if (TYPE_DOMAIN (TREE_TYPE (object)))
-	    purpose = fold_convert (TREE_TYPE (TYPE_DOMAIN (TREE_TYPE (object))),
-				    purpose);
+	  if (td && TREE_TYPE (td))
+	    purpose = fold_convert (TREE_TYPE (td), purpose);
 	  cref = build4 (ARRAY_REF, array_elt_type, unshare_expr (object),
 			 purpose, NULL_TREE, NULL_TREE);
 	}
@@ -3575,6 +3575,12 @@ gimplify_init_constructor (tree *expr_p, gimple_seq *pre_p, gimple_seq *post_p,
 
   if (TREE_CODE (ctor) != CONSTRUCTOR)
     return GS_UNHANDLED;
+
+#ifdef GPC
+  ret = lang_hooks.gimplify_expr (&TREE_OPERAND (*expr_p, 1), pre_p, post_p);
+    if (ret != GS_UNHANDLED)
+      return ret;
+#endif
 
   if (!notify_temp_creation)
     {

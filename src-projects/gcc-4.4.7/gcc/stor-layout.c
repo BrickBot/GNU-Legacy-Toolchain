@@ -19,6 +19,7 @@ You should have received a copy of the GNU General Public License
 along with GCC; see the file COPYING3.  If not see
 <http://www.gnu.org/licenses/>.  */
 
+/* @@ PATCHED FOR GPC 20070903 @@ */
 
 #include "config.h"
 #include "system.h"
@@ -52,6 +53,21 @@ unsigned int initial_max_fld_align = TARGET_DEFAULT_PACK_STRUCT;
    allocated in Pmode, not ptr_mode.   Set only by internal_reference_types
    called only by a front end.  */
 static int reference_types_internal = 0;
+
+/* If nonzero, the alignment of a bitstring or (power-)set value, in bits.
+   May be overridden by front-ends.  */
+unsigned int set_alignment = 0;
+
+/* The word size of a bitstring or (power-)set value, in bits.
+   Must be non-zero.
+   May be overridden by front-ends.  */
+unsigned int set_word_size = BITS_PER_UNIT;
+
+/* If non-zero, bits in (power-)sets start with the highest bit.
+   May be overridden by front-ends.
+   In order to be backward-compatible, the Chill frontend should
+   initialize this to BYTES_BIG_ENDIAN.  */
+unsigned int set_words_big_endian = 0;
 
 static void finalize_record_size (record_layout_info);
 static void finalize_type_size (tree);
@@ -1876,6 +1892,50 @@ layout_type (tree type)
 	/* Finish laying out the record.  */
 	finish_record_layout (rli, /*free_p=*/true);
       }
+      break;
+
+    case SET_TYPE:  /* Used by Chill and Pascal.  */
+      if (TREE_CODE (TYPE_MAX_VALUE (TYPE_DOMAIN (type))) != INTEGER_CST
+          || TREE_CODE (TYPE_MIN_VALUE (TYPE_DOMAIN (type))) != INTEGER_CST)
+        abort ();
+      else
+        {
+          int alignment = set_alignment ? set_alignment : set_word_size;
+          tree lower_bound = convert (sbitsizetype,
+                        TYPE_MIN_VALUE (TYPE_DOMAIN (type)));
+          tree upper_bound = convert (sbitsizetype,
+                        TYPE_MAX_VALUE (TYPE_DOMAIN (type)));
+          tree size_in_bits, rounded_size;
+          if (set_alignment)
+            {
+              lower_bound = round_down (lower_bound, alignment);
+            }
+          size_in_bits = size_binop (PLUS_EXPR,
+                                size_binop (MINUS_EXPR,
+                                        upper_bound,
+                                        lower_bound),
+                                sbitsize_int(1));
+          rounded_size = round_up (size_in_bits, alignment);
+
+          if ( TREE_INT_CST_HIGH (rounded_size)
+                || TREE_INT_CST_LOW (rounded_size) > (unsigned) alignment)
+            {
+                SET_TYPE_MODE (type, BLKmode);
+            }
+          else
+            {
+                SET_TYPE_MODE (type, mode_for_size (alignment, MODE_INT, 1));
+            }
+
+          TYPE_SIZE (type) = convert (bitsizetype, rounded_size);
+          TYPE_SIZE_UNIT (type) = convert (sizetype,
+                                size_binop ( CEIL_DIV_EXPR,
+                                        rounded_size,
+                                        sbitsize_int (BITS_PER_UNIT)));
+          TYPE_ALIGN (type) = alignment;
+          TYPE_USER_ALIGN (type) = 0;
+          TYPE_PRECISION (type) = TREE_INT_CST_LOW (size_in_bits);
+        }
       break;
 
     default:

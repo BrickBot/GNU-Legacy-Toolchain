@@ -263,9 +263,23 @@ static bool
 type_to_consider (tree type)
 {
   /* Strip the *'s off.  */
+  tree otype = type;
+  long cnt = 0;
+  long ocnt = 0;
   type = TYPE_MAIN_VARIANT (type);
   while (POINTER_TYPE_P (type) || TREE_CODE (type) == ARRAY_TYPE)
-    type = TYPE_MAIN_VARIANT (TREE_TYPE (type));
+    {
+      type = TYPE_MAIN_VARIANT (TREE_TYPE (type));
+      if (type == otype)
+        return false;
+      if (cnt > ocnt)
+        {
+          ocnt += cnt;
+          otype = type;
+        }
+      else
+        cnt ++;
+    }
 
   switch (TREE_CODE (type))
     {
@@ -336,6 +350,8 @@ int
 ipa_type_escape_star_count_of_interesting_type (tree type) 
 {
   int count = 0;
+  long ocnt = 0;
+  tree otype = type;
   /* Strip the *'s off.  */
   if (!type)
     return -1;
@@ -343,6 +359,13 @@ ipa_type_escape_star_count_of_interesting_type (tree type)
   while (POINTER_TYPE_P (type))
     {
       type = TYPE_MAIN_VARIANT (TREE_TYPE (type));
+      if (type == otype)
+        return -1;
+      if (count > ocnt)
+        {
+          ocnt += count;
+          otype = type;
+        }
       count++;
     }
 

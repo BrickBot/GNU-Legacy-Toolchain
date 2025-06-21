@@ -162,6 +162,7 @@ target_modules = { module= boehm-gc; };
 target_modules = { module= qthreads; };
 target_modules = { module= rda; };
 target_modules = { module= libada; };
+target_modules = { module= libgpc; };
 target_modules = { module= libgomp; lib_path=.libs; };
 
 // These are (some of) the make targets to be done in each subdirectory.

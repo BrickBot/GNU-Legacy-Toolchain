@@ -5027,6 +5027,10 @@ count_type_elements (const_tree type, bool allow_flexarr)
     case ERROR_MARK:
       return 0;
 
+    case SET_TYPE:
+      /* @@@@@@ return something more accurate ... */
+      return -1;
+
     case VOID_TYPE:
     case METHOD_TYPE:
     case FUNCTION_TYPE:
@@ -6013,9 +6017,19 @@ get_inner_reference (tree exp, HOST_WIDE_INT *pbitsize,
 	       index, then convert to sizetype and multiply by the size of
 	       the array element.  */
 	    if (! integer_zerop (low_bound))
+#ifdef GPC
+            /* I think that address arithmetic should always be done on
+               sizetype or its variants -- for Pascal signed seems to be the
+               correct choice (and generates slightly better code). -- Waldek */
+              index = convert (sizetype, convert (bitsizetype,
+                      size_binop (MINUS_EXPR,
+                        convert (sbitsizetype, index),
+                        convert (sbitsizetype, low_bound))));
+#else
+
 	      index = fold_build2 (MINUS_EXPR, TREE_TYPE (index),
 				   index, low_bound);
-
+#endif
 	    offset = size_binop (PLUS_EXPR, offset,
 			         size_binop (MULT_EXPR,
 					     fold_convert (sizetype, index),
@@ -9621,7 +9635,7 @@ is_aligning_offset (const_tree offset, const_tree exp)
 tree
 string_constant (tree arg, tree *ptr_offset)
 {
-  tree array, offset, lower_bound;
+  tree array, offset, lb = size_zero_node;
   STRIP_NOPS (arg);
 
   if (TREE_CODE (arg) == ADDR_EXPR)
@@ -9635,6 +9649,7 @@ string_constant (tree arg, tree *ptr_offset)
 	{
 	  array = TREE_OPERAND (arg, 0);
 	  offset = size_zero_node;
+          goto do_lb;
 	}
       else if (TREE_CODE (TREE_OPERAND (arg, 0)) == ARRAY_REF)
 	{
@@ -9644,19 +9659,7 @@ string_constant (tree arg, tree *ptr_offset)
 	      && TREE_CODE (array) != VAR_DECL)
 	    return 0;
 
-	  /* Check if the array has a nonzero lower bound.  */
-	  lower_bound = array_ref_low_bound (TREE_OPERAND (arg, 0));
-	  if (!integer_zerop (lower_bound))
-	    {
-	      /* If the offset and base aren't both constants, return 0.  */
-	      if (TREE_CODE (lower_bound) != INTEGER_CST)
-	        return 0;
-	      if (TREE_CODE (offset) != INTEGER_CST)
-		return 0;
-	      /* Adjust offset by the lower bound.  */
-	      offset = size_diffop (fold_convert (sizetype, offset),
-				    fold_convert (sizetype, lower_bound));
-	    }
+          lb = array_ref_low_bound (TREE_OPERAND (arg, 0));
 	}
       else
 	return 0;
@@ -9685,9 +9688,25 @@ string_constant (tree arg, tree *ptr_offset)
 	}
       else
 	return 0;
+  do_lb:    
+      if (TREE_TYPE (array) && TREE_CODE (TREE_TYPE (array)) == ARRAY_TYPE)
+        {
+          tree domain_type = TYPE_DOMAIN (TREE_TYPE (array));
+          if (domain_type && TYPE_MIN_VALUE (domain_type))
+#if 0
+            lb = SUBSTITUTE_PLACEHOLDER_IN_EXPR (
+                   TYPE_MIN_VALUE (domain_type), array);
+#else
+          lb = TYPE_MIN_VALUE (domain_type);
+#endif
+        }
     }
   else
     return 0;
+
+  if (! integer_zerop (lb))
+    offset = size_diffop (fold_convert (sizetype, offset),
+                          fold_convert (sizetype, lb));
 
   if (TREE_CODE (array) == STRING_CST)
     {

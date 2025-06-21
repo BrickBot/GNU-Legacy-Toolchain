@@ -255,6 +255,12 @@ DEFTREECODE (FUNCTION_TYPE, "function_type", tcc_type, 0)
    includes the hidden argument for "self".  */
 DEFTREECODE (METHOD_TYPE, "method_type", tcc_type, 0)
 
+/* Types of sets for Pascal.  Special fields are the same as
+   in an array type.  The target type is always a boolean type.
+   Used for both bitstrings and powersets in Chill;
+   TYPE_STRING_FLAG indicates a bitstring.  */
+DEFTREECODE (SET_TYPE, "set_type", tcc_type, 0)
+
 /* This is a language-specific kind of type.
    Its meaning is defined by the language front end.
    layout_type does not know how to lay this out,

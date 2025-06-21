@@ -1933,12 +1933,31 @@ dbxout_type (tree type, int full)
       stabstr_S (";0;");
       break;
 
+#if 0
+    case CHAR_TYPE:
+      if (use_gnu_debug_info_extensions)
+        {
+          stabstr_S ("@s");
+          stabstr_D (BITS_PER_UNIT * int_size_in_bytes (type));
+          stabstr_S (";-20");
+        }
+      else
+        {
+          /* Output the type `char' as a subrange of itself.
+             That is what pcc seems to do.  */
+          stabstr_C ('r');
+          dbxout_type_index (char_type_node);
+          stabstr_S (TYPE_UNSIGNED (type) ? ";0;255;" : ";0;127;");
+        }
+      break;
+#endif
+
     case BOOLEAN_TYPE:
       if (use_gnu_debug_info_extensions)
 	{
 	  stabstr_S ("@s");
 	  stabstr_D (BITS_PER_UNIT * int_size_in_bytes (type));
-	  stabstr_S (";-16;");
+	  stabstr_S (";-16");
 	}
       else /* Define as enumeral type (False, True) */
 	stabstr_S ("eFalse:0,True:1,;");
@@ -1975,6 +1994,22 @@ dbxout_type (tree type, int full)
 	  stabstr_D (TYPE_PRECISION (TREE_TYPE (type)));
 	  stabstr_S (";;");
 	}
+      break;
+
+    case SET_TYPE:
+      if (use_gnu_debug_info_extensions)
+	{
+	  stabstr_S ("@s");
+          stabstr_D (BITS_PER_UNIT * int_size_in_bytes (type));
+          stabstr_C (';');
+
+	  /* Check if a bitstring type, which in Chill is
+	     different from a [power]set.  */
+	  if (TYPE_STRING_FLAG (type))
+	    stabstr_S ("@S;");
+	}
+      stabstr_C ('S');
+      dbxout_type (TYPE_DOMAIN (type), 0);
       break;
 
     case ARRAY_TYPE:
@@ -2535,7 +2570,7 @@ dbxout_symbol (tree decl, int local ATTRIBUTE_UNUSED)
          we see following the TREE_TYPE chain.  */
 
       t = type;
-      while (POINTER_TYPE_P (t))
+      while (POINTER_TYPE_P (t) && !TYPE_NAME (t))
         t = TREE_TYPE (t);
 
       /* RECORD_TYPE, UNION_TYPE, QUAL_UNION_TYPE, and ENUMERAL_TYPE

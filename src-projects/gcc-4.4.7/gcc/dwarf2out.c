@@ -9402,6 +9402,7 @@ is_base_type (tree type)
     case OFFSET_TYPE:
     case LANG_TYPE:
     case VECTOR_TYPE:
+    case SET_TYPE:
       return 0;
 
     default:
@@ -10815,6 +10816,19 @@ loc_descriptor_from_tree_1 (tree loc, int want_address)
 	jump_node->dw_loc_oprnd1.v.val_loc = tmp;
       }
       break;
+
+#ifdef GPC
+    case REAL_CST:
+    case FLOAT_EXPR:
+    case RDIV_EXPR:
+    case STRING_CST:
+      /* In Pascal it's possible for array bounds to contain floating point
+         expressions (e.g., p/test/emil11c.pas). I don't know if it's
+         possible to represent them in dwarf2, but it doesn't seem terribly
+         important since this occurs quite rarely. -- Frank */
+      return 0;
+#endif
+
 
     case FIX_TRUNC_EXPR:
       return 0;
@@ -13190,6 +13204,16 @@ gen_descr_array_type_die (tree type, struct array_descr_info *info,
     add_pubtype (type, array_die);
 }
 
+static void
+gen_set_type_die (tree type, dw_die_ref context_die)
+{
+  dw_die_ref type_die
+    = new_die (DW_TAG_set_type, scope_die_for (type, context_die), type);
+
+  equate_type_number_to_die (type, type_die);
+  add_type_attribute (type_die, TREE_TYPE (type), 0, 0, context_die);
+}
+
 #if 0
 static void
 gen_entry_point_die (tree decl, dw_die_ref context_die)
@@ -14831,6 +14855,11 @@ gen_type_die_with_usage (tree type, dw_die_ref context_die,
       /* Now output a DIE to represent this pointer-to-data-member type
 	 itself.  */
       gen_ptr_to_mbr_type_die (type, context_die);
+      break;
+
+    case SET_TYPE:
+      gen_type_die (TYPE_DOMAIN (type), context_die);
+      gen_set_type_die (type, context_die);
       break;
 
     case FUNCTION_TYPE:

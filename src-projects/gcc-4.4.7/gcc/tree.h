@@ -949,6 +949,9 @@ extern void omp_clause_range_check_failed (const_tree, const char *, int,
 #define NOT_RECORD_OR_UNION_CHECK(T) \
   TREE_NOT_CHECK3 (T, RECORD_TYPE, UNION_TYPE, QUAL_UNION_TYPE)
 
+#define ARRAY_OR_SET_CHECK(T)            \
+  TREE_CHECK2 (T, ARRAY_TYPE, SET_TYPE)
+
 #define NUMERICAL_TYPE_CHECK(T)					\
   TREE_CHECK5 (T, INTEGER_TYPE, ENUMERAL_TYPE, BOOLEAN_TYPE, REAL_TYPE,	\
 	       FIXED_POINT_TYPE)
@@ -1075,7 +1078,8 @@ extern void omp_clause_range_check_failed (const_tree, const char *, int,
 
 #define AGGREGATE_TYPE_P(TYPE) \
   (TREE_CODE (TYPE) == ARRAY_TYPE || TREE_CODE (TYPE) == RECORD_TYPE \
-   || TREE_CODE (TYPE) == UNION_TYPE || TREE_CODE (TYPE) == QUAL_UNION_TYPE)
+   || TREE_CODE (TYPE) == UNION_TYPE || TREE_CODE (TYPE) == QUAL_UNION_TYPE \
+   || TREE_CODE (TYPE) == SET_TYPE)
 
 /* Nonzero if TYPE represents a pointer or reference type.
    (It should be renamed to INDIRECT_TYPE_P.)  Keep these checks in
@@ -2049,7 +2053,7 @@ struct tree_block GTY(())
 #define TYPE_SIZE(NODE) (TYPE_CHECK (NODE)->type.size)
 #define TYPE_SIZE_UNIT(NODE) (TYPE_CHECK (NODE)->type.size_unit)
 #define TYPE_VALUES(NODE) (ENUMERAL_TYPE_CHECK (NODE)->type.values)
-#define TYPE_DOMAIN(NODE) (ARRAY_TYPE_CHECK (NODE)->type.values)
+#define TYPE_DOMAIN(NODE) (ARRAY_OR_SET_CHECK (NODE)->type.values)
 #define TYPE_FIELDS(NODE) (RECORD_OR_UNION_CHECK (NODE)->type.values)
 #define TYPE_CACHED_VALUES(NODE) (TYPE_CHECK(NODE)->type.values)
 #define TYPE_ORIG_SIZE_TYPE(NODE)			\
@@ -4370,6 +4374,15 @@ extern void put_pending_sizes (tree);
 extern unsigned int maximum_field_alignment;
 /* and its original value in bytes, specified via -fpack-struct=<value>.  */
 extern unsigned int initial_max_fld_align;
+
+/* If nonzero, the alignment of a bitstring or (power-)set value, in bits.  */
+extern unsigned int set_alignment;
+
+/* The word size of a bitstring or (power-)set value, in bits.  */
+extern unsigned int set_word_size;
+
+/* If non-zero, bits in (power-)sets start with the highest bit.  */
+extern unsigned int set_words_big_endian;
 
 /* Concatenate two lists (chains of TREE_LIST nodes) X and Y
    by making the last node in X point to Y.

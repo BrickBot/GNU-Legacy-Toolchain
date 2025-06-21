@@ -3333,7 +3333,11 @@ gimplify_parm_type (tree *tp, int *walk_subtrees, void *data)
   if (TYPE_P (t))
     {
       if (POINTER_TYPE_P (t))
+#ifndef GPC
 	*walk_subtrees = 1;
+#else
+        *walk_subtrees = 0;
+#endif
       else if (TYPE_SIZE (t) && !TREE_CONSTANT (TYPE_SIZE (t))
 	       && !TYPE_SIZES_GIMPLIFIED (t))
 	{

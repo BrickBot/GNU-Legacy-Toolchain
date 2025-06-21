@@ -6730,6 +6730,10 @@ fold_div_compare (enum tree_code code, tree type, tree arg0, tree arg1)
   bool neg_overflow;
   int overflow;
 
+  /* Overflow check does not work for unsigned numbers */
+  if (TYPE_UNSIGNED (TREE_TYPE (arg0)))
+    return NULL_TREE;
+
   /* We have to do this the hard way to detect unsigned overflow.
      prod = int_const_binop (MULT_EXPR, arg01, arg1, 0);  */
   overflow = mul_double_with_sign (TREE_INT_CST_LOW (arg01),

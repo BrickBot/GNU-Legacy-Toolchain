@@ -4322,7 +4322,11 @@ initializer_constant_valid_p_1 (tree value, tree endtype, tree *cache)
 	/* Allow conversions to struct or union types if the value
 	   inside is okay.  */
 	if (TREE_CODE (dest_type) == RECORD_TYPE
-	    || TREE_CODE (dest_type) == UNION_TYPE)
+	    || TREE_CODE (dest_type) == UNION_TYPE
+#ifdef GPC
+            || TREE_CODE (TREE_TYPE (value)) == ARRAY_TYPE
+#endif
+           )
 	  return initializer_constant_valid_p_1 (src, endtype, cache);
       }
       break;
@@ -4456,6 +4460,14 @@ output_constant (tree exp, unsigned HOST_WIDE_INT size, unsigned int align)
 {
   enum tree_code code;
   unsigned HOST_WIDE_INT thissize;
+
+#ifdef GPC
+  {
+    extern tree pascal_expand_constant (tree t);
+    exp = pascal_expand_constant (exp);
+  }
+#endif
+
 
   if (size == 0 || flag_syntax_only)
     return;

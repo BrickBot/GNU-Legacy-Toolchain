@@ -1929,6 +1929,9 @@ decide_block_copy (struct sra_elt *elt)
 	      && (!can_completely_scalarize_p (elt)
 		  || !type_can_instantiate_all_elements (elt->type)))
 	    use_block_copy = true;
+          if (TREE_TYPE (elt->type)
+              && full_size != full_count*TYPE_PRECISION (TREE_TYPE (elt->type)))
+            use_block_copy = true;
 	}
 
       elt->use_block_copy = use_block_copy;

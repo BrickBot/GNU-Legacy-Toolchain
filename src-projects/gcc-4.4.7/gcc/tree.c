@@ -2584,6 +2584,7 @@ type_contains_placeholder_1 (const_tree type)
 	      || CONTAINS_PLACEHOLDER_P (TYPE_MAX_VALUE (type)));
 
     case ARRAY_TYPE:
+    case SET_TYPE:
       /* We're already checked the component type (TREE_TYPE), so just check
 	 the index type.  */
       return type_contains_placeholder_p (TYPE_DOMAIN (type));
@@ -5729,6 +5730,7 @@ build_range_type (tree type, tree lowval, tree highval)
   TYPE_SIZE_UNIT (itype) = TYPE_SIZE_UNIT (type);
   TYPE_ALIGN (itype) = TYPE_ALIGN (type);
   TYPE_USER_ALIGN (itype) = TYPE_USER_ALIGN (type);
+  TYPE_UNSIGNED (itype) = TYPE_UNSIGNED (type);
 
   if (host_integerp (lowval, 0) && highval != 0 && host_integerp (highval, 0))
     return type_hash_canon (tree_low_cst (highval, 0)

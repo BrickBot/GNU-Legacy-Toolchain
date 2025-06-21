@@ -1105,6 +1105,27 @@ const char *const debug_type_names[] =
 void
 print_version (FILE *file, const char *indent)
 {
+#ifdef GPC
+  extern const char *lang_version_string;
+  static const char fmt1[] =
+#ifdef __GNUC__
+    N_("%s%s%s version %s%s (%s)\n%s\tcompiled by GNU C version %s.\n")
+#else
+    N_("%s%s%s version %s%s (%s) compiled by CC.\n")
+#endif
+    ;
+  static const char fmt2[] =
+    N_("%s%sGGC heuristics: --param ggc-min-expand=%d --param ggc-min-heapsize=%d\n");
+#ifndef __VERSION__
+#define __VERSION__ "[?]"
+#endif
+
+  fprintf (file,
+           file == stderr ? _(fmt1) : fmt1,
+           indent, *indent != 0 ? " " : "",
+           lang_hooks.name, lang_version_string, version_string, TARGET_NAME,
+           indent, __VERSION__);
+#else
   static const char fmt1[] =
 #ifdef __GNUC__
     N_("%s%s%s %sversion %s (%s)\n%s\tcompiled by GNU C version %s, ")
@@ -1114,10 +1135,12 @@ print_version (FILE *file, const char *indent)
     ;
   static const char fmt2[] =
     N_("GMP version %s, MPFR version %s.\n");
+#endif
   static const char fmt3[] =
     N_("%s%swarning: %s header version %s differs from library version %s.\n");
   static const char fmt4[] =
     N_("%s%sGGC heuristics: --param ggc-min-expand=%d --param ggc-min-heapsize=%d\n");
+#ifndef GPC
 #ifndef __VERSION__
 #define __VERSION__ "[?]"
 #endif
@@ -1126,7 +1149,7 @@ print_version (FILE *file, const char *indent)
 	   indent, *indent != 0 ? " " : "",
 	   lang_hooks.name, pkgversion_string, version_string, TARGET_NAME,
 	   indent, __VERSION__);
-
+#endif
   /* We need to stringify the GMP macro values.  Ugh, gmp_version has
      two string formats, "i.j.k" and "i.j" when k is zero.  As of
      gmp-4.3.0, GMP always uses the 3 number format.  */
