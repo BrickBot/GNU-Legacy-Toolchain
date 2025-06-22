@@ -1094,7 +1094,19 @@ pushdecl (tree x)
       TREE_TYPE (x) = TREE_TYPE (t);
       DECL_SIZE (x) = DECL_SIZE (t);
       DECL_SECTION_NAME (x) = DECL_SECTION_NAME (t);
+#ifdef GCC_4_4
+      /*  DECL_INLINE was removed
+       *    - https://gcc.gnu.org/cgit/gcc/commit/?id=993555181042e01fcdb573a44f4c787a3e50e25a
+       *  When needed, use DECL_DECLARED_INLINE_P instead
+       *    - https://gcc.gnu.org/cgit/gcc/commit/?id=4db26d6c4d0f54c15263a5e7a189622e087f6012
+       *    - https://gcc.gnu.org/cgit/gcc/commit/?id=91c82473ac6c389e29e73bdae4e4375176ac0bf3
+       *    - gcc/tree.h, line 3247
+       *    - gcc/ChangeLog-2008, lines 5621-5628
+       */
+      DECL_DECLARED_INLINE_P (x) = DECL_DECLARED_INLINE_P (t);
+#else
       DECL_INLINE (x) = DECL_INLINE (t);
+#endif
       COPY_DECL_RTL (t, x);
       SET_DECL_ASSEMBLER_NAME (x, DECL_ASSEMBLER_NAME (t));
 
@@ -1125,7 +1137,21 @@ pushdecl (tree x)
 #else
           DECL_SAVED_TREE (x) = DECL_SAVED_TREE (t);
           /* Set DECL_INLINE on the declaration if we've got a body from which to instantiate. */
-          if (DECL_INLINE (x) && !DECL_UNINLINABLE (x))
+          if ( (!DECL_UNINLINABLE (x)) &&
+#ifdef GCC_4_4
+            /*  DECL_INLINE was removed
+             *    - https://gcc.gnu.org/cgit/gcc/commit/?id=993555181042e01fcdb573a44f4c787a3e50e25a
+             *  When needed, use DECL_DECLARED_INLINE_P instead
+             *    - https://gcc.gnu.org/cgit/gcc/commit/?id=4db26d6c4d0f54c15263a5e7a189622e087f6012
+             *    - https://gcc.gnu.org/cgit/gcc/commit/?id=91c82473ac6c389e29e73bdae4e4375176ac0bf3
+             *    - gcc/tree.h, line 3247
+             *    - gcc/ChangeLog-2008, lines 5621-5628
+             */
+            DECL_DECLARED_INLINE_P (x)
+#else
+            DECL_INLINE (x)
+#endif
+            )
             DECL_ABSTRACT_ORIGIN (x) = DECL_ABSTRACT_ORIGIN (t);
 #endif
         }
@@ -2606,7 +2632,19 @@ routine_attributes (tree *d, tree attributes, tree *assembler_name)
           gpc_warning ("inline declaration ignored for routine with `...'");
         else if (!flag_no_inline && optimize > 0)
           /* Assume that otherwise the function can be inlined. */
+#ifdef GCC_4_4
+          /*  DECL_INLINE was removed
+           *    - https://gcc.gnu.org/cgit/gcc/commit/?id=993555181042e01fcdb573a44f4c787a3e50e25a
+           *  When needed, use DECL_DECLARED_INLINE_P instead
+           *    - https://gcc.gnu.org/cgit/gcc/commit/?id=4db26d6c4d0f54c15263a5e7a189622e087f6012
+           *    - https://gcc.gnu.org/cgit/gcc/commit/?id=91c82473ac6c389e29e73bdae4e4375176ac0bf3
+           *    - gcc/tree.h, line 3247
+           *    - gcc/ChangeLog-2008, lines 5621-5628
+           */
+          DECL_DECLARED_INLINE_P (*d) = 1;
+#else
           DECL_INLINE (*d) = 1;
+#endif
         *tt = TREE_CHAIN (*tt);
       }
 #ifdef EGCS97
