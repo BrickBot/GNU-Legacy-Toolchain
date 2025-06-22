@@ -580,10 +580,14 @@ pascal_decode_option (int argc ATTRIBUTE_UNUSED, const char *const *argv)
          warning about not using it without also specifying -O. */
       if (warn_uninitialized != 1)
         warn_uninitialized = 2;
-#ifdef EGCS97
-      set_Wunused (1);
-#else
+#if defined(GCC_4_4) || !defined(EGCS97)
+      /* Replace set_Wunused with warn_unused
+       *  - https://gcc.gnu.org/bugzilla/show_bug.cgi?format=multiple&id=28875
+       *  - https://gcc.gnu.org/cgit/gcc/commit/?id=e73f7547c50e91654c691a620a949085645c4e51
+       */
       warn_unused = 1;
+#else
+      set_Wunused (1);
 #endif
       warn_switch = 1;
       co->warn_parentheses = 1;
