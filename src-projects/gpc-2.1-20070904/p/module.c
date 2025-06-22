@@ -2679,8 +2679,21 @@ load_node (void)
           }
 #ifdef GCC_4_1
         if (CODE_CONTAINS_STRUCT (code, TS_DECL_WITH_VIS))
+          {
 #endif
-          DECL_IN_SYSTEM_HEADER (t) = 1;
+#ifdef GCC_4_4
+        /*   Setting of DECL_IN_SYSTEM_HEADER removed in GCC 4.4
+         *   (1) https://gcc.gnu.org/cgit/gcc/commit/?id=df0ed6c5a308540cb3869bdc32c671e8ab509347
+         *   (2) https://gcc.gnu.org/cgit/gcc/commit/?id=238fe3c54bfc0cabfca41322ad09f21bfdbced3c
+         *   (3) https://gcc.gnu.org/cgit/gcc/commit/?id=aa14403d28a1af7c28088dd4e04b36a4016e06f9
+         */
+            TREE_NO_WARNING (t) = 1;
+#else
+            DECL_IN_SYSTEM_HEADER (t) = 1;
+#endif
+#ifdef GCC_4_1
+          }
+#endif
         break;
       }
     case tcc_constant:
