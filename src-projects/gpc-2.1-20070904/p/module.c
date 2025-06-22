@@ -1636,8 +1636,17 @@ store_tree (tree name, FILE *s, tree main_node)
   for (n = 0; n < MAX_HASH_TABLE; n++)
     wb.hash_table[n] = -1;
 
+  /* In GCC 4.4 and newer, the tree code list is now automatically generated
+   *    by GCC itself as all-tree.def (in the build outputs) and included by
+   *    gcc/tree.c
+   *    - https://gcc.gnu.org/cgit/gcc/commit/?id=c0ed0531e5b067d780d4a6444027c5b4a399c027
+   */
+#ifndef GCC_4_4
   /* If this ever fails, the type for storing tree codes in GPI files must be enlarged. */
   gcc_assert (LAST_AND_UNUSED_PASCAL_TREE_CODE < 255);
+#else
+  /* *******  TODO: How to handle for GCC 4.4 and newer?  ******* */
+#endif
 
   /* Put the special nodes in the hash table.
      The reason for the backward loop is only that the "more common"
