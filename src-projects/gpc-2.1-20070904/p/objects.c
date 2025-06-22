@@ -323,7 +323,11 @@ start_object_type (tree name, int is_class)
     res = t;
   if (!pascal_global_bindings_p ())
     error ("object type definition only allowed at top level");
+#ifdef GCC_4_4
+  SET_TYPE_MODE (t, BLKmode);  /* may be used as a value parameter within its methods */
+#else
   TYPE_MODE (t) = BLKmode;  /* may be used as a value parameter within its methods */
+#endif
   TYPE_ALIGN (t) = BIGGEST_ALIGNMENT;
   allocate_type_lang_specific (t);
   TYPE_LANG_CODE (t) = PASCAL_LANG_OBJECT;
@@ -700,7 +704,11 @@ finish_object_type (tree type, tree parent, tree items, int abstract)
 
   TYPE_ALIGN (type) = 0;  /* to avoid blowing up the size unnecessarily */
   type = finish_struct (type, fields, 0);
+#ifdef GCC_4_4
+  SET_TYPE_MODE (type, BLKmode);  /* be consistent with what was set in parse.y */
+#else
   TYPE_MODE (type) = BLKmode;  /* be consistent with what was set in parse.y */
+#endif
   TYPE_ALIGN (type) = BIGGEST_ALIGNMENT;
   TYPE_LANG_CODE (type) = abstract ? PASCAL_LANG_ABSTRACT_OBJECT : PASCAL_LANG_OBJECT;
   TYPE_LANG_VMT_FIELD (type) = vmt_field;
@@ -833,7 +841,11 @@ finish_object_type (tree type, tree parent, tree items, int abstract)
 
   for (t = TYPE_MAIN_VARIANT (type); t; t = TYPE_NEXT_VARIANT (t))
     {
+#ifdef GCC_4_4
+      SET_TYPE_MODE (t, TYPE_MODE (type));
+#else
       TYPE_MODE (t) = TYPE_MODE (type);
+#endif
       TYPE_LANG_CODE (t) = TYPE_LANG_CODE (type);
       TYPE_LANG_VMT_FIELD (t) = TYPE_LANG_VMT_FIELD (type);
       TYPE_LANG_VMT_VAR (t) = TYPE_LANG_VMT_VAR (type);

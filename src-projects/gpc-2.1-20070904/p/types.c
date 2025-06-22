@@ -1481,7 +1481,11 @@ pack_type (tree type)
 #ifdef GCC_4_0
       /* @@@@@@ Maybe */
       /* TYPE_NO_FORCE_BLK (type) = 1; */
+#ifdef GCC_4_4
+      SET_TYPE_MODE (type, BLKmode);
+#else
       TYPE_MODE (type) = BLKmode;
+#endif
 #endif
     }
   else if (ORDINAL_TYPE (TREE_CODE (type)))
