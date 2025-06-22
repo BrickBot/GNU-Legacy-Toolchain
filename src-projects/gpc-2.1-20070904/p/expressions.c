@@ -2426,8 +2426,15 @@ truthvalue_conversion (tree expr)
 
     case MINUS_EXPR:
       /* With IEEE arithmetic, x - x may not equal 0, so we can't optimize this case. */
-      if (TARGET_FLOAT_FORMAT == IEEE_FLOAT_FORMAT
-          && TREE_CODE (TREE_TYPE (expr)) == REAL_TYPE)
+      if (TREE_CODE (TREE_TYPE (expr)) == REAL_TYPE
+#ifndef GCC_4_4
+          /* TARGET_FLOAT_FORMAT has been eliminated 
+           * c.f. gcc/ChangeLog-2008, lines 10832-10847
+           * https://gcc.gnu.org/legacy-ml/gcc-patches/2008-08/msg00645.html
+           */
+          && TARGET_FLOAT_FORMAT == IEEE_FLOAT_FORMAT
+#endif
+		)
         break;
       /* FALLTHROUGH */
     case BIT_XOR_EXPR:
