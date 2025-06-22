@@ -1302,6 +1302,22 @@ build_predef_call (int r_num, tree apar)
 
   if (r_num == p_Exit && apar)
     {
+#ifdef GCC_4_4
+      /*  struct outer_function_chain removed in GCC 4.4
+       *    - https://gcc.gnu.org/cgit/gcc/commit/?id=936fc9bad2df490917cbb01f27c9eede43f9e153
+       *
+       *  The scope here is when the predefined id (r_num) is p_Exit -AND- there is an argument (apar).
+       *  Noting that Borland Pascal only allows Exit _without_ an argument
+       *    (c.f. https://www.gnu-pascal.de/gpc/Exit.html ),
+       *    the simplest solution here might be to follow Borland Pascal and
+       *    only allow Exit _without_ an argument.
+       *
+       *  Multiple returns / points of exit go against best coding practices
+       *    as articulated in "Code Complete, 2nd Edition," page 393, anyway.
+       */
+      error ("with GCC 4.4 and above, the `Exit' implementation follows Borland Pascal in not allowing arguments");
+      return error_mark_node;
+#else
       tree id = TREE_VALUE (apar);
       tree obn = TREE_PURPOSE (apar);
       apar = NULL_TREE;
@@ -1349,6 +1365,7 @@ build_predef_call (int r_num, tree apar)
             error ("`%s' does not allow non-local `Exit'", IDENTIFIER_NAME (id));
           return error_mark_node;
         }
+#endif /* GCC_4_4 */
     }
 
   for (val = apar; val; val = TREE_CHAIN (val))

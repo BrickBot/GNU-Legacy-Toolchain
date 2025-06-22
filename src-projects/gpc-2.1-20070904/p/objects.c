@@ -79,14 +79,25 @@ get_vmt_field (tree obj)
 static tree
 current_method (void)
 {
-  struct function *p;
   tree decl;
+
+#ifdef GCC_4_4
+  /*  struct outer_function_chain removed in GCC 4.4
+   *    - cfun is current function
+   *    - https://gcc.gnu.org/cgit/gcc/commit/?id=936fc9bad2df490917cbb01f27c9eede43f9e153
+   */
+  decl = cfun->decl;
+#else
+  struct function *p;
+
 #ifdef EGCS97
   for (p = outer_function_chain; p && p->outer; p = p->outer) ;
 #else
   for (p = outer_function_chain; p && p->next; p = p->next) ;
 #endif
-  decl = p ? p->decl : current_function_decl;
+    decl = p ? p->decl : current_function_decl;
+#endif
+
   /* DECL_CONTEXT can be NULL after a previous error */
   return decl && PASCAL_METHOD (decl) && DECL_CONTEXT (decl) ? decl : NULL_TREE;
 }

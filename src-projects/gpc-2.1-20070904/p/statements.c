@@ -1201,6 +1201,12 @@ expand_pascal_assignment2 (tree target, tree source, int is_init)
         }
       if (target != current_function_decl)
         {
+#ifdef GCC_4_4
+          /*  structs outer and outer_function_chain removed in GCC 4.4
+           *    - https://gcc.gnu.org/cgit/gcc/commit/?id=936fc9bad2df490917cbb01f27c9eede43f9e153
+           */
+          /* *******  TODO  ******* */
+#else
           struct function *p;
 #ifdef EGCS97
           for (p = outer_function_chain; p && p->decl != target; p = p->outer) ;
@@ -1213,6 +1219,7 @@ expand_pascal_assignment2 (tree target, tree source, int is_init)
                      IDENTIFIER_NAME (DECL_NAME (target)));
               return;
             }
+#endif /* GCC_4_4 */
         }
       target = DECL_LANG_RESULT_VARIABLE (target);
       if (!target || !TREE_PRIVATE (target))
