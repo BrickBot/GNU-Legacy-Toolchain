@@ -2663,8 +2663,13 @@ build_pascal_array_ref (tree array, tree index_list)
                   array = build3 (BIT_FIELD_REF, TREE_TYPE (array_type),
                                   array, convert (bitsizetype, bits),
                                   convert (bitsizetype, index));
+#ifndef GCC_4_4
+                  /*  BIT_FIELD_REF_UNSIGNED has been removed
+                   *   - https://gcc.gnu.org/cgit/gcc/commit/?id=fc0f49f351977cd44ac55551e4cb0fc92477eef7
+                   */
                   BIT_FIELD_REF_UNSIGNED (array) = 
                       TYPE_UNSIGNED (TREE_TYPE (array_type));
+#endif
                 }
               else
                 array = build3 (PASCAL_BIT_FIELD_REF, TREE_TYPE (array_type), array, bits, index);
