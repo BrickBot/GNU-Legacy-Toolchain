@@ -80,7 +80,15 @@ static void do_directive (char *, int);
 location_t
 pascal_make_location (const char * fname, long line)
 {
-#if !defined(GCC_4_2) || !defined(USE_MAPPED_LOCATION)
+#ifdef GCC_4_4
+  /*  USE_MAPPED_LOCATION removed in GCC 4.4
+   *  In #ifdef USE_MAPPED_LOCATION preprocessor conditionals,
+   *    the "if" half of the block remains
+   *    and the "else" have of the block has been removed.
+   *    - https://gcc.gnu.org/cgit/gcc/commit/?id=2d593c86cfae119d9b8e765a07a952eda35ca5af
+   */
+  return UNKNOWN_LOCATION;
+#elif !defined(GCC_4_2) || !defined(USE_MAPPED_LOCATION)
   location_t loc_aux;
   loc_aux.file = fname;
   loc_aux.line = line;
