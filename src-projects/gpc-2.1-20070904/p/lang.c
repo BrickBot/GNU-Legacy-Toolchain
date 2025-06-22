@@ -557,7 +557,13 @@ add_pascal_tree_codes (void)
 }
 #else
 
-/* Tree code classes. */
+#ifndef GCC_4_4
+/* Tree code classes.
+ * In GCC 4.4 and newer, this is now automatically generated
+ *    as all-tree.def (in the build outputs) and included by
+ *    gcc/tree.c
+ *    - https://gcc.gnu.org/cgit/gcc/commit/?id=c0ed0531e5b067d780d4a6444027c5b4a399c027
+ */
 #define DEFTREECODE(SYM, NAME, TYPE, LENGTH) TYPE,
 #ifdef GCC_4_0
 const enum tree_code_class tree_code_type[] = {
@@ -597,6 +603,7 @@ const char *const tree_code_name[] = {
 };
 #undef DEFTREECODE
 
+#endif
 #endif
 
 extern int debug_no_type_hash;

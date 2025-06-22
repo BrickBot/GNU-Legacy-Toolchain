@@ -271,6 +271,13 @@ enum
          dialect_msg (co->pascal_dialect && !(co->pascal_dialect & (DIALECT)), \
            (DIALECT), (MSG), " an extension of", (ARG)); } while (0)
 
+#ifndef GCC_4_4
+/* Tree code enumeration.
+ * In GCC 4.4 and newer, this is now automatically generated
+ *    as all-tree.def (in the build outputs) and included by
+ *    gcc/tree.c
+ *    - https://gcc.gnu.org/cgit/gcc/commit/?id=c0ed0531e5b067d780d4a6444027c5b4a399c027
+ */
 #define DEFTREECODE(SYM, NAME, TYPE, LENGTH) SYM,
 enum pascal_tree_code
 {
@@ -279,6 +286,7 @@ enum pascal_tree_code
   LAST_AND_UNUSED_PASCAL_TREE_CODE
 };
 #undef DEFTREECODE
+#endif
 
 #ifndef GCC_3_4
 #define FIRST_OPERAND(code) ((code) == CONSTRUCTOR ? 1 : 0)
