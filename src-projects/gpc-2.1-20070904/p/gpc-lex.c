@@ -94,7 +94,7 @@ pascal_make_location (const char * fname, long line)
   loc_aux.line = line;
   return loc_aux;
 #else
-  UNKNOWN_LOCATION;
+  return UNKNOWN_LOCATION;
 #endif
 }
 #endif
