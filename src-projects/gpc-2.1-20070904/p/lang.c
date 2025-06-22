@@ -748,7 +748,12 @@ pascal_post_options (const char **pfilename)
     lineno = 1;
     /* With luck, we discover the real source file name from a line directive
        at the beginning of the file and put it in input_filename. */
+#ifndef GCC_4_4
+    /*  file_stack, input_file_stack, etc. removed in GCC 4.4
+     *    - https://gcc.gnu.org/cgit/gcc/commit/?id=966e8f4d3fa971039cad79e25de0f0cb385a9368
+     */
     set_old_input_filename (filename ? filename : "???");
+#endif
     peek_token (0);
     saved_lineno = lineno;
 

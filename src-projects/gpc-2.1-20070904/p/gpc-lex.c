@@ -295,12 +295,24 @@ do_directive (char *s, int l)
   process_pascal_directive (s, q - s);
 }
 
+#ifdef GCC_4_4
+/*  file_stack, input_file_stack, etc. removed in GCC 4.4
+ *    - https://gcc.gnu.org/cgit/gcc/commit/?id=966e8f4d3fa971039cad79e25de0f0cb385a9368
+ */
+struct line_stack
+{
+  struct line_stack *next;
+  unsigned int line;
+};
+struct line_stack *input_line_stack = NULL;
+#else
 const char *old_input_filename;
 
 void set_old_input_filename (const char *s)
 {
   old_input_filename = save_string (s);
 }
+#endif
 
 void
 SetFileName (int v)
@@ -313,6 +325,14 @@ SetFileName (int v)
   if (v == 1)
     {
       /* Pushing to a new file. */
+#ifdef GCC_4_4
+      /*  file_stack, input_file_stack, etc. removed in GCC 4.4
+       *    - https://gcc.gnu.org/cgit/gcc/commit/?id=966e8f4d3fa971039cad79e25de0f0cb385a9368
+       */
+      struct line_stack *p = (struct line_stack *) xmalloc (sizeof (struct line_stack));
+      p->line = LexPos.Line;
+	  p->next = input_line_stack;
+#else
       struct file_stack *p = (struct file_stack *) xmalloc (sizeof (struct file_stack));
 #ifndef GCC_3_4
       input_file_stack->line = LexPos.Line;
@@ -323,6 +343,8 @@ SetFileName (int v)
       p->next = input_file_stack;
       input_file_stack = p;
       input_file_stack_tick++;
+#endif /* GCC_4_4 */
+
 #ifdef EGCS97
       /* Can use backend only after initialization (see err1.pas) */
       if (main_input_filename)
@@ -334,41 +356,51 @@ SetFileName (int v)
   else if (v == 2)
     {
       /* Popping out of a file. */
-#ifndef GCC_3_4
+#if defined(GCC_4_4)
+      if (input_line_stack && input_line_stack->next)
+#elif !defined(GCC_3_4)
       if (input_file_stack->next)
 #else
       if (input_file_stack)
 #endif
         {
+#if defined(GCC_4_4)
+          struct line_stack *p = input_line_stack;
+          input_line_stack = p->next;
+          debug_hooks->end_source_file (p->line);
+#else
           struct file_stack *p = input_file_stack;
           input_file_stack = p->next;
           input_file_stack_tick++;
-#ifdef EGCS97
-#ifndef GCC_3_4
+#if defined(EGCS97)
+#if !defined(GCC_3_4)
           (*debug_hooks->end_source_file) (input_file_stack->line);
-#else
-#ifndef GCC_4_2
+#elif !defined(GCC_4_2)
           (*debug_hooks->end_source_file) (p->location.line);
-#endif
+#else
+           /* *******  TODO: Undefined for pre-GCC 3.4 and GCC 4.2 & 4.3 ??? ******* */
 #endif
 #else
           debug_end_source_file (input_file_stack->line);
-#endif
-          free (p);
+#endif /* EGCS97  */
+#endif /* GCC_4_4 */
+          if (p)
+            free (p);
         }
       else
         error ("#-lines for entering and leaving files don't match");
     }
+
 #ifdef EGCS97
   if (!main_input_filename)
     main_input_filename = pascal_input_filename;
 #endif
   /* Now that we've pushed or popped the input stack,
      update the name in the top element. */
-#ifndef GCC_3_4
+#if !defined(GCC_3_4)
   if (input_file_stack)
     input_file_stack->name = pascal_input_filename;
-#else
+#elif !defined(GCC_4_4)
   old_input_filename = pascal_input_filename;
 #endif
 }
