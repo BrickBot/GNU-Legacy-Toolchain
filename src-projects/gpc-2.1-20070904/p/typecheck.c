@@ -4100,7 +4100,10 @@ do_build_constructor_rev (tree type, VEC(constructor_elt,gc) *el)
   if (constructor_constant)
     {
       TREE_CONSTANT (constructor) = 1;
-#ifdef GCC_4_0
+#if defined(GCC_4_0) && !defined(GCC_4_4)
+      /*  TREE_INVARIANT removed in GCC 4.4
+       *   - https://gcc.gnu.org/cgit/gcc/commit/?id=51eed2800da645f00fb35fcee7a217090ec61f54
+       */
       TREE_INVARIANT (constructor) = 1;
 #endif
     }
@@ -4318,7 +4321,10 @@ pop_init_level (void)
           if (constructor_constant)
             {
               TREE_CONSTANT (constructor) = 1;
-#ifdef GCC_4_0
+#if defined(GCC_4_0) && !defined(GCC_4_4)
+              /*  TREE_INVARIANT removed in GCC 4.4
+               *   - https://gcc.gnu.org/cgit/gcc/commit/?id=51eed2800da645f00fb35fcee7a217090ec61f54
+               */
               TREE_INVARIANT (constructor) = 1;
 #endif
             }

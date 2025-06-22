@@ -342,7 +342,10 @@ build_set_constructor (tree elements)
   TREE_TYPE (t) = empty_set_type_node;  /* real type not yet known */
   SET_CONSTRUCTOR_ELTS (t) = elements;
   TREE_CONSTANT (t) = TREE_STATIC (t) = is_constant;
-#ifdef GCC_4_0
+#if defined(GCC_4_0) && !defined(GCC_4_4)
+  /*  TREE_INVARIANT removed in GCC 4.4
+   *   - https://gcc.gnu.org/cgit/gcc/commit/?id=51eed2800da645f00fb35fcee7a217090ec61f54
+   */
   TREE_INVARIANT (t) = is_constant;
 #endif
   PASCAL_CONSTRUCTOR_INT_CST (t) = is_intcst;
