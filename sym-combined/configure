@@ -3,7 +3,7 @@
 # Constants
 ALL_TOOLCHAIN_SETS="gdb5 gcc3 gcc44"
 gcc3_languages=c,c++,f77,java,objc,treelang,pascal
-gcc44_languages=c,c++,java,cil
+gcc44_languages=c,c++,java,cil,pascal
 # NOTE: Ada is excluded from the language lists because it cannot bootstrap
 
 # Variable declarations and initializations

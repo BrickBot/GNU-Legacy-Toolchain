@@ -30,10 +30,6 @@ gtfiles="\$(srcdir)/p/gpc.h \$(srcdir)/p/declarations.c \$(srcdir)/p/module.c \$
 
 target_libs=target-libgpc
 
-#echo "in p/config-lang.in"
-#echo "srcdir=$srcdir"
-#echo "pwd=`pwd`"
-
 (
 if [ -f "$srcdir/version.c" ]; then
   MY_SRCDIR="$srcdir"
@@ -60,6 +56,13 @@ else
 fi
 
 mainversion="$version"
+
+#echo "in p/config-lang.in"
+#echo "pwd=`pwd`"
+#echo "srcdir=$srcdir"
+#echo "gcc_version_h=$gcc_version_h"
+#echo "mainversion=$mainversion"
+
 gcc281=y
 gcc3=n
 if echo $version | grep '^2\.9' > /dev/null || echo $version | grep '^3\.[1-9]' > /dev/null || echo $version | grep '^4\.[0-9]' > /dev/null; then
