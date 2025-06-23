@@ -4186,7 +4186,7 @@ invocations have returned.
 
 
 @kindex advance @var{location}
-@itemx advance @var{location}
+@item advance @var{location}
 Continue running the program up to the given @var{location}.  An argument is
 required, which should be of one of the forms described in
 @ref{Specify Location}.
@@ -7310,11 +7310,11 @@ for both host and target.
 @kindex show charset
 Show the names of the current host and target charsets.
 
-@itemx show host-charset
+@item show host-charset
 @kindex show host-charset
 Show the name of the current host charset.
 
-@itemx show target-charset
+@item show target-charset
 @kindex show target-charset
 Show the name of the current target charset.
 
