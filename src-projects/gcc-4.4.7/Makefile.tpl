@@ -277,6 +277,9 @@ HOST_CLOOGINC = @clooginc@
 HOST_MONOLIBS = @monolibs@
 HOST_MONOINC = @monoinc@
 
+# This is whether to also build shared RTS library when building GPC
+with_gpc_shared = @with_gpc_shared@
+
 # ----------------------------------------------
 # Programs producing files for the BUILD machine
 # ----------------------------------------------

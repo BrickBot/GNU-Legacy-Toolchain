@@ -274,6 +274,9 @@ HOST_CLOOGINC = @clooginc@
 HOST_MONOLIBS = @monolibs@
 HOST_MONOINC = @monoinc@
 
+# This is whether to also build shared RTS library when building GPC
+with_gpc_shared = @with_gpc_shared@
+
 # ----------------------------------------------
 # Programs producing files for the BUILD machine
 # ----------------------------------------------
@@ -531,6 +534,7 @@ BASE_FLAGS_TO_PASS = \
 	"tooldir=$(tooldir)" \
 	"build_tooldir=$(build_tooldir)" \
 	"target_alias=$(target_alias)" \
+	"with_gpc_shared=$(with_gpc_shared)" \
 	"BISON=$(BISON)" \
 	"CC_FOR_BUILD=$(CC_FOR_BUILD)" \
 	"CFLAGS_FOR_BUILD=$(CFLAGS_FOR_BUILD)" \

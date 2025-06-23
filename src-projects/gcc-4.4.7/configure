@@ -13372,6 +13372,7 @@ s,@build_configdirs@,$build_configdirs,;t t
 s,@host_configargs@,$host_configargs,;t t
 s,@configdirs@,$configdirs,;t t
 s,@target_configargs@,$target_configargs,;t t
+s,@with_gpc_shared@,$with_gpc_shared,;t t
 s,@AR_FOR_BUILD@,$AR_FOR_BUILD,;t t
 s,@AS_FOR_BUILD@,$AS_FOR_BUILD,;t t
 s,@CC_FOR_BUILD@,$CC_FOR_BUILD,;t t
