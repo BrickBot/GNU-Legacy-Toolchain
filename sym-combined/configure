@@ -162,10 +162,6 @@ for TARGET in $TARGETS_TO_GENERATE
 do
   # Output the primary target
   echo -n "$TARGET: " >> $MAKEFILE_PATH
-  if [ "$TARGET" == "install" ] ; then
-    # Add the default "all" prerequisite
-    echo -n " all " >> $MAKEFILE_PATH
-  fi
   for TOOLCHAIN_SET in $ALL_TOOLCHAIN_SETS
   do
     if isIncluded "$toolchain_sets" "$TOOLCHAIN_SET" ; then
