@@ -14,13 +14,14 @@ Multiple use cases exist for continuing to maintain a legacy toolchain:
 
 While primary goal of this respository is to build a cross-toolchain targeting Hitachi/Renesas H8/300 processors with the COFF format, this should work for other targets as well.
 Though this H8/300 target has colloquially been referred to as h8300-hitachi-hms, it is more properly identified as
-h8300-hitachi-coff ([ref 1](https://tracker.debian.org/pkg/gcc-h8300-hms), [ref 2](https://sources.debian.org/src/gcc-h8300-hms/1%3A3.4.6%2Bdfsg2-4.2/debian/rules/#L30)).
+h8300-hitachi-coff ([ref 1](https://tracker.debian.org/pkg/gcc-h8300-hms), [ref 2](https://sources.debian.org/src/gcc-h8300-hms/1%3A3.4.6%2Bdfsg2-4.2/debian/rules/#L30),
+[object file format info](https://maskray.me/blog/2024-01-14-exploring-object-file-formats)).
 
 
 Quick Start Build Guide
 -----------------------
 Build instructions are essentially the same as those for GCC, with a few additional options:
-1. Create a folder for building that is outside of the source tree
+1. Create a folder for building that is _outside_ the source tree
 2. From that build folder, run either `configure` or one of the following use-case-specific wrapper helpers:
    1. `h8300-hitachi-coff-configure`:  For use with COFF targets for the Hitachi H8/300, which defaults to an integrated toolchain based on GCC v3.
    2. `rcx-lego-configure`:  Created for use with the LEGO MindStorms RCX, which defaults to an integrated toolchain based on GCC v3 but with a separate GDB (v5).
