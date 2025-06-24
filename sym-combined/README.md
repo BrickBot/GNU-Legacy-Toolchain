@@ -38,43 +38,43 @@ which is then used as the source folder for builds.
 | ------------ | ---------- | ---------------------------- | ------------------ | -------------------- |
 | bfd          | binutils   | 2.16.1                       | 2.16.1             | 2.16.1               |
 | binutils     | binutils   | 2.16.1                       | 2.16.1             | 2.16.1               |
-| boehm-gc     | GCC (libs) | (n/a)                        | 4.4.7              | 4.4.7                |
+| boehm-gc     | GCC (libs) | —                            | 4.4.7              | 4.4.7                |
 | cgen         | binutils   | 2.16.1                       | 2.16.1             | 2.16.1               |
 | config       | gcc        | 3.4.6                        | 3.4.6              | 4.4.7                |
-| contrib      | gcc        | (n/a)                        | (n/a)              | 4.4.7                |
+| contrib      | gcc        | —                            | —                  | 4.4.7                |
 | cpu          | binutils   | 2.16.1                       | 2.16.1             | 2.16.1               |
 | etc          | binutils   | 2.16.1                       | 2.16.1             | 2.16.1               |
-| fastjar      | gcc        | (n/a)                        | 3.4.6              | (n/a)                |
-| fixincludes  | gcc        | (n/a)                        | (n/a)              | 4.4.7                |
+| fastjar      | gcc        | —                            | 3.4.6              | —                    |
+| fixincludes  | gcc        | —                            | —                  | 4.4.7                |
 | gas          | binutils   | 2.16.1                       | 2.16.1             | 2.16.1               |
-| gcc          | gcc        | (n/a)                        | 3.4.6              | 4.4.7                |
-| gcc/p        | GPC        | (n/a)                        | 2.1-20070904       | 2.1-20070904         |
-| gdb          | gdb        | (n/a)                        | 6.8                | 6.8                  |
-| gnattools    | gdb        | (n/a)                        | (n/a)              | 6.8                  |
+| gcc          | gcc        | —                            | 3.4.6              | 4.4.7                |
+| gcc/p        | GPC        | —                            | 2.1-20070904       | 2.1-20070904         |
+| gdb          | gdb        | —                            | 6.8                | 6.8                  |
+| gnattools    | gdb        | —                            | —                  | 6.8                  |
 | gprof        | binutils   | 2.16.1                       | 2.16.1             | 2.16.1               |
 | include      | GCC (libs) | 4.4.7                        | 4.4.7              | 4.4.7                |
 | intl         | GCC (libs) | 4.4.7                        | 4.4.7              | 4.4.7                |
 | ld           | binutils   | 2.16.1                       | 2.16.1             | 2.16.1               |
-| libada       | gcc        | (n/a)                        | (n/a)              | 4.4.7                |
-| libcpp       | gcc        | (n/a)                        | (n/a)              | 4.4.7                |
-| libdecnumber | GCC (libs) | (n/a)                        | 4.4.7              | 4.4.7                |
-| libf2c       | gcc        | (n/a)                        | 3.4.6              | (n/a)                |
-| libffi       | GCC (libs) | (n/a)                        | 4.4.7              | 4.4.7                |
-| libgcc       | gcc        | (n/a)                        | (n/a)              | 4.4.7                |
-| libgfortran  | gcc        | (n/a)                        | (n/a)              | 4.4.7                |
-| libgloss     | newlib     | (n/a)                        | 1.19.0             | 1.19.0               |
-| libgomp      | gcc        | (n/a)                        | (n/a)              | 4.4.7                |
+| libada       | gcc        | —                            | —                  | 4.4.7                |
+| libcpp       | gcc        | —                            | —                  | 4.4.7                |
+| libdecnumber | GCC (libs) | —                            | 4.4.7              | 4.4.7                |
+| libf2c       | gcc        | —                            | 3.4.6              | —                    |
+| libffi       | GCC (libs) | —                            | 4.4.7              | 4.4.7                |
+| libgcc       | gcc        | —                            | —                  | 4.4.7                |
+| libgfortran  | gcc        | —                            | —                  | 4.4.7                |
+| libgloss     | newlib     | —                            | 1.19.0             | 1.19.0               |
+| libgomp      | gcc        | —                            | —                  | 4.4.7                |
 | libiberty    | GCC (libs) | 4.4.7                        | 4.4.7              | 4.4.7                |
-| libjava      | GCC (libs) | (n/a)                        | 4.4.7              | 4.4.7                |
-| libmudflap   | gcc        | (n/a)                        | (n/a)              | 4.4.7                |
-| libobjc      | gcc        | (n/a)                        | 3.4.6              | 4.4.7                |
-| libstdc++-v3 | gcc        | (n/a)                        | 3.4.6              | 4.4.7                |
-| newlib       | newlib     | (n/a)                        | 1.19.0             | 1.19.0               |
+| libjava      | GCC (libs) | —                            | 4.4.7              | 4.4.7                |
+| libmudflap   | gcc        | —                            | —                  | 4.4.7                |
+| libobjc      | gcc        | —                            | 3.4.6              | 4.4.7                |
+| libstdc++-v3 | gcc        | —                            | 3.4.6              | 4.4.7                |
+| newlib       | newlib     | —                            | 1.19.0             | 1.19.0               |
 | opcodes      | binutils   | 2.16.1                       | 2.16.1             | 2.16.1               |
-| readline     | gdb        | (n/a)                        | 6.8                | 6.8                  |
-| sim          | gdb        | (n/a)                        | 6.8                | 6.8                  |
+| readline     | gdb        | —                            | 6.8                | 6.8                  |
+| sim          | gdb        | —                            | 6.8                | 6.8                  |
 | texinfo      | binutils   | 2.16.1                       | 2.16.1             | 2.16.1               |
-| zlib         | GCC (libs) | (n/a)                        | 4.4.7              | 4.4.7                |
+| zlib         | GCC (libs) | —                            | 4.4.7              | 4.4.7                |
 
 
 The sym-linked files under that same folder are each from the respective GCC version:
