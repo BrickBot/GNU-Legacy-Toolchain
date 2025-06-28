@@ -1,0 +1,32 @@
+#!/bin/sh
+# Files stored in or extracted from a Git repository can have indeterminate
+#   file modified timestamps, which throws off Make.  Given the age of the
+#   original project releases, some files do not re-autogenerate the same
+#   as they originally did, causing errors.  Fixing the timestamps aims to
+#   prevent this issue.
+
+# Variable declarations and initializations
+SCRIPT_FULL_PATH=$(realpath -s $0)
+SCRIPT_DIR=$(dirname $SCRIPT_FULL_PATH)
+
+echo "Preparing to fix timestamps, which could take several minutes."
+
+(
+  cd $SCRIPT_DIR && \
+  git restore-mtime 2> /dev/null && \
+  echo "Completed fixing of file modified timestamps using \"git restore-mtime\""
+) || (
+  # Cache the timestamp to use as standard
+  STANDARDIZED_TIMESTAMP=$(date --reference=$SCRIPT_FULL_PATH +%Y%m%d%k%M) && \
+  cd $SCRIPT_DIR/src-projects && \
+  for dir in */ ; do
+    echo -n "Processing directory $(basename $dir)..." ;
+    find "$dir" -depth -type f -exec touch -t $STANDARDIZED_TIMESTAMP {} \;
+    #find "$dir" -depth -type f -exec echo "File: {}" \; -exec touch -t $STANDARDIZED_TIMESTAMP {} \;
+	echo "done."
+  done && \
+  echo "Completed setting of file modified timestamps to match a standard reference"
+) || (
+  echo -e "\nError while attempting to fix file modification times: No timestamps updated." && \
+  exit 1
+)
