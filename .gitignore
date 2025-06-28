@@ -1,5 +1,6 @@
 # Repository-Specific Files and Folders
 build/
+outputs/
 src-packages/
 sysroot/
 
