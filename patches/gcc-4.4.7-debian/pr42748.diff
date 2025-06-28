@@ -1,0 +1,54 @@
+# DP: Fix PR c++/42748, do not warn about changes to mangling of va_list
+# DP: in system headers.
+
+gcc/
+
+2010-01-24  Mark Mitchell  <mark@codesourcery.com>
+
+	PR c++/42748
+	* config/arm/arm.c (arm_mangle_type): Do not warn about changes to
+	mangling of va_list in system headers.
+
+ 
+gcc/testsuite/
+
+2010-01-24  Mark Mitchell  <mark@codesourcery.com>
+
+	PR c++/42748
+	* g++.dg/abi/arm_va_list2.C: New test.
+	* g++.dg/abi/arm_va_list2.h: Companion header file.
+
+Index: gcc/testsuite/g++.dg/abi/arm_va_list2.C
+===================================================================
+--- a/src/gcc/testsuite/g++.dg/abi/arm_va_list2.C	(revision 0)
++++ b/src/gcc/testsuite/g++.dg/abi/arm_va_list2.C	(revision 156202)
+@@ -0,0 +1,7 @@
++// { dg-do compile }
++// { dg-options "-Wpsabi" }
++// { dg-require-effective-target arm_eabi }
++
++#include <stdarg.h>
++#include "arm_va_list2.h"
++
+Index: gcc/testsuite/g++.dg/abi/arm_va_list2.h
+===================================================================
+--- a/src/gcc/testsuite/g++.dg/abi/arm_va_list2.h	(revision 0)
++++ b/src/gcc/testsuite/g++.dg/abi/arm_va_list2.h	(revision 156202)
+@@ -0,0 +1,4 @@
++// The mangling of va_list changed in GCC 4.4.  We want to warn about
++// that -- but not in a system header.
++#pragma GCC system_header
++void f(va_list) {}
+Index: gcc/config/arm/arm.c
+===================================================================
+--- a/src/gcc/config/arm/arm.c	(revision 156201)
++++ b/src/gcc/config/arm/arm.c	(revision 156202)
+@@ -21372,7 +21372,7 @@
+       && lang_hooks.types_compatible_p (CONST_CAST_TREE (type), va_list_type))
+     {
+       static bool warned;
+-      if (!warned && warn_psabi)
++      if (!warned && warn_psabi && !in_system_header)
+ 	{
+ 	  warned = true;
+ 	  inform (input_location,

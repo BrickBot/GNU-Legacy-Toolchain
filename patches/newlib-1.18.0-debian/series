@@ -1,0 +1,4 @@
+60_newlib-libgloss-eabi.patch
+61_newlib_arm_include.patch
+62_long_double_infinity.patch
+65_multiarch-headers.patch

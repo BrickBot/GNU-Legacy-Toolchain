@@ -133,7 +133,7 @@ fi
 
 # these libraries are used by various programs built for the host environment
 #
-host_libs="intl mmalloc libiberty opcodes bfd readline tcl tk itcl tix libgui zlib"
+host_libs="intl mmalloc libiberty opcodes bfd readline tcl tk itcl tix libgui zlib libdecnumber"
 
 # these tools are built for the host environment
 # Note, the powerpc-eabi build depends on sim occurring before gdb in order to
@@ -225,6 +225,21 @@ use_gnu_as=
 if test x$with_gnu_as = xno ; then
   use_gnu_as=no
   noconfigdirs="$noconfigdirs gas"
+fi
+
+# Make sure we don't let libdecnumber be added if we didn't want it.
+if test x$enable_libdecnumber = xno ; then
+  noconfigdirs="$noconfigdirs libdecnumber"
+fi
+
+# Make sure we don't let Sim be added if we didn't want it.
+if test x$enable_sim = xno ; then
+  noconfigdirs="$noconfigdirs sim"
+fi
+
+# Make sure we don't let GDB be added if we didn't want it.
+if test x$enable_gdb = xno ; then
+  noconfigdirs="$noconfigdirs gdb"
 fi
 
 # some tools are so dependent upon X11 that if we're not building with X, 

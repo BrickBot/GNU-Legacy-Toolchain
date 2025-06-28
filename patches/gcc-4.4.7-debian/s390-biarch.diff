@@ -1,0 +1,24 @@
+# DP: Build a bi-arch compiler on s390-linux-gnu.
+# DP: http://gcc.gnu.org/ml/gcc-patches/2009-03/msg01044.html
+
+2009-03-23  Arthur Loiret  <aloiret@debian.org>
+
+	* config.gcc (s390-*-linux*): If 'enabled_targets' is 'all', build
+	a bi-arch compiler defaulting to 31-bit. In this case:
+	(tmake_file): Add s390/t-linux64.
+---
+ gcc/config.gcc |    3 +++
+ 1 files changed, 3 insertions(+), 0 deletions(-)
+
+--- a/src/gcc/config.gcc
++++ b/src/gcc/config.gcc
+@@ -1966,6 +1966,9 @@ rs6000-ibm-aix[6789].* | powerpc-ibm-aix[6789].*)
+ s390-*-linux*)
+ 	tm_file="s390/s390.h dbxelf.h elfos.h svr4.h linux.h s390/linux.h"
+ 	tmake_file="${tmake_file} t-dfprules s390/t-crtstuff s390/t-linux"
++	if test x$enable_targets = xall; then
++		tmake_file="${tmake_file} s390/t-linux64"
++	fi
+ 	;;
+ s390x-*-linux*)
+ 	tm_file="s390/s390x.h s390/s390.h dbxelf.h elfos.h svr4.h linux.h s390/linux.h"

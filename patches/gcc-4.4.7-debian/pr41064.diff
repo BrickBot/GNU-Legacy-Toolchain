@@ -1,0 +1,35 @@
+# DP: Work around PR middle-end/41064 by backporting a trunk commit
+# DP: Combine with pr37053.diff to avoid regressions!
+
+gcc/
+
+2009-08-14  Hans-Peter Nilsson  <hp@axis.com>
+
+	PR rtl-optimization/41064
+	* reload1.c (reload_as_needed): Don't call extract_insn
+	for known invalid replacements after calling
+	validate_replace_rtx_group and verify_changes.
+
+Index: gcc/reload1.c
+===================================================================
+--- a/src/gcc/reload1.c	(revision 150750)
++++ b/src/gcc/reload1.c	(revision 150751)
+@@ -4312,10 +4312,15 @@
+ 			      n = verify_changes (0);
+ 
+ 			      /* We must also verify that the constraints
+-				 are met after the replacement.  */
+-			      extract_insn (p);
++				 are met after the replacement.  Make sure
++				 extract_insn is only called for an insn
++				 where the replacements were found to be
++				 valid so far. */
+ 			      if (n)
+-				n = constrain_operands (1);
++				{
++				  extract_insn (p);
++				  n = constrain_operands (1);
++				}
+ 
+ 			      /* If the constraints were not met, then
+ 				 undo the replacement, else confirm it.  */

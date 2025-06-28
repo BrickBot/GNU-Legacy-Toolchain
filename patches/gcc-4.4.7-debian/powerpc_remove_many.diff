@@ -1,0 +1,33 @@
+# DP: Subject: [PATCH] remove -many on __SPE__ target
+# DP: this helps to to detect opcodes which are not part of the current
+# DP: CPU because without -many gas won't touch them. This currently could
+# DP: break the kernel build as the 603 on steroids cpus use performance
+# DP: counter opcodes which are not available on the steroid less 603 core.
+
+Index: gcc-4.4.5/src/gcc/config/rs6000/rs6000.h
+===================================================================
+--- gcc-4.4.5.orig/src/gcc/config/rs6000/rs6000.h	2009-04-10 01:23:07.000000000 +0200
++++ gcc-4.4.5/src/gcc/config/rs6000/rs6000.h	2011-02-13 17:57:17.000000000 +0100
+@@ -83,6 +83,12 @@
+ #define ASM_CPU_POWER7_SPEC "-mpower4 -maltivec"
+ #endif
+ 
++#ifndef __SPE__
++#define ASM_CPU_SPU_MANY_NOT_SPE "-many"
++#else
++#define ASM_CPU_SPU_MANY_NOT_SPE
++#endif
++
+ /* Common ASM definitions used by ASM_SPEC among the various targets
+    for handling -mcpu=xxx switches.  */
+ #define ASM_CPU_SPEC \
+@@ -147,7 +153,8 @@
+ %{mcpu=e300c3: -me300} \
+ %{mcpu=e500mc: -me500mc} \
+ %{maltivec: -maltivec} \
+--many"
++" \
++ASM_CPU_SPU_MANY_NOT_SPE
+ 
+ #define CPP_DEFAULT_SPEC ""
+ 

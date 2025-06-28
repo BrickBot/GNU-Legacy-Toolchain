@@ -40,7 +40,7 @@ do									     \
   /* Advance the program counter so that it is after the start of the	     \
      instruction:  the x86_64 exception handler expects			     \
      the PC to point to the instruction after a call. */		     \
-  struct ucontext *_uc = (struct ucontext *)_p;				     \
+  ucontext_t *_uc = (ucontext_t *)_p;				     \
   volatile struct sigcontext *_sc = (struct sigcontext *) &_uc->uc_mcontext; \
   _sc->rip += 2;							     \
 }									     \

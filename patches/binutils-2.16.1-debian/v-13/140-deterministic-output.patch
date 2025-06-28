@@ -1,0 +1,94 @@
+From: Nicolas Schodet <nico@ni.fr.eu.org>
+Date: Fri, 28 Mar 2025 23:39:30 +0100
+Subject: Generate deterministic output
+
+This takes some inspiration from recent binutils versions, namely the
+BFD_DETERMINISTIC_OUTPUT flag, which is enabled by default on Debian for
+regular binutils builds.
+
+Only files used for h8300 are patched.
+
+Also change COFF object file output from gas. This code is no longer
+present in recent binutils.
+
+Forwarded: not-needed
+---
+ bfd/archive.c         | 21 ++++++++++++++++-----
+ gas/config/obj-coff.c |  5 +----
+ 2 files changed, 17 insertions(+), 9 deletions(-)
+
+diff --git a/bfd/archive.c b/bfd/archive.c
+index 879360c..fee9831 100644
+--- a/bfd/archive.c
++++ b/bfd/archive.c
+@@ -1343,6 +1343,12 @@ bfd_ar_hdr_from_filesystem (bfd *abfd, const char *filename, bfd *member)
+       return NULL;
+     }
+ 
++  /* Generate deterministic output. */
++  status.st_mtime = 0;
++  status.st_uid = 0;
++  status.st_gid = 0;
++  status.st_mode = 0644;
++
+   amt = sizeof (struct ar_hdr) + sizeof (struct areltdata);
+   ared = bfd_zalloc (abfd, amt);
+   if (ared == NULL)
+@@ -1898,14 +1904,15 @@ bsd_write_armap (bfd *arch,
+   stat (arch->filename, &statbuf);
+   memset (&hdr, ' ', sizeof (struct ar_hdr));
+   memcpy (hdr.ar_name, RANLIBMAG, strlen (RANLIBMAG));
+-  /* Remember the timestamp, to keep it holy.  But fudge it a little.  */
+-  bfd_ardata (arch)->armap_timestamp = statbuf.st_mtime + ARMAP_TIME_OFFSET;
++  /* Generate deterministic output. */
++  bfd_ardata (arch)->armap_timestamp = 0;
+   bfd_ardata (arch)->armap_datepos = (SARMAG
+ 				      + offsetof (struct ar_hdr, ar_date[0]));
+   _bfd_ar_spacepad (hdr.ar_date, sizeof (hdr.ar_date), "%ld",
+                     bfd_ardata (arch)->armap_timestamp);
+-  _bfd_ar_spacepad (hdr.ar_uid, sizeof (hdr.ar_uid), "%ld", getuid ());
+-  _bfd_ar_spacepad (hdr.ar_gid, sizeof (hdr.ar_gid), "%ld", getgid ());
++  /* Generate deterministic output. */
++  _bfd_ar_spacepad (hdr.ar_uid, sizeof (hdr.ar_uid), "%ld", 0);
++  _bfd_ar_spacepad (hdr.ar_gid, sizeof (hdr.ar_gid), "%ld", 0);
+   _bfd_ar_spacepad (hdr.ar_size, sizeof (hdr.ar_size), "%-10ld", mapsize);
+   memcpy (hdr.ar_fmag, ARFMAG, 2);
+   if (bfd_bwrite (&hdr, sizeof (struct ar_hdr), arch)
+@@ -1973,6 +1980,9 @@ _bfd_archive_bsd_update_armap_timestamp (bfd *arch)
+   struct stat archstat;
+   struct ar_hdr hdr;
+ 
++  /* Generate deterministic output. */
++  return TRUE;
++
+   /* Flush writes, get last-write timestamp from file, and compare it
+      to the timestamp IN the file.  */
+   bfd_flush (arch);
+@@ -2056,8 +2066,9 @@ coff_write_armap (bfd *arch,
+   hdr.ar_name[0] = '/';
+   _bfd_ar_spacepad (hdr.ar_size, sizeof (hdr.ar_size), "%-10ld",
+                     mapsize);
++  /* Generate deterministic output. */
+   _bfd_ar_spacepad (hdr.ar_date, sizeof (hdr.ar_date), "%ld",
+-                    time (NULL));
++                    0);
+   /* This, at least, is what Intel coff sets the values to.  */
+   _bfd_ar_spacepad (hdr.ar_uid, sizeof (hdr.ar_uid), "%ld", 0);
+   _bfd_ar_spacepad (hdr.ar_gid, sizeof (hdr.ar_gid), "%ld", 0);
+diff --git a/gas/config/obj-coff.c b/gas/config/obj-coff.c
+index 3e947eb..147f757 100644
+--- a/gas/config/obj-coff.c
++++ b/gas/config/obj-coff.c
+@@ -3716,11 +3716,8 @@ write_object_file ()
+   do_linenos_for (abfd, &headers, &file_cursor);
+ 
+   H_SET_FILE_MAGIC_NUMBER (&headers, COFF_MAGIC);
+-#ifndef OBJ_COFF_OMIT_TIMESTAMP
+-  H_SET_TIME_STAMP (&headers, (long)time((time_t *)0));
+-#else
++  /* Generate deterministic output. */
+   H_SET_TIME_STAMP (&headers, 0);
+-#endif
+ #ifdef TC_COFF_SET_MACHINE
+   TC_COFF_SET_MACHINE (&headers);
+ #endif

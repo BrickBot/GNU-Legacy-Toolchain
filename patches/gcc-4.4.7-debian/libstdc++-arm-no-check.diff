@@ -1,0 +1,12 @@
+# DP: Don't run the libstdc++-v3 testsuite on arm*-*-linux-gnueabi
+
+--- a/src/libstdc++-v3/testsuite/Makefile.in~	2010-06-12 15:16:18.401082211 +0200
++++ b/src/libstdc++-v3/testsuite/Makefile.in	2010-06-12 15:21:47.091076028 +0200
+@@ -556,6 +556,7 @@
+ 
+ # Run the testsuite in normal mode.
+ check-DEJAGNU $(check_DEJAGNU_normal_targets): check-DEJAGNU%: site.exp
++	case "${target}" in arm*-*-linux-gnueabi) exit 0;; esac; \
+ 	AR=$(AR); export AR; \
+ 	RANLIB=$(RANLIB); export RANLIB; \
+ 	if [ -z "$*$(filter-out --target_board=%, $(RUNTESTFLAGS))" ] \

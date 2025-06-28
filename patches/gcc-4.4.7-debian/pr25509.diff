@@ -1,0 +1,68 @@
+# DP: Backport of PR c/25509, new option -Wno-unused-result
+
+gcc/
+
+2009-07-10  Manuel López-Ibáñez  <manu@gcc.gnu.org>
+
+	PR 25509
+	PR 40614
+	* c.opt (Wunused-result): New.
+	* doc/invoke.texi: Document it.
+	* c-common.c (c_warn_unused_result): Use it.
+
+gcc/testsuite/
+
+2009-07-10  Manuel López-Ibáñez  <manu@gcc.gnu.org>
+
+	PR 25509
+	PR 40614
+	* g++.dg/warn/unused-result1-Werror.c: New.
+
+Index: gcc/testsuite/g++.dg/warn/unused-result1-Werror.c
+===================================================================
+--- a/src/gcc/testsuite/g++.dg/warn/unused-result1-Werror.c	(revision 0)
++++ b/src/gcc/testsuite/g++.dg/warn/unused-result1-Werror.c	(revision 0)
+@@ -0,0 +1,10 @@
++// PR 40614
++// { dg-options "-Werror=unused-result" }
++class QByteArray {
++public:
++  QByteArray(const QByteArray &);
++};
++class QString {
++  QByteArray toLocal8Bit() const __attribute__ ((warn_unused_result));
++  void fooWarnHere() const { toLocal8Bit(); } // { dg-error "ignoring" }
++};
+Index: gcc/c.opt
+===================================================================
+--- a/src/gcc/c.opt	(revision 149591)
++++ b/src/gcc/c.opt	(working copy)
+@@ -476,6 +476,10 @@
+ C ObjC C++ ObjC++ Warning
+ Warn about macros defined in the main file that are not used
+ 
++Wunused-result
++C ObjC C++ ObjC++ Var(warn_unused_result) Init(1) Warning
++Warn if a caller of a function, marked with attribute warn_unused_result, does not use its return value
++
+ Wvariadic-macros
+ C ObjC C++ ObjC++ Warning
+ Do not warn about using variadic macros when -pedantic
+Index: gcc/c-common.c
+===================================================================
+--- a/src/gcc/c-common.c	(revision 149591)
++++ b/src/gcc/c-common.c	(working copy)
+@@ -7567,11 +7567,11 @@
+ 	      location_t loc = gimple_location (g);
+ 
+ 	      if (fdecl)
+-		warning (0, "%Hignoring return value of %qD, "
++		warning (OPT_Wunused_result, "%Hignoring return value of %qD, "
+ 			 "declared with attribute warn_unused_result",
+ 			 &loc, fdecl);
+ 	      else
+-		warning (0, "%Hignoring return value of function "
++		warning (OPT_Wunused_result, "%Hignoring return value of function "
+ 			 "declared with attribute warn_unused_result",
+ 			 &loc);
+ 	    }

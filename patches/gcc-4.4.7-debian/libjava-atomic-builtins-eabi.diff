@@ -1,0 +1,139 @@
+# DP: libjava: Use atomic builtins For Linux ARM/EABI.
+
+libjava/
+
+2009-08-12  Andrew Haley  <aph@redhat.com>
+
+	* sysdep/arm/locks.h: Use atomic builtins For Linux EABI.
+	* configure.ac: Add ATOMICSPEC.
+	* libgcj.spec.in: Likewise.
+	* configure.host (arm*-linux*): Add -Wno-abi to cxxflags.
+	(testsuite/libjava.jvmti/jvmti-interp.exp): Likewise.
+	(testsuite/libjava.jvmti/jvmti.exp): Likewise.
+	(testsuite/libjava.jni/jni.exp): Likewise.
+	Set ATOMICSPEC.
+
+ 
+Index: libjava/configure.host
+===================================================================
+--- a/src/libjava/configure.host	(revision 150701)
++++ b/src/libjava/configure.host	(revision 150702)
+@@ -69,6 +69,7 @@
+ EXCEPTIONSPEC=-fnon-call-exceptions
+ CHECKREFSPEC=
+ BACKTRACESPEC=
++ATOMICSPEC=
+ 
+ # This case statement supports per-CPU defaults.
+ case "${host}" in
+@@ -87,6 +88,7 @@
+ 	sysdeps_dir=arm
+ 	fallback_backtrace_h=sysdep/arm/backtrace.h
+ 	libgcj_cxxflags=-Wno-abi
++	ATOMICSPEC=-fuse-atomic-builtins
+ 	;;
+   mips-tx39-*|mipstx39-unknown-*)
+ 	libgcj_flags="${libgcj_flags} -G 0"
+Index: libjava/configure.ac
+===================================================================
+--- a/src/libjava/configure.ac	(revision 150701)
++++ b/src/libjava/configure.ac	(revision 150702)
+@@ -1447,6 +1447,7 @@
+ AC_SUBST(EXCEPTIONSPEC)
+ AC_SUBST(BACKTRACESPEC)
+ AC_SUBST(IEEESPEC)
++AC_SUBST(ATOMICSPEC)
+ 
+ AM_CONDITIONAL(NATIVE, test "$NATIVE" = yes)
+ AM_CONDITIONAL(ENABLE_SHARED, test "$enable_shared" = yes)
+Index: libjava/sysdep/arm/locks.h
+===================================================================
+--- a/src/libjava/sysdep/arm/locks.h	(revision 150701)
++++ b/src/libjava/sysdep/arm/locks.h	(revision 150702)
+@@ -13,7 +13,60 @@
+ 
+ typedef size_t obj_addr_t;	/* Integer type big enough for object	*/
+ 				/* address.				*/
++#if (__ARM_EABI__ && __linux)
+ 
++// Atomically replace *addr by new_val if it was initially equal to old.
++// Return true if the comparison succeeded.
++// Assumed to have acquire semantics, i.e. later memory operations
++// cannot execute before the compare_and_swap finishes.
++inline static bool
++compare_and_swap(volatile obj_addr_t *addr,
++                 obj_addr_t old,
++                 obj_addr_t new_val)
++{
++  return __sync_bool_compare_and_swap(addr, old, new_val);
++}
++
++// Set *addr to new_val with release semantics, i.e. making sure
++// that prior loads and stores complete before this
++// assignment.
++inline static void
++release_set(volatile obj_addr_t *addr, obj_addr_t new_val)
++{
++  __sync_synchronize();
++  *(addr) = new_val;
++}
++
++// Compare_and_swap with release semantics instead of acquire semantics.
++// On many architecture, the operation makes both guarantees, so the
++// implementation can be the same.
++inline static bool
++compare_and_swap_release(volatile obj_addr_t *addr,
++			 obj_addr_t old,
++			 obj_addr_t new_val)
++{
++  return __sync_bool_compare_and_swap(addr, old, new_val);
++}
++
++// Ensure that subsequent instructions do not execute on stale
++// data that was loaded from memory before the barrier.
++// On X86, the hardware ensures that reads are properly ordered.
++inline static void
++read_barrier()
++{
++  __sync_synchronize();
++}
++
++// Ensure that prior stores to memory are completed with respect to other
++// processors.
++inline static void
++write_barrier()
++{
++  __sync_synchronize();
++}
++
++#else
++
+ /* Atomic compare and exchange.  These sequences are not actually
+    atomic; there is a race if *ADDR != OLD_VAL and we are preempted
+    between the two swaps.  However, they are very close to atomic, and
+@@ -54,8 +107,8 @@
+ 
+ inline static bool
+ compare_and_swap_release(volatile obj_addr_t *addr,
+-		  				     obj_addr_t old,
+-						     obj_addr_t new_val)
++			 obj_addr_t old,
++			 obj_addr_t new_val)
+ {
+   return compare_and_swap(addr, old, new_val);
+ }
+@@ -77,3 +130,4 @@
+ }
+ 
+ #endif
++#endif
+Index: libjava/libgcj.spec.in
+===================================================================
+--- a/src/libjava/libgcj.spec.in	(revision 150701)
++++ b/src/libjava/libgcj.spec.in	(revision 150702)
+@@ -9,4 +9,4 @@
+ %rename lib liborig
+ *lib: @LD_START_STATIC_SPEC@ @LIBGCJ_SPEC@ @LD_FINISH_STATIC_SPEC@ -lm @LIBICONV@ @GCSPEC@ @THREADSPEC@ @ZLIBSPEC@ @SYSTEMSPEC@ %(libgcc) @LIBSTDCXXSPEC@ %(liborig)
+ 
+-*jc1: @HASH_SYNC_SPEC@ @DIVIDESPEC@ @CHECKREFSPEC@ @JC1GCSPEC@ @EXCEPTIONSPEC@ @BACKTRACESPEC@ @IEEESPEC@ -fkeep-inline-functions
++*jc1: @HASH_SYNC_SPEC@ @DIVIDESPEC@ @CHECKREFSPEC@ @JC1GCSPEC@ @EXCEPTIONSPEC@ @BACKTRACESPEC@ @IEEESPEC@ @ATOMICSPEC@ -fkeep-inline-functions

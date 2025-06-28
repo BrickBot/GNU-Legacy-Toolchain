@@ -1,0 +1,14 @@
+# DP: Fix PR target/43804 with Attachment #20541 from Richard Sandiford
+
+--- a/src/gcc/config/m68k/constraints.md	2010-10-18 16:03:54.000000000 +0000
++++ b/src/gcc/config/m68k/constraints.md	2010-10-18 16:04:34.000000000 +0000
+@@ -89,7 +89,8 @@
+ (define_constraint "T"
+   "Used for operands that satisfy 's' when -mpcrel is not in effect."
+   (and (match_code "symbol_ref,label_ref,const")
+-       (match_test "!flag_pic")))
++       (match_test "!TARGET_PCREL")
++       (match_test "!flag_pic || LEGITIMATE_PIC_OPERAND_P (op)")))
+ 
+ (define_memory_constraint "Q"
+   "Means address register indirect addressing mode."

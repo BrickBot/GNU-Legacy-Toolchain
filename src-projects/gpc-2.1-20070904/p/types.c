@@ -2748,7 +2748,7 @@ build_array_ref (tree array, tree index)
       if ((TREE_CODE (index) != INTEGER_CST
            || (TYPE_SIZE (TREE_TYPE (TREE_TYPE (array)))
                && TREE_CODE (TYPE_SIZE (TREE_TYPE (TREE_TYPE (array)))) != INTEGER_CST))
-          && !mark_addressable2 (array, 1))
+          && !pas_mark_addressable2 (array, 1))
         return error_mark_node;
 
       if (pedantic && !lvalue)

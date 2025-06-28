@@ -128,6 +128,90 @@ SECTION
 
 /*
 FUNCTION
+	bfd_fopen
+
+SYNOPSIS
+	bfd *bfd_fopen (const char *filename, const char *target,
+                        const char *mode, int fd);
+
+DESCRIPTION
+	Open the file @var{filename} with the target @var{target}.
+	Return a pointer to the created BFD.  If @var{fd} is not -1,
+	then <<fdopen>> is used to open the file; otherwise, <<fopen>>
+	is used.  @var{mode} is passed directly to <<fopen>> or
+	<<fdopen>>. 
+
+	Calls <<bfd_find_target>>, so @var{target} is interpreted as by
+	that function.
+
+	The new BFD is marked as cacheable iff @var{fd} is -1.
+
+	If <<NULL>> is returned then an error has occured.   Possible errors
+	are <<bfd_error_no_memory>>, <<bfd_error_invalid_target>> or
+	<<system_call>> error.
+*/
+
+bfd *
+bfd_fopen (const char *filename, const char *target, const char *mode, int fd)
+{
+  bfd *nbfd;
+  const bfd_target *target_vec;
+
+  nbfd = _bfd_new_bfd ();
+  if (nbfd == NULL)
+    return NULL;
+
+  target_vec = bfd_find_target (target, nbfd);
+  if (target_vec == NULL)
+    {
+      _bfd_delete_bfd (nbfd);
+      return NULL;
+    }
+  
+#ifdef HAVE_FDOPEN
+  if (fd != -1)
+    nbfd->iostream = fdopen (fd, mode);
+  else
+#endif
+    nbfd->iostream = fopen (filename, mode);
+  if (nbfd->iostream == NULL)
+    {
+      bfd_set_error (bfd_error_system_call);
+      _bfd_delete_bfd (nbfd);
+      return NULL;
+    }
+
+  /* OK, put everything where it belongs.  */
+  nbfd->filename = filename;
+
+  /* Figure out whether the user is opening the file for reading,
+     writing, or both, by looking at the MODE argument.  */
+  if ((mode[0] == 'r' || mode[0] == 'w' || mode[0] == 'a') 
+      && mode[1] == '+')
+    nbfd->direction = both_direction;
+  else if (mode[0] == 'r')
+    nbfd->direction = read_direction;
+  else
+    nbfd->direction = write_direction;
+
+  if (! bfd_cache_init (nbfd))
+    {
+      _bfd_delete_bfd (nbfd);
+      return NULL;
+    }
+  nbfd->opened_once = TRUE;
+  /* If we opened the file by name, mark it cacheable; we can close it
+     and reopen it later.  However, if a file descriptor was provided,
+     then it may have been opened with special flags that make it
+     unsafe to close and reopen the file.  */
+  if (fd == -1)
+    bfd_set_cacheable (nbfd, TRUE);
+
+  return nbfd;
+}
+
+/*
+FUNCTION
 	bfd_openr
 
 SYNOPSIS

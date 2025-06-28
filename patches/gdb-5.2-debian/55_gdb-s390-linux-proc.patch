@@ -1,0 +1,11 @@
+--- gdb-5.2.cvs20020401/gdb/config/s390/s390.mh.orig	Wed Apr 17 00:34:43 2002
++++ gdb-5.2.cvs20020401/gdb/config/s390/s390.mh	Wed Apr 17 00:34:53 2002
+@@ -6,7 +6,7 @@
+ NAT_FILE= nm-linux.h
+ NATDEPFILES= infptrace.o solib.o inftarg.o fork-child.o corelow.o s390-nat.o core-aout.o core-regset.o
+ # post 5.0 natdepfiles.
+-NATDEPFILES+= thread-db.o lin-lwp.o proc-service.o 
++NATDEPFILES+= thread-db.o lin-lwp.o proc-service.o linux-proc.o
+ LOADLIBES = -ldl -rdynamic
+ 
+ 

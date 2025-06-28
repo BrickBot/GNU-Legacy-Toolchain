@@ -1,0 +1,55 @@
+# DP: It does not really harm by including them since nobody should use them
+# DP: but gas does not wont to assmebly hard float since they are not
+# DP: available on this cpu. Upstream did not respond.
+
+Index: gcc-4.4.5/src/gcc/config/rs6000/crtresfpr.asm
+===================================================================
+--- gcc-4.4.5.orig/src/gcc/config/rs6000/crtresfpr.asm	2011-02-13 17:25:36.000000000 +0100
++++ gcc-4.4.5/src/gcc/config/rs6000/crtresfpr.asm	2011-02-13 17:26:14.000000000 +0100
+@@ -33,6 +33,7 @@
+ 
+ /* On PowerPC64 Linux, these functions are provided by the linker.  */
+ #ifndef __powerpc64__
++#ifndef __NO_FPRS__
+ 
+ /* Routines for restoring floating point registers, called by the compiler.  */
+ /* Called with r11 pointing to the stack header word of the caller of the */
+@@ -77,3 +78,4 @@
+ FUNC_END(_restfpr_14)
+ 
+ #endif
++#endif
+Index: gcc-4.4.5/src/gcc/config/rs6000/crtresxfpr.asm
+===================================================================
+--- gcc-4.4.5.orig/src/gcc/config/rs6000/crtresxfpr.asm	2011-02-13 17:25:36.000000000 +0100
++++ gcc-4.4.5/src/gcc/config/rs6000/crtresxfpr.asm	2011-02-13 17:26:29.000000000 +0100
+@@ -33,6 +33,7 @@
+ 
+ /* On PowerPC64 Linux, these functions are provided by the linker.  */
+ #ifndef __powerpc64__
++#ifndef __NO_FPRS__
+ 
+ /* Routines for restoring floating point registers, called by the compiler.  */
+ /* Called with r11 pointing to the stack header word of the caller of the */
+@@ -82,3 +83,4 @@
+ FUNC_END(_restfpr_14_x)
+ 
+ #endif
++#endif
+Index: gcc-4.4.5/src/gcc/config/rs6000/crtsavfpr.asm
+===================================================================
+--- gcc-4.4.5.orig/src/gcc/config/rs6000/crtsavfpr.asm	2011-02-13 17:25:36.000000000 +0100
++++ gcc-4.4.5/src/gcc/config/rs6000/crtsavfpr.asm	2011-02-13 17:26:42.000000000 +0100
+@@ -33,6 +33,7 @@
+ 
+ /* On PowerPC64 Linux, these functions are provided by the linker.  */
+ #ifndef __powerpc64__
++#ifndef __NO_FPRS__
+ 
+ /* Routines for saving floating point registers, called by the compiler.  */
+ /* Called with r11 pointing to the stack header word of the caller of the */
+@@ -77,3 +78,4 @@
+ FUNC_END(_savefpr_14)
+ 
+ #endif
++#endif

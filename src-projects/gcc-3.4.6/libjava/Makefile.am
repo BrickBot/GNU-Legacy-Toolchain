@@ -2382,6 +2382,7 @@ gnu/java/text/SentenceBreakIterator.java \
 gnu/java/text/WordBreakIterator.java \
 gnu/java/util/DoubleEnumeration.java \
 gnu/java/util/EmptyEnumeration.java \
+gnu/java/util/ZoneInfo.java \
 gnu/java/util/prefs/MemoryBasedFactory.java \
 gnu/java/util/prefs/NodeReader.java \
 gnu/java/util/prefs/MemoryBasedPreferences.java \

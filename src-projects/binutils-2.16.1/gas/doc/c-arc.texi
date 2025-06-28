@@ -49,7 +49,7 @@ Base instruction set.
 Jump-and-link (jl) instruction.  No requirement of an instruction between
 setting flags and conditional jump.  For example:
 
-@smallexample @ta
+@smallexample
   mov.f r0,r1
   beq   foo
 @end smallexample
@@ -212,7 +212,7 @@ The extension instructions are not macros.  The assembler creates
 encodings for use of these instructions according to the specification
 by the user.  The parameters are:
 
-@table @bullet
+@table @var
 @item @var{name}
 Name of the extension instruction 
 

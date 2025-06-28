@@ -1,0 +1,126 @@
+# DP: Proposed backport to fix PR target/44626
+
+gcc/
+
+2010-06-22  Mikael Pettersson  <mikpe@it.uu.se>
+
+	PR target/44626
+
+	Backport from mainline:
+	2009-06-22  Nathan Sidwell  <nathan@codesourcery.com>
+
+	* config/arm/arm.c (arm_print_operand): Deal with HIGH.
+	* config/arm/constraints.md (j): New constraint for movw operands.
+	(N): Remove thumb2 meaning.
+	* config/arm/arm.md (*arm_movw): Delete.
+	(*arm_movsi_insn): Use j constraint for movw instead of N constraint.
+	* config/arm/vfp.md (*arm_movsi_vfp, *thumb2_movsi_vfp): Likewise.
+	* config/arm/thumb2.md (*thumb2_movsi_insn): Likewise.
+
+--- a/src/gcc/config/arm/arm.c.~1~	2010-02-18 14:13:03.000000000 +0100
++++ b/src/gcc/config/arm/arm.c	2010-06-22 19:56:24.000000000 +0200
+@@ -13863,6 +13863,12 @@ arm_print_operand (FILE *stream, rtx x, 
+ 	default:
+ 	  gcc_assert (GET_CODE (x) != NEG);
+ 	  fputc ('#', stream);
++	  if (GET_CODE (x) == HIGH)
++	    {
++	      fputs (":lower16:", stream);
++	      x = XEXP (x, 0);
++	    }
++	    
+ 	  output_addr_const (stream, x);
+ 	  break;
+ 	}
+--- a/src/gcc/config/arm/arm.md.~1~	2010-02-18 14:13:03.000000000 +0100
++++ b/src/gcc/config/arm/arm.md	2010-06-22 19:56:24.000000000 +0200
+@@ -4984,18 +4984,9 @@
+    (set_attr "length" "4")]
+ )
+ 
+-(define_insn "*arm_movw"
+-  [(set (match_operand:SI 0 "nonimmediate_operand" "=r")
+-	(high:SI (match_operand:SI 1 "general_operand"      "i")))]
+-  "TARGET_32BIT"
+-  "movw%?\t%0, #:lower16:%c1"
+-  [(set_attr "predicable" "yes")
+-   (set_attr "length" "4")]
+-)
+-
+ (define_insn "*arm_movsi_insn"
+   [(set (match_operand:SI 0 "nonimmediate_operand" "=rk,r,r,r,rk,m")
+-	(match_operand:SI 1 "general_operand"      "rk, I,K,N,mi,rk"))]
++	(match_operand:SI 1 "general_operand"      "rk, I,K,j,mi,rk"))]
+   "TARGET_ARM && ! TARGET_IWMMXT
+    && !(TARGET_HARD_FLOAT && TARGET_VFP)
+    && (   register_operand (operands[0], SImode)
+--- a/src/gcc/config/arm/constraints.md.~1~	2010-02-17 17:16:16.000000000 +0100
++++ b/src/gcc/config/arm/constraints.md	2010-06-22 19:56:24.000000000 +0200
+@@ -25,7 +25,7 @@
+ ;; In ARM state, 'l' is an alias for 'r'
+ 
+ ;; The following normal constraints have been used:
+-;; in ARM/Thumb-2 state: G, H, I, J, K, L, M
++;; in ARM/Thumb-2 state: G, H, I, j, J, K, L, M
+ ;; in Thumb-1 state: I, J, K, L, M, N, O
+ 
+ ;; The following multi-letter normal constraints have been used:
+@@ -66,6 +66,13 @@
+ (define_register_constraint "h" "TARGET_THUMB ? HI_REGS : NO_REGS"
+  "In Thumb state the core registers @code{r8}-@code{r15}.")
+ 
++(define_constraint "j"
++ "A constant suitable for a MOVW instruction. (ARM/Thumb-2)"
++ (and (match_test "TARGET_32BIT && arm_arch_thumb2")
++      (ior (match_code "high")
++	   (and (match_code "const_int")
++                (match_test "(ival & 0xffff0000) == 0")))))
++
+ (define_register_constraint "k" "STACK_REG"
+  "@internal The stack register.")
+ 
+@@ -117,11 +124,9 @@
+ 		   : ((ival >= 0 && ival <= 1020) && ((ival & 3) == 0))")))
+ 
+ (define_constraint "N"
+- "In ARM/Thumb-2 state a constant suitable for a MOVW instruction.
+-  In Thumb-1 state a constant in the range 0-31."
++ "Thumb-1 state a constant in the range 0-31."
+  (and (match_code "const_int")
+-      (match_test "TARGET_32BIT ? arm_arch_thumb2 && ((ival & 0xffff0000) == 0)
+-				: (ival >= 0 && ival <= 31)")))
++      (match_test "!TARGET_32BIT && (ival >= 0 && ival <= 31)")))
+ 
+ (define_constraint "O"
+  "In Thumb-1 state a constant that is a multiple of 4 in the range
+--- a/src/gcc/config/arm/thumb2.md.~1~	2010-02-24 15:50:43.000000000 +0100
++++ b/src/gcc/config/arm/thumb2.md	2010-06-22 19:56:24.000000000 +0200
+@@ -225,7 +225,7 @@
+ 
+ (define_insn "*thumb2_movsi_insn"
+   [(set (match_operand:SI 0 "nonimmediate_operand" "=rk,r,r,r,rk,m")
+-	(match_operand:SI 1 "general_operand"	   "rk ,I,K,N,mi,rk"))]
++	(match_operand:SI 1 "general_operand"	   "rk ,I,K,j,mi,rk"))]
+   "TARGET_THUMB2 && ! TARGET_IWMMXT
+    && !(TARGET_HARD_FLOAT && TARGET_VFP)
+    && (   register_operand (operands[0], SImode)
+--- a/src/gcc/config/arm/vfp.md.~1~	2008-09-01 15:40:49.000000000 +0200
++++ b/src/gcc/config/arm/vfp.md	2010-06-22 19:56:24.000000000 +0200
+@@ -51,7 +51,7 @@
+ ;; problems because small constants get converted into adds.
+ (define_insn "*arm_movsi_vfp"
+   [(set (match_operand:SI 0 "nonimmediate_operand" "=rk,r,r,r,rk,m ,*t,r,*t,*t, *Uv")
+-      (match_operand:SI 1 "general_operand"	   "rk, I,K,N,mi,rk,r,*t,*t,*Uvi,*t"))]
++      (match_operand:SI 1 "general_operand"	   "rk, I,K,j,mi,rk,r,*t,*t,*Uvi,*t"))]
+   "TARGET_ARM && TARGET_VFP && TARGET_HARD_FLOAT
+    && (   s_register_operand (operands[0], SImode)
+        || s_register_operand (operands[1], SImode))"
+@@ -88,7 +88,7 @@
+ 
+ (define_insn "*thumb2_movsi_vfp"
+   [(set (match_operand:SI 0 "nonimmediate_operand" "=rk,r,r,r,rk,m,*t,r, *t,*t, *Uv")
+-      (match_operand:SI 1 "general_operand"	   "rk, I,K,N,mi,rk,r,*t,*t,*Uvi,*t"))]
++      (match_operand:SI 1 "general_operand"	   "rk, I,K,j,mi,rk,r,*t,*t,*Uvi,*t"))]
+   "TARGET_THUMB2 && TARGET_VFP && TARGET_HARD_FLOAT
+    && (   s_register_operand (operands[0], SImode)
+        || s_register_operand (operands[1], SImode))"

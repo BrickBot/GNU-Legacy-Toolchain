@@ -1,0 +1,82 @@
+# DP: Install libstdc++ man pages with suffix .3cxx instead of .3
+
+--- a/src/libstdc++-v3/doc/doxygen/user.cfg.in~	2009-02-21 01:45:21.000000000 +0100
++++ b/src/libstdc++-v3/doc/doxygen/user.cfg.in	2009-04-23 15:35:53.000000000 +0200
+@@ -1276,7 +1276,7 @@
+ # The MAN_EXTENSION tag determines the extension that is added to 
+ # the generated man pages (default is the subroutine's section .3)
+ 
+-MAN_EXTENSION          = .3
++MAN_EXTENSION          = .3cxx
+ 
+ # If the MAN_LINKS tag is set to YES and Doxygen generates man output, 
+ # then it will generate one additional man file for each entity 
+--- a/src/libstdc++-v3/scripts/run_doxygen.orig	2009-05-02 13:11:50.000000000 +0000
++++ b/src/libstdc++-v3/scripts/run_doxygen	2009-05-02 15:52:41.000000000 +0000
+@@ -210,6 +210,7 @@
+ if $do_man; then
+ echo ::
+ echo :: Fixing up the man pages...
++mv $outdir/man/man3cxx/* $outdir/man/man3/
+ cd $outdir/man/man3
+ 
+ # here's the other end of the "stupid doxygen bug" mentioned above
+@@ -219,15 +220,15 @@
+ find . -name "* *" -print0 | xargs -0r rm        # requires GNU tools
+ 
+ # Cleanups before tr1* files get killed.
+-mv tr1_random_distributions.3 random_distributions.3
+-mv tr1_random_distributions_continuous.3 random_distributions_continuous.3
+-mv tr1_random_distributions_discrete.3 random_distributions_discrete.3
+-mv tr1_random_generators.3 random_generators.3
++mv tr1_random_distributions.3cxx random_distributions.3cxx
++mv tr1_random_distributions_continuous.3cxx random_distributions_continuous.3cxx
++mv tr1_random_distributions_discrete.3cxx random_distributions_discrete.3cxx
++mv tr1_random_generators.3cxx random_generators.3cxx
+ 
+ # man pages are for functions/types/other entities, not source files
+ # directly.  who the heck would type "man foo.h" anyhow?
+ find . -name "[a-z]*" -a ! -name "std_*" -print | xargs rm
+-rm -f *.h.3 *.hpp.3 *config* *.cc.3 *.tcc.3 *_t.3
++rm -f *.h.3cxx *.hpp.3cxx *config* *.cc.3cxx *.tcc.3cxx *_t.3cxx
+ #rm ext_*.3 tr1_*.3 debug_*.3
+ 
+ # this is used to examine what we would have deleted, for debugging
+@@ -240,7 +241,7 @@
+ # and I'm off getting coffee then anyhow, so I didn't care enough to make
+ # this super-fast.
+ g++ ${srcdir}/doc/doxygen/stdheader.cc -o ./stdheader
+-problematic=`egrep -l '#include <.*_.*>' [a-z]*.3`
++problematic=`egrep -l '#include <.*_.*>' [a-z]*.3 [a-z]*.3cxx`
+ for f in $problematic; do
+     # this is also slow, but safe and easy to debug
+     oldh=`sed -n '/fC#include </s/.*<\(.*\)>.*/\1/p' $f`
+@@ -253,7 +254,7 @@
+ # Some of the pages for generated modules have text that confuses certain
+ # implementations of man(1), e.g., Linux's.  We need to have another top-level
+ # *roff tag to /stop/ the .SH NAME entry.
+-problematic=`egrep --files-without-match '^\.SH SYNOPSIS' [A-Z]*.3`
++problematic=`egrep --files-without-match '^\.SH SYNOPSIS' [A-Z]*.3 [A-Z]*.3cxx`
+ #problematic='Containers.3 Sequences.3 Assoc_containers.3 Iterator_types.3'
+ 
+ for f in $problematic; do
+@@ -267,7 +268,7 @@
+ done
+ 
+ # Also, break this (generated) line up.  It's ugly as sin.
+-problematic=`grep -l '[^^]Definition at line' *.3`
++problematic=`grep -l '[^^]Definition at line' *.3 *.3cxx`
+ for f in $problematic; do
+     sed 's/Definition at line/\
+ .PP\
+@@ -340,8 +341,8 @@
+          istringstream ostringstream stringstream filebuf ifstream \
+          ofstream fstream string;
+ do
+-    echo ".so man3/std::basic_${f}.3" > std::${f}.3
+-    echo ".so man3/std::basic_${f}.3" > std::w${f}.3
++    echo ".so man3/std::basic_${f}.3cxx" > std::${f}.3cxx
++    echo ".so man3/std::basic_${f}.3cxx" > std::w${f}.3cxx
+ done
+ 
+ echo ::

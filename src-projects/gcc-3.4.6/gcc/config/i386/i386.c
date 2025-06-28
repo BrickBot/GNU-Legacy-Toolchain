@@ -2026,8 +2026,17 @@ classify_argument (enum machine_mode mode, tree type,
 	    {
 	      tree bases = TYPE_BINFO_BASETYPES (type);
 	      int n_bases = TREE_VEC_LENGTH (bases);
-	      int i;
+	      int i, basenum;
+	      enum x86_64_reg_class saveclasses[MAX_CLASSES];
+	      bool seen[MAX_CLASSES];
 
+	      /* PR target/18300: The following code mistakenly uses the same
+		 iterator variable in both nested for loops.  But to preserve
+		 binary compatibility, do whatever this code used to do before
+		 unless old GCC would hang in an infinite loop.  In that case
+		 use whatever GCC 4.0+ does.  */
+	      memset (seen, 0, sizeof (seen));
+	      memcpy (saveclasses, classes, sizeof (saveclasses));
 	      for (i = 0; i < n_bases; ++i)
 		{
 		   tree binfo = TREE_VEC_ELT (bases, i);
@@ -2035,6 +2044,12 @@ classify_argument (enum machine_mode mode, tree type,
 		   int offset = tree_low_cst (BINFO_OFFSET (binfo), 0) * 8;
 		   tree type = BINFO_TYPE (binfo);
 
+		   if (i < MAX_CLASSES)
+		     {
+		       if (seen[i])
+			 break;
+		       seen[i] = true;
+		     }
 		   num = classify_argument (TYPE_MODE (type),
 					    type, subclasses,
 					    (offset + bit_offset) % 256);
@@ -2046,6 +2061,32 @@ classify_argument (enum machine_mode mode, tree type,
 		       classes[i + pos] =
 			 merge_classes (subclasses[i], classes[i + pos]);
 		     }
+		}
+	      if (i < n_bases)
+		{
+		  /* Older GCC 3.[0-4].x would hang in the above loop, so
+		     don't worry about backwards compatibility and
+		     just DTRT.  */
+		  memcpy (classes, saveclasses, sizeof (saveclasses));
+		  for (basenum = 0; basenum < n_bases; ++basenum)
+		    {
+		      tree binfo = TREE_VEC_ELT (bases, basenum);
+		      int num;
+		      int offset = tree_low_cst (BINFO_OFFSET (binfo), 0) * 8;
+		      tree type = BINFO_TYPE (binfo);
+
+		      num = classify_argument (TYPE_MODE (type),
+					       type, subclasses,
+					       (offset + bit_offset) % 256);
+		      if (!num)
+			return 0;
+		      for (i = 0; i < num; i++)
+			{
+			  int pos = (offset + (bit_offset % 64)) / 8 / 8;
+			  classes[i + pos] =
+			    merge_classes (subclasses[i], classes[i + pos]);
+			}
+		    }
 		}
 	    }
 	  /* And now merge the fields of structure.  */
@@ -2114,8 +2155,17 @@ classify_argument (enum machine_mode mode, tree type,
 	    {
 	      tree bases = TYPE_BINFO_BASETYPES (type);
 	      int n_bases = TREE_VEC_LENGTH (bases);
-	      int i;
+	      int i, basenum;
+	      enum x86_64_reg_class saveclasses[MAX_CLASSES];
+	      bool seen[MAX_CLASSES];
 
+	      /* PR target/18300: The following code mistakenly uses the same
+		 iterator variable in both nested for loops.  But to preserve
+		 binary compatibility, do whatever this code used to do before
+		 unless old GCC would hang in an infinite loop.  In that case
+		 use whatever GCC 4.0+ does.  */
+	      memset (seen, 0, sizeof (seen));
+	      memcpy (saveclasses, classes, sizeof (saveclasses));
 	      for (i = 0; i < n_bases; ++i)
 		{
 		   tree binfo = TREE_VEC_ELT (bases, i);
@@ -2123,6 +2173,12 @@ classify_argument (enum machine_mode mode, tree type,
 		   int offset = tree_low_cst (BINFO_OFFSET (binfo), 0) * 8;
 		   tree type = BINFO_TYPE (binfo);
 
+		   if (i < MAX_CLASSES)
+		     {
+		       if (seen[i])
+			 break;
+		       seen[i] = true;
+		     }
 		   num = classify_argument (TYPE_MODE (type),
 					    type, subclasses,
 					    (offset + (bit_offset % 64)) % 256);
@@ -2134,6 +2190,32 @@ classify_argument (enum machine_mode mode, tree type,
 		       classes[i + pos] =
 			 merge_classes (subclasses[i], classes[i + pos]);
 		     }
+		}
+	      if (i < n_bases)
+		{
+		  /* Older GCC 3.[0-4].x would hang in the above loop, so
+		     don't worry about backwards compatibility and
+		     just DTRT.  */
+		  memcpy (classes, saveclasses, sizeof (saveclasses));
+		  for (basenum = 0; basenum < n_bases; ++basenum)
+		    {
+		      tree binfo = TREE_VEC_ELT (bases, basenum);
+		      int num;
+		      int offset = tree_low_cst (BINFO_OFFSET (binfo), 0) * 8;
+		      tree type = BINFO_TYPE (binfo);
+
+		      num = classify_argument (TYPE_MODE (type),
+					       type, subclasses,
+					       (offset + (bit_offset % 64)) % 256);
+		      if (!num)
+			return 0;
+		      for (i = 0; i < num; i++)
+			{
+			  int pos = (offset + (bit_offset % 64)) / 8 / 8;
+			  classes[i + pos] =
+			    merge_classes (subclasses[i], classes[i + pos]);
+			}
+		    }
 		}
 	    }
 	  for (field = TYPE_FIELDS (type); field; field = TREE_CHAIN (field))
@@ -6602,6 +6684,13 @@ legitimize_address (rtx x, rtx oldx ATTRIBUTE_UNUSED, enum machine_mode mode)
   log = tls_symbolic_operand (x, mode);
   if (log)
     return legitimize_tls_address (x, log, false);
+  if (GET_CODE (x) == CONST
+      && GET_CODE (XEXP (x, 0)) == PLUS
+      && (log = tls_symbolic_operand (XEXP (XEXP (x, 0), 0), Pmode)))
+    {
+      rtx t = legitimize_tls_address (XEXP (XEXP (x, 0), 0), log, false);
+      return gen_rtx_PLUS (Pmode, t, XEXP (XEXP (x, 0), 1));
+    }
 
   if (flag_pic && SYMBOLIC_CONST (x))
     return legitimize_pic_address (x, 0);
@@ -8390,6 +8479,10 @@ ix86_expand_move (enum machine_mode mode, rtx operands[])
 #else
       if (GET_CODE (op0) == MEM)
 	op1 = force_reg (Pmode, op1);
+      else if (GET_CODE (op1) == CONST
+	       && GET_CODE (XEXP (op1, 0)) == PLUS
+	       && tls_symbolic_operand (XEXP (XEXP (op1, 0), 0), Pmode))
+	op1 = legitimize_address (op1, op1, Pmode);
       else
 	{
 	  rtx temp = op0;

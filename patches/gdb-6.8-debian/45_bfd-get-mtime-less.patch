@@ -1,0 +1,84 @@
+Applied upstream after GDB 6.8.
+
+---
+ gdb/corefile.c |    3 +--
+ gdb/exec.c     |    4 ++++
+ gdb/gdbcore.h  |    3 +++
+ gdb/source.c   |    4 ++--
+ 4 files changed, 10 insertions(+), 4 deletions(-)
+
+Index: gdb-6.6.dfsg.90.20070912/gdb/corefile.c
+===================================================================
+--- gdb-6.6.dfsg.90.20070912.orig/gdb/corefile.c	2007-08-23 14:08:27.000000000 -0400
++++ gdb-6.6.dfsg.90.20070912/gdb/corefile.c	2007-09-15 10:21:19.000000000 -0400
+@@ -160,10 +160,9 @@ reopen_exec_file (void)
+   /* If the timestamp of the exec file has changed, reopen it. */
+   filename = xstrdup (bfd_get_filename (exec_bfd));
+   make_cleanup (xfree, filename);
+-  mtime = bfd_get_mtime (exec_bfd);
+   res = stat (filename, &st);
+ 
+-  if (mtime && mtime != st.st_mtime)
++  if (exec_bfd_mtime && exec_bfd_mtime != st.st_mtime)
+     exec_file_attach (filename, 0);
+ #endif
+ }
+Index: gdb-6.6.dfsg.90.20070912/gdb/exec.c
+===================================================================
+--- gdb-6.6.dfsg.90.20070912.orig/gdb/exec.c	2007-08-23 14:08:28.000000000 -0400
++++ gdb-6.6.dfsg.90.20070912/gdb/exec.c	2007-09-15 10:21:19.000000000 -0400
+@@ -67,6 +67,7 @@ struct target_ops exec_ops;
+ /* The Binary File Descriptor handle for the executable file.  */
+ 
+ bfd *exec_bfd = NULL;
++long exec_bfd_mtime = 0;
+ 
+ /* Whether to open exec and core files read-only or read-write.  */
+ 
+@@ -134,6 +135,7 @@ exec_close (int quitting)
+ 		 name, bfd_errmsg (bfd_get_error ()));
+       xfree (name);
+       exec_bfd = NULL;
++      exec_bfd_mtime = 0;
+     }
+ 
+   if (exec_ops.to_sections)
+@@ -258,6 +260,8 @@ exec_file_attach (char *filename, int fr
+ 		 scratch_pathname, bfd_errmsg (bfd_get_error ()));
+ 	}
+ 
++      exec_bfd_mtime = bfd_get_mtime (exec_bfd);
++
+       validate_files ();
+ 
+       set_gdbarch_from_file (exec_bfd);
+Index: gdb-6.6.dfsg.90.20070912/gdb/gdbcore.h
+===================================================================
+--- gdb-6.6.dfsg.90.20070912.orig/gdb/gdbcore.h	2007-08-23 14:08:33.000000000 -0400
++++ gdb-6.6.dfsg.90.20070912/gdb/gdbcore.h	2007-09-15 10:21:19.000000000 -0400
+@@ -115,6 +115,9 @@ extern void specify_exec_file_hook (void
+ extern bfd *core_bfd;
+ extern bfd *exec_bfd;
+ 
++/* The mtime when we last opened exec_bfd.  */
++extern long exec_bfd_mtime;
++
+ /* Whether to open exec and core files read-only or read-write.  */
+ 
+ extern int write_files;
+Index: gdb-6.6.dfsg.90.20070912/gdb/source.c
+===================================================================
+--- gdb-6.6.dfsg.90.20070912.orig/gdb/source.c	2007-08-23 14:08:38.000000000 -0400
++++ gdb-6.6.dfsg.90.20070912/gdb/source.c	2007-09-15 10:22:11.000000000 -0400
+@@ -1126,9 +1126,9 @@ find_source_lines (struct symtab *s, int
+     perror_with_name (s->filename);
+ 
+   if (s->objfile && s->objfile->obfd)
+-    mtime = bfd_get_mtime (s->objfile->obfd);
++    mtime = s->objfile->mtime;
+   else if (exec_bfd)
+-    mtime = bfd_get_mtime (exec_bfd);
++    mtime = exec_bfd_mtime;
+ 
+   if (mtime && mtime < st.st_mtime)
+     warning (_("Source file is more recent than executable."));

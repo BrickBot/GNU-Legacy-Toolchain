@@ -1,0 +1,47 @@
+From 909de2c5cc91b815d671f7018da2a925fbd19aaf Mon Sep 17 00:00:00 2001
+From: Tom Tromey <tom@tromey.com>
+Date: Mon, 24 Oct 2016 12:06:39 +0100
+Subject: [PATCH 023/122] PR gdb/20653 - small cleanup in
+ string_to_explicit_location
+
+This bug points out that string_to_explicit_location compares a char*
+against '\0'; whereas comparing against NULL is more normal.
+
+2016-10-24  Tom Tromey  <tom@tromey.com>
+
+	PR breakpoints/20653:
+	* location.c (string_to_explicit_location): Use NULL, not '\0'.
+---
+ gdb/ChangeLog  | 5 +++++
+ gdb/location.c | 2 +-
+ 2 files changed, 6 insertions(+), 1 deletion(-)
+
+diff --git a/gdb/ChangeLog b/gdb/ChangeLog
+index 5c53747d4a..66bb531bd9 100644
+--- a/gdb/ChangeLog
++++ b/gdb/ChangeLog
+@@ -1,3 +1,8 @@
++2016-10-24  Tom Tromey  <tom@tromey.com>
++
++	PR breakpoints/20653:
++	* location.c (string_to_explicit_location): Use NULL, not '\0'.
++
+ 2016-10-14  Eli Zaretskii  <eliz@gnu.org>
+ 
+ 	* common/common-defs.h [HAVE_STRINGS_H]: Include strings.h if
+diff --git a/gdb/location.c b/gdb/location.c
+index 65116c732f..8dce21ada1 100644
+--- a/gdb/location.c
++++ b/gdb/location.c
+@@ -524,7 +524,7 @@ string_to_explicit_location (const char **argp,
+      character is an explicit location.  "-p" is reserved, though,
+      for probe locations.  */
+   if (argp == NULL
+-      || *argp == '\0'
++      || *argp == NULL
+       || *argp[0] != '-'
+       || !isalpha ((*argp)[1])
+       || ((*argp)[0] == '-' && (*argp)[1] == 'p'))
+-- 
+2.11.0
+

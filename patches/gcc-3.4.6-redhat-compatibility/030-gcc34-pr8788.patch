@@ -1,0 +1,42 @@
+2005-05-08  Roger Sayle  <roger@eyesopen.com>
+
+	PR inline-asm/8788
+	* stmt.c (expand_asm_operands): Avoid calling force_reg on BLKmode
+	operands.
+
+	* gcc.dg/pr8788-1.c: New testcase.
+
+--- gcc/stmt.c	(revision 99421)
++++ gcc/stmt.c	(revision 99422)
+@@ -1703,7 +1703,7 @@ expand_asm_operands (tree string, tree o
+ 
+       if (asm_operand_ok (op, constraint) <= 0)
+ 	{
+-	  if (allows_reg)
++	  if (allows_reg && TYPE_MODE (type) != BLKmode)
+ 	    op = force_reg (TYPE_MODE (type), op);
+ 	  else if (!allows_mem)
+ 	    warning ("asm operand %d probably doesn't match constraints",
+--- gcc/testsuite/gcc.dg/pr8788-1.c	(revision 0)
++++ gcc/testsuite/gcc.dg/pr8788-1.c	(revision 99422)
+@@ -0,0 +1,20 @@
++/* PR inline-asm/8788 */
++/* { dg-do compile } */
++/* { dg-options "-O2" } */
++
++typedef struct {
++    long x[6];
++} myjmp_buf;
++
++typedef struct {
++    myjmp_buf regs;
++} my_stack;
++
++void switch_to_stack (my_stack *stack){
++    asm (  /* { dg-error "impossible constraint" } */
++/* { dg-warning "asm operand 1" "asm operand 1" { target *-*-* } 14 } */
++        "\n"
++        : "+r" (stack->regs)
++    );
++}
++

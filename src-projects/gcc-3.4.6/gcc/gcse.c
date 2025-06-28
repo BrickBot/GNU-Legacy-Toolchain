@@ -7427,6 +7427,40 @@ find_loads (rtx x, rtx store_pattern, int after)
   return ret;
 }
 
+static inline bool
+store_killed_in_pat (rtx x, rtx pat, int after)
+{
+  if (GET_CODE (pat) == SET)
+    {
+      rtx dest = SET_DEST (pat);
+
+      if (GET_CODE (dest) == SIGN_EXTRACT
+	  || GET_CODE (dest) == ZERO_EXTRACT)
+	dest = XEXP (dest, 0);
+
+      /* Check for memory stores to aliased objects.  */
+      if (GET_CODE (dest) == MEM
+	  && !expr_equiv_p (dest, x))
+	{
+	  if (after)
+	    {
+	      if (output_dependence (dest, x))
+		return true;
+	    }
+	  else
+	    {
+	      if (output_dependence (x, dest))
+		return true;
+	    }
+	}
+    }
+
+  if (find_loads (pat, x, after))
+    return true;
+
+  return false;
+}
+
 /* Check if INSN kills the store pattern X (is aliased with it).
    AFTER is true if we are checking the case when store X occurs
    after the insn.  Return true if it it does.  */
@@ -7434,7 +7468,7 @@ find_loads (rtx x, rtx store_pattern, int after)
 static bool
 store_killed_in_insn (rtx x, rtx x_regs, rtx insn, int after)
 {
-  rtx reg, base, note;
+  rtx reg, base, note, pat;
 
   if (!INSN_P (insn))
     return false;
@@ -7461,32 +7495,19 @@ store_killed_in_insn (rtx x, rtx x_regs, rtx insn, int after)
       return false;
     }
 
-  if (GET_CODE (PATTERN (insn)) == SET)
+  pat = PATTERN (insn);
+  if (GET_CODE (pat) == SET)
     {
-      rtx pat = PATTERN (insn);
-      rtx dest = SET_DEST (pat);
-
-      if (GET_CODE (dest) == SIGN_EXTRACT
-	  || GET_CODE (dest) == ZERO_EXTRACT)
-	dest = XEXP (dest, 0);
-
-      /* Check for memory stores to aliased objects.  */
-      if (GET_CODE (dest) == MEM
-	  && !expr_equiv_p (dest, x))
-	{
-	  if (after)
-	    {
-	      if (output_dependence (dest, x))
-		return true;
-	    }
-	  else
-	    {
-	      if (output_dependence (x, dest))
-		return true;
-	    }
-	}
-      if (find_loads (SET_SRC (pat), x, after))
+      if (store_killed_in_pat (x, pat, after))
 	return true;
+    }
+  else if (GET_CODE (pat) == PARALLEL)
+    {
+      int i;
+
+      for (i = 0; i < XVECLEN (pat, 0); i++)
+	if (store_killed_in_pat (x, XVECEXP (pat, 0, i), after))
+	  return true;
     }
   else if (find_loads (PATTERN (insn), x, after))
     return true;

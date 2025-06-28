@@ -1,0 +1,29 @@
+From a03912316f814826c17c66f3f5911978d6c11883 Mon Sep 17 00:00:00 2001
+From: Joel Brobecker <brobecker@adacore.com>
+Date: Fri, 7 Oct 2016 10:18:32 -0700
+Subject: [PATCH 001/122] Document the GDB 7.12 release in gdb/ChangeLog
+
+gdb/ChangeLog:
+
+	GDB 7.12 released.
+---
+ gdb/ChangeLog | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/gdb/ChangeLog b/gdb/ChangeLog
+index 1fc5823ad4..9c18a5c63a 100644
+--- a/gdb/ChangeLog
++++ b/gdb/ChangeLog
+@@ -1,5 +1,9 @@
+ 2016-10-07  Joel Brobecker  <brobecker@adacore.com>
+ 
++	GDB 7.12 released.
++
++2016-10-07  Joel Brobecker  <brobecker@adacore.com>
++
+ 	* version.in: Set GDB version number to 7.12.
+ 
+ 2016-10-06  Simon Marchi  <simon.marchi@ericsson.com>
+-- 
+2.11.0
+

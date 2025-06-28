@@ -1,0 +1,22 @@
+--- a/newlib/libc/sys/arm/Makefile.am
++++ b/newlib/libc/sys/arm/Makefile.am
+@@ -2,7 +2,7 @@
+ 
+ AUTOMAKE_OPTIONS = cygnus
+ 
+-INCLUDES = $(NEWLIB_CFLAGS) $(CROSS_CFLAGS) $(TARGET_CFLAGS)
++INCLUDES = -I$(newlib_basedir)/libc/include $(NEWLIB_CFLAGS) $(CROSS_CFLAGS) $(TARGET_CFLAGS)
+ 
+ AM_CCASFLAGS = $(INCLUDES)
+ 
+--- a/newlib/libc/sys/arm/Makefile.in
++++ b/newlib/libc/sys/arm/Makefile.in
+@@ -179,7 +179,7 @@
+ sysconfdir = @sysconfdir@
+ target_alias = @target_alias@
+ AUTOMAKE_OPTIONS = cygnus
+-INCLUDES = $(NEWLIB_CFLAGS) $(CROSS_CFLAGS) $(TARGET_CFLAGS)
++INCLUDES = -I$(newlib_basedir)/libc/include $(NEWLIB_CFLAGS) $(CROSS_CFLAGS) $(TARGET_CFLAGS)
+ AM_CCASFLAGS = $(INCLUDES)
+ noinst_LIBRARIES = lib.a
+ @MAY_SUPPLY_SYSCALLS_FALSE@extra_objs = 

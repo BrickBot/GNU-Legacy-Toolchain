@@ -83,8 +83,10 @@
 			  int __ibom = 0, int __ebom = 0)
     : _M_in_desc(0), _M_out_desc(0), _M_ext_bom(__ebom), _M_int_bom(__ibom)
     {
-      strncpy(_M_int_enc, __int, _S_max_size);
-      strncpy(_M_ext_enc, __ext, _S_max_size);
+      strncpy(_M_int_enc, __int, _S_max_size - 1);
+      strncpy(_M_ext_enc, __ext, _S_max_size - 1);
+      _M_int_enc[_S_max_size - 1] = '\0';
+      _M_ext_enc[_S_max_size - 1] = '\0';
       _M_init();
     }
 
@@ -98,8 +100,10 @@
     // information.
     __enc_traits(const __enc_traits& __obj): _M_in_desc(0), _M_out_desc(0)
     {
-      strncpy(_M_int_enc, __obj._M_int_enc, _S_max_size);
-      strncpy(_M_ext_enc, __obj._M_ext_enc, _S_max_size);
+      strncpy(_M_int_enc, __obj._M_int_enc, _S_max_size - 1);
+      strncpy(_M_ext_enc, __obj._M_ext_enc, _S_max_size - 1);
+      _M_int_enc[_S_max_size - 1] = '\0';
+      _M_ext_enc[_S_max_size - 1] = '\0';
       _M_ext_bom = __obj._M_ext_bom;
       _M_int_bom = __obj._M_int_bom;
       _M_destroy();
@@ -110,8 +114,10 @@
     __enc_traits&
     operator=(const __enc_traits& __obj)
     {
-      strncpy(_M_int_enc, __obj._M_int_enc, _S_max_size);
-      strncpy(_M_ext_enc, __obj._M_ext_enc, _S_max_size);
+      strncpy(_M_int_enc, __obj._M_int_enc, _S_max_size - 1);
+      strncpy(_M_ext_enc, __obj._M_ext_enc, _S_max_size - 1);
+      _M_int_enc[_S_max_size - 1] = '\0';
+      _M_ext_enc[_S_max_size - 1] = '\0';
       _M_ext_bom = __obj._M_ext_bom;
       _M_int_bom = __obj._M_int_bom;
       _M_destroy();

@@ -1,0 +1,280 @@
+2013-05-06  Maxim Kuznetsov  <maks.kuznetsov@gmail.com>
+
+	* final.c (do_assembler_dialects): Don't handle curly braces and
+	vertical bar escaped by % as dialect delimiters.
+	(output_asm_insn): Print curly braces and vertical bar if escaped
+	by % and ASSEMBLER_DIALECT defined.
+	* doc/tm.texi (ASSEMBLER_DIALECT): Document new standard escapes.
+
+	* gcc.target/i386/asm-dialect-2.c: New testcase.
+
+2012-07-25  Siddhesh Poyarekar  <siddhesh@redhat.com>
+
+	* final.c [ASSEMBLER_DIALECT](do_assembler_dialects): New
+	function to implement assembler dialects.
+	(output_asm_insn): Use do_assembler_dialects.
+	(asm_fprintf): Likewise.
+
+	* gcc.target/i386/asm-dialect-1.c: New test case.
+
+--- gcc/final.c	(revision 189853, 198640)
++++ gcc/final.c	(revision 189854, 198641)
+@@ -3134,6 +3134,96 @@ output_asm_operand_names (rtx *operands,
+     }
+ }
+ 
++#ifdef ASSEMBLER_DIALECT
++/* Helper function to parse assembler dialects in the asm string.
++   This is called from output_asm_insn and asm_fprintf.  */
++static const char *
++do_assembler_dialects (const char *p, int *dialect)
++{
++  char c = *(p - 1);
++
++  switch (c)
++    {
++    case '{':
++      {
++        int i;
++
++        if (*dialect)
++          output_operand_lossage ("nested assembly dialect alternatives");
++        else
++          *dialect = 1;
++
++        /* If we want the first dialect, do nothing.  Otherwise, skip
++           DIALECT_NUMBER of strings ending with '|'.  */
++        for (i = 0; i < dialect_number; i++)
++          {
++            while (*p && *p != '}')
++	      {
++		if (*p == '|')
++		  {
++		    p++;
++		    break;
++		  }
++
++		/* Skip over any character after a percent sign.  */
++		if (*p == '%')
++		  p++;
++		if (*p)
++		  p++;
++	      }
++
++            if (*p == '}')
++	      break;
++          }
++
++        if (*p == '\0')
++          output_operand_lossage ("unterminated assembly dialect alternative");
++      }
++      break;
++
++    case '|':
++      if (*dialect)
++        {
++          /* Skip to close brace.  */
++          do
++            {
++	      if (*p == '\0')
++		{
++		  output_operand_lossage ("unterminated assembly dialect alternative");
++		  break;
++		}
++
++	      /* Skip over any character after a percent sign.  */
++	      if (*p == '%' && p[1])
++		{
++		  p += 2;
++		  continue;
++		}
++
++	      if (*p++ == '}')
++		break;
++            }
++          while (1);
++
++          *dialect = 0;
++        }
++      else
++        putc (c, asm_out_file);
++      break;
++
++    case '}':
++      if (! *dialect)
++        putc (c, asm_out_file);
++      *dialect = 0;
++      break;
++    default:
++      gcc_unreachable ();
++    }
++
++  return p;
++}
++#endif
++
+ /* Output text from TEMPLATE to the assembler output file,
+    obeying %-directions to substitute operands taken from
+    the vector OPERANDS.
+@@ -3200,63 +3290,24 @@ output_asm_insn (const char *templ, rtx
+ 
+ #ifdef ASSEMBLER_DIALECT
+       case '{':
+-	{
+-	  int i;
+-
+-	  if (dialect)
+-	    output_operand_lossage ("nested assembly dialect alternatives");
+-	  else
+-	    dialect = 1;
+-
+-	  /* If we want the first dialect, do nothing.  Otherwise, skip
+-	     DIALECT_NUMBER of strings ending with '|'.  */
+-	  for (i = 0; i < dialect_number; i++)
+-	    {
+-	      while (*p && *p != '}' && *p++ != '|')
+-		;
+-	      if (*p == '}')
+-		break;
+-	      if (*p == '|')
+-		p++;
+-	    }
+-
+-	  if (*p == '\0')
+-	    output_operand_lossage ("unterminated assembly dialect alternative");
+-	}
+-	break;
+-
+-      case '|':
+-	if (dialect)
+-	  {
+-	    /* Skip to close brace.  */
+-	    do
+-	      {
+-		if (*p == '\0')
+-		  {
+-		    output_operand_lossage ("unterminated assembly dialect alternative");
+-		    break;
+-		  }
+-	      }
+-	    while (*p++ != '}');
+-	    dialect = 0;
+-	  }
+-	else
+-	  putc (c, asm_out_file);
+-	break;
+-
+       case '}':
+-	if (! dialect)
+-	  putc (c, asm_out_file);
+-	dialect = 0;
++      case '|':
++	p = do_assembler_dialects (p, &dialect);
+ 	break;
+ #endif
+ 
+       case '%':
+-	/* %% outputs a single %.  */
+-	if (*p == '%')
++	/* %% outputs a single %.  %{, %} and %| print {, } and | respectively
++	   if ASSEMBLER_DIALECT defined and these characters have a special
++	   meaning as dialect delimiters.*/
++	if (*p == '%'
++#ifdef ASSEMBLER_DIALECT
++	    || *p == '{' || *p == '}' || *p == '|'
++#endif
++	    )
+ 	  {
++	    putc (*p, asm_out_file);
+ 	    p++;
+-	    putc (c, asm_out_file);
+ 	  }
+ 	/* %= outputs a number which is unique to each insn in the entire
+ 	   compilation.  This is useful for making local labels that are
+@@ -3600,6 +3651,9 @@ asm_fprintf (FILE *file, const char *p,
+ {
+   char buf[10];
+   char *q, c;
++#ifdef ASSEMBLER_DIALECT
++  int dialect = 0;
++#endif
+   va_list argptr;
+ 
+   va_start (argptr, p);
+@@ -3611,29 +3665,9 @@ asm_fprintf (FILE *file, const char *p,
+       {
+ #ifdef ASSEMBLER_DIALECT
+       case '{':
+-	{
+-	  int i;
+-
+-	  /* If we want the first dialect, do nothing.  Otherwise, skip
+-	     DIALECT_NUMBER of strings ending with '|'.  */
+-	  for (i = 0; i < dialect_number; i++)
+-	    {
+-	      while (*p && *p++ != '|')
+-		;
+-
+-	      if (*p == '|')
+-		p++;
+-	    }
+-	}
+-	break;
+-
+-      case '|':
+-	/* Skip to close brace.  */
+-	while (*p && *p++ != '}')
+-	  ;
+-	break;
+-
+       case '}':
++      case '|':
++	p = do_assembler_dialects (p, &dialect);
+ 	break;
+ #endif
+ 
+--- gcc/doc/tm.texi	(revision 198640)
++++ gcc/doc/tm.texi	(revision 198641)
+@@ -8274,7 +8274,9 @@ first argument of @code{asm_fprintf}.  T
+ @code{ASSEMBLER_DIALECT} is zero, one, two, etc.  Any special characters
+ within these strings retain their usual meaning.  If there are fewer
+ alternatives within the braces than the value of
+-@code{ASSEMBLER_DIALECT}, the construct outputs nothing.
++@code{ASSEMBLER_DIALECT}, the construct outputs nothing. If it's needed
++to print curly braces or @samp{|} character in assembler output directly,
++@samp{%@{}, @samp{%@}} and @samp{%|} can be used.
+ 
+ If you do not define this macro, the characters @samp{@{}, @samp{|} and
+ @samp{@}} do not have any special meaning when used in templates or
+--- gcc/testsuite/gcc.target/i386/asm-dialect-1.c	(revision 0)
++++ gcc/testsuite/gcc.target/i386/asm-dialect-1.c	(revision 189854)
+@@ -0,0 +1,15 @@
++/* { dg-options "-masm=intel" } */
++
++extern void abort (void);
++
++int
++main (void)
++{
++  int f = 0;
++  asm ("{movl $42, %%eax | mov eax, 42}" : :);
++  asm ("{movl $41, %0||mov %0, 43}" : "=r"(f));
++  if (f != 42)
++    abort ();
++
++  return 0;
++}
+--- gcc/testsuite/gcc.target/i386/asm-dialect-2.c	(revision 0)
++++ gcc/testsuite/gcc.target/i386/asm-dialect-2.c	(revision 198641)
+@@ -0,0 +1,11 @@
++/* { dg-do compile } */
++/* { dg-options "-masm=att" } */
++/* { dg-final { scan-assembler "%{a}|" } } */
++
++int a, b;
++
++void f()
++{
++  /* Check for escaped curly braces support.  */
++  asm volatile ("{%%%{a%}%||%%%}b}" : :);
++}

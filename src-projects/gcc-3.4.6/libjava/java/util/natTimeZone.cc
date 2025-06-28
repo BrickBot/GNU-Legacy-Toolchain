@@ -18,6 +18,7 @@ details.  */
 #include <java/lang/Character.h>
 #include <java/lang/Integer.h>
 
+#include <stdlib.h>
 #include <stdio.h>
 
 #if TIME_WITH_SYS_TIME
@@ -167,4 +168,13 @@ java::util::TimeZone::getDefaultTimeZoneId ()
 
   // If all else fails, return null.
   return NULL;
+}
+
+jstring
+java::util::TimeZone::getTZEnvVar ()
+{
+  const char *tzenv = ::getenv ("TZ");
+  if (tzenv == NULL)
+    return NULL;
+  return JvNewStringUTF (tzenv);
 }

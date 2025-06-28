@@ -1,0 +1,27 @@
+# DP: Let gdc recognize the -imultilib option (and ignore it)
+
+--- a/src/gcc/d/lang.opt
++++ b/src/gcc/d/lang.opt
+@@ -155,6 +155,10 @@
+ D Joined Separate
+ -iprefix <path>	Specify <path> as a prefix for next two options
+ 
++imultiarch
++D Joined Separate
++-imultiarch <dir>      Set <dir> to be the multiarch include subdirectory
++
+ isysroot
+ D Joined Separate
+ -isysroot <dir>	Set <dir> to be the system root directory
+--- a/src/gcc/d/d-lang.cc
++++ b/src/gcc/d/d-lang.cc
+@@ -707,6 +708,9 @@
+       case OPT_iprefix:
+ 	  iprefix = xstrdup(arg);
+ 	  break;
++      case OPT_imultiarch:
++	  imultiarch = xstrdup(arg);
++	  break;
+       case OPT_fmultilib_dir_:
+ 	  multilib_dir = xstrdup(arg);
+ 	  break;

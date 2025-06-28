@@ -1,0 +1,37 @@
+# DP: Set gettext's domain and textdomain to the versioned package name.
+Index: gcc-h8300-hms-3.4.6/gcc/Makefile.in
+===================================================================
+--- gcc-h8300-hms-3.4.6.orig/gcc/Makefile.in	2011-06-08 23:51:28.000000000 +0200
++++ gcc-h8300-hms-3.4.6/gcc/Makefile.in	2011-06-08 23:55:39.000000000 +0200
+@@ -2337,6 +2337,7 @@
+ intl.o: intl.c $(CONFIG_H) $(SYSTEM_H) coretypes.h $(TM_H) intl.h Makefile
+ 	$(CC) $(ALL_CFLAGS) $(ALL_CPPFLAGS) $(INCLUDES) \
+ 	  -DLOCALEDIR=\"$(localedir)\" \
++	  -DPACKAGE=\"$(PACKAGE)\" \
+ 	  -c $(srcdir)/intl.c $(OUTPUT_OPTION)
+ 
+ #
+@@ -3848,7 +3849,7 @@
+ GMSGFMT = @GMSGFMT@
+ MSGMERGE = msgmerge
+ 
+-PACKAGE = @PACKAGE@
++PACKAGE = $(shell echo @PACKAGE@|sed '$(program_transform_name)')
+ CATALOGS = @CATALOGS@
+ 
+ .PHONY: build- install- build-po install-po update-po
+Index: gcc-h8300-hms-3.4.6/gcc/intl.c
+===================================================================
+--- gcc-h8300-hms-3.4.6.orig/gcc/intl.c	2011-06-08 23:51:28.000000000 +0200
++++ gcc-h8300-hms-3.4.6/gcc/intl.c	2011-06-08 23:53:11.000000000 +0200
+@@ -41,8 +41,8 @@
+   setlocale (LC_ALL, "");
+ #endif
+ 
+-  (void) bindtextdomain ("gcc", LOCALEDIR);
+-  (void) textdomain ("gcc");
++  (void) bindtextdomain (PACKAGE, LOCALEDIR);
++  (void) textdomain (PACKAGE);
+ }
+ 
+ #if defined HAVE_WCHAR_H && defined HAVE_WORKING_MBSTOWCS && defined HAVE_WCSWIDTH

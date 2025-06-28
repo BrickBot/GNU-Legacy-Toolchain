@@ -1,0 +1,111 @@
+2006-12-08  Jakub Jelinek  <jakub@redhat.com>
+
+	* g++.dg/opt/ifcvt1.C: New test.
+
+2005-11-09  Eric Botcazou  <ebotcazou@adacore.com>
+
+	* ifcvt.c (noce_get_alt_condition): Use prev_nonnote_insn.
+	(noce_try_abs): Negate if the comparison is reversed.
+	Look only one instruction backwards for a REG_EQUAL note.
+
+	* gcc.dg/ifcvt-fabs-1.c: New test.
+
+--- gcc/ifcvt.c.orig	2005-11-21 11:43:21.000000000 -0200
++++ gcc/ifcvt.c	2006-10-26 02:21:07.000000000 -0300
+@@ -1406,7 +1406,7 @@ noce_get_alt_condition (struct noce_if_i
+       rtx prev_insn;
+ 
+       /* First, look to see if we put a constant in a register.  */
+-      prev_insn = PREV_INSN (if_info->cond_earliest);
++      prev_insn = prev_nonnote_insn (if_info->cond_earliest);
+       if (prev_insn
+ 	  && INSN_P (prev_insn)
+ 	  && GET_CODE (PATTERN (prev_insn)) == SET)
+@@ -1642,25 +1642,30 @@ noce_try_abs (struct noce_if_info *if_in
+   if (rtx_equal_p (XEXP (cond, 0), b))
+     c = XEXP (cond, 1);
+   else if (rtx_equal_p (XEXP (cond, 1), b))
+-    c = XEXP (cond, 0);
++    {
++      c = XEXP (cond, 0);
++      negate = !negate;
++    }
+   else
+     return FALSE;
+ 
+-  /* Verify that C is zero.  Search backward through the block for
+-     a REG_EQUAL note if necessary.  */
++  /* Verify that C is zero.  Search one step backward for a
++     REG_EQUAL note or a simple source if necessary.  */
+   if (REG_P (c))
+     {
+-      rtx insn, note = NULL;
+-      for (insn = earliest;
+-	   insn != BB_HEAD (if_info->test_bb);
+-	   insn = PREV_INSN (insn))
+-	if (INSN_P (insn)
+-	    && ((note = find_reg_note (insn, REG_EQUAL, c))
+-		|| (note = find_reg_note (insn, REG_EQUIV, c))))
+-	  break;
+-      if (! note)
++      rtx set, insn = prev_nonnote_insn (earliest);
++      if (insn
++	  && (set = single_set (insn))
++	  && rtx_equal_p (SET_DEST (set), c))
++	{
++	  rtx note = find_reg_equal_equiv_note (insn);
++	  if (note)
++	    c = XEXP (note, 0);
++	  else
++	    c = SET_SRC (set);
++	}
++      else
+ 	return FALSE;
+-      c = XEXP (note, 0);
+     }
+   if (GET_CODE (c) == MEM
+       && GET_CODE (XEXP (c, 0)) == SYMBOL_REF
+--- gcc/testsuite/gcc.dg/ifcvt-fabs-1.c	1970-01-01 00:00:00.000000000 +0000
++++ gcc/testsuite/gcc.dg/ifcvt-fabs-1.c	2006-10-26 02:20:24.000000000 -0300
+@@ -0,0 +1,21 @@
++/* { dg-do run } */
++/* { dg-options "-O" } */
++/* { dg-options "-O -march=i686" { target i686-*-* } } */
++
++extern void abort(void);
++
++float foo(float f)
++{
++  if (f < 0.0f)
++    f = -f;
++
++  return f;
++}
++
++int main(void)
++{
++  if (foo (-1.0f) != 1.0f)
++    abort ();
++
++  return 0;
++}
+--- gcc/testsuite/g++.dg/opt/ifcvt1.C	2006-10-04 16:28:56.502613000 +0200
++++ gcc/testsuite/g++.dg/opt/ifcvt1.C	2006-12-08 12:23:23.000000000 +0100
+@@ -0,0 +1,17 @@
++// { dg-do compile }
++// { dg-options "-O2 -fnon-call-exceptions" }
++
++struct S { ~S () throw () {} };
++double bar ();
++
++int
++foo ()
++{
++  S a;
++  int i = 0;
++  double c = bar ();
++  c = c < 0 ? -c : c;
++  if (c <= 1.e-8)
++    i += 24;
++  return i;
++}

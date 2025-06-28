@@ -1,0 +1,17 @@
+2012-05-09  Jakub Jelinek  <jakub@redhat.com>
+
+	* tree-data-ref.c (stmt_simple_memref_p): Return false
+	if get_base_address (op) is NULL.
+
+--- gcc/tree-data-ref.c.jj	2009-03-19 17:17:05.000000000 +0100
++++ gcc/tree-data-ref.c	2012-05-09 17:49:01.351102695 +0200
+@@ -3326,6 +3326,9 @@ stmt_simple_memref_p (struct loop *loop,
+   data_reference_p dr;
+   bool res = true;
+ 
++  if (get_base_address (op) == NULL_TREE)
++    return false;
++
+   dr = create_data_ref (loop, op, stmt, true);
+   if (!access_functions_are_affine_or_constant_p (dr, loop))
+     res = false;

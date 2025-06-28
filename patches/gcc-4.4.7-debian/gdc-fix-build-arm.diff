@@ -1,0 +1,38 @@
+# DP: Fix build on arm/armel.
+
+--- a/src/gcc/config/arm/arm-c.c	2007-11-05 17:13:46.000000000 +0000
++++ b/src/gcc/config/arm/arm-c.c	2010-08-29 11:42:36.503460693 +0100
+@@ -15,7 +15,7 @@
+ {
+   /* Tag_ABI_PCS_wchar_t.  */
+   asm_fprintf (asm_out_file, "\t.eabi_attribute 18, %d\n",
+-	       (int)(TYPE_PRECISION (wchar_type_node) / BITS_PER_UNIT));
++	       (int)(WCHAR_TYPE_SIZE / BITS_PER_UNIT));
+ }
+ 
+ 
+--- a/src/gcc/d/d-gcc-includes.h	2010-08-19 12:30:20.000000000 +0100
++++ b/src/gcc/d/d-gcc-includes.h	2010-08-23 10:44:15.709788361 +0100
+@@ -32,7 +32,11 @@
+ 
+ // hack needed to prevent inclusion of the generated insn-flags.h
+ // which defines some inline functions that use C prototypes....
++// because some archs depend on this header for EH routines,
++// only do this if EH_RETURN_HANDLER_RTX is already defined.
++#ifdef EH_RETURN_HANDLER_RTX
+ #define GCC_INSN_FLAGS_H
++#endif
+ 
+ // Conflicting definitions between stdio.h and libiberty.h over the throw()
+ #define HAVE_DECL_ASPRINTF 1
+--- a/src/gcc/d/phobos/gcc/deh.d	2010-08-19 13:59:09.000000000 +0100
++++ b/src/gcc/d/phobos/gcc/deh.d	2010-08-23 10:42:05.882821950 +0100
+@@ -254,7 +254,7 @@
+     ubyte *p;
+     ubyte *action_record;
+     //int handler_switch_value;
+-    _Unwind_Ptr /*landing_pad, */ip;
++    _Unwind_Ptr landing_pad, ip;
+     Phase1Info phase1;
+ 
+     static if (Use_ARM_EABI_Unwinder)

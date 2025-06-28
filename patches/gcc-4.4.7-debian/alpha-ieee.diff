@@ -1,0 +1,21 @@
+# DP: #212912
+# DP: on alpha-linux, make -mieee default and add -mieee-disable switch
+# DP: to turn default off
+
+---
+ gcc/config/alpha/alpha.c |    4 ++++
+ 1 files changed, 4 insertions(+), 0 deletions(-)
+
+--- a/src/gcc/config/alpha/alpha.c
++++ b/src/gcc/config/alpha/alpha.c
+@@ -281,6 +281,10 @@ override_options (void)
+ 
+   int i;
+ 
++  /* If not -ffinite-math-only, enable -mieee*/
++  if (!flag_finite_math_only)
++    target_flags |= MASK_IEEE|MASK_IEEE_CONFORMANT;
++
+   /* Unicos/Mk doesn't have shared libraries.  */
+   if (TARGET_ABI_UNICOSMK && flag_pic)
+     {

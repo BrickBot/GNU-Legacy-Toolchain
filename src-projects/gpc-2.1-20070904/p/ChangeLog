@@ -1,5 +1,24 @@
 ChangeLog -- Edit History for GPC, the GNU Pascal Compiler, since version 2.1
 =============================================================================
+2025-06-19  Matthew Sheets  <https://github.com/BrickBot/GNU-Legacy-Toolchain>
+
+	* Enable WITH_SHARED as a GCC configure arg
+		(e.g. --with-gpc-shared or --without-gpc-shared)
+	* Replace deprecated __PRETTY_FUNCTION__ with __func__
+	* Rename mark_addressable and mark_addressable2 with a "pas_" prefix due
+		to conflicts with the mark_addressable name in newer GCC versions
+		(pas_mark_addressable and pas_mark_addressable2).
+	* Update *.texi doc files to UTF-8
+	* Formatting changes latest tools are automatically making to text files
+		(e.g. COPYING, COPYING.DEMO, COPYING.LIB, FAQ, INSTALL, NEWS, README)
+	* Fix GPC cross-naming and consistent with general GCC cross-naming
+	* In GPC's configure files, update path variables to current standards
+		+ Includes datadir/datarootdir, docdir, infodir, mandir, localedir
+	* In GPC's Make-lang.in
+		+ Automatically create directories needed for auto-generated content
+		+ Include additional logging during install
+		+ Change pascal.install-lib rts dependency to pascal.maybe_rts
+
 2012-06-29  Frank Heckenbach  <frank@pascal.gnu.de>
 
 	* utils/mk-t-inc: Make compatible with Mac OSX sed.

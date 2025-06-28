@@ -173,6 +173,8 @@ extern int ia64_tls_size;
 
 #define TARGET_SWITCHES							\
 {									\
+  { "64",		0,						\
+      N_("Generate 64-bit code") },					\
   { "big-endian",	MASK_BIG_ENDIAN,				\
       N_("Generate big endian code") },					\
   { "little-endian",	-MASK_BIG_ENDIAN,				\

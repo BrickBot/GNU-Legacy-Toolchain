@@ -78,6 +78,10 @@ typedef BFD_HOST_U_64_BIT bfd_uint64_t;
 #endif
 #endif
 
+/* Declaring a type wide enough to hold a host long and a host pointer.  */
+#define BFD_HOSTPTR_T	@BFD_HOSTPTR_T@
+typedef BFD_HOSTPTR_T bfd_hostptr_t;
+
 /* Forward declaration.  */
 typedef struct bfd bfd;
 
@@ -880,6 +884,9 @@ extern struct coff_comdat_info *bfd_coff_get_comdat_section
 void bfd_init (void);
 
 /* Extracted from opncls.c.  */
+bfd *bfd_fopen (const char *filename, const char *target,
+    const char *mode, int fd);
+
 bfd *bfd_openr (const char *filename, const char *target);
 
 bfd *bfd_fdopenr (const char *filename, const char *target, int fd);

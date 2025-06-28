@@ -1,0 +1,16 @@
+000-print-debian-version.patch
+006-better-file-error.patch
+012-check-ldrunpath-length.patch
+128-ln-s-makefiles.patch
+129-gas-h8300.patch
+130-coff-arm.patch
+131-sprintf.patch
+132-texinfo-fixes.patch
+133-configure-signatures.patch
+134-texinfo-fixes.patch
+135-update-autotools.patch
+136-ld-libdir.patch
+137-abort-on-invalid-header.patch
+138-ldflags.patch
+139-spacepad.patch
+140-deterministic-output.patch

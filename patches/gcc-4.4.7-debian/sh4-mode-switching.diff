@@ -1,0 +1,20 @@
+# DP: Fix PR target/41993, [sh] ICE in create_pre_exit, at mode-switching.c
+
+--- a/arc/gcc/mode-switching.c	2009-11-24 09:50:59.000000000 +0900
++++ b/src/gcc/mode-switching.c	2009-11-24 09:51:02.000000000 +0900
+@@ -325,7 +325,14 @@
+ 		    else
+ 		      break;
+ 		    if (copy_start >= FIRST_PSEUDO_REGISTER)
+-		      break;
++			{
++				if (!optimize)
++				{
++					last_insn = return_copy;
++					continue;
++				}
++				break;
++			}
+ 		    copy_num
+ 		      = hard_regno_nregs[copy_start][GET_MODE (copy_reg)];
+ 
