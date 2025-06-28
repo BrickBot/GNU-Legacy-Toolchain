@@ -1,0 +1,64 @@
+Debian local - don't install readline documentation.
+
+diff -r -u gdb-5.1.0.1-before/gdb/doc/Makefile.in gdb-5.1.0.1/gdb/doc/Makefile.in
+--- gdb-5.1.0.1-before/gdb/doc/Makefile.in	Thu Jul 26 09:29:24 2001
++++ gdb-5.1.0.1/gdb/doc/Makefile.in	Sat Feb 16 16:39:42 2002
+@@ -104,8 +104,9 @@
+ 
+ SFILES_LOCAL = $(srcdir)/gdb.texinfo GDBvn.texi $(SFILES_INCLUDED)
+ 
+-SFILES_DOC = $(SFILES_LOCAL) $(GDBMI_DIR)/gdbmi.texinfo \
+-                $(READLINE_DIR)/rluser.texinfo $(READLINE_DIR)/inc-hist.texinfo
++#SFILES_DOC = $(SFILES_LOCAL) $(GDBMI_DIR)/gdbmi.texinfo \
++#                $(READLINE_DIR)/rluser.texinfo $(READLINE_DIR)/inc-hist.texinfo
++SFILES_DOC = $(SFILES_LOCAL) $(GDBMI_DIR)/gdbmi.texinfo
+ 
+ #### Host, target, and site specific Makefile fragments come in here.
+ ###
+@@ -300,16 +301,16 @@
+ # regardless of whether or not configuring in main sourcedir.
+ # @ftable removed due to bug in texi2roff-2; if your texi2roff
+ # is newer, try just ln or cp
+-rluser.texinfo: ${READLINE_DIR}/rluser.texinfo
+-		sed -e 's/^@ftable/@table/g' \
+-		-e 's/^@end ftable/@end table/g' \
+-		${READLINE_DIR}/rluser.texinfo > ./rluser.texinfo
+-
+-inc-hist.texinfo: ${READLINE_DIR}/inc-hist.texinfo
+-	(test "$$LN_S" = "ln -s" && \
+-	 ln -s ${READLINE_DIR}/inc-hist.texinfo .) || \
+-	ln ${READLINE_DIR}/inc-hist.texinfo . || \
+-	cp ${READLINE_DIR}/inc-hist.texinfo .
++#rluser.texinfo: ${READLINE_DIR}/rluser.texinfo
++#		sed -e 's/^@ftable/@table/g' \
++#		-e 's/^@end ftable/@end table/g' \
++#		${READLINE_DIR}/rluser.texinfo > ./rluser.texinfo
++#
++#inc-hist.texinfo: ${READLINE_DIR}/inc-hist.texinfo
++#	(test "$$LN_S" = "ln -s" && \
++#	 ln -s ${READLINE_DIR}/inc-hist.texinfo .) || \
++#	ln ${READLINE_DIR}/inc-hist.texinfo . || \
++#	cp ${READLINE_DIR}/inc-hist.texinfo .
+ 
+ gdbmi.texinfo: ${GDBMI_DIR}/gdbmi.texinfo
+ 	(test "$$LN_S" = "ln -s" && \
+@@ -318,7 +319,8 @@
+ 	cp ${GDBMI_DIR}/gdbmi.texinfo .
+ 
+ # gdb manual suitable for [gtn]roff -me
+-gdb.me: $(SFILES_LOCAL) links2roff rluser.texinfo inc-hist.texinfo gdbmi.texinfo
++#gdb.me: $(SFILES_LOCAL) links2roff rluser.texinfo inc-hist.texinfo gdbmi.texinfo
++gdb.me: $(SFILES_LOCAL) links2roff gdbmi.texinfo
+ 	sed -e '/\\input texinfo/d' \
+ 		-e '/@c TEXI2ROFF-KILL/,/@c END TEXI2ROFF-KILL/d' \
+ 		-e '/^@ifinfo/,/^@end ifinfo/d' \
+@@ -350,7 +352,8 @@
+ # gdb manual suitable for [tn]roff -mm
+ # '@noindent's removed due to texi2roff-2 mm bug; if yours is newer, 
+ #   try leaving them in
+-gdb.mm: $(SFILES_LOCAL) links2roff rluser.texinfo inc-hist.texinfo gdbmi.texinfo
++#gdb.mm: $(SFILES_LOCAL) links2roff rluser.texinfo inc-hist.texinfo gdbmi.texinfo
++gdb.mm: $(SFILES_LOCAL) links2roff gdbmi.texinfo
+ 	sed -e '/\\input texinfo/d' \
+ 		-e '/@c TEXI2ROFF-KILL/,/@c END TEXI2ROFF-KILL/d' \
+ 		-e '/^@ifinfo/,/^@end ifinfo/d' \

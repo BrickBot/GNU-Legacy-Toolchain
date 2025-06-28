@@ -1,0 +1,35 @@
+# DP: Enable both gold and ld in a single toolchain (documentation).
+# DP: New option -fuse-ld=ld.bfd, -fuse-ld=gold.
+
+Index: gcc/doc/invoke.texi
+===================================================================
+--- a/src/gcc/doc/invoke.texi	(revision
++++ b/src/gcc/doc/invoke.texi	(working
+@@ -376,7 +376,7 @@
+ -funit-at-a-time -funroll-all-loops -funroll-loops @gol
+ -funsafe-loop-optimizations -funsafe-math-optimizations -funswitch-loops @gol
+ -fvariable-expansion-in-unroller -fvect-cost-model -fvpt -fweb @gol
+--fwhole-program @gol
++-fwhole-program -fuse-ld @gol
+ --param @var{name}=@var{value}
+ -O  -O0  -O1  -O2  -O3  -Os}
+ 
+@@ -6734,6 +6734,18 @@
+ 
+ This option is not supported for Fortran programs.
+ 
++@item -fuse-ld=gold
++Use the @command{gold} linker instead of the default linker.
++This option is only necessary if GCC has been configured with
++@option{--enable-gold=both} or @option{--enable-gold=both/ld}.
++Note: Backported for Debian/Ubuntu from GCC 4.5.
++
++@item -fuse-ld=bfd
++Use the @command{ld.bfd} linker instead of the default linker.
++This option is only necessary if GCC has been configured with
++@option{--enable-gold=both/gold}.
++Note: Backported for Debian/Ubuntu from GCC 4.5.
++
+ @item -fcprop-registers
+ @opindex fcprop-registers
+ After register allocation and post-register allocation instruction splitting,

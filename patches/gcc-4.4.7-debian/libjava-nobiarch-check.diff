@@ -1,0 +1,43 @@
+# DP: For biarch builds, disable the testsuite for the non-default architecture
+# DP: for runtime libraries, which are not built by default (libjava).
+
+---
+ libjava/testsuite/Makefile.in |    4 +++-
+ 2 files changed, 25 insertions(+), 1 deletions(-)
+
+--- a/src/libjava/testsuite/Makefile.in
++++ b/src/libjava/testsuite/Makefile.in
+@@ -435,12 +435,14 @@ CTAGS:
+ 
+ 
+ check-DEJAGNU: site.exp
++	runtestflags="`echo '$(RUNTESTFLAGS)' | sed 's/,-m[36][24]//;s/,-mabi=n32//;s/,-mabi=64//'`"; \
++	case "$$runtestflags" in *\\{\\}) runtestflags=; esac; \
+ 	srcdir=`$(am__cd) $(srcdir) && pwd`; export srcdir; \
+ 	EXPECT=$(EXPECT); export EXPECT; \
+ 	runtest=$(RUNTEST); \
+ 	if $(SHELL) -c "$$runtest --version" > /dev/null 2>&1; then \
+ 	  l='$(DEJATOOL)'; for tool in $$l; do \
+-	    $$runtest $(AM_RUNTESTFLAGS) $(RUNTESTDEFAULTFLAGS) $(RUNTESTFLAGS); \
++	    $$runtest $(AM_RUNTESTFLAGS) $(RUNTESTDEFAULTFLAGS) $$runtestflags; \
+ 	  done; \
+ 	else echo "WARNING: could not find \`runtest'" 1>&2; :;\
+ 	fi
+--- a/src/libffi/testsuite/Makefile.in
++++ b/src/libffi/testsuite/Makefile.in
+@@ -435,12 +435,14 @@ CTAGS:
+ 
+ 
+ check-DEJAGNU: site.exp
++	runtestflags="`echo '$(RUNTESTFLAGS)' | sed 's/,-m[36][24]//;s/,-mabi=n32//;s/,-mabi=64//'`"; \
++	case "$$runtestflags" in *\\{\\}) runtestflags=; esac; \
+ 	srcdir=`$(am__cd) $(srcdir) && pwd`; export srcdir; \
+ 	EXPECT=$(EXPECT); export EXPECT; \
+ 	runtest=$(RUNTEST); \
+ 	if $(SHELL) -c "$$runtest --version" > /dev/null 2>&1; then \
+ 	  l='$(DEJATOOL)'; for tool in $$l; do \
+-	    $$runtest $(AM_RUNTESTFLAGS) $(RUNTESTDEFAULTFLAGS) $(RUNTESTFLAGS); \
++	    $$runtest $(AM_RUNTESTFLAGS) $(RUNTESTDEFAULTFLAGS) $$runtestflags; \
+ 	  done; \
+ 	else echo "WARNING: could not find \`runtest'" 1>&2; :;\
+ 	fi

@@ -1,0 +1,31 @@
+# DP: Fix PR java/40816, taken from the gcc-4_5-branch
+
+libjava/
+
+2010-02-24  Andrew Haley  <aph@redhat.com>
+
+	PR java/40816
+	* include/jni_md.h: jboolean is an unsigned type.
+
+Index: libjava/include/jni_md.h
+===================================================================
+--- a/src/libjava/include/jni_md.h	(revision 157046)
++++ b/src/libjava/include/jni_md.h	(revision 157047)
+@@ -78,7 +78,7 @@
+ typedef int    jshort __attribute__((__mode__(__HI__)));
+ typedef int    jint   __attribute__((__mode__(__SI__)));
+ typedef int    jlong  __attribute__((__mode__(__DI__)));
+-typedef int    jboolean __attribute__((__mode__(__QI__)));
++typedef unsigned int   jboolean __attribute__((__mode__(__QI__)));
+ typedef unsigned short jchar __attribute__((__mode__(__HI__)));
+ typedef float  jfloat;
+ typedef double jdouble;
+@@ -99,7 +99,7 @@
+ typedef float jfloat;
+ typedef double jdouble;
+ typedef jint jsize;
+-typedef int8_t jboolean;
++typedef uint8_t jboolean;
+ typedef uint16_t jchar;
+ 
+ #  else /* JV_HAVE_INTTYPES_H */

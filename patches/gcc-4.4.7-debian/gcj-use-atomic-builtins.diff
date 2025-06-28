@@ -1,0 +1,94 @@
+# DP: gcj: add option -fuse-atomic-builtins
+
+gcc/java/
+
+2009-08-12  Andrew Haley  <aph@redhat.com>
+
+	* builtins.c (compareAndSwapInt_builtin): Use
+	flag_use_atomic_builtins.
+	(compareAndSwapLong_builtin): Likewise.
+	(compareAndSwapObject_builtin): Likewise.
+	* jvspec.c: Add flag_use_atomic_builtins.
+	* gcj.texi: Likewise.
+	* java-tree.h: Likewise.
+	* lang.opt: Likewise.
+
+Index: gcc/java/builtins.c
+===================================================================
+--- a/src/gcc/java/builtins.c	(revision 155104)
++++ b/src/gcc/java/builtins.c	(working copy)
+@@ -305,7 +305,8 @@
+ {
+   enum machine_mode mode = TYPE_MODE (int_type_node);
+   if (sync_compare_and_swap_cc[mode] != CODE_FOR_nothing 
+-      || sync_compare_and_swap[mode] != CODE_FOR_nothing)
++      || sync_compare_and_swap[mode] != CODE_FOR_nothing
++      || flag_use_atomic_builtins)
+     {
+       tree addr, stmt;
+       UNMARSHAL5 (orig_call);
+@@ -325,7 +326,12 @@
+ {
+   enum machine_mode mode = TYPE_MODE (long_type_node);
+   if (sync_compare_and_swap_cc[mode] != CODE_FOR_nothing 
+-      || sync_compare_and_swap[mode] != CODE_FOR_nothing)
++      || sync_compare_and_swap[mode] != CODE_FOR_nothing
++      || (GET_MODE_SIZE (mode) <= GET_MODE_SIZE (word_mode)
++	  && flag_use_atomic_builtins))
++    /* We don't trust flag_use_atomic_builtins for multi-word
++       compareAndSwap.  Some machines such as ARM have atomic libfuncs
++       but not the multi-word versions.  */
+     {
+       tree addr, stmt;
+       UNMARSHAL5 (orig_call);
+@@ -344,7 +350,8 @@
+ {
+   enum machine_mode mode = TYPE_MODE (ptr_type_node);
+   if (sync_compare_and_swap_cc[mode] != CODE_FOR_nothing 
+-      || sync_compare_and_swap[mode] != CODE_FOR_nothing)
++      || sync_compare_and_swap[mode] != CODE_FOR_nothing
++      || flag_use_atomic_builtins)
+   {
+     tree addr, stmt;
+     int builtin;
+Index: gcc/java/jvspec.c
+===================================================================
+--- a/src/gcc/java/jvspec.c	(revision 155104)
++++ b/src/gcc/java/jvspec.c	(working copy)
+@@ -73,6 +73,7 @@
+ 		   %<fclasspath* %<fCLASSPATH* %<fbootclasspath*\
+ 		   %<fextdirs*\
+ 		   %<fuse-divide-subroutine %<fno-use-divide-subroutine\
++		   %<fuse-atomic-builtins %<fno-use-atomic-builtins\
+ 		   %<fcheck-references %<fno-check-references\
+ 		   %<ffilelist-file %<fsaw-java-file %<fsource* %<ftarget*\
+ 		   %{f*} -fdollars-in-identifiers\
+Index: gcc/java/lang.opt
+===================================================================
+--- a/src/gcc/java/lang.opt	(revision 155104)
++++ b/src/gcc/java/lang.opt	(working copy)
+@@ -192,6 +192,10 @@
+ Java Var(flag_use_divide_subroutine) Init(1)
+ Call a library routine to do integer divisions
+ 
++fuse-atomic-builtins
++Java Var(flag_use_atomic_builtins) Init(0)
++Generate code for built-in atomic operations
++
+ fbootstrap-classes
+ Java Var(flag_bootstrap_classes)
+ Generated should be loaded by bootstrap loader
+Index: gcc/java/java-tree.h
+===================================================================
+--- a/src/gcc/java/java-tree.h	(revision 155104)
++++ b/src/gcc/java/java-tree.h	(working copy)
+@@ -145,6 +145,9 @@
+ /* When nonzero, call a library routine to do integer divisions. */
+ extern int flag_use_divide_subroutine;
+ 
++/* When nonzero, use atomic builtins. */
++extern int flag_use_atomic_builtins;
++
+ /* When nonzero, generate code for the Boehm GC.  */
+ extern int flag_use_boehm_gc;
+ 

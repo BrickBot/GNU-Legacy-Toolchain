@@ -1,0 +1,12 @@
+# DP: don't run the libmudflap testsuite on hppa; times out on the buildd
+
+--- a/src/libmudflap/testsuite/Makefile.in~	2010-04-02 20:18:06.000000000 +0200
++++ b/src/libmudflap/testsuite/Makefile.in	2011-03-12 14:54:04.143056313 +0100
+@@ -242,6 +242,7 @@
+ 
+ 
+ check-DEJAGNU: site.exp
++	case "$(target)" in hppa*) exit 0;; esac; \
+ 	srcdir=`$(am__cd) $(srcdir) && pwd`; export srcdir; \
+ 	EXPECT=$(EXPECT); export EXPECT; \
+ 	runtest=$(RUNTEST); \

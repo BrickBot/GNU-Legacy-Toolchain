@@ -1,0 +1,49 @@
+# DP: Modify gdc driver to have no libphobos by default.
+
+--- a/src/gcc/d/d-lang.cc	2010-08-22 22:21:10.000000000 +0100
++++ b/src/gcc/d/d-lang.cc	2010-08-23 11:45:29.213787124 +0100
+@@ -185,7 +185,7 @@
+     global.params.fileImppath = new Array();
+ 
+     // GCC options
+-    flag_exceptions = 1;
++    flag_exceptions = 0;
+ 
+     // extra D-specific options
+     gen.splitDynArrayVarArgs = true;
+--- a/src/gcc/d/dmain.d	1970-01-01 01:00:00.000000000 +0100
++++ b/src/gcc/d/dmain.d	2010-08-23 11:46:32.289790644 +0100
+@@ -0,0 +1,22 @@
++extern (C) size_t strlen(const char* s);
++extern (C) void* malloc(size_t s);
++
++int main(char[][] args); // U _Dmain
++
++extern (C) int main(int argc, char** argv) {
++    char[][] args;
++    char[] *am;
++    int i;
++
++    am = cast(char[] *) malloc(argc * (char[]).sizeof);
++
++    for(i = 0; i < argc; i++) {
++	am[i] = argv[i][0 .. strlen(argv[i])];
++    }
++
++    args = am[0 .. argc];
++
++    return main(args);
++}
++
++
+--- a/src/gcc/d/d-spec.c	2010-08-19 12:30:20.000000000 +0100
++++ b/src/gcc/d/d-spec.c	2010-08-23 11:47:15.237799676 +0100
+@@ -88,7 +88,7 @@
+ 
+     /* If nonzero, use the standard D runtime library when linking with
+        standard libraries. */
+-    int phobos = 1;
++    int phobos = 0;
+ 
+     /* The number of arguments being added to what's in argv, other than
+        libraries.  We use this to track the number of times we've inserted

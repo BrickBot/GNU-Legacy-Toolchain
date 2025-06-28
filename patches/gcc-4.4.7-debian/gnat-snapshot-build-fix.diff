@@ -1,0 +1,19 @@
+# DP: Let gnat-4.4 build with gnat snapshots from the trunk (20100803)
+
+2010-06-22  Ed Schonberg  <schonberg@adacore.com>
+
+	* uintp.adb: Fix scope error in operator call.
+
+Index: gcc/ada/uintp.adb
+===================================================================
+--- a/src/gcc/ada/uintp.adb	(revision 161146)
++++ b/src/gcc/ada/uintp.adb	(revision 161147)
+@@ -239,7 +239,7 @@
+ 
+    function Hash_Num (F : Int) return Hnum is
+    begin
+-      return Standard."mod" (F, Hnum'Range_Length);
++      return Types."mod" (F, Hnum'Range_Length);
+    end Hash_Num;
+ 
+    ---------------

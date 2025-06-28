@@ -1,0 +1,22 @@
+Pending upstream.
+
+--- gdb-5.2.cvs20020401/gdb/gdbarch.sh.orig	Thu Apr  4 14:08:46 2002
++++ gdb-5.2.cvs20020401/gdb/gdbarch.sh	Thu Apr  4 14:09:27 2002
+@@ -1333,6 +1333,7 @@
+ initialize_non_multiarch ()
+ {
+   alloc_gdbarch_data (&startup_gdbarch);
++  init_gdbarch_swap (&startup_gdbarch);
+   init_gdbarch_data (&startup_gdbarch);
+ }
+ EOF
+--- gdb-5.2.cvs20020401/gdb/gdbarch.c.orig	Thu Apr  4 14:08:54 2002
++++ gdb-5.2.cvs20020401/gdb/gdbarch.c	Thu Apr  4 14:09:37 2002
+@@ -412,6 +412,7 @@
+ initialize_non_multiarch ()
+ {
+   alloc_gdbarch_data (&startup_gdbarch);
++  init_gdbarch_swap (&startup_gdbarch);
+   init_gdbarch_data (&startup_gdbarch);
+ }
+ 

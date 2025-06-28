@@ -1,0 +1,65 @@
+# DP: Backported patch for PR ada/38333
+
+B.1(22) says that an Import pragma must be the completion of a
+declaration, and 6.1(20) says that a completion is not allowed for an
+abstract subprogram declaration.
+
+With the following patch, the attached example gives
+
+  5.    pragma Import (Ada, p1);
+                            |
+     >>> cannot import abstract subprogram "p1" declared at line 4
+
+whereas without it the no error is reported and the compilation is
+succesful.
+
+Bootstrapped and regtested on x86_64-linux. Ok for trunk?
+
+    gcc/ada/
+	PR ada/38333
+	* sem_prag.adb (Process_Import_Or_Interface): Forbid an abstract
+	subprogram to be completed with a "pragma Import".
+
+    gcc/testsuite/
+	PR ada/38333
+	* gnat.dg/specs/import_abstract.ads: New.
+---
+ gcc/ada/sem_prag.adb                            |    9 +++++++++
+ gcc/testsuite/gnat.dg/specs/import_abstract.ads |    6 ++++++
+ 2 files changed, 15 insertions(+), 0 deletions(-)
+ create mode 100644 gcc/testsuite/gnat.dg/specs/import_abstract.ads
+
+diff --git a/gcc/ada/sem_prag.adb b/gcc/ada/sem_prag.adb
+index 065cb97..4e43b66 100644
+--- a/src/gcc/ada/sem_prag.adb
++++ b/src/gcc/ada/sem_prag.adb
+@@ -3455,6 +3455,15 @@ package body Sem_Prag is
+                else
+                   Set_Imported (Def_Id);
+ 
++                  if Is_Subprogram (Def_Id)
++                    and then Is_Abstract_Subprogram (Def_Id)
++                  then
++                     Error_Msg_Sloc := Sloc (Def_Id);
++                     Error_Msg_NE
++                       ("cannot import abstract subprogram& declared#",
++                        Arg2, Def_Id);
++                  end if;
++
+                   --  Special processing for Convention_Intrinsic
+ 
+                   if C = Convention_Intrinsic then
+diff --git a/gcc/testsuite/gnat.dg/specs/import_abstract.ads b/gcc/testsuite/gnat.dg/specs/import_abstract.ads
+new file mode 100644
+index 0000000..9d05f0c
+--- /dev/null
++++ b/src/gcc/testsuite/gnat.dg/specs/import_abstract.ads
+@@ -0,0 +1,6 @@
++-- { dg-do compile }
++package Import_Abstract is
++   type T1 is abstract tagged null record;
++   procedure p1(X : T1) is abstract;
++   pragma Import (Ada, p1);    -- { dg-error "cannot import abstract subprogram" }
++end Import_Abstract;
+-- 
+1.6.0.4.880.g80093

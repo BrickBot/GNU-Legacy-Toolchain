@@ -1,0 +1,77 @@
+# DP: GNU/k*BSD support
+# Author: Robert Millan <rmh@aybabtu.com>
+# Status: Not yet submitted
+
+---
+ gcc/config.gcc                 |    2 +-
+ gcc/config/i386/kfreebsd-gnu.h |   22 ++++++++++++++++++++++
+ gcc/config/i386/linux64.h      |    5 ++++-
+ 3 files changed, 27 insertions(+), 2 deletions(-)
+
+--- a/src/gcc/config.gcc
++++ b/src/gcc/config.gcc
+@@ -1115,7 +1115,7 @@ x86_64-*-linux* | x86_64-*-kfreebsd*-gnu | x86_64-*-knetbsd*-gnu)
+ 	tm_file="${tm_file} i386/unix.h i386/att.h dbxelf.h elfos.h svr4.h linux.h \
+ 		 i386/x86-64.h i386/linux64.h"
+ 	case ${target} in
+-	x86_64-*-kfreebsd*-gnu) tm_file="${tm_file} kfreebsd-gnu.h" ;;
++	x86_64-*-kfreebsd*-gnu) tm_file="${tm_file} kfreebsd-gnu.h i386/kfreebsd-gnu.h" ;;
+ 	x86_64-*-knetbsd*-gnu) tm_file="${tm_file} knetbsd-gnu.h" ;;
+ 	esac
+ 	tmake_file="${tmake_file} i386/t-linux64 i386/t-crtstuff i386/t-crtpc i386/t-crtfm t-dfprules"
+--- a/src/gcc/config/i386/kfreebsd-gnu.h
++++ b/src/gcc/config/i386/kfreebsd-gnu.h
+@@ -19,7 +19,29 @@ You should have received a copy of the GNU General Public License
+ along with GCC; see the file COPYING3.  If not see
+ <http://www.gnu.org/licenses/>.  */
+ 
++#ifdef GLIBC_DYNAMIC_LINKER32
++#undef GLIBC_DYNAMIC_LINKER32
++#define GLIBC_DYNAMIC_LINKER32 "/lib/ld.so.1"
++#endif
++
++#ifdef GLIBC_DYNAMIC_LINKER64
++#undef GLIBC_DYNAMIC_LINKER64
++#define GLIBC_DYNAMIC_LINKER64 "/lib/ld-kfreebsd-x86-64.so.1"
++#endif
++
+ #undef LINK_EMULATION
+ #define LINK_EMULATION "elf_i386_fbsd"
++
++#ifdef LINK_EMULATION32
++#undef LINK_EMULATION32
++#define LINK_EMULATION32 LINK_EMULATION
++#endif
++
++#ifdef LINK_EMULATION64
++#undef LINK_EMULATION64
++#define LINK_EMULATION64 "elf_x86_64_fbsd"
++#endif
++
+ #undef REG_NAME
+ #define REG_NAME(reg) sc_ ## reg
++
+--- a/src/gcc/config/i386/linux64.h
++++ b/src/gcc/config/i386/linux64.h
+@@ -53,8 +53,11 @@ along with GCC; see the file COPYING3.  If not see
+    When the -shared link option is used a final link is not being
+    done.  */
+ 
++/* These macros may be overridden in k*bsd-gnu.h and i386/k*bsd-gnu.h. */
+ #define GLIBC_DYNAMIC_LINKER32 "/lib/ld-linux.so.2"
+ #define GLIBC_DYNAMIC_LINKER64 "/lib64/ld-linux-x86-64.so.2"
++#define LINK_EMULATION32 "elf_i386"
++#define LINK_EMULATION64 "elf_x86_64"
+ 
+ #undef ASM_SPEC
+ #define ASM_SPEC "%{v:-V} %{Qy:} %{!Qn:-Qy} %{n} %{T} %{Ym,*} %{Yd,*} \
+@@ -70,7 +73,7 @@ along with GCC; see the file COPYING3.  If not see
+ #endif
+ 
+ #undef	LINK_SPEC
+-#define LINK_SPEC "%{" SPEC_64 ":-m elf_x86_64} %{" SPEC_32 ":-m elf_i386} --hash-style=both \
++#define LINK_SPEC "%{" SPEC_64 ":-m " LINK_EMULATION64 "} %{" SPEC_32 ":-m " LINK_EMULATION32 "} --hash-style=both \
+   %{shared:-shared} \
+   %{!shared: \
+     %{!static: \
+

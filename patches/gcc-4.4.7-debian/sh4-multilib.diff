@@ -1,0 +1,23 @@
+# DP: Fix multilib (m4/m4-nofpu) for sh4-linux
+
+---
+ gcc/config.gcc |    5 +++--
+ 1 files changed, 3 insertions(+), 2 deletions(-)
+
+--- a/src/gcc/config.gcc
++++ b/src/gcc/config.gcc
+@@ -2119,11 +2119,12 @@ sh-*-symbianelf* | sh[12346l]*-*-symbianelf* | \
+ 	if test x${sh_multilibs} = x ; then
+ 		case ${target} in
+ 		sh64-superh-linux* | \
+-		sh[1234]*)	sh_multilibs=${sh_cpu_target} ;;
+ 		sh64* | sh5*)	sh_multilibs=m5-32media,m5-32media-nofpu,m5-compact,m5-compact-nofpu,m5-64media,m5-64media-nofpu ;;
+-		sh-superh-*)	sh_multilibs=m4,m4-single,m4-single-only,m4-nofpu ;;
++		sh-superh-* | \
++		sh4-*-linux*)	sh_multilibs=m4,m4-nofpu ;;
+ 		sh*-*-linux*)	sh_multilibs=m1,m3e,m4 ;;
+ 		sh*-*-netbsd*)	sh_multilibs=m3,m3e,m4 ;;
++		sh-superh-*)	sh_multilibs=m4,m4-single,m4-single-only,m4-nofpu ;;
+ 		*) sh_multilibs=m1,m2,m2e,m4,m4-single,m4-single-only,m2a,m2a-single ;;
+ 		esac
+ 		if test x$with_fp = xno; then

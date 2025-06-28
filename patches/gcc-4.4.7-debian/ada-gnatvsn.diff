@@ -1,0 +1,23 @@
+# DP: proposed patch for PR ada/27194.
+
+--- a/src/gcc/gnatvsn.adb.orig	2005-07-01 03:29:17.000000000 +0200
++++ b/src/gcc/ada/gnatvsn.adb	2006-04-18 10:00:05.100002000 +0200
+@@ -54,12 +54,13 @@
+    ---/----------------------
+ 
+    function Gnat_Version_String return String is
+-      NUL_Pos : Positive := 1;
++      NUL_Pos : Positive := Version_String'Last;
+    begin
+-      loop
+-         exit when Version_String (NUL_Pos) = ASCII.NUL;
+-
+-         NUL_Pos := NUL_Pos + 1;
++      for J in Version_String'Range loop
++         if Version_String (J) = ASCII.NUL then
++            NUL_Pos := J;
++            exit;
++         end if;
+       end loop;
+ 
+       return Version_String (1 .. NUL_Pos - 1);

@@ -1,0 +1,114 @@
+# DP: Add configure check if linker supports --build-id
+
+Index: a/src/gcc/configure.ac
+===================================================================
+--- a/src/gcc/configure.ac	(revision 146981)
++++ b/src/gcc/configure.ac	(working copy)
+@@ -3510,6 +3510,41 @@
+     ;;
+ esac
+ 
++AC_CACHE_CHECK(linker --build-id support,
++  gcc_cv_ld_buildid,
++  [gcc_cv_ld_buildid=no
++  if test $in_tree_ld = yes ; then
++    if test "$gcc_cv_gld_major_version" -eq 2 -a \
++       "$gcc_cv_gld_minor_version" -ge 18 -o \
++       "$gcc_cv_gld_major_version" -gt 2 \
++       && test $in_tree_ld_is_elf = yes; then
++      gcc_cv_ld_buildid=yes
++    fi
++  elif test x$gcc_cv_ld != x; then
++    if $gcc_cv_ld --help 2>/dev/null | grep build-id > /dev/null; then
++      gcc_cv_ld_buildid=yes
++    fi
++  fi])
++if test x"$gcc_cv_ld_buildid" = xyes; then
++  AC_DEFINE(HAVE_LD_BUILDID, 1,
++  [Define if your linker supports --build-id.])
++fi
++
++AC_ARG_ENABLE(linker-build-id,
++[  --enable-linker-build-id
++                          compiler will always pass --build-id to linker],
++[],
++enable_linker_build_id=no)
++
++if test x"$enable_linker_build_id" = xyes; then
++  if test x"$gcc_cv_ld_buildid" = xyes; then
++    AC_DEFINE(ENABLE_LD_BUILDID, 1,
++    [Define if gcc should always pass --build-id to linker.])
++  else
++    AC_MSG_WARN(--build-id is not supported by your linker; --enable-linker-build-id ignored)
++  fi
++fi
++
+ AC_CACHE_CHECK(linker --sysroot support,
+   gcc_cv_ld_sysroot,
+   [gcc_cv_ld_sysroot=no
+Index: a/src/gcc/gcc.c
+===================================================================
+--- a/src/gcc/gcc.c	(revision 146981)
++++ b/src/gcc/gcc.c	(working copy)
+@@ -730,6 +730,13 @@
+ #endif
+ #endif
+ 
++#ifndef LINK_BUILDID_SPEC
++# if defined(HAVE_LD_BUILDID) && defined(ENABLE_LD_BUILDID)
++#  define LINK_BUILDID_SPEC "%{!r:--build-id} "
++# endif
++#endif
++
++
+ /* -u* was put back because both BSD and SysV seem to support it.  */
+ /* %{static:} simply prevents an error message if the target machine
+    doesn't handle -static.  */
+@@ -1844,9 +1851,16 @@
+     asm_spec = XOBFINISH (&obstack, const char *);
+   }
+ #endif
+-#ifdef LINK_EH_SPEC
++
++#if defined LINK_EH_SPEC || defined LINK_BUILDID_SPEC
++# ifdef LINK_BUILDID_SPEC
++  /* Prepend LINK_BUILDID_SPEC to whatever link_spec we had before.  */
++  obstack_grow (&obstack, LINK_BUILDID_SPEC, sizeof(LINK_BUILDID_SPEC) - 1);
++# endif
++# ifdef LINK_EH_SPEC
+   /* Prepend LINK_EH_SPEC to whatever link_spec we had before.  */
+   obstack_grow (&obstack, LINK_EH_SPEC, sizeof(LINK_EH_SPEC) - 1);
++# endif
+   obstack_grow0 (&obstack, link_spec, strlen (link_spec));
+   link_spec = XOBFINISH (&obstack, const char *);
+ #endif
+Index: a/src/gcc/config.in
+===================================================================
+--- a/src/gcc/config.in	(revision 146981)
++++ b/src/gcc/config.in	(working copy)
+@@ -101,6 +101,12 @@
+ #endif
+ 
+ 
++/* Define if gcc should always pass --build-id to linker. */
++#ifndef USED_FOR_TARGET
++#undef ENABLE_LD_BUILDID
++#endif
++
++
+ /* Define to 1 if translation of program messages to the user's native
+    language is requested. */
+ #ifndef USED_FOR_TARGET
+@@ -1025,6 +1031,12 @@
+ #endif
+ 
+ 
++/* Define if your linker supports --build-id. */
++#ifndef USED_FOR_TARGET
++#undef HAVE_LD_BUILDID
++#endif
++
++
+ /* Define if your linker supports --demangle option. */
+ #ifndef USED_FOR_TARGET
+ #undef HAVE_LD_DEMANGLE

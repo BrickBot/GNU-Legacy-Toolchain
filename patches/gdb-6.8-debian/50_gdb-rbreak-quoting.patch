@@ -1,0 +1,91 @@
+Backported from trunk after GDB 6.8.
+
+2008-03-21  Chris Demetriou  <cgd@google.com>
+
+        * symtab.c (rbreak_command): Quote symbol name before passing
+	it to break_command.
+
+	* gdb.base/break.exp (rbreak junk): New test for rbreak
+	"Junk at end of arguments" issue.
+
+Index: src/gdb/symtab.c
+===================================================================
+RCS file: /cvs/src/src/gdb/symtab.c,v
+retrieving revision 1.173
+retrieving revision 1.174
+diff -u -p -r1.173 -r1.174
+--- src/gdb/symtab.c	5 Feb 2008 22:17:40 -0000	1.173
++++ src/gdb/symtab.c	21 Mar 2008 15:33:10 -0000	1.174
+@@ -3345,7 +3345,13 @@ rbreak_command (char *regexp, int from_t
+ 	}
+       else
+ 	{
+-	  break_command (SYMBOL_LINKAGE_NAME (p->msymbol), from_tty);
++	  char *string = alloca (strlen (SYMBOL_LINKAGE_NAME (p->msymbol))
++				 + 3);
++	  strcpy (string, "'");
++	  strcat (string, SYMBOL_LINKAGE_NAME (p->msymbol));
++	  strcat (string, "'");
++
++	  break_command (string, from_tty);
+ 	  printf_filtered ("<function, no debug info> %s;\n",
+ 			   SYMBOL_PRINT_NAME (p->msymbol));
+ 	}
+Index: src/gdb/testsuite/gdb.base/break.exp
+===================================================================
+RCS file: /cvs/src/src/gdb/testsuite/gdb.base/break.exp,v
+retrieving revision 1.32
+retrieving revision 1.33
+diff -u -p -r1.32 -r1.33
+--- src/gdb/testsuite/gdb.base/break.exp	26 Feb 2008 08:14:11 -0000	1.32
++++ src/gdb/testsuite/gdb.base/break.exp	21 Mar 2008 15:33:11 -0000	1.33
+@@ -944,6 +944,48 @@ gdb_expect {
+ }
+ 
+ 
++gdb_exit
++gdb_start
++gdb_reinitialize_dir $srcdir/$subdir
++gdb_load ${binfile}
++
++if [target_info exists gdb_stub] {
++    gdb_step_for_stub;
++}
++
++#
++# test that 'rbreak' on a symbol that may be from a shared library doesn't
++# cause a "Junk at end of arguments." error.
++#
++# On x86 GNU/Linux, this test will choke on e.g. __libc_start_main@plt.
++#
++# Note that this test won't necessarily choke on all targets even if
++# all the rbreak issue is present.  rbreak needs to match and set a
++# breakpoint on a symbol causes 'break' to choke.
++#
++
++gdb_test "set breakpoint pending on" "" "rbreak junk pending setup"
++
++# We expect at least one breakpoint to be set when we "rbreak main".
++gdb_test "rbreak main" \
++    ".*Breakpoint.*at.* file .*$srcfile, line.*" \
++    "rbreak junk set breakpoint"
++
++# Run to a breakpoint.  Fail if we see "Junk at end of arguments".
++gdb_run_cmd
++gdb_expect {
++    -re "Junk at end of arguments" {
++	fail "rbreak junk"
++    }
++    -re ".*Breakpoint \[0-9\]+,.*$gdb_prompt $" {
++	pass "rbreak junk"
++    }
++    timeout {
++	fail "rbreak junk (timeout)"
++    }
++}
++
++
+ # Reset the default arguments for VxWorks
+ if [istarget "*-*-vxworks*"] {
+     set timeout 10
+

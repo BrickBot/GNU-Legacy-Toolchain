@@ -1,0 +1,609 @@
+# DP: HG updates from the gdc branch up to 20100912.
+
+--- a/src/gcc/d/d-codegen.cc
++++ b/src/gcc/d/d-codegen.cc
+@@ -696,7 +696,10 @@
+ 	    build2/*_binary_op*/ (MULT_EXPR, TREE_TYPE(size_exp), intop,  // the type here may be wrong %%
+ 		convert (TREE_TYPE (intop), size_exp)));
+ 	intop = fold(intop);
+-    }    
++    }
++
++    if (result_type_node == error_mark_node)
++	return result_type_node; // else we'll ICE.
+ 
+     if ( integer_zerop(intop) )
+ 	return ptr_node;
+@@ -1673,6 +1676,9 @@
+ tree
+ IRState::darrayPtrRef(tree exp)
+ {
++    if (exp == error_mark_node)
++	return exp; // else we'll ICE.
++
+     // Get the backend type for the array and pick out the array data
+     // pointer field (assumed to be the second field.)
+     tree ptr_field = TREE_CHAIN( TYPE_FIELDS( TREE_TYPE( exp )));
+@@ -1683,6 +1689,9 @@
+ tree
+ IRState::darrayLenRef(tree exp)
+ {
++    if (exp == error_mark_node)
++	return exp; // else we'll ICE.
++
+     // Get the backend type for the array and pick out the array length
+     // field (assumed to be the first field.)
+     tree len_field = TYPE_FIELDS( TREE_TYPE( exp ));
+@@ -2462,7 +2471,8 @@
+     }
+ #else
+ # if HOST_BITS_PER_WIDE_INT == 32
+-    tree tree_value = build_int_cst_type(type, value & 0xffffffff);
++    tree tree_value = build_int_cst_wide_type(type, value & 0xffffffff,
++					      (value >> 32) & 0xffffffff);
+ # elif HOST_BITS_PER_WIDE_INT == 64
+     tree tree_value = build_int_cst_type(type, value);
+ # else
+@@ -2541,11 +2551,32 @@
+ 
+ 	if (func != outer_func)
+ 	{
++	    Dsymbol * this_func = func;
++	    Dsymbol * parent_sym = nested_sym->toParent2();
+ 	    if (!func->vthis) // if no frame pointer for this function
+ 	    {
+ 		nested_func->error("is a nested function and cannot be accessed from %s", func->toChars());
+ 		return d_null_pointer;
+ 	    }
++	    /* Search for frame pointer, make sure we can reach it,
++	       else we'll ICE later in tree-ssa.  */
++	    while (nested_func != this_func)
++	    {
++		FuncDeclaration * fndecl;
++		if ( (fndecl = this_func->isFuncDeclaration()) )
++		{
++		    if (parent_sym == fndecl->toParent2())
++			break;
++		    assert(fndecl->isNested() || fndecl->vthis);
++		}
++		else
++		{
++		    func->error("cannot get frame pointer to %s", nested_sym->toChars());
++		    return d_null_pointer;
++		}
++		this_func = this_func->toParent2();
++		assert(this_func);
++	    }
+ 	}
+     }
+     else
+@@ -3140,6 +3171,7 @@
+ {
+     Flow * f = beginFlow(stmt);
+     f->condition = t_cond;
++    f->kind = level_switch;
+ }
+ 
+ void
+@@ -3188,12 +3220,14 @@
+ IRState::startTry(Statement * stmt)
+ {
+     beginFlow(stmt);
++    currentFlow()->kind = level_try;
+ }
+ 
+ void
+ IRState::startCatches()
+ {
+     currentFlow()->tryBody = popStatementList();
++    currentFlow()->kind = level_catch;
+     pushStatementList();
+ }
+ 
+@@ -3229,6 +3263,7 @@
+ IRState::startFinally()
+ {
+     currentFlow()->tryBody = popStatementList();
++    currentFlow()->kind = level_finally;
+     pushStatementList();
+ }
+ 
+@@ -3252,9 +3287,9 @@
+ IRState::doJump(Statement * stmt, tree t_label)
+ {
+     if (stmt)
+-	g.ofile->doLineNote( stmt->loc );
++	g.ofile->doLineNote(stmt->loc);
+     addExp(build1(GOTO_EXPR, void_type_node, t_label));
+-    TREE_USED(t_label) = 1;
++    D_LABEL_IS_USED(t_label) = 1;
+ }
+ 
+ tree
+@@ -3285,6 +3320,104 @@
+ #endif
+ }
+ 
++
++void
++IRState::checkSwitchCase(Statement * stmt, int default_flag)
++{
++    Flow * flow = currentFlow();
++
++    assert(flow);
++    if (flow->kind != level_switch && flow->kind != level_block)
++    {
++	stmt->error("%s cannot be in different try block level from switch",
++		    default_flag ? "default" : "case");
++    }
++}
++
++void
++IRState::checkGoto(Statement * stmt, LabelDsymbol * label)
++{
++    Statement * curBlock = NULL;
++    unsigned curLevel = loops.dim;
++    int found = 0;
++
++    if (curLevel)
++	curBlock = currentFlow()->statement;
++
++    for (unsigned i = 0; i < Labels.dim; i++)
++    {
++	Label * linfo = (Label *)Labels.data[i];
++	assert(linfo);
++
++	if (label == linfo->label)
++	{
++	    // No need checking for finally, should have already been handled.
++	    if (linfo->kind == level_try &&
++		curLevel <= linfo->level && curBlock != linfo->block)
++	    {
++		stmt->error("cannot goto into try block");
++	    }
++	    // %% doc: It is illegal for goto to be used to skip initializations,
++	    // %%      so this should include all gotos into catches...
++	    if (linfo->kind == level_catch && curBlock != linfo->block)
++		stmt->error("cannot goto into catch block");
++
++	    found = 1;
++	    break;
++	}
++    }
++#if V1
++    // Push forward referenced gotos.
++    if (! found)
++    {
++	if (! label->statement->fwdrefs)
++	    label->statement->fwdrefs = new Array();
++	label->statement->fwdrefs->push(getLabelBlock(label, stmt));
++    }
++#endif
++}
++
++void
++IRState::checkPreviousGoto(Array * refs)
++{
++    Statement * stmt;
++
++    for (unsigned i = 0; i < refs->dim; i++)
++    {
++	Label * ref = (Label *)refs->data[i];
++	int found = 0;
++
++	assert(ref && ref->from);
++	stmt = ref->from;
++
++	for (unsigned i = 0; i < Labels.dim; i++)
++	{
++	    Label * linfo = (Label *)Labels.data[i];
++	    assert(linfo);
++
++	    if (ref->label == linfo->label)
++	    {
++		// No need checking for finally, should have already been handled.
++		if (linfo->kind == level_try &&
++		    ref->level <= linfo->level && ref->block != linfo->block)
++		{
++		    stmt->error("cannot goto into try block");
++		}
++		// %% doc: It is illegal for goto to be used to skip initializations,
++		// %%      so this should include all gotos into catches...
++		if (linfo->kind == level_catch &&
++		    (ref->block != linfo->block || ref->kind != linfo->kind))
++		    stmt->error("cannot goto into catch block");
++
++		found = 1;
++		break;
++	    }
++	}
++	assert(found);
++    }
++}
++
++
+ WrappedExp::WrappedExp(Loc loc, enum TOK op, tree exp_node, Type * type)
+     : Expression(loc, op, sizeof(WrappedExp))
+ {
+--- a/src/gcc/d/d-codegen.h
++++ b/src/gcc/d/d-codegen.h
+@@ -527,6 +527,13 @@
+     void doExp(Expression * e) { doExp(e->toElem(this)); } // %% should handle volatile...?
+     void doAsm(tree insn_tmpl, tree outputs, tree inputs, tree clobbers);
+ 
++    // ** Goto/Label statement evaluation
++
++    void pushLabel(LabelDsymbol * l) { Labels.push(getLabelBlock(l)); }
++    void checkSwitchCase(Statement * stmt, int default_flag = 0);
++    void checkGoto(Statement * stmt, LabelDsymbol * label);
++    void checkPreviousGoto(Array * refs);
++
+     // ** Callback statement evalutation
+ 
+     static Array stmtExprList;
+--- a/src/gcc/d/d-glue.cc
++++ b/src/gcc/d/d-glue.cc
+@@ -1557,7 +1557,7 @@
+ 		return irs->var(var_decl);
+ 	    }
+ 	} else {
+-	    // error below
++	    error("%s is not a field, but a %s", var->toChars(), var->kind());
+ 	}
+ 	break;
+     default:
+@@ -1960,17 +1960,20 @@
+ 			   STATIC_CHAIN_EXPR created here will never be
+ 			   translated. Use a null pointer for the link in
+ 			   this case. */
+-			if (
++			if (fd_outer->vthis) {
+ #if V2
+-			    fd_outer->closureVars.dim ||
+-			    irs->getFrameInfo(fd_outer)->creates_closure
++			    if (fd_outer->closureVars.dim ||
++				irs->getFrameInfo(fd_outer)->creates_closure)
+ #else
+-			    fd_outer->nestedFrameRef
++			    if(fd_outer->nestedFrameRef)
+ #endif
+-			    )
+-			    vthis_value = irs->getFrameForNestedClass(class_decl); // %% V2: rec_type->class_type
+-			else
++				vthis_value = irs->getFrameForNestedClass(class_decl); // %% V2: rec_type->class_type
++			    else
++				vthis_value = irs->var(fd_outer->vthis);
++			}
++			else {
+ 			    vthis_value = d_null_pointer;
++			}
+ 		    } else {
+ 			assert(0);
+ 		    }
+@@ -3681,27 +3684,28 @@
+ LabelStatement::toIR(IRState* irs)
+ {
+     FuncDeclaration * func = irs->func;
+-#if 0
+-    LabelDsymbol * label = fwdrefs ? func->returnLabel : func->searchLabel(ident);
+-#else
+-    LabelDsymbol * label = isReturnLabel ? func->returnLabel : func->searchLabel(ident);
+-#endif
+-    tree t = irs->getLabelTree( label );
++    LabelDsymbol * label = irs->isReturnLabel(ident) ? func->returnLabel : func->searchLabel(ident);
++    tree t_label;
+ 
+-    if (t) {
+-	TREE_USED(t) = 1;
+-	irs->doLabel(t);
++    if ( (t_label = irs->getLabelTree(label)) )
++    {
++	irs->pushLabel(label);
++	irs->doLabel(t_label);
+ 	if (label->asmLabelNum)
+ 	    d_expand_priv_asm_label(irs, label->asmLabelNum);
+ 
+-#if 0
+-	if (fwdrefs && func->fensure)
+-#else
+-	if (isReturnLabel && func->fensure)
+-#endif
++	if (irs->isReturnLabel(ident) && func->fensure)
+ 	    func->fensure->toIR(irs);
+ 	else if (statement)
+ 	    statement->toIR(irs);
++#if V1
++	if (fwdrefs)
++	{
++	    irs->checkPreviousGoto(fwdrefs);
++	    delete fwdrefs;
++	    fwdrefs = NULL;
++	}
++#endif
+     }
+     // else, there was an error
+ }
+@@ -3709,15 +3713,19 @@
+ void
+ GotoStatement::toIR(IRState* irs)
+ {
++    tree t_label;
++
+     g.ofile->setLoc(loc); /* This makes the 'undefined label' error show up on the correct line...
+ 			     The extra doLineNote in doJump shouldn't cause a problem. */
+-
+-    if (tf != label->statement->tf)
++    if (!label->statement)
++	error("label %s is undefined", label->toChars());
++    else if (tf != label->statement->tf)
+ 	error("cannot goto forward out of or into finally block");
++    else
++	irs->checkGoto(this, label);
+ 
+-    tree t = irs->getLabelTree( label );
+-    if (t)
+-	irs->doJump(this, t);
++    if ( (t_label = irs->getLabelTree(label)) )
++	irs->doJump(this, t_label);
+     // else, there was an error
+ }
+ 
+@@ -3989,9 +3997,7 @@
+ void
+ DefaultStatement::toIR(IRState * irs)
+ {
+-    if(! irs->currentFlow()->condition )
+-	error("default cannot be in different try block level from switch");
+-
++    irs->checkSwitchCase(this, 1);
+     irs->doCase(NULL_TREE, cblock);
+     if (statement)
+ 	statement->toIR( irs );
+@@ -4001,13 +4007,13 @@
+ CaseStatement::toIR(IRState * irs)
+ {
+     tree case_value;
+-    if(! irs->currentFlow()->condition )
+-	error("case cannot be in different try block level from switch");
+ 
+     if ( exp->type->isscalar() )
+ 	case_value = exp->toElem(irs);
+     else
+ 	case_value = irs->integerConstant(index, Type::tint32);
++
++    irs->checkSwitchCase(this);
+     irs->doCase(case_value, cblock);
+     if (statement)
+ 	statement->toIR( irs );
+--- a/src/gcc/d/d-irstate.cc
++++ b/src/gcc/d/d-irstate.cc
+@@ -204,17 +204,17 @@
+ tree
+ IRBase::getLabelTree(LabelDsymbol * label)
+ {
+-    if (! label->statement) {
+-	error("undefined label %s", label->ident->string); // %% ident okay?
++    if (! label->statement)
+ 	return NULL_TREE;
+-    }
+-    
+-    if (! label->statement->lblock) {
++
++    if (! label->statement->lblock)
++    {
+ 	tree label_decl = build_decl (LABEL_DECL, get_identifier(label->ident->string), void_type_node);
+ 
+-	assert(func != 0);    
++	assert(func != 0);
+ 	DECL_CONTEXT( label_decl ) = getLocalContext();
+ 	DECL_MODE( label_decl ) = VOIDmode; // Not sure why or if this is needed
++	D_LABEL_IS_USED( label_decl ) = 1;
+ 	// Not setting this doesn't seem to cause problems (unlike VAR_DECLs)
+ 	if (label->statement->loc.filename)
+ 	    g.ofile->setDeclLoc( label_decl, label->statement->loc ); // %% label->loc okay?
+@@ -223,6 +223,36 @@
+     return label->statement->lblock;
+ }
+ 
++IRBase::Label *
++IRBase::getLabelBlock(LabelDsymbol * label, Statement * from)
++{
++    Label * l = new Label;
++    l->block = NULL;
++    l->from = NULL;
++    l->kind = level_block;
++    l->level = 0;
++
++    for (int i = loops.dim - 1; i >= 0; i--)
++    {
++	Flow * flow = (Flow *)loops.data[i];
++
++	if (flow->kind != level_block &&
++	    flow->kind != level_switch)
++	{
++	    l->block = flow->statement;
++	    l->kind  = flow->kind;
++	    l->level = i + 1;
++	    break;
++	}
++    }
++    if (from)
++	l->from = from;
++
++    l->label = label;
++    return l;
++}
++
++
+ IRBase::Flow *
+ IRBase::getLoopForLabel(Identifier * ident, bool want_continue)
+ {
+@@ -266,6 +296,7 @@
+     
+     flow->statement = stmt;
+     flow->loop = loop;
++    flow->kind = level_block;
+     flow->exitLabel = NULL;
+     flow->overrideContinueLabel = NULL;
+     
+@@ -301,6 +332,7 @@
+     Flow * flow = new Flow;
+     
+     flow->statement = stmt;
++    flow->kind = level_block;
+     flow->exitLabel = NULL_TREE;
+     flow->condition = NULL_TREE;
+     flow->trueBranch = NULL_TREE;
+@@ -332,9 +364,8 @@
+        This makes auto-vectorization possible in conditional loops.
+        The only excemption to this is in LabelStatement::toIR, in which
+        all computed labels are marked regardless.  */
+-    if(TREE_USED(t_label)) {
++    if(D_LABEL_IS_USED(t_label))
+ 	addExp(build1(LABEL_EXPR, void_type_node, t_label));
+-    }
+ }
+ 
+ #endif
+--- a/src/gcc/d/d-irstate.h
++++ b/src/gcc/d/d-irstate.h
+@@ -71,37 +71,55 @@
+     tree popStatementList();
+ #endif
+     
++    // ** Scope kinds.
++
++    /* The kinds of levels we recognize. */
++    typedef enum LevelKind {
++	level_block = 0,    /* An ordinary block scope. */
++	level_switch,	    /* A switch-block */
++	level_try,	    /* A try-block. */
++	level_catch,	    /* A catch-block. */
++	level_finally,	    /* A finally-block. */
++    } LevelKind;
++
+     // ** Labels
+ 
++    typedef struct
++    {
++	LabelDsymbol * label;
++	Statement * block;
++	Statement * from;
++	LevelKind kind;
++	unsigned level;
++    } Label;
++
++    Array Labels; // of Label.
++
+     // It is only valid to call this while the function in which the label is defined
+     // is being compiled.
+-    tree getLabelTree(LabelDsymbol * label);
+-
++    tree    getLabelTree(LabelDsymbol * label);
++    Label * getLabelBlock(LabelDsymbol * label, Statement * from = NULL);
++    bool    isReturnLabel(Identifier * ident) {
++	return func->returnLabel ? ident == func->returnLabel->ident : 0;
++    }
+ 
+     // ** Loops (and case statements)
+ #if D_GCC_VER < 40
+     typedef struct
+     {
+ 	Statement * statement;
++	LevelKind   kind;
+ 	// expand_start_case doesn't return a nesting structure, so
+ 	// we have to generate our own label for 'break'
+ 	nesting * loop;
+ 	tree      exitLabel;
+ 	tree      overrideContinueLabel;
+-	// Copied for information purposes. Not actually used.
+-	union {
+-	    struct {
+-		tree continueLabel;
+-	    };
+-	    struct {
+-		tree condition;
+-	    };
+-	};
+     } Flow;
+ #else
+     typedef struct
+     {
+ 	Statement * statement;
++	LevelKind   kind;
+ 	tree exitLabel;
+ 	union {
+ 	    struct {
+--- a/src/gcc/d/d-lang.h
++++ b/src/gcc/d/d-lang.h
+@@ -91,6 +91,9 @@
+ /* True if the function has been marked "naked". */
+ #define D_DECL_NO_FRAME_POINTER(NODE) (DECL_LANG_FLAG_2(NODE))
+ 
++/* True if the label has been computed, or used by the frontend. */
++#define D_LABEL_IS_USED(NODE) (DECL_LANG_FLAG_3(NODE))
++
+ /* The D front-end does not use the 'binding level' system for a symbol table,
+    It is only needed to get debugging information for local variables and
+    otherwise support the backend. */
+--- a/src/gcc/d/dmd/func.c
++++ b/src/gcc/d/dmd/func.c
+@@ -1047,7 +1047,6 @@
+             if (fensure)
+             {   returnLabel = new LabelDsymbol(Id::returnLabel);
+                 LabelStatement *ls = new LabelStatement(0, Id::returnLabel, fensure);
+-                ls->isReturnLabel = 1; //Temporary, see Issue #54
+                 returnLabel->statement = ls;
+             }
+             sc2 = sc2->pop();
+--- a/src/gcc/d/dmd/impcnvgen.c
++++ b/src/gcc/d/dmd/impcnvgen.c
+@@ -388,8 +388,8 @@
+     Y(Tint64, Tdchar)
+     Y(Tuns64, Tdchar)
+ 
+-    Y(Tint64, Tuns64)
+-    Y(Tuns64, Tint64)
++//    Y(Tint64, Tuns64)
++//    Y(Tuns64, Tint64)
+ 
+     for (i = 0; i < TMAX; i++)
+         for (j = 0; j < TMAX; j++)
+--- a/src/gcc/d/dmd/statement.c
++++ b/src/gcc/d/dmd/statement.c
+@@ -3912,11 +3912,12 @@
+                 error("catch at %s hides catch at %s", sj, si);
+         }
+     }
+-
++#ifndef IN_GCC
+     if (!body || body->isEmpty())
+     {
+         return NULL;
+     }
++#endif
+     return this;
+ }
+ 
+@@ -4352,8 +4353,7 @@
+     this->statement = statement;
+     this->tf = NULL;
+     this->lblock = NULL;
+-    //this->fwdrefs = NULL; //See Issue #54
+-    this->isReturnLabel = 0;
++    this->fwdrefs = NULL;
+ }
+ 
+ Statement *LabelStatement::syntaxCopy()
+--- a/src/gcc/d/dmd/statement.h
++++ b/src/gcc/d/dmd/statement.h
+@@ -792,8 +792,7 @@
+     TryFinallyStatement *tf;
+     block *lblock;              // back end
+ 
+-    //Array *fwdrefs;             // forward references to this LabelStatement //See Issue #54
+-    int isReturnLabel;
++    Array *fwdrefs;             // forward references to this LabelStatement
+ 
+     LabelStatement(Loc loc, Identifier *ident, Statement *statement);
+     Statement *syntaxCopy();

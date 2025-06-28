@@ -1,0 +1,33 @@
+# DP: gcj: add option -fuse-atomic-builtins (documentation)
+
+gcc/java/
+
+2009-08-12  Andrew Haley  <aph@redhat.com>
+
+	* builtins.c (compareAndSwapInt_builtin): Use
+	flag_use_atomic_builtins.
+	(compareAndSwapLong_builtin): Likewise.
+	(compareAndSwapObject_builtin): Likewise.
+	* jvspec.c: Add flag_use_atomic_builtins.
+	* gcj.texi: Likewise.
+	* java-tree.h: Likewise.
+	* lang.opt: Likewise.
+
+Index: gcc/java/gcj.texi
+===================================================================
+--- a/src/gcc/java/gcj.texi	(revision 155104)
++++ b/src/gcc/java/gcj.texi	(working copy)
+@@ -607,6 +607,13 @@
+ accessing an object via a reference.  On other systems you won't need
+ this because null pointer accesses are caught automatically by the
+ processor.
++
++@item -fuse-atomic-builtins
++On some systems, gcc can generate code for built-in atomic operations.
++Use this option to force gcj to use these builtins when compiling Java
++code.  Where this capability is present it should be automatically
++detected, so you won't usually need to use this option.
++
+ @end table
+ 
+ @c man end

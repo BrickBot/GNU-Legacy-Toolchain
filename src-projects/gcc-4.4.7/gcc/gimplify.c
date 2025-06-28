@@ -108,7 +108,7 @@ static enum gimplify_status gimplify_compound_expr (tree *, gimple_seq *, bool);
 
 /* Mark X addressable.  Unlike the langhook we expect X to be in gimple
    form and we don't do any syntax checking.  */
-static void
+void
 mark_addressable (tree x)
 {
   while (handled_component_p (x))

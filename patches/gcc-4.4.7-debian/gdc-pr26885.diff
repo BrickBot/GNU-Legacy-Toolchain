@@ -1,0 +1,35 @@
+# DP: Update Make-lang.in for pr26885: use $(GCC_OBJS) instead of gcc.o.
+
+--- a/src/gcc/d/Make-lang.in	2010-08-22 22:21:10.000000000 +0100
++++ b/src/gcc/d/Make-lang.in	2010-08-23 10:49:36.782814757 +0100
+@@ -48,7 +48,7 @@
+ # into the C++ rule, but that needs a little bit of work
+ # to do the right thing within all.cross.
+ D_DRIVER_NAME = gdc
+-D_DRIVER_OBJS = d/d-spec.o d/d-gcc.o version.o prefix.o intl.o
++D_DRIVER_OBJS = d/d-spec.o version.o prefix.o intl.o
+ D_COMPILER_NAME = cc1d
+ 
+ D_INSTALL_NAME = $(shell echo $(D_DRIVER_NAME)|sed '$(program_transform_name)')
+@@ -176,9 +176,9 @@
+ ALL_DMD_COMPILER_FLAGS = $(ALL_CFLAGS) $(ALL_CPPFLAGS) -Id -I$(srcdir)/$(D_dmd_srcdir) -I$(srcdir)/d $(D_EXTRA_DEFINES) $(D_CC_FLAGS)
+ 
+ # Create the compiler driver for D.
+-$(D_DRIVER_NAME)$(exeext): $(D_DRIVER_OBJS) $(EXTRA_GCC_OBJS) $(LIBDEPS)
++$(D_DRIVER_NAME)$(exeext): $(GCC_OBJS) $(D_DRIVER_OBJS) $(EXTRA_GCC_OBJS) $(LIBDEPS)
+ 	$(CC) $(ALL_CFLAGS) $(LDFLAGS) -o $@ \
+-	$(D_DRIVER_OBJS) $(EXTRA_GCC_OBJS) $(LIBS)
++	$(GCC_OBJS) $(D_DRIVER_OBJS) $(EXTRA_GCC_OBJS) $(LIBS)
+ 
+ # Create a version of the g++ driver which calls the cross-compiler.
+ $(D_DRIVER_NAME)-cross$(exeext): $(D_DRIVER_NAME)$(exeext)
+@@ -262,8 +262,7 @@
+     D_GLUE_OBJS += d/d-c-stubs.cglue.o
+     D_BORROWED_C_OBJS += stub-objc.o prefix.o $(C_TARGET_OBJS)
+     D_BORROWED_C_OBJS += gimplify.o tree-iterator.o
+-    D_EXTRA_LIBS += $(GMPLIBS)
+-    D_DRIVER_OBJS += opts-common.o gcc-options.o
++    D_EXTRA_LIBS += $(BACKENDLIBS)
+   endif
+ endif
+ 

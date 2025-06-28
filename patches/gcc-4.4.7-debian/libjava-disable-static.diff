@@ -1,0 +1,26 @@
+# DP: Disable building the static libjava.
+
+---
+ Makefile.in |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+--- a/src/Makefile.in
++++ b/src/Makefile.in
+@@ -49463,7 +49463,7 @@ configure-target-libjava:
+ 	rm -f no-such-file || : ; \
+ 	CONFIG_SITE=no-such-file $(SHELL) $${libsrcdir}/configure \
+ 	  $(TARGET_CONFIGARGS) --build=${build_alias} --host=${target_alias} \
+-	  --target=${target_alias} $${srcdiroption}  \
++	  --target=${target_alias} --disable-static $${srcdiroption}  \
+ 	  || exit 1
+ @endif target-libjava
+ 
+@@ -50347,7 +50347,7 @@ configure-target-boehm-gc:
+ 	rm -f no-such-file || : ; \
+ 	CONFIG_SITE=no-such-file $(SHELL) $${libsrcdir}/configure \
+ 	  $(TARGET_CONFIGARGS) --build=${build_alias} --host=${target_alias} \
+-	  --target=${target_alias} $${srcdiroption}  \
++	  --target=${target_alias} --disable-static $${srcdiroption}  \
+ 	  || exit 1
+ @endif target-boehm-gc
+ 

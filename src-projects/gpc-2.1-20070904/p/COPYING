@@ -6,7 +6,7 @@ DO NOT CHANGE THIS FILE MANUALLY!
 
                         Version 3, 29 June 2007
 
-     Copyright (C) 2007 Free Software Foundation, Inc. <http://fsf.org/>
+     Copyright © 2007 Free Software Foundation, Inc. <http://fsf.org/>
 
      Everyone is permitted to copy and distribute verbatim copies of this
      license document, but changing it is not allowed.
@@ -469,7 +469,7 @@ TERMS AND CONDITIONS
      by modifying or propagating a covered work, you indicate your
      acceptance of this License to do so.
 
- 10. Automatic Licensing of Downstream Recipients.
+  10. Automatic Licensing of Downstream Recipients.
 
      Each time you convey a covered work, the recipient automatically
      receives a license from the original licensors, to run, modify and
@@ -497,7 +497,7 @@ TERMS AND CONDITIONS
      selling, offering for sale, or importing the Program or any portion
      of it.
 
- 11. Patents.
+  11. Patents.
 
      A "contributor" is a copyright holder who authorizes use under this
      License of the Program or a work on which the Program is based.
@@ -570,7 +570,7 @@ TERMS AND CONDITIONS
      any implied license or other defenses to infringement that may
      otherwise be available to you under applicable patent law.
 
- 12. No Surrender of Others' Freedom.
+  12. No Surrender of Others' Freedom.
 
      If conditions are imposed on you (whether by court order, agreement
      or otherwise) that contradict the conditions of this License, they
@@ -583,7 +583,7 @@ TERMS AND CONDITIONS
      only way you could satisfy both those terms and this License would
      be to refrain entirely from conveying the Program.
 
- 13. Use with the GNU Affero General Public License.
+  13. Use with the GNU Affero General Public License.
 
      Notwithstanding any other provision of this License, you have
      permission to link or combine any covered work with a work licensed
@@ -594,7 +594,7 @@ TERMS AND CONDITIONS
      General Public License, section 13, concerning interaction through
      a network will apply to the combination as such.
 
- 14. Revised Versions of this License.
+  14. Revised Versions of this License.
 
      The Free Software Foundation may publish revised and/or new
      versions of the GNU General Public License from time to time.  Such
@@ -620,7 +620,7 @@ TERMS AND CONDITIONS
      author or copyright holder as a result of your choosing to follow a
      later version.
 
- 15. Disclaimer of Warranty.
+  15. Disclaimer of Warranty.
 
      THERE IS NO WARRANTY FOR THE PROGRAM, TO THE EXTENT PERMITTED BY
      APPLICABLE LAW. EXCEPT WHEN OTHERWISE STATED IN WRITING THE
@@ -632,7 +632,7 @@ TERMS AND CONDITIONS
      SHOULD THE PROGRAM PROVE DEFECTIVE, YOU ASSUME THE COST OF ALL
      NECESSARY SERVICING, REPAIR OR CORRECTION.
 
- 16. Limitation of Liability.
+  16. Limitation of Liability.
 
      IN NO EVENT UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN
      WRITING WILL ANY COPYRIGHT HOLDER, OR ANY OTHER PARTY WHO MODIFIES
@@ -645,7 +645,7 @@ TERMS AND CONDITIONS
      PROGRAMS), EVEN IF SUCH HOLDER OR OTHER PARTY HAS BEEN ADVISED OF
      THE POSSIBILITY OF SUCH DAMAGES.
 
- 17. Interpretation of Sections 15 and 16.
+  17. Interpretation of Sections 15 and 16.
 
      If the disclaimer of warranty and limitation of liability provided
      above cannot be given local legal effect according to their terms,
@@ -693,11 +693,11 @@ mail.
 notice like this when it starts in an interactive mode:
 
      PROGRAM Copyright (C) YEAR NAME OF AUTHOR
-     This program comes with ABSOLUTELY NO WARRANTY; for details type 'show w'.
+     This program comes with ABSOLUTELY NO WARRANTY; for details type ‘show w’.
      This is free software, and you are welcome to redistribute it
-     under certain conditions; type 'show c' for details.
+     under certain conditions; type ‘show c’ for details.
 
-   The hypothetical commands 'show w' and 'show c' should show the
+   The hypothetical commands ‘show w’ and ‘show c’ should show the
 appropriate parts of the General Public License.  Of course, your
 program's commands might be different; for a GUI interface, you would
 use an "about box".

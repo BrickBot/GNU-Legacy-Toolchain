@@ -1,0 +1,40 @@
+# DP: Fix earlyclobbers on some arm.md DImode shifts.
+
+gcc/
+
+2010-09-12  Bernd Schmidt  <bernds@codesourcery.com>
+
+	* config/arm/arm.md (arm_ashldi3_1bit, arm_ashrdi3_1bit,
+	arm_lshrdi3_1bit): Put earlyclobber on the right alternative.
+
+Index: gcc/config/arm/arm.md
+===================================================================
+--- a/src/gcc/config/arm/arm.md	(revision 164231)
++++ b/src/gcc/config/arm/arm.md	(revision 164232)
+@@ -3322,7 +3322,7 @@
+ )
+ 
+ (define_insn "arm_ashldi3_1bit"
+-  [(set (match_operand:DI            0 "s_register_operand" "=&r,r")
++  [(set (match_operand:DI            0 "s_register_operand" "=r,&r")
+         (ashift:DI (match_operand:DI 1 "s_register_operand" "0,r")
+                    (const_int 1)))
+    (clobber (reg:CC CC_REGNUM))]
+@@ -3381,7 +3381,7 @@
+ )
+ 
+ (define_insn "arm_ashrdi3_1bit"
+-  [(set (match_operand:DI              0 "s_register_operand" "=&r,r")
++  [(set (match_operand:DI              0 "s_register_operand" "=r,&r")
+         (ashiftrt:DI (match_operand:DI 1 "s_register_operand" "0,r")
+                      (const_int 1)))
+    (clobber (reg:CC CC_REGNUM))]
+@@ -3438,7 +3438,7 @@
+ )
+ 
+ (define_insn "arm_lshrdi3_1bit"
+-  [(set (match_operand:DI              0 "s_register_operand" "=&r,r")
++  [(set (match_operand:DI              0 "s_register_operand" "=r,&r")
+         (lshiftrt:DI (match_operand:DI 1 "s_register_operand" "0,r")
+                      (const_int 1)))
+    (clobber (reg:CC CC_REGNUM))]

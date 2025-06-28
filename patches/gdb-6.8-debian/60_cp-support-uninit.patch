@@ -1,0 +1,30 @@
+2008-05-06  Daniel Jacobowitz  <dan@codesourcery.com>
+
+	* cp-support.c (mangled_name_to_comp): Initialize storage.
+	(unqualified_name_from_comp): Likewise.
+
+Index: src/gdb/cp-support.c
+===================================================================
+RCS file: /cvs/src/src/gdb/cp-support.c,v
+retrieving revision 1.27
+diff -u -p -r1.27 cp-support.c
+--- src/gdb/cp-support.c	28 Mar 2008 19:52:23 -0000	1.27
++++ src/gdb/cp-support.c	6 May 2008 23:08:42 -0000
+@@ -180,7 +180,7 @@ mangled_name_to_comp (const char *mangle
+ char *
+ cp_class_name_from_physname (const char *physname)
+ {
+-  void *storage;
++  void *storage = NULL;
+   char *demangled_name = NULL, *ret;
+   struct demangle_component *ret_comp, *prev_comp, *cur_comp;
+   int done;
+@@ -324,7 +324,7 @@ unqualified_name_from_comp (struct deman
+ char *
+ method_name_from_physname (const char *physname)
+ {
+-  void *storage;
++  void *storage = NULL;
+   char *demangled_name = NULL, *ret;
+   struct demangle_component *ret_comp;
+   int done;

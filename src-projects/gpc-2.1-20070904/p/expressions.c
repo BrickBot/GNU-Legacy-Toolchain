@@ -1928,7 +1928,7 @@ build_pascal_address_expression (tree factor, int untyped)
       result = CALL_EXPR_FN (factor);
       if (TREE_CODE (result) == ADDR_EXPR)
         /* build_routine_call does not do it, intentionally */
-        mark_addressable (TREE_OPERAND (result, 0));
+        pas_mark_addressable (TREE_OPERAND (result, 0));
       return result;
     }
 
@@ -3284,7 +3284,7 @@ build_unary_op (enum tree_code code, tree xarg, int noconvert)
         {
           tree index, array = TREE_OPERAND (arg, 0);
 
-          if (!mark_addressable2 (array, !!noconvert))
+          if (!pas_mark_addressable2 (array, !!noconvert))
             return error_mark_node;
 
           if (!noconvert && PASCAL_TYPE_PACKED (TREE_TYPE (TREE_OPERAND (arg, 0))))
@@ -3358,7 +3358,7 @@ build_unary_op (enum tree_code code, tree xarg, int noconvert)
 
       argtype = build_pointer_type (argtype);
 
-      if (!mark_addressable2 (arg, !!noconvert))
+      if (!pas_mark_addressable2 (arg, !!noconvert))
         return error_mark_node;
 
       if (TREE_CODE (arg) == BIT_FIELD_REF && PASCAL_TYPE_PACKED (TREE_TYPE (TREE_OPERAND (arg, 0))))

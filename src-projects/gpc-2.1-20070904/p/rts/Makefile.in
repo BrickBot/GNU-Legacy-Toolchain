@@ -83,7 +83,7 @@ GENERATED_FILES=\
  $(srcdir)/rtsc.pas \
  $(srcdir)/gpc.pas
 
-all: $(GPCLIB) sharedlib.$(WITH_GPC_SHARED)
+all: $(GPCLIB) sharedlib.$(with_gpc_shared)
 
 generated-files: $(GENERATED_FILES)
 
@@ -113,7 +113,7 @@ rts-config.inc: rts-config.h
 	sed -e 's,/\*,{,g;s,\*/,},g;s,^[ \t]*#\(.*\),{$$\1},' rts-config.h >> rts-config.inc
 
 # @@ `with_gpc_shared' is currently not substituted in the parent Makefile, so
-#    it arrives here via the setting of $(WITH_GPC_SHARED) on the command line
+#    it arrives here via the setting of $(with_gpc_shared) on the command line
 DUMMY=# Don't let configure substitute `@with_gpc_shared$(DUMMY)@' below
 
 .PHONY: all install check generated-files rts.update-release \
