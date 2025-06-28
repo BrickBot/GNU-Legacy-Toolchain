@@ -25,29 +25,41 @@ env:
   openSUSE_GCC4_BUILD_DEPENDS:  mono-core libmono-2_0-devel glibc-devel gmp-devel mpfr-devel mpc-devel
   # libisl23, which is a version-specific package of ISL, appeasrs to be included as a dependency of other package(s)
   
+  # Cygwin package search:  https://cygwin.com/packages/
+  # Cygwin package list:    https://cygwin.com/packages/package_list.html
+  # Cygwin-official Action: https://github.com/marketplace/actions/install-cygwin-action
+  CYGWIN_BUILD_DEPENDS: git autoconf automake m4 make binutils gcc-core gcc-g++ gcc-objc bison flex libtool gawk gettext texinfo file libisl-dev dejagnu  stow
+  CYGWIN_GCC4_BUILD_DEPENDS: libglib2.0-devel libgmp-devel libmpfr-devel libmpc-devel zip unzip
+  # Cygwin lacks packages for Mono, so the "gcc44" toolchain set is unsupported unless Mono is built and installed manually
+  CYGWIN_MISSING_DEPENDS:    mono-runtime libmono-2.0-dev
+  
   # If these older source package releases will not build without disabling Fortify and/or run without buffer overflow errors,
   #    then "make CPPFLAGS=-U_FORTIFY_SOURCE" might be necessary
   #    Passing that to this older configure might not work, as should otherwise seem doable per
   #    the link https://www.gnu.org/software/automake/manual/html_node/Flag-Variables-Ordering.html
-  CROSS_TARGET: h8300-hitachi-coff
 
-  BUILD_DIR_TOOLCHAIN: build/toolchain
-  SYSROOT_DIR:   sysroot
+  BUILD_DIR:   build
+  OUTPUT_DIR:  outputs
+  SYSROOT_DIR: sysroot
   
   # Set to "--keep-going" to apply this flag to the "make all" commands
   COMMON_MAKE_ALL_ARGS: 
-  
-  TOOLCHAIN_INSTALL_NAME: h8300-hitachi-coff-toolchain_install
 
 jobs:
-  build_cross_toolchain_job:
-    name:     Full H8/300 Cross-Toolchain Build & Install
-    env:
-      Toolchain: gdb5,gcc3,gcc44
-    runs-on:  ${{ matrix.os }}
+  build_toolchain_job:
+    name:     ${{ matrix.toolchain-set }} for ${{ matrix.target-arch }} on ${{ matrix.os }}
     strategy:
+      fail-fast:       false
       matrix:
-        os: [ ubuntu-latest ]
+        os:            [ ubuntu-latest ]
+        target-arch:   [ "h8300-hitachi-coff" ]
+        toolchain-set: [ "binutils216", "gdb5", "gcc3", "gdb5,gcc3", "gcc44", "gdb5,gcc3,gcc44", ]
+        #exclude:
+        #  - os:            windows-latest
+        #    toolchain-set: gcc44
+        #  - os:            windows-latest
+        #    toolchain-set: gdb5,gcc3,gcc44
+    runs-on:  ${{ matrix.os }}
     
     steps:
     - name: Get latest from version control
@@ -78,25 +90,25 @@ jobs:
       #   as a reference for those who might be replicating this build locally
       run:  ./fix-mtime
 
-    - name: Setup the build directory
-      run:  mkdir -p $BUILD_DIR_TOOLCHAIN
+    - name: Setup the build and output directories
+      run:  mkdir -p  $BUILD_DIR  $OUTPUT_DIR
 
     # Run the build steps
     - name: Configure the build
       run:  |
-        cd $BUILD_DIR_TOOLCHAIN
+        cd $BUILD_DIR
         echo "Current working directory: $PWD"
-        ../../sym-combined/$CROSS_TARGET-configure  --prefix=$GITHUB_WORKSPACE/$SYSROOT_DIR  --toolchain-sets=$Toolchain
+        ../sym-combined/${{ matrix.target-arch }}-configure  --prefix=$GITHUB_WORKSPACE/$SYSROOT_DIR  --toolchain-sets=${{ matrix.toolchain-set }}
 
     - name: Execute the build
       run:  |
-        cd $BUILD_DIR_TOOLCHAIN
+        cd $BUILD_DIR
         echo "Current working directory: $PWD"
         make $COMMON_MAKE_ALL_ARGS
 
     - name: Test install the new build to a sysroot
       run:  |
-        cd $BUILD_DIR_TOOLCHAIN
+        cd $BUILD_DIR
         echo "Current working directory: $PWD"
         sudo make install
 
@@ -104,17 +116,17 @@ jobs:
     # c.f. https://github.com/actions/upload-artifact?tab=readme-ov-file#permission-loss
     # To avoid including a "." or other unwanted directory, c.f. https://stackoverflow.com/a/39530409
     - name: Tar the host installation snapshot to preserve file permissions
-      run:  find $SYSROOT_DIR -printf "%P\n" | sort | tar --verbose --create --file build/${{ env.TOOLCHAIN_INSTALL_NAME }}.tar --no-recursion --directory=$SYSROOT_DIR --files-from=-
+      run:  find $SYSROOT_DIR -printf "%P\n" | sort | tar --verbose --create --file $OUTPUT_DIR/${{ matrix.target-arch }}-${{ matrix.toolchain-set }}-[${{ matrix.os }}].tar --no-recursion --directory=$SYSROOT_DIR --files-from=-
 
     - name: Archive the host installation snapshot tar file
       uses: actions/upload-artifact@v4
       with:
-        name: ${{ env.TOOLCHAIN_INSTALL_NAME }}_[runner~${{ matrix.os }}]_run${{ github.run_id }}.${{ github.run_number }}.${{ github.run_attempt }}
-        path: build/${{ env.TOOLCHAIN_INSTALL_NAME }}.tar
+        name: ${{ matrix.target-arch }}-${{ matrix.toolchain-set }}_[${{ matrix.os }}]_${{ github.run_id }}.${{ github.run_number }}.${{ github.run_attempt }}
+        path: ${{ env.OUTPUT_DIR }}/${{ matrix.target-arch }}-${{ matrix.toolchain-set }}-[${{ matrix.os }}].tar
 
     - name: Install the new build using Stow
       run:  |
-        cd $BUILD_DIR_TOOLCHAIN
+        cd $BUILD_DIR
         echo "Current working directory: $PWD"
         sudo make stow
 
@@ -127,193 +139,10 @@ jobs:
       run:  git diff
 
 
-  # For quicker continuous integration feedback, run just the BinUtils v2.16.1 build as a job
-  build_cross_binutils216_job:
-    name:     Build BinUtils v2.16.1 for the H8/300
-    env:
-      Toolchain: binutils216
-    runs-on:  ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ ubuntu-latest ]
-    
-    steps:
-    - name: Get latest from version control
-      uses: actions/checkout@v4
-      with:
-        # git-restore-mtime-bare uses the ref log to find the correct timestamp
-        # for each file. This requires a full git history. The default value (1)
-        # creates a shallow checkout.
-        fetch-depth: 0
-
-    - name: Update build environment
-      run:  sudo apt-get --assume-yes update
-
-    - name: Install build dependencies
-      run:  sudo apt-get --assume-yes install $UBUNTU_BUILD_DEPENDS
-
-      # Fix timestamps (needed to prevent some files from attempting to regenerate and failing during build)
-    - name: Restore source timestamps
-      run:  ./fix-mtime
-
-    - name: Setup the build directory
-      run:  mkdir -p $BUILD_DIR_TOOLCHAIN
-
-    # Run the build steps
-    - name: Configure the build
-      run:  |
-        cd $BUILD_DIR_TOOLCHAIN
-        echo "Current working directory: $PWD"
-        ../../sym-combined/$CROSS_TARGET-configure  --toolchain-sets=$Toolchain
-
-    - name: Execute the build
-      run:  |
-        cd $BUILD_DIR_TOOLCHAIN
-        echo "Current working directory: $PWD"
-        make $COMMON_MAKE_ALL_ARGS all-$Toolchain
-
-
-  # For quicker continuous integration feedback, run just the GDB v5 build as a job
-  build_cross_gdb5_job:
-    name:     Build GDB v5 for the H8/300
-    env:
-      Toolchain: gdb5
-    runs-on:  ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ ubuntu-latest ]
-    
-    steps:
-    - name: Get latest from version control
-      uses: actions/checkout@v4
-      with:
-        # git-restore-mtime-bare uses the ref log to find the correct timestamp
-        # for each file. This requires a full git history. The default value (1)
-        # creates a shallow checkout.
-        fetch-depth: 0
-
-    - name: Update build environment
-      run:  sudo apt-get --assume-yes update
-
-    - name: Install build dependencies
-      run:  sudo apt-get --assume-yes install $UBUNTU_BUILD_DEPENDS
-
-      # Fix timestamps (needed to prevent some files from attempting to regenerate and failing during build)
-    - name: Restore source timestamps
-      run:  ./fix-mtime
-
-    - name: Setup the build directory
-      run:  mkdir -p $BUILD_DIR_TOOLCHAIN
-
-    # Run the build steps
-    - name: Configure the build
-      run:  |
-        cd $BUILD_DIR_TOOLCHAIN
-        echo "Current working directory: $PWD"
-        ../../sym-combined/$CROSS_TARGET-configure  --toolchain-sets=$Toolchain
-
-    - name: Execute the build
-      run:  |
-        cd $BUILD_DIR_TOOLCHAIN
-        echo "Current working directory: $PWD"
-        make $COMMON_MAKE_ALL_ARGS all-$Toolchain
-
-
-  # For quicker continuous integration feedback, run just the GCC v3 build as a job
-  build_cross_gcc3_job:
-    name:     Build GCC v3 for the H8/300
-    env:
-      Toolchain: gcc3
-    runs-on:  ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ ubuntu-latest ]
-    
-    steps:
-    - name: Get latest from version control
-      uses: actions/checkout@v4
-      with:
-        # git-restore-mtime-bare uses the ref log to find the correct timestamp
-        # for each file. This requires a full git history. The default value (1)
-        # creates a shallow checkout.
-        fetch-depth: 0
-
-    - name: Update build environment
-      run:  sudo apt-get --assume-yes update
-
-    - name: Install build dependencies
-      run:  sudo apt-get --assume-yes install $UBUNTU_BUILD_DEPENDS
-
-      # Fix timestamps (needed to prevent some files from attempting to regenerate and failing during build)
-    - name: Restore source timestamps
-      run:  ./fix-mtime
-
-    - name: Setup the build directory
-      run:  mkdir -p $BUILD_DIR_TOOLCHAIN
-
-    # Run the build steps
-    - name: Configure the build
-      run:  |
-        cd $BUILD_DIR_TOOLCHAIN
-        echo "Current working directory: $PWD"
-        ../../sym-combined/$CROSS_TARGET-configure  --toolchain-sets=$Toolchain
-
-    - name: Execute the build
-      run:  |
-        cd $BUILD_DIR_TOOLCHAIN
-        echo "Current working directory: $PWD"
-        make $COMMON_MAKE_ALL_ARGS all-$Toolchain
-
-
-  # For quicker continuous integration feedback, run just the GCC v4.4 build as a job
-  build_cross_gcc44_job:
-    name:     Build GCC v4.4 for the H8/300
-    env:
-      Toolchain: gcc44
-    runs-on:  ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ ubuntu-latest ]
-    
-    steps:
-    - name: Get latest from version control
-      uses: actions/checkout@v4
-      with:
-        # git-restore-mtime-bare uses the ref log to find the correct timestamp
-        # for each file. This requires a full git history. The default value (1)
-        # creates a shallow checkout.
-        fetch-depth: 0
-
-    - name: Update build environment
-      run:  sudo apt-get --assume-yes update
-
-      # Fix timestamps (needed to prevent some files from attempting to regenerate and failing during build)
-    - name: Restore source timestamps
-      run:  ./fix-mtime
-
-    - name: Install build dependencies
-      run:  sudo apt-get --assume-yes install $UBUNTU_BUILD_DEPENDS $UBUNTU_GCC4_BUILD_DEPENDS
-
-    - name: Setup the build directory
-      run:  mkdir -p $BUILD_DIR_TOOLCHAIN
-
-    # Run the build steps
-    - name: Configure the build
-      run:  |
-        cd $BUILD_DIR_TOOLCHAIN
-        echo "Current working directory: $PWD"
-        ../../sym-combined/$CROSS_TARGET-configure  --toolchain-sets=$Toolchain
-
-    - name: Execute the build
-      run:  |
-        cd $BUILD_DIR_TOOLCHAIN
-        echo "Current working directory: $PWD"
-        make $COMMON_MAKE_ALL_ARGS all-$Toolchain
-
 
   # For quicker continuous integration feedback, run just the RCX-configured build as a job
   build_cross_RCX_job:
-    name:     Build GCC v3 w/GDB v5 for the RCX
+    name:     Build GCC v3 w/GDB v5 for the RCX on ${{ matrix.os }}
     env:
       Toolchain: gdb5,gcc3
     runs-on:  ${{ matrix.os }}
@@ -341,18 +170,18 @@ jobs:
       run:  ./fix-mtime
 
     - name: Setup the build directory
-      run:  mkdir -p $BUILD_DIR_TOOLCHAIN
+      run:  mkdir -p  $BUILD_DIR  $OUTPUT_DIR
 
     # Run the build steps
     - name: Configure the build
       run:  |
-        cd $BUILD_DIR_TOOLCHAIN
+        cd $BUILD_DIR
         echo "Current working directory: $PWD"
-        ../../sym-combined/rcx-lego-configure
+        ../sym-combined/rcx-lego-configure
 
     - name: Execute the build
       run:  |
-        cd $BUILD_DIR_TOOLCHAIN
+        cd $BUILD_DIR
         echo "Current working directory: $PWD"
         make $COMMON_MAKE_ALL_ARGS all
 
