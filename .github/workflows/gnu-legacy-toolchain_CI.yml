@@ -20,6 +20,7 @@ env:
   
   # RPM package search:  https://rpm.pbone.net/search_simple_2
   # openSUSE package-only (no content) search:  https://software.opensuse.org/
+  # NOTE: openSUSE appears to lack a package for git-restore-mtime, so this will need to be installed manually
   openSUSE_BUILD_DEPENDS: autoconf gettext-tools automake m4 make binutils gcc gcc-c++ gcc-objc glibc-devel glibc-devel-32bit bison flex libtool gawk gettext-runtime texinfo file libisl23 dejagnu  stow
   openSUSE_GCC4_BUILD_DEPENDS:  mono-core libmono-2_0-devel glibc-devel gmp-devel mpfr-devel mpc-devel
   # libisl23, which is a version-specific package of ISL, appeasrs to be included as a dependency of other package(s)
@@ -57,9 +58,10 @@ jobs:
         # creates a shallow checkout.
         fetch-depth: 0
 
-      # Fix timestamps (needed to prevent some files from attempting to regenerate and failing during build)
-      # While a GitHub Action is available, we will use the Git command directly (after installing its package)
-      #   as a reference for those who might be replicating this build locally
+      # Fix timestamps (needed to prevent some files from attempting to regenerate and failing during build).
+      # While a GitHub Action is available, as a reference for those who might be replicating this build locally,
+      #   we will install its Debian package and use the script included in this repository
+      #   that runs this Git command directly.
       # uses: chetan/git-restore-mtime-action@v2
     #- name: Restore source timestamps
       #uses: chetan/git-restore-mtime-action@v2
@@ -70,10 +72,11 @@ jobs:
     - name: Install build dependencies
       run:  sudo apt-get --assume-yes install $UBUNTU_BUILD_DEPENDS $UBUNTU_GCC4_BUILD_DEPENDS
 
+      # Fix timestamps (needed to prevent some files from attempting to regenerate and failing during build)
     - name: Restore source timestamps
       # While a GitHub Action is available, use the Git command directly
       #   as a reference for those who might be replicating this build locally
-      run:  git restore-mtime
+      run:  ./fix-mtime
 
     - name: Setup the build directory
       run:  mkdir -p $BUILD_DIR_TOOLCHAIN
@@ -143,15 +146,15 @@ jobs:
         # creates a shallow checkout.
         fetch-depth: 0
 
-      # Fix timestamps (needed to prevent some files from attempting to regenerate and failing during build)
-    - name: Restore source timestamps
-      uses: chetan/git-restore-mtime-action@v2
-
     - name: Update build environment
       run:  sudo apt-get --assume-yes update
 
     - name: Install build dependencies
       run:  sudo apt-get --assume-yes install $UBUNTU_BUILD_DEPENDS
+
+      # Fix timestamps (needed to prevent some files from attempting to regenerate and failing during build)
+    - name: Restore source timestamps
+      run:  ./fix-mtime
 
     - name: Setup the build directory
       run:  mkdir -p $BUILD_DIR_TOOLCHAIN
@@ -189,15 +192,15 @@ jobs:
         # creates a shallow checkout.
         fetch-depth: 0
 
-      # Fix timestamps (needed to prevent some files from attempting to regenerate and failing during build)
-    - name: Restore source timestamps
-      uses: chetan/git-restore-mtime-action@v2
-
     - name: Update build environment
       run:  sudo apt-get --assume-yes update
 
     - name: Install build dependencies
       run:  sudo apt-get --assume-yes install $UBUNTU_BUILD_DEPENDS
+
+      # Fix timestamps (needed to prevent some files from attempting to regenerate and failing during build)
+    - name: Restore source timestamps
+      run:  ./fix-mtime
 
     - name: Setup the build directory
       run:  mkdir -p $BUILD_DIR_TOOLCHAIN
@@ -235,15 +238,15 @@ jobs:
         # creates a shallow checkout.
         fetch-depth: 0
 
-      # Fix timestamps (needed to prevent some files from attempting to regenerate and failing during build)
-    - name: Restore source timestamps
-      uses: chetan/git-restore-mtime-action@v2
-
     - name: Update build environment
       run:  sudo apt-get --assume-yes update
 
     - name: Install build dependencies
       run:  sudo apt-get --assume-yes install $UBUNTU_BUILD_DEPENDS
+
+      # Fix timestamps (needed to prevent some files from attempting to regenerate and failing during build)
+    - name: Restore source timestamps
+      run:  ./fix-mtime
 
     - name: Setup the build directory
       run:  mkdir -p $BUILD_DIR_TOOLCHAIN
@@ -281,12 +284,12 @@ jobs:
         # creates a shallow checkout.
         fetch-depth: 0
 
-      # Fix timestamps (needed to prevent some files from attempting to regenerate and failing during build)
-    - name: Restore source timestamps
-      uses: chetan/git-restore-mtime-action@v2
-
     - name: Update build environment
       run:  sudo apt-get --assume-yes update
+
+      # Fix timestamps (needed to prevent some files from attempting to regenerate and failing during build)
+    - name: Restore source timestamps
+      run:  ./fix-mtime
 
     - name: Install build dependencies
       run:  sudo apt-get --assume-yes install $UBUNTU_BUILD_DEPENDS $UBUNTU_GCC4_BUILD_DEPENDS
@@ -327,15 +330,15 @@ jobs:
         # creates a shallow checkout.
         fetch-depth: 0
 
-      # Fix timestamps (needed to prevent some files from attempting to regenerate and failing during build)
-    - name: Restore source timestamps
-      uses: chetan/git-restore-mtime-action@v2
-
     - name: Update build environment
       run:  sudo apt-get --assume-yes update
 
     - name: Install build dependencies
       run:  sudo apt-get --assume-yes install $UBUNTU_BUILD_DEPENDS
+
+      # Fix timestamps (needed to prevent some files from attempting to regenerate and failing during build)
+    - name: Restore source timestamps
+      run:  ./fix-mtime
 
     - name: Setup the build directory
       run:  mkdir -p $BUILD_DIR_TOOLCHAIN
@@ -370,15 +373,15 @@ jobs:
 #        # creates a shallow checkout.
 #        fetch-depth: 0
 #
-#      # Fix timestamps
-#    - name: Restore source timestamps
-#      uses: chetan/git-restore-mtime-action@v2
-#
 #    - name: Update build environment
 #      run:  sudo apt-get --assume-yes update
 #
 #    - name: Install build dependencies
 #      run:  sudo apt-get --assume-yes install $UBUNTU_BUILD_DEPENDS $UBUNTU_GCC4_BUILD_DEPENDS
+#
+#      # Fix timestamps (needed to prevent some files from attempting to regenerate and failing during build)
+#    - name: Restore source timestamps
+#      run:  ./fix-mtime
 #
 #    - name: Setup the build directory
 #      run:  mkdir -p $BUILD_DIR_TOOLCHAIN

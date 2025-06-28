@@ -20,17 +20,29 @@ h8300-hitachi-coff ([ref 1](https://tracker.debian.org/pkg/gcc-h8300-hms), [ref 
 
 Quick Start Build Guide
 -----------------------
-Build instructions are essentially the same as those for GCC, with a few additional options:
-1. Create a folder for building that is _outside_ the source tree
-2. From that build folder, run either `configure` or one of the following use-case-specific wrapper helpers:
+Build instructions are largely the same as those for GCC, with a few additional steps and options.
+A working example can be seen in the [Continuous Integration workflow](.github/workflows),
+but the basic sequence is as follows:
+1. Have a working Linux, Unix, or WSL environment with Bash shell support (currently untested under Mac or Cygwin)
+2. Install build dependencies
+   1. See the [Continuous Integration workflow](.github/workflows) for a current dependency list
+   2. If you platform/distro does not include a package for git-restore-mtime ([like Debian does](https://packages.debian.org/search?keywords=git-restore-mtime&searchon=names&suite=stable&section=all)) _and_ you will be cloning from git, install this manually (c.f. the [git-tools project page](https://github.com/MestreLion/git-tools) for both distro package names and manual install instructions).
+3. Obtain a copy of the source via _either_ of the following means:
+   1. Clone from GitHub:  `git clone [--branch <name of branch or tag>] https://github.com/BrickBot/GNU-Legacy-Toolchain.git`  –or–
+   2. Download and extract a source archive, such as from one of the [releases](releases)
+4. Fix source file timestamps (this should typically only need to be executed once after obtaining the source)
+   1. Execute the script `fix-mtime` that is found in the root of the source tree
+   2. Note that this could take several minutes to complete, depending on the speed of the system
+5. Create a folder for building that is _outside_ the source tree
+6. From that build folder, run either `configure` or one of the following use-case-specific wrapper helpers:
    1. `h8300-hitachi-coff-configure`:  For use with COFF targets for the Hitachi H8/300, which defaults to an integrated toolchain based on GCC v3.
        The target `h8300-hitachi-elf` is additionally enabled, which adds `elf32-h8300` support to tools such as `objcopy`.
-   2. `rcx-lego-configure`:  Created for use with the LEGO MindStorms RCX, which defaults to an integrated toolchain based on GCC v3 but with a separate GDB (v5).
-3. Run `make`
-4. Run `make install` to copy the files into an installation structure.
+   2. `rcx-lego-configure`:  Created for use with the LEGO MindStorms RCX, which defaults to an integrated toolchain based on the above but with a separate GDB v5 instead.
+7. Run `make`
+8. Run `make install` to copy the files into an installation structure.
    1. By default, the install will be to a separate folder from which [Stow](https://www.gnu.org/software/stow/) can then be used to link the files into your system installation.
    2. In this manner, [Stow](https://www.gnu.org/software/stow/) facilitates a cleaner and easier way to manage installs of locally-built software.
-5. Run `make stow` to then link the files into your system installation.
+9. Run `make stow` to then link the files into your system installation.
 
 
 Advanced Options for Configure
