@@ -1,0 +1,64 @@
+2005-05-10  Jakub Jelinek  <jakub@redhat.com>
+
+	* config/i386/i386.md (movsi_insv_1, movdi_insv_1_rex64): Mask
+	CONST_INT values with 255.
+
+	* gcc.dg/20050510-2.c: New test.
+
+--- gcc/config/i386/i386.md.jj	2005-05-10 00:47:12.000000000 +0200
++++ gcc/config/i386/i386.md	2005-05-10 14:01:42.000000000 +0200
+@@ -1771,7 +1771,11 @@
+ 			 (const_int 8))
+ 	(match_operand:SI 1 "general_operand" "Qmn"))]
+   "!TARGET_64BIT"
+-  "mov{b}\t{%b1, %h0|%h0, %b1}"
++{
++  if (GET_CODE (operands[1]) == CONST_INT)
++    operands[1] = GEN_INT (INTVAL (operands[1]) & 255);
++  return "mov{b}\t{%b1, %h0|%h0, %b1}";
++}
+   [(set_attr "type" "imov")
+    (set_attr "mode" "QI")])
+ 
+@@ -1781,7 +1785,11 @@
+ 			 (const_int 8))
+ 	(match_operand:DI 1 "nonmemory_operand" "Qn"))]
+   "TARGET_64BIT"
+-  "mov{b}\t{%b1, %h0|%h0, %b1}"
++{
++  if (GET_CODE (operands[1]) == CONST_INT)
++    operands[1] = GEN_INT (INTVAL (operands[1]) & 255);
++  return "mov{b}\t{%b1, %h0|%h0, %b1}";
++}
+   [(set_attr "type" "imov")
+    (set_attr "mode" "QI")])
+ 
+--- gcc/testsuite/gcc.dg/20050510-2.c.jj	2005-04-07 15:51:53.775361896 +0200
++++ gcc/testsuite/gcc.dg/20050510-2.c	2005-05-10 14:37:12.000000000 +0200
+@@ -0,0 +1,26 @@
++/* { dg-options run } */
++/* { dg-options "-O2" } */
++
++extern void abort (void);
++
++__attribute__((noinline)) int
++foo (unsigned char *x)
++{
++  if (x[0] != 1 || x[1] != 0x15)
++    abort ();
++  return 0;
++}
++
++static inline void
++bar (unsigned short x)
++{
++  unsigned char s[2] = { x >> 8, x & 0xff };
++  foo (s);
++}
++
++int
++main (void)
++{
++  bar (0x115);
++  return 0;
++}

@@ -1,0 +1,127 @@
+# DP: adjust hrefs to point to the local documentation
+
+---
+ libstdc++-v3/doc/doxygen/mainpage.html |   10 +++++-----
+ 1 files changed, 5 insertions(+), 5 deletions(-)
+
+--- a/src/libstdc++-v3/doc/doxygen/mainpage.html
++++ b/src/libstdc++-v3/doc/doxygen/mainpage.html
+@@ -29,8 +29,8 @@
+ <p>There are two types of documentation for libstdc++.  One is the
+    distribution documentation, which can be read online
+    <a href="http://gcc.gnu.org/onlinedocs/libstdc++/index.html">here</a>
+-   or offline from the file doc/html/index.html in the library source
+-   directory.
++   or offline in the documentation directory
++   <a href="manual/spine.html">here</a>.
+ </p>
+ 
+ <p>The other type is the source documentation, of which this is the first page.
+@@ -81,9 +81,9 @@
+   This style guide can also be viewed on the <a href="http://gcc.gnu.org/onlinedocs/libstdc++/manual/bk01apas04.html">web</a>.
+ 
+ <h2>License, Copyright, and Other Lawyerly Verbosity</h2>
+-<p>The libstdc++ documentation is released under
+-   <a href="http://gcc.gnu.org/onlinedocs/libstdc++/manual/bk01pt01ch01s02.html">
+-   these terms</a>.
++<p>The libstdc++ documentation is released under these terms
++   (<a href="http://gcc.gnu.org/onlinedocs/libstdc++/manual/license.html">read online</a>, or
++   <a href="manual/license.html">read offline</a>).
+ </p>
+ <p>Part of the generated documentation involved comments and notes from
+    SGI, who says we gotta say this:
+--- a/src/libstdc++-v3/doc/xml/api.xml~	2009-04-16 05:33:20.000000000 +0200
++++ b/src/libstdc++-v3/doc/xml/api.xml	2009-04-27 12:38:45.000000000 +0200
+@@ -38,6 +38,11 @@
+ </para>
+ 
+ <para>
++  <ulink url="index.html">The source-level documentation for this release can be viewed offline.
++  </ulink>
++</para>
++
++<para>
+ The source-level documentation for the most recent releases can be
+ viewed online:
+ </para>
+@@ -45,37 +50,37 @@
+ <itemizedlist>
+   <listitem>
+     <para>
+-      <ulink url="libstdc++-html-USERS-3.4/index.html">for the 3.4 release
++      <ulink url="http://gcc.gnu.org/onlinedocs/libstdc++-html-USERS-3.4/index.html">for the 3.4 release
+       </ulink>
+     </para>
+   </listitem>
+   <listitem>
+     <para>
+-      <ulink url="libstdc++-html-USERS-4.1/index.html">for the 4.1 release
++      <ulink url="http://gcc.gnu.org/onlinedocs/libstdc++-html-USERS-4.1/index.html">for the 4.1 release
+       </ulink>
+     </para>
+   </listitem>
+   <listitem>
+     <para>
+-      <ulink url="libstdc++-html-USERS-4.2/index.html">for the 4.2 release
++      <ulink url="http://gcc.gnu.org/onlinedocs/libstdc++-html-USERS-4.2/index.html">for the 4.2 release
+       </ulink>
+     </para>
+   </listitem>
+   <listitem>
+     <para>
+-      <ulink url="libstdc++-html-USERS-4.3/index.html">for the 4.3 release
++      <ulink url="http://gcc.gnu.org/onlinedocs/libstdc++-html-USERS-4.3/index.html">for the 4.3 release
+       </ulink>
+     </para>
+   </listitem>
+   <listitem>
+     <para>
+-      <ulink url="libstdc++-html-USERS-4.4/index.html">for the 4.4 release
++      <ulink url="http://gcc.gnu.org/onlinedocs/libstdc++-html-USERS-4.4/index.html">for the 4.4 release
+       </ulink>
+     </para>
+   </listitem>
+   <listitem>
+     <para>
+-      <ulink url="latest-doxygen/index.html">&quot;the latest collection&quot;
++      <ulink url="http://gcc.gnu.org/onlinedocs/latest-doxygen/index.html">&quot;the latest collection&quot;
+       </ulink>
+       (For the main development tree; see the date on the first page.)
+     </para>
+--- a/src/libstdc++-v3/doc/html/api.html~	2009-04-16 05:33:20.000000000 +0200
++++ b/src/libstdc++-v3/doc/html/api.html	2009-04-27 12:42:10.000000000 +0200
+@@ -17,25 +17,28 @@
+ the library classes, finding out what is in a particular include
+ file, looking at inheritance diagrams, etc.
+ </p><p>
++<a class="ulink" href="index.html"The source-level documentation for this release can be
++viewed offline.</a>
++</p><p>
+ The source-level documentation for the most recent releases can be
+ viewed online:
+ </p><div class="itemizedlist"><ul type="disc"><li><p>
+-      <a class="ulink" href="libstdc++-html-USERS-3.4/index.html" target="_top">for the 3.4 release
++      <a class="ulink" href="http://gcc.gnu.org/onlinedocs/libstdc++-html-USERS-3.4/index.html" target="_top">for the 3.4 release
+       </a>
+     </p></li><li><p>
+-      <a class="ulink" href="libstdc++-html-USERS-4.1/index.html" target="_top">for the 4.1 release
++      <a class="ulink" href="http://gcc.gnu.org/onlinedocs/libstdc++-html-USERS-4.1/index.html" target="_top">for the 4.1 release
+       </a>
+     </p></li><li><p>
+-      <a class="ulink" href="libstdc++-html-USERS-4.2/index.html" target="_top">for the 4.2 release
++      <a class="ulink" href="http://gcc.gnu.org/onlinedocs/libstdc++-html-USERS-4.2/index.html" target="_top">for the 4.2 release
+       </a>
+     </p></li><li><p>
+-      <a class="ulink" href="libstdc++-html-USERS-4.3/index.html" target="_top">for the 4.3 release
++      <a class="ulink" href="http://gcc.gnu.org/onlinedocs/libstdc++-html-USERS-4.3/index.html" target="_top">for the 4.3 release
+       </a>
+     </p></li><li><p>
+-      <a class="ulink" href="libstdc++-html-USERS-4.4/index.html" target="_top">for the 4.4 release
++      <a class="ulink" href="http://gcc.gnu.org/onlinedocs/libstdc++-html-USERS-4.4/index.html" target="_top">for the 4.4 release
+       </a>
+     </p></li><li><p>
+-      <a class="ulink" href="latest-doxygen/index.html" target="_top">"the latest collection"
++      <a class="ulink" href="http://gcc.gnu.org/onlinedocs/latest-doxygen/index.html" target="_top">"the latest collection"
+       </a>
+       (For the main development tree; see the date on the first page.)
+     </p></li></ul></div><p>

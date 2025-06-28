@@ -1,0 +1,107 @@
+2013-02-20  Jakub Jelinek  <jakub@redhat.com>
+
+	PR bootstrap/56258
+	* doc/invoke.texi: Fix errors reported by makeinfo 5.0.
+	* doc/md.texi: Likewise.
+	* doc/rtl.texi: Likewise.
+	* doc/extend.texi: Likewise.
+	* doc/cppopts.texi: Likewise.
+	* doc/c-tree.texi: Likewise.
+
+--- gcc/doc/invoke.texi.jj	2005-11-21 14:55:23.000000000 +0100
++++ gcc/doc/invoke.texi	2013-02-20 16:51:51.906808675 +0100
+@@ -790,7 +790,7 @@ instantiation), or a library unit renami
+ generic, or subprogram renaming declaration).  Such files are also
+ called @dfn{specs}.
+ 
+-@itemx @var{file}.adb
++@item @var{file}.adb
+ Ada source code file containing a library unit body (a subprogram or
+ package body).  Such files are also called @dfn{bodies}.
+ 
+@@ -6679,7 +6679,7 @@ assembly code.  Permissible names are: @
+ @samp{arm1136js}, @samp{arm1136jfs} ,@samp{xscale}, @samp{iwmmxt},
+ @samp{ep9312}.
+ 
+-@itemx -mtune=@var{name}
++@item -mtune=@var{name}
+ @opindex mtune
+ This option is very similar to the @option{-mcpu=} option, except that
+ instead of specifying the actual target processor type, and hence
+@@ -7993,7 +7993,7 @@ floating-point calculations using librar
+ Assume that the floating-point coprocessor only supports single-precision
+ operations.
+ 
+-@itemx -mdouble-float
++@item -mdouble-float
+ @opindex mdouble-float
+ Assume that the floating-point coprocessor supports double-precision
+ operations.  This is the default.
+--- gcc/doc/md.texi.jj	2005-11-21 14:35:16.000000000 +0100
++++ gcc/doc/md.texi	2013-02-20 17:02:33.425214891 +0100
+@@ -2539,9 +2539,10 @@ means of constraints requiring operands
+ @itemx @samp{smin@var{m}3}, @samp{smax@var{m}3}, @samp{umin@var{m}3}, @samp{umax@var{m}3}
+ @itemx @samp{and@var{m}3}, @samp{ior@var{m}3}, @samp{xor@var{m}3}
+ Similar, for other arithmetic operations.
++
+ @cindex @code{min@var{m}3} instruction pattern
+ @cindex @code{max@var{m}3} instruction pattern
+-@itemx @samp{min@var{m}3}, @samp{max@var{m}3}
++@item @samp{min@var{m}3}, @samp{max@var{m}3}
+ Floating point min and max operations.  If both operands are zeros,
+ or if either operand is NaN, then it is unspecified which of the two
+ operands is returned as the result.
+--- gcc/doc/rtl.texi.jj	2005-11-21 14:35:16.000000000 +0100
++++ gcc/doc/rtl.texi	2013-02-20 17:03:16.186985076 +0100
+@@ -2747,11 +2747,9 @@ represents @var{x} before @var{x} is mod
+ @var{m} must be the machine mode for pointers on the machine in use.
+ 
+ The expression @var{y} must be one of three forms:
+-@table @code
+ @code{(plus:@var{m} @var{x} @var{z})},
+ @code{(minus:@var{m} @var{x} @var{z})}, or
+ @code{(plus:@var{m} @var{x} @var{i})},
+-@end table
+ where @var{z} is an index register and @var{i} is a constant.
+ 
+ Here is an example of its use:
+--- gcc/doc/extend.texi.jj	2005-11-21 14:35:16.000000000 +0100
++++ gcc/doc/extend.texi	2013-02-20 17:00:22.298909603 +0100
+@@ -3707,12 +3707,15 @@ If you replaced @code{short_a} with @cod
+ declaration, the above program would abort when compiled with
+ @option{-fstrict-aliasing}, which is on by default at @option{-O2} or
+ above in recent GCC versions.
++@end table
+ 
+ @subsection i386 Type Attributes
+ 
+ Two attributes are currently defined for i386 configurations:
+ @code{ms_struct} and @code{gcc_struct}
+ 
++@table @code
++
+ @item ms_struct
+ @itemx gcc_struct
+ @cindex @code{ms_struct}
+--- gcc/doc/cppopts.texi.jj	2005-11-21 14:35:16.000000000 +0100
++++ gcc/doc/cppopts.texi	2013-02-20 16:50:47.462174811 +0100
+@@ -671,7 +671,7 @@ Replacement:      [    ]    @{    @}
+ Enable special code to work around file systems which only permit very
+ short file names, such as MS-DOS@.
+ 
+-@itemx --help
++@item --help
+ @itemx --target-help
+ @opindex help
+ @opindex target-help
+--- gcc/doc/c-tree.texi.jj	2005-11-21 14:35:16.000000000 +0100
++++ gcc/doc/c-tree.texi	2013-02-20 17:00:55.106732345 +0100
+@@ -2065,7 +2065,7 @@ corresponding operators in C or C++, but
+ generate these expressions anyhow, if it can tell that strictness does
+ not matter.
+ 
+-@itemx PLUS_EXPR
++@item PLUS_EXPR
+ @itemx MINUS_EXPR
+ @itemx MULT_EXPR
+ @itemx TRUNC_DIV_EXPR

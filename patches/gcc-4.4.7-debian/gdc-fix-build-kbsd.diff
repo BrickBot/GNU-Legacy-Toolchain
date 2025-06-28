@@ -1,0 +1,39 @@
+# DP: Fix gdc build on k*bsd*-gnu, update configure and target-ver-syms.sh
+# DP: to build k*bsd*-gnu architectures as a freebsd
+
+--- a/src/gcc/d/phobos/configure	2010-07-15 12:05:38.000000000 +0100
++++ b/src/gcc/d/phobos/configure	2010-08-23 10:29:11.885790413 +0100
+@@ -5817,7 +5817,7 @@
+ 	    d_gc_stack=GC_Use_Stack_Fixed
+ 	    d_gc_data="$d_gc_data GC_Use_Data_Dyld"
+ 	    ;;
+-  *freebsd*)D_GC_MODULES="$D_GC_MODULES internal/gc/gc_freebsd.o"
++  freebsd*|k*bsd*-gnu)D_GC_MODULES="$D_GC_MODULES internal/gc/gc_freebsd.o"
+ 	    d_gc_stack=GC_Use_Stack_FreeBSD
+ 	    d_gc_data="$d_gc_data GC_Use_Data_Fixed"
+ 	    	    ;;
+--- a/src/gcc/d/target-ver-syms.sh	2010-07-15 12:05:39.000000000 +0100
++++ b/src/gcc/d/target-ver-syms.sh	2010-08-23 10:30:11.877793587 +0100
+@@ -29,7 +29,8 @@
+ cygwin*) d_os_versym=cygwin ; d_unix=1 ;;
+ darwin*) d_os_versym=darwin ; d_unix=1 ;;
+ elf*) ;;
+-*freebsd*) d_os_versym=freebsd ; d_unix=1 ;;
++freebsd*) d_os_versym=freebsd ; d_unix=1 ;;
++k*bsd*-gnu) d_os_versym=freebsd ; d_unix=1 ;;
+ linux*) d_os_versym=linux ; d_unix=1 ;; 
+ mingw32*) d_os_versym=Win32; d_windows=1 ;;
+ pe*)    case "$target" in
+--- a/src/gcc/ggc-page.c	2008-07-28 15:33:56.000000000 +0100
++++ b/src/gcc/ggc-page.c	2010-08-23 10:35:54.197796263 +0100
+@@ -1313,6 +1313,10 @@
+   unsigned bit, word;
+   unsigned long mask;
+ 
++  /* FIXME: why could this happen on kbsd64 targets? */
++  if (!p || !ggc_allocated_p (p))
++      return 1;
++
+   /* Look up the page on which the object is alloced.  If the object
+      wasn't allocated by the collector, we'll probably die.  */
+   entry = lookup_page_table_entry (p);

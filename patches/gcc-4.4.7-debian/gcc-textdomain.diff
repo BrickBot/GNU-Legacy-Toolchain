@@ -1,0 +1,90 @@
+# DP: Set gettext's domain and textdomain to the versioned package name.
+
+---
+ gcc/Makefile.in    |    4 ++--
+ gcc/intl.c         |    4 ++--
+ libcpp/Makefile.in |    8 +++++---
+ libcpp/init.c      |    2 +-
+ libcpp/system.h    |    2 +-
+ 5 files changed, 11 insertions(+), 9 deletions(-)
+
+--- a/src/gcc/Makefile.in
++++ b/src/gcc/Makefile.in
+@@ -4792,8 +4792,8 @@ install-po:
+ 	  dir=$(localedir)/$$lang/LC_MESSAGES; \
+ 	  echo $(mkinstalldirs) $(DESTDIR)$$dir; \
+ 	  $(mkinstalldirs) $(DESTDIR)$$dir || exit 1; \
+-	  echo $(INSTALL_DATA) $$cat $(DESTDIR)$$dir/gcc.mo; \
+-	  $(INSTALL_DATA) $$cat $(DESTDIR)$$dir/gcc.mo; \
++	  echo $(INSTALL_DATA) $$cat $(DESTDIR)$$dir/gcc-4.4.mo; \
++	  $(INSTALL_DATA) $$cat $(DESTDIR)$$dir/gcc-4.4.mo; \
+ 	done
+ 
+ # Rule for regenerating the message template (gcc.pot).
+--- a/src/gcc/intl.c
++++ b/src/gcc/intl.c
+@@ -51,8 +51,8 @@ gcc_init_libintl (void)
+   setlocale (LC_ALL, "");
+ #endif
+ 
+-  (void) bindtextdomain ("gcc", LOCALEDIR);
+-  (void) textdomain ("gcc");
++  (void) bindtextdomain ("gcc-4.4", LOCALEDIR);
++  (void) textdomain ("gcc-4.4");
+ 
+   /* Opening quotation mark.  */
+   open_quote = _("`");
+--- a/src/libcpp/Makefile.in
++++ b/src/libcpp/Makefile.in
+@@ -47,6 +47,7 @@ LDFLAGS = @LDFLAGS@
+ LIBICONV = @LIBICONV@
+ LIBINTL = @LIBINTL@
+ PACKAGE = @PACKAGE@
++PACKAGE_SUFFIX = -4.4
+ RANLIB = @RANLIB@
+ SHELL = @SHELL@
+ USED_CATALOGS = @USED_CATALOGS@
+@@ -67,8 +68,9 @@ depcomp = $(SHELL) $(srcdir)/../depcomp
+ 
+ INCLUDES = -I$(srcdir) -I. -I$(srcdir)/../include @INCINTL@ \
+ 	-I$(srcdir)/include
++DEBCPPFLAGS += -DPACKAGE_SUFFIX=\"$(strip $(PACKAGE_SUFFIX))\"
+ 
+-ALL_CFLAGS = $(CFLAGS) $(WARN_CFLAGS) $(INCLUDES) $(CPPFLAGS)
++ALL_CFLAGS = $(CFLAGS) $(WARN_CFLAGS) $(INCLUDES) $(CPPFLAGS) $(DEBCPPFLAGS)
+ 
+ libcpp_a_OBJS = charset.o directives.o directives-only.o errors.o \
+ 	expr.o files.o identifiers.o init.o lex.o line-map.o macro.o \
+@@ -158,8 +160,8 @@ install-strip install: all installdirs
+ 	  else continue; \
+ 	  fi; \
+ 	  dir=$(localedir)/$$lang/LC_MESSAGES; \
+-	  echo $(INSTALL_DATA) $$cat $(DESTDIR)$$dir/$(PACKAGE).mo; \
+-	  $(INSTALL_DATA) $$cat $(DESTDIR)$$dir/$(PACKAGE).mo; \
++	  echo $(INSTALL_DATA) $$cat $(DESTDIR)$$dir/$(PACKAGE)$(PACKAGE_SUFFIX).mo; \
++	  $(INSTALL_DATA) $$cat $(DESTDIR)$$dir/$(PACKAGE)$(PACKAGE_SUFFIX).mo; \
+ 	done
+ 
+ mostlyclean:
+--- a/src/libcpp/init.c
++++ b/src/libcpp/init.c
+@@ -132,7 +132,7 @@ init_library (void)
+       init_trigraph_map ();
+ 
+ #ifdef ENABLE_NLS
+-       (void) bindtextdomain (PACKAGE, LOCALEDIR);
++       (void) bindtextdomain (PACKAGE PACKAGE_SUFFIX, LOCALEDIR);
+ #endif
+     }
+ }
+--- a/src/libcpp/system.h
++++ b/src/libcpp/system.h
+@@ -260,7 +260,7 @@ extern int errno;
+ #endif
+ 
+ #ifndef _
+-# define _(msgid) dgettext (PACKAGE, msgid)
++# define _(msgid) dgettext (PACKAGE PACKAGE_SUFFIX, msgid)
+ #endif
+ 
+ #ifndef N_

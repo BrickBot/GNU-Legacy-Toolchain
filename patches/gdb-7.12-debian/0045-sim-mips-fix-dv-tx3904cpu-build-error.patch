@@ -1,0 +1,57 @@
+From cd48ce152d6710af146ffc7897a82586513fc534 Mon Sep 17 00:00:00 2001
+From: Mike Frysinger <vapier@gentoo.org>
+Date: Fri, 11 Nov 2016 01:29:21 -0500
+Subject: [PATCH 045/122] sim: mips: fix dv-tx3904cpu build error
+
+When building for mipstx39-rtems4.12 targets, some funcs use SD and CPU
+implicitly.  Restore the defines for these to the local sd and cpu vars.
+
+This was broken by the clean up in commit d47f5b30d8481272e9480118bdcb.
+
+Reported-by: Joel Sherrill <joel.sherrill@oarcorp.com>
+---
+ sim/mips/ChangeLog      | 5 +++++
+ sim/mips/dv-tx3904cpu.c | 5 +++++
+ 2 files changed, 10 insertions(+)
+
+diff --git a/sim/mips/ChangeLog b/sim/mips/ChangeLog
+index dae00e7d34..2b1a032b08 100644
+--- a/sim/mips/ChangeLog
++++ b/sim/mips/ChangeLog
+@@ -1,5 +1,10 @@
+ 2016-11-11  Mike Frysinger  <vapier@gentoo.org>
+ 
++	* dv-tx3904cpu.c (deliver_tx3904cpu_interrupt): Define CPU to cpu
++	and SD to sd.
++
++2016-11-11  Mike Frysinger  <vapier@gentoo.org>
++
+ 	* mips.igen (check_u64): Enable for `r3900'.
+ 
+ 2016-02-05  Mike Frysinger  <vapier@gentoo.org>
+diff --git a/sim/mips/dv-tx3904cpu.c b/sim/mips/dv-tx3904cpu.c
+index da28a49a60..4a0ec441dc 100644
+--- a/sim/mips/dv-tx3904cpu.c
++++ b/sim/mips/dv-tx3904cpu.c
+@@ -143,6 +143,9 @@ deliver_tx3904cpu_interrupt (struct hw *me,
+   sim_cpu *cpu = STATE_CPU (sd, 0); /* NB: fix CPU 0. */
+   address_word cia = CPU_PC_GET (cpu);
+ 
++#define CPU cpu
++#define SD sd
++
+   if (controller->pending_reset)
+     {
+       controller->pending_reset = 0;
+@@ -187,6 +190,8 @@ deliver_tx3904cpu_interrupt (struct hw *me,
+ 	    }
+ 	} /* interrupt set */
+     }
++#undef CPU
++#undef SD
+ }
+ 
+ 
+-- 
+2.11.0
+

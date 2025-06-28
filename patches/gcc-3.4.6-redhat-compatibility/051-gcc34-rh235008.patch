@@ -1,0 +1,41 @@
+2007-04-12  Jakub Jelinek  <jakub@redhat.com>
+
+	* fr.po: Use %s rather than %S.
+	* rw.po: Comment out translations with bogus format
+	strings.
+
+--- gcc/po/fr.po.jj	2006-10-05 00:33:36.000000000 +0200
++++ gcc/po/fr.po	2007-04-13 00:23:29.000000000 +0200
+@@ -17100,7 +17100,7 @@ msgstr "%s liste d'expressions traitée c
+ 
+ #: cp/typeck.c:4490
+ msgid "%s from type `%T' to type `%T' casts away constness"
+-msgstr "%S à partir du « %T » vers le type « %T » provoque un transtypage sans constante"
++msgstr "%s à partir du « %T » vers le type « %T » provoque un transtypage sans constante"
+ 
+ #: cp/typeck.c:4692
+ msgid "invalid static_cast from type `%T' to type `%T'"
+--- gcc/po/rw.po.jj	2006-10-05 00:33:36.000000000 +0200
++++ gcc/po/rw.po	2007-04-13 00:22:28.000000000 +0200
+@@ -2541,8 +2541,8 @@ msgstr "-Imiterere Ikiranga"
+ 
+ #: c-opts.c:1139
+ #, fuzzy, c-format
+-msgid "opening output file %s: %m"
+-msgstr "Gufungura %s%S Ibisohoka IDOSIYE"
++#~ msgid "opening output file %s: %m"
++#~ msgstr "Gufungura %s%S Ibisohoka IDOSIYE"
+ 
+ #: c-opts.c:1144
+ #, fuzzy, c-format
+@@ -2556,8 +2556,8 @@ msgstr "OYA"
+ 
+ #: c-opts.c:1269
+ #, fuzzy, c-format
+-msgid "opening dependency file %s: %m"
+-msgstr "Gufungura %s%S IDOSIYE"
++#~ msgid "opening dependency file %s: %m"
++#~ msgstr "Gufungura %s%S IDOSIYE"
+ 
+ #: c-opts.c:1279
+ #, fuzzy, c-format

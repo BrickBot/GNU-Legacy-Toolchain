@@ -1,3 +1,24 @@
+2007-07-12  Kai Tietz   <kai.tietz@onevision.com>
+
+	Matthew Sheets: Backporting of Kai Teitz's BFD_HOSTPTR_T definition,
+	as packaged with GDB 6.8:
+	* bfd-in.h: (BFD_HOST_64BIT_LONG_LONG): New.
+	(BFD_HOSTPTR_T): Host pointer type for casting a
+	pointer to an integer type.
+	(bfd_hostptr_t): The typedef of BFD_HOSTPTR_T.
+
+2005-06-07  Mark Mitchell  <mark@codesourcery.com>
+
+	Matthew Sheets: Backporting of Mark Mitchell's bfd_fopen feature,
+	as packaged with GDB 6.8:
+	* opncls.c (bfd_fopen): New API.
+	* bfd-in2.h: Regenerated.
+	Not included in this backport of bfd_fopen were the following,
+	as doing so broke existing functionality in the "ar" tool:
+	* opncls.c
+	  - (bfd_openr): Use bfd_fopen.
+	  - (bfd_fdopenr): Likewise.
+
 2005-05-02  Daniel Jacobowitz  <dan@codesourcery.com>
 
 	* Makefile.am: Set RELEASE.

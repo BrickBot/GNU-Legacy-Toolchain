@@ -524,7 +524,7 @@ finish_object_type (tree type, tree parent, tree items, int abstract)
         PASCAL_STRUCTOR_METHOD (method) = PASCAL_STRUCTOR_METHOD (heading);
         TREE_PUBLIC (method) = virtual == 2 || current_module->main_program || !current_module->implementation;
         if (virtual || TREE_PUBLIC (method))
-          mark_addressable (method);
+          pas_mark_addressable (method);
         /* Push also abstract methods (for better error messages on attempts to implement them). */
         method = pushdecl (method);
         gcc_assert (!EM (method));

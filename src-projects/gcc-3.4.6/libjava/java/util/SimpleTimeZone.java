@@ -460,16 +460,34 @@ public class SimpleTimeZone extends TimeZone
     int daylightSavings = 0;
     if (useDaylight && era == GregorianCalendar.AD && year >= startYear)
       {
+	int orig_year = year;
 	// This does only work for Gregorian calendars :-(
 	// This is mainly because setStartYear doesn't take an era.
 
 	boolean afterStart = !isBefore(year, month, day, dayOfWeek, millis,
 				       startMode, startMonth,
 				       startDay, startDayOfWeek, startTime);
+	millis += dstSavings;
+	if (millis >= 24 * 60 * 60 * 1000)
+	  {
+	    millis -= 24 * 60 * 60 * 1000;
+	    dayOfWeek = (dayOfWeek % 7) + 1;
+	    if (++day > getDaysInMonth(month, year))
+	      {
+		day = 1;
+		if (month++ == Calendar.DECEMBER)
+		  {
+		    month = Calendar.JANUARY;
+		    year++;
+		  }
+	      }
+	  }
 	boolean beforeEnd = isBefore(year, month, day, dayOfWeek, millis,
 				     endMode, endMonth,
 				     endDay, endDayOfWeek, endTime);
 
+	if (orig_year != year)
+	  afterStart = false;
 	if (startMonth < endMonth)
 	  {
 	    // use daylight savings, if the date is after the start of

@@ -1,0 +1,26 @@
+Index: newlib-1.18.0/newlib/libc/sys/linux/Makefile.am
+===================================================================
+--- newlib-1.18.0.orig/newlib/libc/sys/linux/Makefile.am	2011-04-07 12:39:43.000000000 +0000
++++ newlib-1.18.0/newlib/libc/sys/linux/Makefile.am	2011-04-07 12:39:47.000000000 +0000
+@@ -169,7 +169,7 @@
+ 
+ # This will handle both /usr/src/linux-2.4/include/asm/signal.h (in Red Hat Linux 7.1)
+ # and also /usr/src/linux/include/asm/signal.h in older versions of Red Hat Linux
+-SIGNAL_H = /usr/include/asm/signal.h
++SIGNAL_H = /usr/include/$(DEB_HOST_MULTIARCH)/asm/signal.h
+ 
+ liblinux_la_LDFLAGS = -Xcompiler -nostdlib
+ 
+Index: newlib-1.18.0/newlib/libc/sys/linux/Makefile.in
+===================================================================
+--- newlib-1.18.0.orig/newlib/libc/sys/linux/Makefile.in	2011-04-07 12:57:39.000000000 +0000
++++ newlib-1.18.0/newlib/libc/sys/linux/Makefile.in	2011-04-07 12:57:07.000000000 +0000
+@@ -484,7 +484,7 @@
+ 
+ # This will handle both /usr/src/linux-2.4/include/asm/signal.h (in Red Hat Linux 7.1)
+ # and also /usr/src/linux/include/asm/signal.h in older versions of Red Hat Linux
+-SIGNAL_H = /usr/include/asm/signal.h
++SIGNAL_H = /usr/include/$(DEB_HOST_MULTIARCH)/asm/signal.h
+ liblinux_la_LDFLAGS = -Xcompiler -nostdlib
+ ADD_OBJS = \
+ 	$(LINUX_MACH_LIB)

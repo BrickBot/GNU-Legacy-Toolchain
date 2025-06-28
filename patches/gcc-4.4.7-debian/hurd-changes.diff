@@ -1,0 +1,77 @@
+# DP: Traditional GNU systems don't have a /usr directory.  However, Debian
+# DP: systems do, and we support both having a /usr -> . symlink, and having a
+# DP: /usr directory like the other ports.  So this patch should NOT go
+# DP: upstream.
+# DP: 
+# DP: Define MAXPATHLEN and PATH_MAX.
+
+---
+ boehm-gc/dyn_load.c |    2 +-
+ gcc/config/gnu.h    |    3 ++-
+ gcc/config/t-gnu    |    2 +-
+ gcc/tlink.c         |    4 ++++
+ 4 files changed, 8 insertions(+), 3 deletions(-)
+
+--- a/src/boehm-gc/dyn_load.c
++++ b/src/boehm-gc/dyn_load.c
+@@ -26,7 +26,7 @@
+  * None of this is safe with dlclose and incremental collection.
+  * But then not much of anything is safe in the presence of dlclose.
+  */
+-#if (defined(__linux__) || defined(__GLIBC__)) && !defined(_GNU_SOURCE)
++#if (defined(__linux__) || defined(__GLIBC__) || defined(__GNU__)) && !defined(_GNU_SOURCE)
+     /* Can't test LINUX, since this must be define before other includes */
+ #   define _GNU_SOURCE
+ #endif
+--- a/src/gcc/config.gcc	2009-04-26 21:36:36.000000000 +0200
++++ b/src/gcc/config.gcc	2009-04-26 21:36:53.000000000 +0200
+@@ -3057,7 +3057,7 @@
+ 	i[34567]86-*-darwin* | x86_64-*-darwin*)
+ 		tmake_file="${tmake_file} i386/t-fprules-softfp soft-fp/t-softfp"
+ 		;;
+-	i[34567]86-*-linux* | x86_64-*-linux* | i[34567]86-*-kfreebsd*-gnu | x86_64-*-kfreebsd*-gnu)
++	i[34567]86-*-linux* | x86_64-*-linux* | i[34567]86-*-kfreebsd*-gnu | x86_64-*-kfreebsd*-gnu | i[34567]86-*-gnu*)
+ 		tmake_file="${tmake_file} i386/t-fprules-softfp soft-fp/t-softfp i386/t-linux"
+ 		;;
+ 	ia64*-*-linux*)
+--- a/src/libgcc/config.host	2009-04-27 02:04:10.000000000 +0200
++++ b/src/libgcc/config.host	2009-04-27 02:04:23.000000000 +0200
+@@ -591,6 +591,7 @@
+ case ${host} in
+ i[34567]86-*-darwin* | x86_64-*-darwin* | \
+   i[34567]86-*-kfreebsd*-gnu | x86_64-*-kfreebsd*-gnu | \
++  i[34567]86-*-gnu* | \
+   i[34567]86-*-linux* | x86_64-*-linux*)
+ 	if test "${host_address}" = 32; then
+ 		tmake_file="${tmake_file} t-softfp i386/${host_address}/t-fprules-softfp"
+--- a/src/gcc/config/gnu.h
++++ b/src/gcc/config/gnu.h
+@@ -30,7 +30,8 @@ along with GCC.  If not, see <http://www.gnu.org/licenses/>.
+ 
+ /* Standard include directory.  In GNU, "/usr" is a four-letter word.  */
+ #undef STANDARD_INCLUDE_DIR
+-#define STANDARD_INCLUDE_DIR "/include"
++/* Overriden for Debian GNU/Hurd.  */
++#define STANDARD_INCLUDE_DIR "/usr/include"
+ 
+ #undef LINUX_TARGET_OS_CPP_BUILTINS
+ #define LINUX_TARGET_OS_CPP_BUILTINS()		\
+--- a/src/gcc/config/t-gnu
++++ b/src/gcc/config/t-gnu
+@@ -1,2 +1,2 @@
+ # In GNU, "/usr" is a four-letter word.
+-NATIVE_SYSTEM_HEADER_DIR = /include
++NATIVE_SYSTEM_HEADER_DIR = /usr/include
+--- a/src/gcc/tlink.c
++++ b/src/gcc/tlink.c
+@@ -34,6 +34,10 @@ along with GCC; see the file COPYING3.  If not see
+ 
+ #define MAX_ITERATIONS 17
+ 
++#ifndef MAXPATHLEN
++#define MAXPATHLEN 4096
++#endif
++
+ /* Defined in the automatically-generated underscore.c.  */
+ extern int prepends_underscore;
+ 

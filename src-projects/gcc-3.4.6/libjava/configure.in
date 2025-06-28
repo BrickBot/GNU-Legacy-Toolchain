@@ -367,6 +367,10 @@ use_gtk_awt=""
 TOOLKIT=
 AC_SUBST(TOOLKIT)
 
+if test -n "${with_multisubdir}"; then
+  peerlibs=no
+fi
+
 for peer in $peerlibs ; do
   case $peer in
     xlib)

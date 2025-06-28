@@ -1,0 +1,47 @@
+2005-02-18  Richard Henderson  <rth@redhat.com>
+
+	PR libstdc++/10606
+	* config/linker-map.gnu (CXXABI_1.3.1): Add __cxa_get_exception_ptr.
+	* libsupc++/eh_catch.cc (__cxa_get_exception_ptr): New.
+	* libsupc++/unwind-cxx.h (__cxa_get_exception_ptr): Declare.
+
+--- libstdc++-v3/config/linker-map.gnu	(revision 94498)
++++ libstdc++-v3/config/linker-map.gnu	(revision 95705)
+@@ -406,3 +410,9 @@ CXXABI_1.3 {
+   local:
+     *;
+ };
++
++CXXABI_1.3.1 {
++
++    __cxa_get_exception_ptr;
++
++} CXXABI_1.3;
+--- libstdc++-v3/libsupc++/unwind-cxx.h	(revision 94498)
++++ libstdc++-v3/libsupc++/unwind-cxx.h	(revision 95705)
+@@ -107,6 +107,7 @@ extern "C" void __cxa_throw (void *throw
+      __attribute__((noreturn));
+ 
+ // Used to implement exception handlers.
++extern "C" void *__cxa_get_exception_ptr (void *) throw();
+ extern "C" void *__cxa_begin_catch (void *) throw();
+ extern "C" void __cxa_end_catch ();
+ extern "C" void __cxa_rethrow () __attribute__((noreturn));
+--- libstdc++-v3/libsupc++/eh_catch.cc	(revision 94498)
++++ libstdc++-v3/libsupc++/eh_catch.cc	(revision 95705)
+@@ -33,6 +33,15 @@
+ 
+ using namespace __cxxabiv1;
+ 
++extern "C" void *
++__cxxabiv1::__cxa_get_exception_ptr(void *exc_obj_in) throw()
++{
++  _Unwind_Exception *exceptionObject
++    = reinterpret_cast <_Unwind_Exception *>(exc_obj_in);
++  __cxa_exception *header = __get_exception_header_from_ue (exceptionObject);
++
++  return header->adjustedPtr;
++}
+ 
+ extern "C" void *
+ __cxa_begin_catch (void *exc_obj_in) throw()

@@ -1,0 +1,114 @@
+From: Petter Reinholdtsen <pere@debian.org>
+Subject: Update notation to work with texinfo > 5
+
+Forwarded: no
+Last-Update: 2025-03-11
+---
+ gas/doc/as.texinfo    |  6 +++---
+ gas/doc/c-arc.texi    |  4 ++--
+ gas/doc/c-mips.texi   |  2 +-
+ gas/doc/c-tic54x.texi | 10 +++++-----
+ 4 files changed, 11 insertions(+), 11 deletions(-)
+
+diff --git a/gas/doc/as.texinfo b/gas/doc/as.texinfo
+index 124419c..4dc08ce 100644
+--- a/gas/doc/as.texinfo
++++ b/gas/doc/as.texinfo
+@@ -3634,11 +3634,11 @@ You may not subtract arguments from different sections.
+ @dfn{Is Not Equal To}
+ @item <
+ @dfn{Is Less Than}
+-@itemx >
++@item >
+ @dfn{Is Greater Than}
+-@itemx >=
++@item >=
+ @dfn{Is Greater Than Or Equal To}
+-@itemx <=
++@item <=
+ @dfn{Is Less Than Or Equal To}
+ 
+ The comparison operators can be used as infix operators.  A true results has a
+diff --git a/gas/doc/c-arc.texi b/gas/doc/c-arc.texi
+index 64285b8..685f647 100644
+--- a/gas/doc/c-arc.texi
++++ b/gas/doc/c-arc.texi
+@@ -49,7 +49,7 @@ Base instruction set.
+ Jump-and-link (jl) instruction.  No requirement of an instruction between
+ setting flags and conditional jump.  For example:
+ 
+-@smallexample @ta
++@smallexample
+   mov.f r0,r1
+   beq   foo
+ @end smallexample
+@@ -212,7 +212,7 @@ The extension instructions are not macros.  The assembler creates
+ encodings for use of these instructions according to the specification
+ by the user.  The parameters are:
+ 
+-@table @bullet
++@table @var
+ @item @var{name}
+ Name of the extension instruction 
+ 
+diff --git a/gas/doc/c-mips.texi b/gas/doc/c-mips.texi
+index 97469fe..b81c20b 100644
+--- a/gas/doc/c-mips.texi
++++ b/gas/doc/c-mips.texi
+@@ -148,7 +148,7 @@ the @samp{mad} and @samp{madu} instruction, and to not schedule @samp{nop}
+ instructions around accesses to the @samp{HI} and @samp{LO} registers.
+ @samp{-no-m4650} turns off this option.
+ 
+-@itemx -m3900
++@item -m3900
+ @itemx -no-m3900
+ @itemx -m4100
+ @itemx -no-m4100
+diff --git a/gas/doc/c-tic54x.texi b/gas/doc/c-tic54x.texi
+index 374def3..600f0c1 100644
+--- a/gas/doc/c-tic54x.texi
++++ b/gas/doc/c-tic54x.texi
+@@ -108,7 +108,7 @@ In this example, x is replaced with SYM2; SYM2 is replaced with SYM1, and SYM1
+ is replaced with x.  At this point, x has already been encountered
+ and the substitution stops.
+ 
+-@smallexample @code
++@smallexample
+  .asg   "x",SYM1 
+  .asg   "SYM1",SYM2
+  .asg   "SYM2",x
+@@ -125,14 +125,14 @@ Substitution may be forced in situations where replacement might be
+ ambiguous by placing colons on either side of the subsym.  The following
+ code: 
+ 
+-@smallexample @code
++@smallexample
+  .eval  "10",x
+ LAB:X:  add     #x, a
+ @end smallexample
+ 
+ When assembled becomes:
+ 
+-@smallexample @code
++@smallexample
+ LAB10  add     #10, a
+ @end smallexample
+ 
+@@ -308,7 +308,7 @@ The @code{LDX} pseudo-op is provided for loading the extended addressing bits
+ of a label or address.  For example, if an address @code{_label} resides
+ in extended program memory, the value of @code{_label} may be loaded as
+ follows:
+-@smallexample @code
++@smallexample
+  ldx     #_label,16,a    ; loads extended bits of _label
+  or      #_label,a       ; loads lower 16 bits of _label
+  bacc    a               ; full address is in accumulator A
+@@ -344,7 +344,7 @@ Assign @var{name} the string @var{string}.  String replacement is
+ performed on @var{string} before assignment.
+ 
+ @cindex @code{eval} directive, TIC54X
+-@itemx .eval @var{string}, @var{name}
++@item .eval @var{string}, @var{name}
+ Evaluate the contents of string @var{string} and assign the result as a
+ string to the subsym @var{name}.  String replacement is performed on
+ @var{string} before assignment. 

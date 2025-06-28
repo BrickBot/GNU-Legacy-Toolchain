@@ -1,0 +1,228 @@
+# DP: - backport support for PolyORB_DSA version 3 from the trunk.
+
+Index: b/src/gcc/ada/rtsfind.adb
+===================================================================
+--- a/src/gcc/ada/rtsfind.adb
++++ b/src/gcc/ada/rtsfind.adb
+@@ -298,6 +298,9 @@
+          elsif U_Id in Ada_Streams_Child then
+             Name_Buffer (12) := '.';
+ 
++         elsif U_Id in Ada_Strings_Child then
++            Name_Buffer (12) := '.';
++
+          elsif U_Id in Ada_Text_IO_Child then
+             Name_Buffer (12) := '.';
+ 
+Index: b/src/gcc/ada/rtsfind.ads
+===================================================================
+--- a/src/gcc/ada/rtsfind.ads
++++ b/src/gcc/ada/rtsfind.ads
+@@ -62,6 +62,9 @@
+    --    Names of the form Ada_Streams_xxx are second level children
+    --    of Ada.Streams.
+ 
++   --    Names of the form Ada_Strings_xxx are second level children
++   --    of Ada.Strings.
++
+    --    Names of the form Ada_Text_IO_xxx are second level children
+    --    of Ada.Text_IO.
+ 
+@@ -121,6 +124,7 @@
+       Ada_Interrupts,
+       Ada_Real_Time,
+       Ada_Streams,
++      Ada_Strings,
+       Ada_Tags,
+       Ada_Task_Identification,
+       Ada_Task_Termination,
+@@ -150,6 +154,10 @@
+ 
+       Ada_Streams_Stream_IO,
+ 
++      --  Children of Ada.Strings
++
++      Ada_Strings_Unbounded,
++
+       --  Children of Ada.Text_IO (for Text_IO_Kludge)
+ 
+       Ada_Text_IO_Decimal_IO,
+@@ -401,6 +409,11 @@
+ 
+    subtype Ada_Streams_Child is Ada_Child
+      range Ada_Streams_Stream_IO .. Ada_Streams_Stream_IO;
++   --  Range of values for children of Ada.Streams
++
++   subtype Ada_Strings_Child is Ada_Child
++     range Ada_Strings_Unbounded .. Ada_Strings_Unbounded;
++   --  Range of values for children of Ada.Strings
+ 
+    subtype Ada_Text_IO_Child is Ada_Child
+      range Ada_Text_IO_Decimal_IO .. Ada_Text_IO_Modular_IO;
+@@ -526,6 +539,8 @@
+ 
+      RE_Stream_Access,                   -- Ada.Streams.Stream_IO
+ 
++     RE_Unbounded_String,                -- Ada.Strings.Unbounded
++
+      RE_Access_Level,                    -- Ada.Tags
+      RE_Address_Array,                   -- Ada.Tags
+      RE_Addr_Ptr,                        -- Ada.Tags
+@@ -1203,6 +1218,7 @@
+      RE_TA_WWC,                          -- System.Partition_Interface
+      RE_TA_String,                       -- System.Partition_Interface
+      RE_TA_ObjRef,                       -- System.Partition_Interface
++     RE_TA_Std_String,                   -- System.Partition_Interface
+      RE_TA_TC,                           -- System.Partition_Interface
+ 
+      RE_TC_Alias,                        -- System.Partition_Interface
+@@ -1680,6 +1696,8 @@
+ 
+      RE_Stream_Access                    => Ada_Streams_Stream_IO,
+ 
++     RE_Unbounded_String                 => Ada_Strings_Unbounded,
++
+      RE_Access_Level                     => Ada_Tags,
+      RE_Address_Array                    => Ada_Tags,
+      RE_Addr_Ptr                         => Ada_Tags,
+@@ -2348,6 +2366,7 @@
+      RE_TA_WWC                           => System_Partition_Interface,
+      RE_TA_String                        => System_Partition_Interface,
+      RE_TA_ObjRef                        => System_Partition_Interface,
++     RE_TA_Std_String                    => System_Partition_Interface,
+      RE_TA_TC                            => System_Partition_Interface,
+ 
+      RE_TC_Alias                         => System_Partition_Interface,
+Index: b/src/gcc/ada/exp_dist.adb
+===================================================================
+--- a/src/gcc/ada/exp_dist.adb
++++ b/src/gcc/ada/exp_dist.adb
+@@ -6,7 +6,7 @@
+ --                                                                          --
+ --                                 B o d y                                  --
+ --                                                                          --
+---          Copyright (C) 1992-2008, Free Software Foundation, Inc.         --
++--          Copyright (C) 1992-2009, Free Software Foundation, Inc.         --
+ --                                                                          --
+ -- GNAT is free software;  you can  redistribute it  and/or modify it under --
+ -- terms of the  GNU General Public License as published  by the Free Soft- --
+@@ -6638,13 +6638,13 @@
+                                  Make_Function_Call (Loc,
+                                    Name =>
+                                      New_Occurrence_Of
+-                                       (RTE (RE_TA_String), Loc),
++                                       (RTE (RE_TA_Std_String), Loc),
+                                    Parameter_Associations => New_List (
+                                      Make_String_Literal (Loc, Name_String))),
+                                  Make_Function_Call (Loc,
+                                    Name =>
+                                      New_Occurrence_Of
+-                                       (RTE (RE_TA_String), Loc),
++                                       (RTE (RE_TA_Std_String), Loc),
+                                    Parameter_Associations => New_List (
+                                      Make_String_Literal (Loc,
+                                        Strval => Repo_Id_String))))))))))));
+@@ -8447,7 +8447,7 @@
+             elsif U_Type = RTE (RE_Long_Long_Unsigned) then
+                Lib_RE := RE_FA_LLU;
+ 
+-            elsif U_Type = Standard_String then
++            elsif Is_RTE (U_Type, RE_Unbounded_String) then
+                Lib_RE := RE_FA_String;
+ 
+             --  Special DSA types
+@@ -8944,7 +8944,11 @@
+                         for J in 1 .. Ndim loop
+                            Lnam := New_External_Name ('L', J);
+                            Hnam := New_External_Name ('H', J);
+-                           Indt := Etype (Indx);
++
++                           --  Note, for empty arrays bounds may be out of
++                           --  the range of Etype (Indx).
++
++                           Indt := Base_Type (Etype (Indx));
+ 
+                            Append_To (Decls,
+                              Make_Object_Declaration (Loc,
+@@ -9217,6 +9221,7 @@
+ 
+             Typ     : Entity_Id := Etype (N);
+             U_Type  : Entity_Id;
++            C_Type  : Entity_Id;
+             Fnam    : Entity_Id := Empty;
+             Lib_RE  : RE_Id := RE_Null;
+ 
+@@ -9312,7 +9317,7 @@
+             elsif U_Type = RTE (RE_Long_Long_Unsigned) then
+                Lib_RE := RE_TA_LLU;
+ 
+-            elsif U_Type = Standard_String then
++            elsif Is_RTE (U_Type, RE_Unbounded_String) then
+                Lib_RE := RE_TA_String;
+ 
+             --  Special DSA types
+@@ -9345,11 +9350,23 @@
+                Fnam := RTE (Lib_RE);
+             end if;
+ 
++            --  If Fnam is already analyzed, find the proper expected type,
++            --  else we have a newly constructed To_Any function and we know
++            --  that the expected type of its parameter is U_Type.
++
++            if Ekind (Fnam) = E_Function
++                 and then Present (First_Formal (Fnam))
++            then
++               C_Type := Etype (First_Formal (Fnam));
++            else
++               C_Type := U_Type;
++            end if;
++
+             return
+                 Make_Function_Call (Loc,
+                   Name                   => New_Occurrence_Of (Fnam, Loc),
+                   Parameter_Associations =>
+-                    New_List (Unchecked_Convert_To (U_Type, N)));
++                    New_List (OK_Convert_To (C_Type, N)));
+          end Build_To_Any_Call;
+ 
+          ---------------------------
+@@ -10084,7 +10101,7 @@
+                elsif U_Type = RTE (RE_Long_Long_Unsigned) then
+                   Lib_RE := RE_TC_LLU;
+ 
+-               elsif U_Type = Standard_String then
++               elsif Is_RTE (U_Type, RE_Unbounded_String) then
+                   Lib_RE := RE_TC_String;
+ 
+                --  Special DSA types
+@@ -10184,7 +10201,7 @@
+             begin
+                Append_To (Parameter_List,
+                  Make_Function_Call (Loc,
+-                   Name => New_Occurrence_Of (RTE (RE_TA_String), Loc),
++                   Name => New_Occurrence_Of (RTE (RE_TA_Std_String), Loc),
+                    Parameter_Associations => New_List (
+                      Make_String_Literal (Loc, S))));
+             end Add_String_Parameter;
+Index: b/src/gcc/ada/exp_dist.ads
+===================================================================
+--- a/src/gcc/ada/exp_dist.ads
++++ b/src/gcc/ada/exp_dist.ads
+@@ -6,7 +6,7 @@
+ --                                                                          --
+ --                                 S p e c                                  --
+ --                                                                          --
+---          Copyright (C) 1992-2008, Free Software Foundation, Inc.         --
++--          Copyright (C) 1992-2009, Free Software Foundation, Inc.         --
+ --                                                                          --
+ -- GNAT is free software;  you can  redistribute it  and/or modify it under --
+ -- terms of the  GNU General Public License as published  by the Free Soft- --
+@@ -35,7 +35,7 @@
+    PCS_Version_Number : constant array (PCS_Names) of Int :=
+                           (Name_No_DSA      => 1,
+                            Name_GARLIC_DSA  => 1,
+-                           Name_PolyORB_DSA => 2);
++                           Name_PolyORB_DSA => 3);
+    --  PCS interface version. This is used to check for consistency between the
+    --  compiler used to generate distribution stubs and the PCS implementation.
+    --  It must be incremented whenever a change is made to the generated code

@@ -1,0 +1,180 @@
+Still pending review upstream.
+------------------------------
+
+
+
+2002-03-21  Daniel Jacobowitz  <drow@mvista.com>
+
+	* dwarf2read.c (struct function_range): New.
+	(cu_first_fn, cu_last_fn, cu_cached_fn): New.
+	(check_cu_functions): New.
+	(read_file_scope): Initialize global function lists.
+	Call dwarf_decode_line after processing children.
+	(read_func_scope): Add to global function list.
+	(dwarf_decode_lines): Call check_cu_functions everywhere
+	record_line is called.  Call record_line with a linenumber
+	of 0 to mark sequence ends.
+
+Index: dwarf2read.c
+===================================================================
+RCS file: /cvs/src/src/gdb/dwarf2read.c,v
+retrieving revision 1.51
+diff -u -p -r1.51 dwarf2read.c
+--- gdb/gdb/dwarf2read.c	2002/03/21 00:53:44	1.51
++++ gdb/gdb/dwarf2read.c	2002/03/22 02:23:09
+@@ -256,6 +256,15 @@ struct attribute
+     u;
+   };
+ 
++struct function_range
++{
++  CORE_ADDR lowpc, highpc;
++  int seen_line;
++  struct function_range *next;
++};
++
++static struct function_range *cu_first_fn, *cu_last_fn, *cu_cached_fn;
++
+ /* Get at parts of an attribute structure */
+ 
+ #define DW_STRING(attr)    ((attr)->u.str)
+@@ -1633,13 +1642,7 @@ read_file_scope (struct die_info *die, s
+   start_symtab (name, comp_dir, lowpc);
+   record_debugformat ("DWARF 2");
+ 
+-  /* Decode line number information if present.  */
+-  attr = dwarf_attr (die, DW_AT_stmt_list);
+-  if (attr)
+-    {
+-      line_offset = DW_UNSND (attr);
+-      dwarf_decode_lines (line_offset, comp_dir, abfd, cu_header);
+-    }
++  cu_first_fn = cu_last_fn = cu_cached_fn = NULL;
+ 
+   /* Process all dies in compilation unit.  */
+   if (die->has_children)
+@@ -1651,6 +1654,14 @@ read_file_scope (struct die_info *die, s
+ 	  child_die = sibling_die (child_die);
+ 	}
+     }
++
++  /* Decode line number information if present.  */
++  attr = dwarf_attr (die, DW_AT_stmt_list);
++  if (attr)
++    {
++      line_offset = DW_UNSND (attr);
++      dwarf_decode_lines (line_offset, comp_dir, abfd, cu_header);
++    }
+ }
+ 
+ static void
+@@ -1663,6 +1674,7 @@ read_func_scope (struct die_info *die, s
+   struct die_info *child_die;
+   struct attribute *attr;
+   char *name;
++  struct function_range *thisfn;
+ 
+   name = dwarf2_linkage_name (die);
+ 
+@@ -1674,6 +1686,22 @@ read_func_scope (struct die_info *die, s
+   lowpc += baseaddr;
+   highpc += baseaddr;
+ 
++  /* Record the function range for dwarf_decode_lines.  */
++  thisfn = (struct function_range *)
++    obstack_alloc (&dwarf2_tmp_obstack, sizeof (struct function_range));
++  thisfn->lowpc = lowpc;
++  thisfn->highpc = highpc;
++  thisfn->seen_line = 0;
++  thisfn->next = NULL;
++
++  if (cu_last_fn == NULL)
++      cu_first_fn = thisfn;
++  else
++      cu_last_fn->next = thisfn;
++
++  cu_last_fn = thisfn;
++
++
+   if (objfile->ei.entry_point >= lowpc &&
+       objfile->ei.entry_point < highpc)
+     {
+@@ -3908,6 +3936,48 @@ struct directories
+     char **dirs;
+   };
+ 
++/* This function exists to work around a bug in certain compilers
++   (particularly GCC 2.95), in which the first line number marker of a
++   function does not show up until after the prologue, right before
++   the second line number marker.  This function shifts ADDRESS down
++   to the beginning of the function if necessary, and is called on
++   addresses passed to record_line.  */
++
++static CORE_ADDR
++check_cu_functions (CORE_ADDR address)
++{
++  struct function_range *fn;
++
++  /* Find the function_range containing address.  */
++  if (!cu_first_fn)
++    return address;
++
++  if (!cu_cached_fn)
++    cu_cached_fn = cu_first_fn;
++
++  fn = cu_cached_fn;
++  while (fn)
++    if (fn->lowpc <= address && fn->highpc > address)
++      goto found;
++    else
++      fn = fn->next;
++
++  fn = cu_first_fn;
++  while (fn && fn != cu_cached_fn)
++    if (fn->lowpc <= address && fn->highpc > address)
++      goto found;
++    else
++      fn = fn->next;
++
++  return address;
++
++ found:
++  if (fn->seen_line)
++    return address;
++  fn->seen_line = 1;
++  return fn->lowpc;
++}
++
+ static void
+ dwarf_decode_lines (unsigned int offset, char *comp_dir, bfd *abfd,
+ 		    const struct comp_unit_head *cu_header)
+@@ -4048,6 +4118,7 @@ dwarf_decode_lines (unsigned int offset,
+ 		* lh.minimum_instruction_length;
+ 	      line += lh.line_base + (adj_opcode % lh.line_range);
+ 	      /* append row to matrix using current values */
++	      address = check_cu_functions (address);
+ 	      record_line (current_subfile, line, address);
+ 	      basic_block = 1;
+ 	    }
+@@ -4061,12 +4132,7 @@ dwarf_decode_lines (unsigned int offset,
+ 		{
+ 		case DW_LNE_end_sequence:
+ 		  end_sequence = 1;
+-		  /* Don't call record_line here.  The end_sequence
+-		     instruction provides the address of the first byte
+-		     *after* the last line in the sequence; it's not the
+-		     address of any real source line.  However, the GDB
+-		     linetable structure only records the starts of lines,
+-		     not the ends.  This is a weakness of GDB.  */
++		  record_line (current_subfile, 0, address);
+ 		  break;
+ 		case DW_LNE_set_address:
+ 		  address = read_address (abfd, line_ptr, cu_header, &bytes_read);
+@@ -4103,6 +4169,7 @@ dwarf_decode_lines (unsigned int offset,
+ 		}
+ 	      break;
+ 	    case DW_LNS_copy:
++	      address = check_cu_functions (address);
+ 	      record_line (current_subfile, line, address);
+ 	      basic_block = 0;
+ 	      break;

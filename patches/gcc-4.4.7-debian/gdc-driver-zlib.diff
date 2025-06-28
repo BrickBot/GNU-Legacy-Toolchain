@@ -1,0 +1,58 @@
+# DP: Update the gdc driver to use the up-to-date system zlib.
+
+--- a/src/gcc/d/d-spec.c	2010-08-19 12:30:20.000000000 +0100
++++ b/src/gcc/d/d-spec.c	2010-08-23 10:54:52.673819751 +0100
+@@ -93,7 +93,7 @@
+     /* The number of arguments being added to what's in argv, other than
+        libraries.  We use this to track the number of times we've inserted
+        -xc++/-xnone.  */
+-    int added = 0;
++    int added = 1; /* -lz */
+ 
+     /* Used to track options that take arguments, so we don't go wrapping
+        those with -xc++/-xnone.  */
+@@ -414,6 +414,9 @@
+ 	    arglist[j++] = saw_profile_flag ? LIBPHOBOS_PROFILE : LIBPHOBOS;
+ 	    added_libraries++;
+ 	    need_pthreads = 1;
++	    /* Use the up-to-date system zlib with libphobos */
++	    arglist[j++] = "-lz";
++	    added_libraries++;
+ 	}
+     else if (saw_debug_flag && debuglib)
+ 	{
+--- a/src/gcc/d/phobos/etc/c/zlib.d	2010-08-19 13:59:09.000000000 +0100
++++ b/src/gcc/d/phobos/etc/c/zlib.d	2010-08-23 10:55:23.717806839 +0100
+@@ -42,8 +42,8 @@
+ 
+ extern (C):
+ 
+-char[] ZLIB_VERSION = "1.2.3";
+-const ZLIB_VERNUM = 0x1230;
++char[] ZLIB_VERSION = "1.2.3.4";
++const ZLIB_VERNUM = 0x1234;
+ 
+ /*
+      The 'zlib' compression library provides in-memory compression and
+--- a/src/gcc/d/phobos/Makefile.am	2010-08-01 14:45:55.000000000 +0100
++++ b/src/gcc/d/phobos/Makefile.am	2010-08-23 10:56:04.798797585 +0100
+@@ -179,7 +179,7 @@
+ std/stream.t.o: std/stream.d $(D_PREREQ_SRCS)
+ 	$(GDC) -o $@ $(ALL_DFLAGS) -fdeprecated -I $(srcdir) -I $(srcdir)/internal/gc -I ./$(host_alias) -c $<
+ 
+-ALL_PHOBOS_OBJS = $(D_EXTRA_OBJS) $(GCC_OBJS) $(MAIN_OBJS) $(ZLIB_OBJS) $(GC_OBJS) $(WEAK_OBJS)
++ALL_PHOBOS_OBJS = $(D_EXTRA_OBJS) $(GCC_OBJS) $(MAIN_OBJS) $(GC_OBJS) $(WEAK_OBJS)
+ 
+ libgphobos.a : $(ALL_PHOBOS_OBJS) $(CMAIN_OBJS)
+ 	$(AR) -r $@ $(ALL_PHOBOS_OBJS) $(CMAIN_OBJS)
+--- a/src/gcc/d/phobos/Makefile.in	2010-08-01 14:45:55.000000000 +0100
++++ b/src/gcc/d/phobos/Makefile.in	2010-08-23 10:56:11.565788770 +0100
+@@ -281,7 +281,7 @@
+ 	std/windows/iunknown.o std/windows/registry.o std/windows/syserror.o \
+ 	std/windows/charset.o std/thread_helper.o
+ 
+-ALL_PHOBOS_OBJS = $(D_EXTRA_OBJS) $(GCC_OBJS) $(MAIN_OBJS) $(ZLIB_OBJS) $(GC_OBJS) $(WEAK_OBJS)
++ALL_PHOBOS_OBJS = $(D_EXTRA_OBJS) $(GCC_OBJS) $(MAIN_OBJS) $(GC_OBJS) $(WEAK_OBJS)
+ 
+ # Work around what appears to be a GNU make bug handling MAKEFLAGS
+ # values defined in terms of make variables, as is the case for CC and

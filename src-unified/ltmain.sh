@@ -1,1 +1,0 @@
-../src-projects/gcc-3.4.6/ltmain.sh

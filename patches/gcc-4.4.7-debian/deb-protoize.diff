@@ -1,0 +1,34 @@
+# DP: build protoize/unprotoize binaries
+
+---
+ gcc/Makefile.in |    6 +++---
+ 1 files changed, 3 insertions(+), 3 deletions(-)
+
+--- a/src/gcc/Makefile.in
++++ b/src/gcc/Makefile.in
+@@ -125,7 +125,7 @@ SUBDIRS =@subdirs@ build
+ 
+ # Selection of languages to be made.
+ CONFIG_LANGUAGES = @all_selected_languages@
+-LANGUAGES = c gcov$(exeext) gcov-dump$(exeext) $(CONFIG_LANGUAGES)
++LANGUAGES = c proto gcov$(exeext) gcov-dump$(exeext) $(CONFIG_LANGUAGES)
+ 
+ # Default values for variables overridden in Makefile fragments.
+ # CFLAGS is for the user to override to, e.g., do a cross build with -O2.
+@@ -3501,14 +3501,14 @@ unprotoize$(exeext): unprotoize.o $(PROTO_OBJS) $(LIBDEPS)
+ protoize.o: protoize.c $(srcdir)/../include/getopt.h $(CONFIG_H) $(SYSTEM_H) \
+    coretypes.h $(TM_H) Makefile version.h cppdefault.h intl.h
+ 	(SHLIB_LINK='$(SHLIB_LINK)'; \
+-	$(CC) -c $(ALL_CFLAGS) $(ALL_CPPFLAGS) \
++	$(CC) -c $(ALL_CFLAGS) $(ALL_CPPFLAGS) -Wno-error \
+ 	  $(DRIVER_DEFINES) \
+ 	  $(srcdir)/protoize.c $(OUTPUT_OPTION))
+ 
+ unprotoize.o: protoize.c $(srcdir)/../include/getopt.h $(CONFIG_H) \
+     $(SYSTEM_H) coretypes.h $(TM_H) Makefile version.h cppdefault.h intl.h
+ 	(SHLIB_LINK='$(SHLIB_LINK)'; \
+-	$(CC) -c -DUNPROTOIZE $(ALL_CFLAGS) $(ALL_CPPFLAGS) \
++	$(CC) -c -DUNPROTOIZE $(ALL_CFLAGS) $(ALL_CPPFLAGS) -Wno-error \
+ 	  $(DRIVER_DEFINES) \
+ 	  $(srcdir)/protoize.c $(OUTPUT_OPTION))
+ 

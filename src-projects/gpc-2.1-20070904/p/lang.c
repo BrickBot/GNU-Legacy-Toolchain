@@ -1823,7 +1823,7 @@ int
 #endif
 pascal_mark_addressable (tree exp)
 {
-  return mark_addressable2 (exp, 1);
+  return pas_mark_addressable2 (exp, 1);
 }
 
 

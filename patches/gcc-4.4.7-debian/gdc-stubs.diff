@@ -1,0 +1,118 @@
+# DP: Added stubs for various functions referenced by $(C_TARGET_OBJS)
+
+--- a/src/gcc/d/d-builtins.c	2010-08-19 12:30:20.000000000 +0100
++++ b/src/gcc/d/d-builtins.c	2010-09-12 10:05:46.654888000 +0100
+@@ -76,7 +76,12 @@
+ #error "Version of GCC is not supported."
+ #endif
+ 
+-#if D_GCC_VER >= 41
++
++/* Nonzero if an ISO standard was selected.  It rejects macros in the
++   user's namespace.  */
++
++/*extern*/ int flag_iso;
++
+ /* Nonzero means enable C89 Amendment 1 features.  */
+ 
+ /*extern*/ int flag_isoc94;
+@@ -84,7 +89,7 @@
+ /* Nonzero means use the ISO C99 dialect of C.  */
+ 
+ /*extern*/ int flag_isoc99;
+-#endif
++
+ 
+ /* Used to help initialize the builtin-types.def table.  When a type of
+    the correct size doesn't exist, use error_mark_node instead of NULL.
+--- a/src/gcc/d/d-c-stubs.c	2010-08-19 12:30:20.000000000 +0100
++++ b/src/gcc/d/d-c-stubs.c	2010-08-29 11:41:16.020473123 +0100
+@@ -31,6 +31,7 @@
+    link against function in the C front end.  These definitions
+    satisfy the link requirements, but should never be executed. */
+ 
++void
+ add_cpp_dir_path (cpp_dir *p, int chain)
+ {
+     /* nothing */
+@@ -48,6 +49,41 @@
+     /* nothing */
+ }
+ 
++tree
++default_conversion (tree exp)
++{
++    return exp;
++}
++
++tree
++build_binary_op (location_t location, enum tree_code code,
++		 tree orig_op0, tree orig_op1, int convert_p)
++{
++#if D_GCC_VER >= 40
++    gcc_assert(0);
++#endif
++    return NULL_TREE;
++}
++
++tree
++build_unary_op (location_t location,
++		enum tree_code code, tree xarg, int flag)
++{
++#if D_GCC_VER >= 40
++    gcc_assert(0);
++#endif
++    return NULL_TREE;
++}
++
++tree
++build_indirect_ref (location_t loc, tree ptr, const char *errorstring)
++{
++#if D_GCC_VER >= 40
++    gcc_assert(0);
++#endif
++    return NULL_TREE;
++}
++
+ enum { unused } c_language;
+ 
+ enum cpp_ttype
+--- a/src/gcc/d/d-gcc-includes.h	2010-08-29 21:11:57.875486089 +0100
++++ b/src/gcc/d/d-gcc-includes.h	2010-08-29 21:10:24.335459843 +0100
+@@ -44,6 +44,23 @@
+ #include "config.h"
+ #include "system.h"
+ 
++/* Those are used in TARGET_OS_CPP_BUILTINS in some gcc/config/<arch>/<arch>.c
++   (alpha, mips, arm and a few others) for some builtin_defines such
++   __LANGUAGE_C_PLUS_PLUS but are defined in c-common.h. */
++#ifndef c_dialect_cxx
++#  define c_dialect_cxx()      0
++#endif
++#ifndef c_dialect_objc
++#  define c_dialect_objc()     0
++#endif
++
++/* Even if they are defined in d-apple-gcc.c and d-c-stubs.c, they are also
++   used in config/mips (as in config/darwin), so as we don't /need/ them,
++   better to define an empty macro here. */
++#ifndef builtin_define_with_value
++#  define builtin_define_with_value(macro, expansion, is_str)
++#endif
++
+ /* Before gcc 4.0, <stdbool.h> was included before defining bool.  In 4.0,
+    it is always defined as "unsigned char" unless __cplusplus.  Have to make
+    sure the "bool" under c++ is the same so that structs are laid out
+--- a/src/gcc/d/d-lang.cc	2010-08-29 21:10:24.343463863 +0100
++++ b/src/gcc/d/d-lang.cc	2010-08-29 21:11:02.459458778 +0100
+@@ -442,8 +442,9 @@
+     {
+ 	line_maps lm;
+ 	cpp_reader * pfile; // Target macros below expect this identifier.
+-	int flag_iso = 0;   // ditto
++	extern int flag_iso;// ditto
+ 
++	flag_iso = 0;
+ 	linemap_init(& lm);
+ #if D_GCC_VER >= 43
+ 	lm.reallocator = NULL;

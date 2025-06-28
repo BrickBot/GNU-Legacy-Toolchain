@@ -1,0 +1,19 @@
+# DP: recognize ppl version 1.0
+
+--- a/src/configure.ac
++++ b/src/configure.ac
+@@ -1381,9 +1381,11 @@
+   CFLAGS="$CFLAGS $pplinc $gmpinc"
+   AC_MSG_CHECKING([for version $ppl_major_version.$ppl_minor_version of PPL])
+   AC_TRY_COMPILE([#include "ppl_c.h"],[
+-  #if PPL_VERSION_MAJOR != $ppl_major_version || PPL_VERSION_MINOR != $ppl_minor_version
+-  choke me
+-  #endif
++    #if PPL_VERSION_MAJOR < 1
++    # if PPL_VERSION_MINOR < 11
++    choke me
++    # endif
++    #endif
+   ], [AC_MSG_RESULT([yes])], [AC_MSG_RESULT([no]); ppllibs= ; pplinc= ])
+   CFLAGS="$saved_CFLAGS"
+ fi

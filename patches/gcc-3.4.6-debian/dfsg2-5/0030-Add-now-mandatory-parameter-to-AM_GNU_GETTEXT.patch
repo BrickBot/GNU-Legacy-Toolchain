@@ -1,0 +1,23 @@
+From: Nicolas Schodet <nico@ni.fr.eu.org>
+Date: Fri, 7 Mar 2025 22:55:49 +0100
+Subject: Add now mandatory parameter to AM_GNU_GETTEXT
+
+---
+ intl/configure.in | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/intl/configure.in b/intl/configure.in
+index 692ff25..1074830 100644
+--- a/intl/configure.in
++++ b/intl/configure.in
+@@ -2,7 +2,9 @@ AC_PREREQ(2.13)
+ AC_INIT(gettext.c)
+ AC_CONFIG_HEADER(config.h)
+ AM_GNU_GETTEXT_VERSION(0.12.1)
+-AM_GNU_GETTEXT
++AM_GNU_GETTEXT(external)
++USE_INCLUDED_LIBINTL=no
++AC_SUBST([USE_INCLUDED_LIBINTL])
+ 
+ dnl This replaces the extensive use of DEFS in the original Makefile.in.
+ AC_DEFINE(IN_LIBINTL, 1, [Define because this is libintl.])

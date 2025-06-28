@@ -1,0 +1,23 @@
+From HEAD:
+
+2008-05-05  Andreas Schwab  <schwab@suse.de>
+
+	* m68klinux-nat.c (store_register): Fix typo.
+
+Index: src/gdb/m68klinux-nat.c
+===================================================================
+RCS file: /cvs/src/src/gdb/m68klinux-nat.c,v
+retrieving revision 1.46
+retrieving revision 1.47
+diff -u -p -r1.46 -r1.47
+--- src/gdb/m68klinux-nat.c	18 Feb 2008 19:58:27 -0000	1.46
++++ src/gdb/m68klinux-nat.c	5 May 2008 20:47:02 -0000	1.47
+@@ -179,7 +179,7 @@ old_fetch_inferior_registers (struct reg
+ static void
+ store_register (const struct regcache *regcache, int regno)
+ {
+-  struct gdbarch *gdbarch = reg_regcache_arch (regcache);
++  struct gdbarch *gdbarch = get_regcache_arch (regcache);
+   /* This isn't really an address.  But ptrace thinks of it as one.  */
+   CORE_ADDR regaddr;
+   char mess[128];		/* For messages */

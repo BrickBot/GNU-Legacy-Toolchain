@@ -90,7 +90,7 @@ Boston, MA 02111-1307, USA.  */
     if (*(unsigned char *)(pc_+0) == 0x48				\
 	&& *(unsigned long *)(pc_+1) == 0x050f0000000fc0c7)		\
       {									\
-	struct ucontext *uc_ = (CONTEXT)->cfa;				\
+	ucontext_t *uc_ = (CONTEXT)->cfa;				\
 	sc_ = (struct sigcontext *) &uc_->uc_mcontext;			\
       }									\
     else								\
@@ -157,10 +157,10 @@ Boston, MA 02111-1307, USA.  */
       {									\
 	struct rt_sigframe {						\
 	  int sig;							\
-	  struct siginfo *pinfo;					\
+	  siginfo_t *pinfo;					\
 	  void *puc;							\
-	  struct siginfo info;						\
-	  struct ucontext uc;						\
+	  siginfo_t info;						\
+	  ucontext_t uc;						\
 	} *rt_ = (CONTEXT)->cfa;					\
 	sc_ = (struct sigcontext *) &rt_->uc.uc_mcontext;		\
       }									\

@@ -648,7 +648,7 @@ else
   # that we can use it.
   gcc_AC_CHECK_PROG_VER(MAKEINFO, makeinfo, --version,
   [GNU texinfo.* \([0-9][0-9.]*\)],
-  [4.[2-9]*])
+  [4.[2-9]*|4.[1-9][0-9]*|[5-9]*|[1-9][0-9]*])
 fi
 
 if test $gcc_cv_prog_makeinfo_modern = no; then

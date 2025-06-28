@@ -1,0 +1,15 @@
+2012-01-31  Andreas Krebbel  <Andreas.Krebbel@de.ibm.com>
+
+	* config/s390/s390.md ("*ashr<mode>3_and"): Add missing z196 flag
+	to srak instruction.
+
+--- gcc/config/s390/s390.md	(revision 183758)
++++ gcc/config/s390/s390.md	(revision 183759)
+@@ -7650,6 +7650,7 @@ (define_insn "*ashr<mode>3_and"
+    sra<gk>\t%0,%1,%Y2"
+   [(set_attr "op_type"  "RS<E>,RSY")
+    (set_attr "atype"    "reg,reg")
++   (set_attr "cpu_facility" "*,z196")
+    (set_attr "z10prop" "z10_super_E1,*")])
+ 
+ 

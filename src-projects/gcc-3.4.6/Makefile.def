@@ -58,6 +58,7 @@ host_modules= { module= tcl;
                 missing=mostlyclean; };
 host_modules= { module= itcl; };
 host_modules= { module= ld; };
+host_modules= { module= libdecnumber; };
 host_modules= { module= libgui; };
 host_modules= { module= libiberty; };
 host_modules= { module= libtool; };

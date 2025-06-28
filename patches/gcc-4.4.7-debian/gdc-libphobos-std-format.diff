@@ -1,0 +1,19 @@
+# DP: Replace assert by FormatError on untested archs.
+
+--- a/src/gcc/d/phobos/std/format.d	2010-08-19 13:59:09.000000000 +0100
++++ b/src/gcc/d/phobos/std/format.d	2010-08-23 11:04:26.685788730 +0100
+@@ -963,13 +963,9 @@
+                         // Structs are pass-by-reference in V4 ABI
+                         s = tis.xtoString(va_arg!(void*)(argptr));
+                     }
+-                    else version(X86_64)
+-                    {
+-                        throw new FormatError("cannot portably format a struct on this target");
+-                    }
+                     else
+                     {
+-                        static assert(0, "unimplemented");
++                        throw new FormatError("cannot portably format a struct on this target");
+                     }
+                 }
+                 else

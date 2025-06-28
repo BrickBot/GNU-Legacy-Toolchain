@@ -1,0 +1,18 @@
+# DP: On sparc default to v9a (ultrasparc) in 32bit mode
+
+--- a/src/gcc/config.gcc~	2009-10-18 03:09:56.000000000 +0200
++++ b/src/gcc/config.gcc	2009-10-21 14:44:57.000000000 +0200
+@@ -3156,6 +3156,13 @@
+ 			;;
+ 		esac
+ 
++		# setting this directly fails to build a biarch defaulting to 32bit
++		case "$target" in sparc*-*-linux*)
++			if test "$option" = cpu; then
++				val=ultrasparc
++			fi
++		esac
++
+ 		if test "x$t" = x
+ 		then
+ 			t="{ \"$option\", \"$val\" }"

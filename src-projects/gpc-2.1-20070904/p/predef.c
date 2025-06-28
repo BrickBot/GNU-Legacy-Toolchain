@@ -423,7 +423,7 @@ actual_set_parameters (tree val, int reference)
 {
   tree domain = TYPE_DOMAIN (TREE_TYPE (val)), addr;
   unsigned long save_pascal_dialect = co->pascal_dialect;
-  int addressable = mark_addressable (val);
+  int addressable = pas_mark_addressable (val);
   co->pascal_dialect = ANY_PASCAL;
 
   gcc_assert (addressable);

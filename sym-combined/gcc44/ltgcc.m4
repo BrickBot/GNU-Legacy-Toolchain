@@ -1,0 +1,1 @@
+../../src-projects/gcc-4.4.7/ltgcc.m4

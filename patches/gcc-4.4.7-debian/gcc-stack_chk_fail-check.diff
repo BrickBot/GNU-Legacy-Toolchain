@@ -1,0 +1,15 @@
+# DP: Fix __stack_chk_fail check for cross builds configured --with-headers
+
+--- a/src/gcc/configure.ac~	2009-10-21 16:35:50.000000000 +0200
++++ b/src/gcc/configure.ac	2009-10-21 16:48:14.000000000 +0200
+@@ -3594,7 +3594,9 @@
+     case "$target" in
+        *-*-linux* | *-*-kfreebsd*-gnu | *-*-knetbsd*-gnu)
+       if test x$host != x$target || test "x$TARGET_SYSTEM_ROOT" != x; then
+-	if test "x$with_sysroot" = x; then
++	if test "x$with_headers" != x; then
++	  glibc_header_dir=$with_headers
++	elif test "x$with_sysroot" = x; then
+ 	  glibc_header_dir="${exec_prefix}/${target_noncanonical}/sys-include"
+ 	elif test "x$with_build_sysroot" != "x"; then
+ 	  glibc_header_dir="${with_build_sysroot}/usr/include"

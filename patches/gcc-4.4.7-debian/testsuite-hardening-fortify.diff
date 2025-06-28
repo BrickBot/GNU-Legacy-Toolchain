@@ -1,0 +1,365 @@
+#! /bin/sh -e
+
+# All lines beginning with `# DPATCH:' are a description of the patch.
+# DP: Description: check more functions to avoid -D_FORTIFY_SOURCE=2 warnings.
+# DP: Author: Kees Cook <kees@ubuntu.com>
+# DP: Ubuntu: https://bugs.launchpad.net/bugs/344502
+
+dir=
+if [ $# -eq 3 -a "$2" = '-d' ]; then
+    pdir="-d $3"
+    dir="$3/"
+elif [ $# -ne 1 ]; then
+    echo >&2 "`basename $0`: script expects -patch|-unpatch as argument"
+    exit 1
+fi
+case "$1" in
+    -patch)
+        patch $pdir -f --no-backup-if-mismatch -p1 < $0
+        #cd ${dir}gcc && autoconf
+        ;;
+    -unpatch)
+        patch $pdir -f --no-backup-if-mismatch -R -p1 < $0
+        #rm ${dir}gcc/configure
+        ;;
+    *)
+        echo >&2 "`basename $0`: script expects -patch|-unpatch as argument"
+        exit 1
+esac
+exit 0
+
+2010-06-25  Kees Cook  <kees.cook@canonical.com>
+
+	* testsuite/27_io/ios_base/sync_with_stdio/1.cc: verify freopen.
+	* testsuite/27_io/objects/wchar_t/9520.cc: Likewise.
+	* testsuite/27_io/objects/wchar_t/9661-1.cc: Likewise.
+	* testsuite/27_io/objects/wchar_t/12048-2.cc: Likewise.
+	* testsuite/27_io/objects/wchar_t/12048-4.cc: Likewise.
+	* testsuite/27_io/objects/wchar_t/11.cc: Likewise.
+	* testsuite/27_io/objects/wchar_t/12048-1.cc: Likewise.
+	* testsuite/27_io/objects/wchar_t/12048-3.cc: Likewise.
+	* testsuite/27_io/objects/wchar_t/10.cc: Likewise.
+	* testsuite/27_io/objects/wchar_t/12048-5.cc: Likewise.
+	* testsuite/27_io/objects/char/9661-1.cc: Likewise.
+	* testsuite/27_io/objects/char/12048-2.cc: Likewise.
+	* testsuite/27_io/objects/char/12048-4.cc: Likewise.
+	* testsuite/27_io/objects/char/9.cc: Likewise.
+	* testsuite/27_io/objects/char/12048-1.cc: Likewise.
+	* testsuite/27_io/objects/char/12048-3.cc: Likewise.
+	* testsuite/27_io/objects/char/12048-5.cc: Likewise.
+	* testsuite/ext/stdio_sync_filebuf/wchar_t/12077.cc: Likewise.
+	* testsuite/27_io/basic_filebuf/setbuf/char/12875-2.cc: verify fgets.
+	* testsuite/27_io/basic_filebuf/underflow/wchar_t/11544-2.cc: verify
+	fwrite.
+	* testsuite/ext/stdio_sync_filebuf/wchar_t/1.cc: Likewise.
+	* testsuite/ext/stdio_sync_filebuf/char/1.cc: Likewise.
+
+Index: libstdc++-v3/testsuite/27_io/ios_base/sync_with_stdio/1.cc
+===================================================================
+--- a/src/libstdc++-v3/testsuite/27_io/ios_base/sync_with_stdio/1.cc	(revision
++++ b/src/libstdc++-v3/testsuite/27_io/ios_base/sync_with_stdio/1.cc	(working
+@@ -41,7 +41,7 @@ void
+ test01()
+ {
+   std::ios_base::sync_with_stdio();
+-  std::freopen("ios_base_members_static-1.txt", "w", stderr);
++  VERIFY( std::freopen("ios_base_members_static-1.txt", "w", stderr) );
+  
+   for (int i = 0; i < 2; i++)
+     {
+Index: libstdc++-v3/testsuite/27_io/objects/wchar_t/9520.cc
+===================================================================
+--- a/src/libstdc++-v3/testsuite/27_io/objects/wchar_t/9520.cc	(revision
++++ b/src/libstdc++-v3/testsuite/27_io/objects/wchar_t/9520.cc	(working
+@@ -38,7 +38,7 @@ void test01()
+   locale loc (locale("de_DE.ISO-8859-15@euro"));
+   locale::global(loc); // Set locale for stdin
+ 
+-  freopen(name, "r", stdin);
++  VERIFY( freopen(name, "r", stdin) );
+ 
+   wcin.imbue(loc);
+ 
+Index: libstdc++-v3/testsuite/27_io/objects/wchar_t/9661-1.cc
+===================================================================
+--- a/src/libstdc++-v3/testsuite/27_io/objects/wchar_t/9661-1.cc	(revision
++++ b/src/libstdc++-v3/testsuite/27_io/objects/wchar_t/9661-1.cc	(working
+@@ -67,7 +67,7 @@ bool test01()
+       exit(0);
+     }
+ 
+-  freopen(name, "r", stdin);
++  VERIFY( freopen(name, "r", stdin) );
+   s1.wait();
+ 
+   wint_t c1 = fgetwc(stdin);
+Index: libstdc++-v3/testsuite/27_io/objects/wchar_t/12048-2.cc
+===================================================================
+--- a/src/libstdc++-v3/testsuite/27_io/objects/wchar_t/12048-2.cc	(revision
++++ b/src/libstdc++-v3/testsuite/27_io/objects/wchar_t/12048-2.cc	(working
+@@ -23,7 +23,7 @@
+ void
+ test01()
+ {
+-  std::freopen("cin_unget-1.txt", "r", stdin);
++  VERIFY( std::freopen("cin_unget-1.txt", "r", stdin) );
+ 
+   wchar_t c1;
+   std::wint_t c2;
+Index: libstdc++-v3/testsuite/27_io/objects/wchar_t/12048-4.cc
+===================================================================
+--- a/src/libstdc++-v3/testsuite/27_io/objects/wchar_t/12048-4.cc	(revision
++++ b/src/libstdc++-v3/testsuite/27_io/objects/wchar_t/12048-4.cc	(working
+@@ -23,7 +23,7 @@
+ void
+ test01()
+ {
+-  std::freopen("cin_unget-1.txt", "r", stdin);
++  VERIFY( std::freopen("cin_unget-1.txt", "r", stdin) );
+ 
+   wchar_t buf[2];
+   VERIFY( std::wcin.rdbuf()->sgetn(buf, 2) == 2 );
+Index: libstdc++-v3/testsuite/27_io/objects/wchar_t/11.cc
+===================================================================
+--- a/src/libstdc++-v3/testsuite/27_io/objects/wchar_t/11.cc	(revision
++++ b/src/libstdc++-v3/testsuite/27_io/objects/wchar_t/11.cc	(working
+@@ -90,7 +90,7 @@ void test11()
+   };
+   size_t i_size = wcslen(i_lit);
+ 
+-  freopen(name, "w", stdout);
++  VERIFY( freopen(name, "w", stdout) );
+   
+   wcout.write(i_lit, i_size);
+   wcout.flush();
+Index: libstdc++-v3/testsuite/27_io/objects/wchar_t/12048-1.cc
+===================================================================
+--- a/src/libstdc++-v3/testsuite/27_io/objects/wchar_t/12048-1.cc	(revision
++++ b/src/libstdc++-v3/testsuite/27_io/objects/wchar_t/12048-1.cc	(working
+@@ -26,7 +26,7 @@
+ void
+ test01()
+ {
+-  std::freopen("cin_unget-1.txt", "r", stdin);
++  VERIFY( std::freopen("cin_unget-1.txt", "r", stdin) );
+ 
+   wchar_t c1;
+   wchar_t c2;
+Index: libstdc++-v3/testsuite/27_io/objects/wchar_t/12048-3.cc
+===================================================================
+--- a/src/libstdc++-v3/testsuite/27_io/objects/wchar_t/12048-3.cc	(revision
++++ b/src/libstdc++-v3/testsuite/27_io/objects/wchar_t/12048-3.cc	(working
+@@ -27,7 +27,7 @@
+ void
+ test01()
+ {
+-  std::freopen("cin_unget-1.txt", "r", stdin);
++  VERIFY( std::freopen("cin_unget-1.txt", "r", stdin) );
+ 
+   wchar_t buf[2];
+   VERIFY( std::wcin.rdbuf()->sgetn(buf, 2) == 2 );
+Index: libstdc++-v3/testsuite/27_io/objects/wchar_t/10.cc
+===================================================================
+--- a/src/libstdc++-v3/testsuite/27_io/objects/wchar_t/10.cc	(revision
++++ b/src/libstdc++-v3/testsuite/27_io/objects/wchar_t/10.cc	(working
+@@ -95,7 +95,7 @@ void test10()
+   VERIFY( n == e_size );
+   fclose(file);
+ 
+-  freopen(name, "r", stdin);
++  VERIFY( freopen(name, "r", stdin) );
+   
+   wchar_t* wbuf = new wchar_t[i_size + 10];
+   wcin.read(wbuf, i_size + 10);
+Index: libstdc++-v3/testsuite/27_io/objects/wchar_t/12048-5.cc
+===================================================================
+--- a/src/libstdc++-v3/testsuite/27_io/objects/wchar_t/12048-5.cc	(revision
++++ b/src/libstdc++-v3/testsuite/27_io/objects/wchar_t/12048-5.cc	(working
+@@ -29,7 +29,7 @@
+ void
+ test01()
+ {
+-  std::freopen("cin_unget-1.txt", "r", stdin);
++  VERIFY( std::freopen("cin_unget-1.txt", "r", stdin) );
+ 
+   wchar_t c1;
+   std::wint_t c2;
+Index: libstdc++-v3/testsuite/27_io/objects/char/9661-1.cc
+===================================================================
+--- a/src/libstdc++-v3/testsuite/27_io/objects/char/9661-1.cc	(revision
++++ b/src/libstdc++-v3/testsuite/27_io/objects/char/9661-1.cc	(working
+@@ -68,7 +68,7 @@ bool test01()
+       exit(0);
+     }
+ 
+-  freopen(name, "r", stdin);
++  VERIFY( freopen(name, "r", stdin) );
+   s1.wait();
+ 
+   int c1 = fgetc(stdin);
+Index: libstdc++-v3/testsuite/27_io/objects/char/12048-2.cc
+===================================================================
+--- a/src/libstdc++-v3/testsuite/27_io/objects/char/12048-2.cc	(revision
++++ b/src/libstdc++-v3/testsuite/27_io/objects/char/12048-2.cc	(working
+@@ -24,7 +24,7 @@
+ void
+ test01()
+ {
+-  std::freopen("cin_unget-1.txt", "r", stdin);
++  VERIFY( std::freopen("cin_unget-1.txt", "r", stdin) );
+ 
+   char c1;
+   int c2;
+Index: libstdc++-v3/testsuite/27_io/objects/char/12048-4.cc
+===================================================================
+--- a/src/libstdc++-v3/testsuite/27_io/objects/char/12048-4.cc	(revision
++++ b/src/libstdc++-v3/testsuite/27_io/objects/char/12048-4.cc	(working
+@@ -24,7 +24,7 @@
+ void
+ test01()
+ {
+-  std::freopen("cin_unget-1.txt", "r", stdin);
++  VERIFY( std::freopen("cin_unget-1.txt", "r", stdin) );
+ 
+   char buf[2];
+   VERIFY( std::cin.rdbuf()->sgetn(buf, 2) == 2 );
+Index: libstdc++-v3/testsuite/27_io/objects/char/9.cc
+===================================================================
+--- a/src/libstdc++-v3/testsuite/27_io/objects/char/9.cc	(revision
++++ b/src/libstdc++-v3/testsuite/27_io/objects/char/9.cc	(working
+@@ -34,7 +34,7 @@ void test09()
+   fputs("abc\n", fout);
+   fclose(fout);
+ 
+-  freopen(name, "r", stdin);
++  VERIFY( freopen(name, "r", stdin) );
+  
+   // basic_streambuf::showmanyc returns 0.
+   VERIFY( 0 == std::cin.rdbuf()->in_avail() );
+Index: libstdc++-v3/testsuite/27_io/objects/char/12048-1.cc
+===================================================================
+--- a/src/libstdc++-v3/testsuite/27_io/objects/char/12048-1.cc	(revision
++++ b/src/libstdc++-v3/testsuite/27_io/objects/char/12048-1.cc	(working
+@@ -28,7 +28,7 @@
+ void
+ test01()
+ {
+-  std::freopen("cin_unget-1.txt", "r", stdin);
++  VERIFY( std::freopen("cin_unget-1.txt", "r", stdin) );
+ 
+   char c1;
+   char c2;
+Index: libstdc++-v3/testsuite/27_io/objects/char/12048-3.cc
+===================================================================
+--- a/src/libstdc++-v3/testsuite/27_io/objects/char/12048-3.cc	(revision
++++ b/src/libstdc++-v3/testsuite/27_io/objects/char/12048-3.cc	(working
+@@ -25,7 +25,7 @@
+ void
+ test01()
+ {
+-  std::freopen("cin_unget-1.txt", "r", stdin);
++  VERIFY( std::freopen("cin_unget-1.txt", "r", stdin) );
+ 
+   char buf[2];
+   VERIFY( std::cin.rdbuf()->sgetn(buf, 2) == 2 );
+Index: libstdc++-v3/testsuite/27_io/objects/char/12048-5.cc
+===================================================================
+--- a/src/libstdc++-v3/testsuite/27_io/objects/char/12048-5.cc	(revision
++++ b/src/libstdc++-v3/testsuite/27_io/objects/char/12048-5.cc	(working
+@@ -33,7 +33,7 @@
+ void
+ test01()
+ {
+-  std::freopen("cin_unget-1.txt", "r", stdin);
++  VERIFY( std::freopen("cin_unget-1.txt", "r", stdin) );
+ 
+   char c1;
+   int c2;
+Index: libstdc++-v3/testsuite/27_io/basic_filebuf/setbuf/char/12875-2.cc
+===================================================================
+--- a/src/libstdc++-v3/testsuite/27_io/basic_filebuf/setbuf/char/12875-2.cc	(revision
++++ b/src/libstdc++-v3/testsuite/27_io/basic_filebuf/setbuf/char/12875-2.cc	(working
+@@ -44,7 +44,7 @@ void test02()
+   
+   FILE* in = fopen(name, "r");
+   char str[256];
+-  fgets(str, 256, in);
++  VERIFY( fgets(str, 256, in) );
+   VERIFY( !strcmp(str, "Hello, world") );
+   fclose(in);
+ }
+Index: libstdc++-v3/testsuite/27_io/basic_filebuf/underflow/wchar_t/11544-2.cc
+===================================================================
+--- a/src/libstdc++-v3/testsuite/27_io/basic_filebuf/underflow/wchar_t/11544-2.cc	(revision
++++ b/src/libstdc++-v3/testsuite/27_io/basic_filebuf/underflow/wchar_t/11544-2.cc	(working
+@@ -161,7 +161,7 @@ void test02()
+   const char* name = "tmp_11544-2";
+   
+   FILE* f = fopen(name, "w");
+-  fwrite("aaaab", 1, 5, f);
++  VERIFY( fwrite("aaaab", 1, 5, f) == 5 );
+   fclose(f);
+   
+   wifstream in;
+Index: libstdc++-v3/testsuite/ext/stdio_sync_filebuf/wchar_t/1.cc
+===================================================================
+--- a/src/libstdc++-v3/testsuite/ext/stdio_sync_filebuf/wchar_t/1.cc	(revision
++++ b/src/libstdc++-v3/testsuite/ext/stdio_sync_filebuf/wchar_t/1.cc	(working
+@@ -33,7 +33,7 @@ void test01()
+   const char* name = "stdiobuf-1.txt";
+ 
+   FILE* fout = fopen(name, "w");
+-  fwrite(c_lit, 1, size, fout);
++  VERIFY( fwrite(c_lit, 1, size, fout) == size );
+   fclose(fout);
+ 
+   FILE* fin = fopen(name, "r");
+Index: libstdc++-v3/testsuite/ext/stdio_sync_filebuf/wchar_t/12077.cc
+===================================================================
+--- a/src/libstdc++-v3/testsuite/ext/stdio_sync_filebuf/wchar_t/12077.cc	(revision
++++ b/src/libstdc++-v3/testsuite/ext/stdio_sync_filebuf/wchar_t/12077.cc	(working
+@@ -64,7 +64,7 @@ void test01()
+   fputs(str, file);
+   fclose(file);
+   
+-  freopen(name, "r", stdin);
++  VERIFY( freopen(name, "r", stdin) );
+   
+   streamsize n = wcin.rdbuf()->in_avail();
+   while (n--)
+Index: libstdc++-v3/testsuite/ext/stdio_sync_filebuf/char/1.cc
+===================================================================
+--- a/src/libstdc++-v3/testsuite/ext/stdio_sync_filebuf/char/1.cc	(revision
++++ b/src/libstdc++-v3/testsuite/ext/stdio_sync_filebuf/char/1.cc	(working
+@@ -33,7 +33,7 @@ void test01()
+   const char* name = "stdiobuf-1.txt";
+ 
+   FILE* fout = fopen(name, "w");
+-  fwrite(c_lit, 1, size, fout);
++  VERIFY( fwrite(c_lit, 1, size, fout) == size );
+   fclose(fout);
+ 
+   FILE* fin = fopen(name, "r");
+Index: libstdc++-v3/testsuite/util/testsuite_hooks.h
+===================================================================
+--- a/src/libstdc++-v3/testsuite/util/testsuite_hooks.h	(revision
++++ b/src/libstdc++-v3/testsuite/util/testsuite_hooks.h	(working
+@@ -1,7 +1,8 @@
+ // -*- C++ -*-
+ // Utility subroutines for the C++ library testsuite. 
+ //
+-// Copyright (C) 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009
++// Copyright (C) 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008,
++// 2009, 2010
+ // Free Software Foundation, Inc.
+ //
+ // This file is part of the GNU ISO C++ Library.  This library is free
+@@ -59,7 +60,7 @@
+ # include <cassert>
+ # define VERIFY(fn) assert(fn)
+ #else
+-# define VERIFY(fn) test &= (fn)
++# define VERIFY(fn) test &= bool(fn)
+ #endif
+ 
+ #ifdef _GLIBCXX_HAVE_UNISTD_H

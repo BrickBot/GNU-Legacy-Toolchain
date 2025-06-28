@@ -1,0 +1,51 @@
+# DP: Fix PR target/47908 with Attachment #24863 from Mikael Pettersson
+# DP: A fix is already included with gcc-4.6 MAIN.
+
+Index: gcc-4.4-4.4.6/src/gcc/config/m68k/m68k-protos.h
+===================================================================
+--- gcc-4.4-4.4.6.orig/src/gcc/config/m68k/m68k-protos.h	2011-09-01 19:57:54.000000000 +0000
++++ gcc-4.4-4.4.6/src/gcc/config/m68k/m68k-protos.h	2011-09-01 20:22:07.000000000 +0000
+@@ -96,6 +96,7 @@
+ extern bool m68k_use_return_insn (void);
+ extern void m68k_expand_epilogue (bool);
+ extern void override_options (void);
++extern void optimization_options (int, int);
+ extern const char *m68k_cpp_cpu_ident (const char *);
+ extern const char *m68k_cpp_cpu_family (const char *);
+ extern void init_68881_table (void);
+Index: gcc-4.4-4.4.6/src/gcc/config/m68k/m68k.c
+===================================================================
+--- gcc-4.4-4.4.6.orig/src/gcc/config/m68k/m68k.c	2011-09-01 19:57:54.000000000 +0000
++++ gcc-4.4-4.4.6/src/gcc/config/m68k/m68k.c	2011-09-01 20:22:07.000000000 +0000
+@@ -729,6 +729,17 @@
+     }
+ }
+ 
++void
++optimization_options (int level ATTRIBUTE_UNUSED, int size ATTRIBUTE_UNUSED)
++{
++  if (m68k_sched_cpu == CPU_UNKNOWN)
++    {
++      flag_schedule_insns = 0;
++      flag_schedule_insns_after_reload = 0;
++      flag_modulo_sched = 0;
++    }
++}
++
+ /* Generate a macro of the form __mPREFIX_cpu_NAME, where PREFIX is the
+    given argument and NAME is the argument passed to -mcpu.  Return NULL
+    if -mcpu was not passed.  */
+Index: gcc-4.4-4.4.6/src/gcc/config/m68k/m68k.h
+===================================================================
+--- gcc-4.4-4.4.6.orig/src/gcc/config/m68k/m68k.h	2011-09-01 19:57:54.000000000 +0000
++++ gcc-4.4-4.4.6/src/gcc/config/m68k/m68k.h	2011-09-01 20:22:07.000000000 +0000
+@@ -274,6 +274,9 @@
+ 
+ #define OVERRIDE_OPTIONS   override_options()
+ 
++#define OPTIMIZATION_OPTIONS(LEVEL,SIZE) \
++  optimization_options ((LEVEL), (SIZE))
++
+ /* These are meant to be redefined in the host dependent files */
+ #define SUBTARGET_OVERRIDE_OPTIONS
+ 

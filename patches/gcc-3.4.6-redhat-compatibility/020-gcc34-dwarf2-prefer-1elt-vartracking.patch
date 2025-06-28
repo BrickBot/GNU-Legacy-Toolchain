@@ -1,0 +1,25 @@
+2005-08-10  Jakub Jelinek  <jakub@redhat.com>
+
+	* dwarf2out.c (add_location_or_const_value_attribute): Prefer
+	locations gathered by var-tracking in single entry loc_list
+	over loc_descriptor_from_tree.
+
+--- gcc/dwarf2out.c.orig	2005-11-17 23:03:34.000000000 -0200
++++ gcc/dwarf2out.c	2005-11-17 23:05:54.000000000 -0200
+@@ -9921,7 +9921,15 @@
+ 
+   rtl = rtl_for_decl_location (decl);
+   if (rtl == NULL_RTX)
+-    return;
++    {
++      /* We couldn't get any rtl, so try directly generating the
++	 location description from the tree.  */
++      descr = loc_descriptor_from_tree (decl, 0);
++      if (descr)
++	add_AT_location_description (die, attr, descr);
++
++      return;
++    }
+ 
+   switch (GET_CODE (rtl))
+     {

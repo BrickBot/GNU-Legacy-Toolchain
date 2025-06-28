@@ -1,0 +1,21 @@
+# These functions are included in shared libraries.
+TARGET_LIBGCC2_CFLAGS = -fPIC
+
+# We do not build a Thumb multilib for Linux because the definition of
+# CLEAR_INSN_CACHE in linux-gas.h does not work in Thumb mode.
+MULTILIB_OPTIONS	=
+MULTILIB_DIRNAMES	=
+
+ifneq (,$(findstring gnueabi,$(target)))
+ARM_EB = $(if $(findstring TARGET_BIG_ENDIAN_DEFAULT=1, $(tm_defines)),eb)
+MULTIARCH_DIRNAME = $(call if_multiarch,arm$(ARM_EB)-linux-gnueabi$(if $(filter hard,$(with_float)),hf))
+endif
+
+# Use a version of div0 which raises SIGFPE.
+LIB1ASMFUNCS := $(filter-out _dvmd_tls,$(LIB1ASMFUNCS)) _dvmd_lnx
+
+# Multilib the standard Linux files.  Don't include crti.o or crtn.o,
+# which are provided by glibc.
+EXTRA_MULTILIB_PARTS=crtbegin.o crtend.o crtbeginS.o crtendS.o crtbeginT.o
+
+LIB2FUNCS_STATIC_EXTRA += $(srcdir)/config/arm/linux-atomic.c

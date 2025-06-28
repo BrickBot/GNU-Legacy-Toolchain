@@ -1,0 +1,30 @@
+Index: gcc/doc/invoke.texi
+===================================================================
+--- a/src/gcc/doc/invoke.texi	(revision 146514)
++++ b/src/gcc/doc/invoke.texi	(working copy)
+@@ -10959,6 +10959,9 @@
+ @item core2
+ Intel Core2 CPU with 64-bit extensions, MMX, SSE, SSE2, SSE3 and SSSE3
+ instruction set support.
++@item atom
++Intel Atom CPU with 64-bit extensions, MMX, SSE, SSE2, SSE3 and SSSE3
++instruction set support.
+ @item k6
+ AMD K6 CPU with MMX instruction set support.
+ @item k6-2, k6-3
+Index: gcc/doc/md.texi
+===================================================================
+--- a/src/gcc/doc/md.texi	(revision 146514)
++++ b/src/gcc/doc/md.texi	(working copy)
+@@ -7506,6 +7506,11 @@
+ recognize complicated bypasses, e.g.@: when the consumer is only an address
+ of insn @samp{store} (not a stored value).
+ 
++If there are more one bypass with the same output and input insns, the
++chosen bypass is the first bypass with a guard in description whose
++guard function returns nonzero.  If there is no such bypass, then
++bypass without the guard function is chosen.
++
+ @findex exclusion_set
+ @findex presence_set
+ @findex final_presence_set

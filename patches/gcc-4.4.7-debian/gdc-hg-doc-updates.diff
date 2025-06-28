@@ -1,0 +1,997 @@
+# DP: HG documentation updates from the gdc branch up to 20100912.
+
+--- a/src/gcc/d/ChangeLog
++++ b/src/gcc/d/ChangeLog
+@@ -1,3 +1,670 @@
++2010-09-09  Iain Buclaw  <ibuclaw@ubuntu.com>
++
++	* d-codegen.cc:
++	Revert part of commit 210, and fix integer representations on gdc-4.4.
++	[844b25646834]
++
++2010-09-07  michaelp  <baseball.mjp@gmail.com>
++
++	* gcc-mars.cc:
++	Removed gcc-mars.cc from top level d/ folder.
++	[e4b1e3753bf5]
++	
++	* Make-lang.in:
++	Updated Make-lang.in for removal of gcc-mars.cc.
++	[db7d6aae8ceb]
++
++	* GDC.html, History, INSTALL, INSTALL.html, README, dmd-script,
++	dmd-script.1, gdc.1:
++	Documentation updates.
++	[e651ed00a16e]
++
++2010-09-03  Iain Buclaw  <ibuclaw@ubuntu.com>
++
++	* d-codegen.cc, d-glue.cc, d-objfile.cc:
++	Issue #59 and #60: ICE when goto undefined label and ICE in foreach over
++	member member array in static func
++	[955dc7d43780]
++
++	* d-codegen.cc, d-glue.cc, d-irstate.cc, d-lang.h, dmd/func.c,
++	dmd/statement.c, dmd/statement.h:
++	Issue #54: 1.063 changes in phobos versioning + dmd backend.
++	[4c10fa4a539a]
++
++2010-09-01  Iain Buclaw  <ibuclaw@ubuntu.com>
++
++	* dmd/cast.c, dmd/impcnvgen.c, dmd2/impcnvgen.c:
++	Bugzilla 1822 - String slicing in 64-bit gdc causes spurious
++	warnings
++	[5efc9014eef8]
++
++	* patches/patch-gcc-4.0.x, patches/patch-gcc-4.1.x, d/patches
++	/patch-gcc-4.2.x, patches/patch-gcc-4.3.x, patches/patch-
++	gcc-4.4.x:
++	Issue #50 - thanks venix1: SjLj expections fail when thrown from catch
++	block
++	[d655a072bbb8]
++
++	* d-builtins2.cc, d-lang.cc, d-spec.c:
++	Removed va_list hack, small change to D2 lang driver.
++	[7a67e4973ace]
++
++2010-08-30  Iain Buclaw  <ibuclaw@ubuntu.com>
++
++	* d-codegen.cc:
++	Issue #14: STATIC_CHAIN_EXPR not caught in estimate_num_insns_1()
++	[63c14701ccde]
++
++2010-08-29  Iain Buclaw  <ibuclaw@ubuntu.com>
++
++	* d-c-stubs.c, d-glue.cc, d-lang.cc:
++	Add stubs for C_TARGET_OBJS on non-x86 archs.
++	[b530fcd9baab]
++
++	* d-glue.cc:
++	Bugzilla 1669 - this.outer in nested classes gives a bogus pointer
++	[ebce488abf89]
++
++	* d-lang.cc, phobos2/Makefile.am, phobos2/acinclude.m4:
++	Add D_Version2 version predicate.
++	[9808b8987cce]
++
++2010-08-28  Iain Buclaw  <ibuclaw@ubuntu.com>
++
++	* d-c-stubs.c, d-decls.cc, d-lang.cc,
++	druntime/compiler/gdc/aaA.d, druntime/compiler/gdc/util/cpuid.d,
++	druntime/gc/basic/gc_c.h, druntime/gc/basic/gc_dyld.c,
++	druntime/gc/basic/gc_freebsd.c, druntime/gc/basic/gcgccextern.d,
++	phobos/internal/gc/gcgccextern.d, phobos/std/loader.d,
++	phobos2/Makefile.am, phobos2/acinclude.m4,
++	phobos2/std/cpuid.d:
++	D2 updates.
++	[ebe4ca2bd83a]
++
++2010-08-27  Iain Buclaw  <ibuclaw@ubuntu.com>
++
++	* d/Make-lang.in, d-spec.c, phobos2/Makefile.am:
++	Add druntime to the GDC driver.
++	[3dbc1c4cd214]
++
++	* druntime/Makefile, druntime/compiler/gdc/dgccmain2.d,
++	druntime/compiler/gdc/lifetime.d, phobos2/gcc/deh.d,
++	phobos2/gcc/unwind_generic.d, phobos2/gcc/unwind_pe.d,
++	phobos2/std/stream.d:
++	Remove Makefile and fix module dependencies in Druntime
++	[6fea2af61a0c]
++
++	* phobos2/Makefile.am, phobos2/acinclude.m4, phobos2/aclocal.m4,
++	phobos2/configure.in, d/setup-gcc.sh:
++	Reorganise D2 Makefile for Druntime
++	[f888b572d19a]
++
++	* d/Make-lang.in:
++	Use BACKENDLIBS rather than GMPLIBS for gdc-4.4
++	[bda0f5d37728]
++
++	* d-glue.cc:
++	Fix ICE in D2 ForeachRange statements
++	[7d35bcb69e7e]
++
++2010-08-26  Iain Buclaw  <ibuclaw@ubuntu.com>
++
++	* patches/patch-gcc-4.4.x:
++	Regenerate gcc-4.4.x patch
++	[4dfe5494460a]
++
++2010-08-25  Iain Buclaw  <ibuclaw@ubuntu.com>
++
++	* d-codegen.h:
++	Fix codegen for addressOf array types, resolves broken va_lists on
++	gdc-4.4.
++	[9463381e1daa]
++
++	* druntime/compiler/gdc/fpmath.d, druntime/compiler/gdc/gcc/*,
++	druntime/druntimelicense.txt, druntime/druntimereadme.txt,
++	druntime/hello.d, druntime/license.txt, druntime/readme.txt:
++	Re-add fpmath.d - previously from removed internal directory.
++	[bf3e292d1a4c]
++
++	* d-builtins2.cc:
++	Slight alteration to va_list type generation on gdc-4.4
++	[e005caeafced]
++
++	* d-codegen.cc, d-glue.cc, d-irstate.cc, d-lang.h:
++	Use own language flag for labels marked 'used'.
++	[d7963235235c]
++
++	* d-lang.cc:
++	Rework of previous commit for Issue #58.
++	[025031c2e274]
++
++2010-08-24  Iain Buclaw  <ibuclaw@ubuntu.com>
++
++	* d-lang.cc:
++	Issue #58 - Fixed stack overflow in gdc-4.4
++	[c02f5ac787a8]
++
++2010-08-23  Iain Buclaw  <ibuclaw@ubuntu.com>
++
++	* d-codegen.cc:
++	Bugzilla 1813 - ICE on static function parametrized with alias.
++	[2e06ca97b873]
++
++2010-08-22  michaelp  <baseball.mjp@gmail.com>
++
++	* patches/patch-gcc-3.4.x, patches/patch-gcc-4.0.x, d/patches
++	/patch-gcc-4.1.x, patches/patch-gcc-4.2.x, patches/patch-
++	gcc-4.3.x, patches/patch-toplev-3.4.x, patches/patch-
++	toplev-4.0.x, patches/patch-toplev-4.1.x, patches/patch-
++	toplev-4.2.x, patches/patch-toplev-4.3.x:
++	Updated patches for D2/druntime
++	[dc882e7537c0]
++
++2010-08-22  Iain Buclaw  <ibuclaw@ubuntu.com>
++
++	* d/Make-lang.in, d-bi-attrs-44.h, d-builtins.c, d-builtins2.cc,
++	d-codegen.cc, d-decls.cc, d-gcc-includes.h, d-lang.cc,
++	d-objfile.cc, patches/patch-gcc-4.4.x, patches/patch-
++	toplev-4.4.x, d/setup-gcc.sh:
++	Building on GCC-4.4 now supported.
++	[0616ebb4255b]
++
++	* d-lang.cc:
++	Issue #51: 1.062 outstanding issues
++	[9663a271233b]
++
++2010-08-20  michaelp  <baseball.mjp@gmail.com>
++
++	* phobos2/*:
++	Updated phobos2 to 2.020 (not working)
++	[08d9a5b24ff4]
++
++2010-08-20  Iain Buclaw  <ibuclaw@ubuntu.com>
++
++	* d-glue.cc:
++	Fix ICE on shorthand if statements.
++	[ef2959fa8184]
++
++2010-08-20  michaelp  <baseball.mjp@gmail.com>
++
++	* d-glue.cc:
++	Fixed problem with continue statements in D2
++	[511f3176ec0d]
++
++2010-08-20  Iain Buclaw  <ibuclaw@ubuntu.com>
++
++	* d-lang.cc, druntime/compiler/gdc/arraybyte.d,
++	druntime/compiler/gdc/arraydouble.d,
++	druntime/compiler/gdc/arrayfloat.d,
++	druntime/compiler/gdc/arrayint.d,
++	druntime/compiler/gdc/arrayshort.d, phobos/internal/arraybyte.d,
++	phobos/internal/arraydouble.d, phobos/internal/arrayfloat.d,
++	phobos/internal/arrayint.d, phobos/internal/arrayshort.d,
++	phobos2/internal/arraybyte.d, phobos2/internal/arraydouble.d,
++	phobos2/internal/arrayfloat.d, phobos2/internal/arrayint.d,
++	phobos2/internal/arrayshort.d:
++	Issue #30: D_InlineAsm updates
++	[ce1833f9106a]
++
++2010-08-19  michaelp  <baseball.mjp@gmail.com>
++
++	* d-lang.cc:
++	Fixed JSON option for D2
++	[2118f4d1de83]
++
++	* d/setup-gcc.sh:
++	Updated setup-gcc.sh for libdruntime building
++	[6e7640bc2b3c]
++
++	* patches/patch-toplev-4.1.x, patches/patch-toplev-4.2.x,
++	patches/patch-toplev-4.3.x:
++	Updated toplevel 4.1, 4.2, and 4.3 patches for libdruntime
++	[1df5716f2b88]
++
++	* patches/patch-toplev-3.4.x, patches/patch-toplev-4.0.x:
++	Updated 3.4 + 4.0 toplevel patches to include libdruntime
++	[a74ceca3c239]
++
++	* dmd/func.c:
++	Issue #57: C-style variadic functions broken
++	[ae817bd07dbf]
++
++2010-08-19  Iain Buclaw  <ibuclaw@ubuntu.com>
++
++	* phobos/*:
++	Updated Phobos to 1.063 - expanded tabs.
++	[bbe96bfd09dd]
++
++2010-08-17  michaelp  <baseball.mjp@gmail.com>
++
++	* d-glue.cc:
++	One of Issue #56. Cannot goto into finally block
++	[22792e6a6253]
++
++2010-08-17  Iain Buclaw  <ibuclaw@ubuntu.com>
++
++	* d-codegen.cc, d-glue.cc, d-irstate.cc, d-irstate.h:
++	Bugzilla 1041 - incorrect code gen for scope(exit) inside switch
++	[d472abadf847]
++
++2010-08-16  michaelp  <baseball.mjp@gmail.com>
++
++	* d-glue.cc, dmd/func.c, dmd/statement.c, dmd/statement.h:
++	Temporarily reverted 1.063 change
++	[d89d1a46125d]
++
++2010-08-16  Iain Buclaw  <ibuclaw@ubuntu.com>
++
++	* d/asmstmt.cc, d-apple-gcc.c, d-asm-i386.h, d-builtins.c,
++	d-builtins2.cc, d-c-stubs.c, d-codegen.cc, d-codegen.h,
++	d-convert.cc, d-cppmngl.cc, d-decls.cc, d-gcc-includes.h,
++	d-gcc-real.h, d-glue.cc, d-irstate.cc, d-lang.cc,
++	d-lang.h, d-objfile.cc, d-spec.c, d/dt.cc, d/dt.h,
++	d/gdc_alloca.h, d/symbol.cc:
++	Added GPL onto files missing it, attributed modifications.
++	[4d41771eba7c]
++
++2010-08-15  Iain Buclaw  <ibuclaw@ubuntu.com>
++
++	* d-codegen.cc:
++	Some more type conversion updates in glue.
++	[4567e417c0b3]
++
++2010-08-14  Iain Buclaw  <ibuclaw@ubuntu.com>
++
++	* d-apple-gcc.c, d-codegen.cc, d-convert.cc, d-glue.cc,
++	d-lang.cc:
++	Remove default_conversion, tighten up signed/unsigned conversions.
++	[c1ae96f4e1a6]
++
++	* d-builtins2.cc, d-codegen.cc, d-glue.cc, d-lang.cc,
++	d-lang.h:
++	Removed references to TREE_UNSIGNED.
++	[4a59c1bbc04c]
++
++	* d-gcc-includes.h:
++	Fixed previous glue commit.
++	[9cac96f771a1]
++
++2010-08-14  michaelp  <baseball.mjp@gmail.com>
++
++	* phobos/std/thread.d:
++	Updated thread_attach bug in Windows
++	[de30c34ef79d]
++
++2010-08-14  Iain Buclaw  <ibuclaw@ubuntu.com>
++
++	* d/asmstmt.cc, d-builtins2.cc, d-codegen.cc, d-gcc-includes.h,
++	d-glue.cc, d-lang.cc, d-objfile.cc:
++	Glue touch-ups, now uses D_USE_MAPPED_LOCATION
++	[6122f6d23a71]
++
++2010-08-13  michaelp  <baseball.mjp@gmail.com>
++
++	* d-cppmngl.cc:
++	Uploaded missing fix from 1.063 merge
++	[fc7de0a268ab]
++
++	* dmd/template.c:
++	Fixed implicit conversion of template parameters
++	[888e3cc8a31d]
++
++	* d-glue.cc, dmd/async.c, dmd/declaration.c,
++	dmd/declaration.h, dmd/dsymbol.c, dmd/dsymbol.h, dmd/enum.c,
++	dmd/enum.h, dmd/expression.c, dmd/func.c, dmd/init.c,
++	dmd/interpret.c, dmd/mars.c, dmd/mars.h, dmd/module.c,
++	dmd/module.h, dmd/mtype.c, dmd/parse.c, dmd/parse.h,
++	dmd/root.c, dmd/statement.c, dmd/statement.h, dmd/todt.c,
++	phobos/internal/deh2.d, phobos/internal/object.d,
++	phobos/std/math.d:
++	Updated to 1.063
++	[f1e726cbcc98]
++
++2010-08-11  Iain Buclaw  <ibuclaw@ubuntu.com>
++
++	* d/Make-lang.in, d-bi-attrs-34.h, d-bi-attrs-341.h, d-bi-
++	attrs-40.h, d-bi-attrs-41.h, d-bi-attrs-42.h, d-bi-attrs-43.h,
++	d-builtins.c:
++	Cleanup d-bi-attrs. Make includes slightly smarter.
++	[349f85192e52]
++
++	* d-codegen.cc:
++	Remove useless trial/error comments in function.
++	[89b4363653f8]
++
++2010-08-10  michaelp  <baseball.mjp@gmail.com>
++
++	* d-codegen.cc:
++	Issue 33 - Sefault with nested array allocation
++	[be805cb4fb58]
++
++2010-08-09  Iain Buclaw  <ibuclaw@ubuntu.com>
++
++	* d/Make-lang.in, patches/patch-gcc-4.2.x, patches/patch-
++	toplev-4.2.x, d/setup-gcc.sh:
++	Building on GCC-4.2 now supported.
++	[c1b55292cd94]
++
++	* d-codegen.cc, d-glue.cc, d-irstate.cc:
++	Apply adaptation of feep's autovec patch (one big thanks!)
++	[fbce9c0580d3]
++
++	* d/asmstmt.cc, d-asm-i386.h:
++	Replace tabs for space in ASM outbuffer.
++	[659f6f38f6f4]
++
++2010-08-09  michaelp  <baseball.mjp@gmail.com>
++
++	* d/dmd-script:
++	Whitespace fix to previous commit.
++	[0fee937d84d4]
++
++	* d-lang.cc, d/dmd-script, d/lang.opt:
++	Added JSON support - Issue 52 + gdmd usage change
++	[35f04cb2339c]
++
++	* d/dmd-script:
++	Added -defaultlib= and -debuglib= into gdmd usage
++	[e34a68f9c427]
++
++	* d/dmd-script:
++	Updated -defaultlib and -debuglib switches for gdmd - Issue 46
++	[181e89b3d8d6]
++
++2010-08-08  Iain Buclaw  <ibuclaw@ubuntu.com>
++
++	* d-builtins.c, d-c-stubs.c, d-codegen.cc, d-glue.cc,
++	d-lang.h:
++	Build with GCC-3.4 working again.
++	[58e9b23e110c]
++
++	* d/Make-lang.in, dmd2/array.c, dmd2/mars.c, dmd2/root.c,
++	dmd2/total.h:
++	Updates of previous commit
++	[41657ecdc3fe]
++
++	* d/Make-lang.in, d-decls.cc, dmd/expression.c, dmd2/arrayop.c,
++	dmd2/bit.c, dmd2/complex_t.h, dmd2/e2ir.c, dmd2/lib.h,
++	dmd2/libelf.c, dmd2/link.c, dmd2/man.c, dmd2/port.h,
++	dmd2/template.c, dmd2/tocsym.c, dmd2/toir.c, dmd2/toir.h,
++	dmd2/toobj.c, d/symbol.cc, d/symbol.h:
++	Issue 29 - Remove unused D2 files
++	[fdef7864146b]
++
++	* d-decls.cc:
++	Bugzilla 1296 - ICE when object.d is missing things
++	[e9bfccc01834]
++
++2010-08-06  michaelp  <baseball.mjp@gmail.com>
++
++	* d/dmd-script:
++	More updates to gdmd
++	[d77ee89f6174]
++
++2010-08-05  michaelp  <baseball.mjp@gmail.com>
++
++	* d/dmd-script:
++	Small changes to gdmd; some fixes for Issue 46
++	[9269acda0b86]
++
++2010-08-05  Iain Buclaw  <ibuclaw@ubuntu.com>
++
++	* d-decls.cc, d-glue.cc:
++	Fix logic on array ops. Fixup comments for previous commits.
++	[5792cfbf3ae7]
++
++	* d-glue.cc:
++	Issue 43: >>> and >>>= generate wrong code
++	[56caae262c41]
++
++2010-08-02  Iain Buclaw  <ibuclaw@ubuntu.com>
++
++	* d-lang.cc:
++	Regression in D1 when building with --enable-checking
++	[6f2adfcabae6]
++
++	* d-spec.c:
++	Check missing argument for -defaultlib
++	[8d59f275476b]
++
++	* d-decls.cc:
++	Issue 47: GDC improperly handles extern(System) and extern(Windows) on
++	Windows
++	[e5b50cb17c57]
++
++2010-07-31  Iain Buclaw  <ibuclaw@ubuntu.com>
++
++	* d-codegen.cc, dmd/todt.c:
++	Issue 51: 1.062 outstanding issues
++	[f41ce1e8e5b2]
++
++	* dmd/aav.c, dmd/aav.h, dmd/arrayop.c, dmd/attrib.c,
++	dmd/cast.c, dmd/constfold.c, dmd/dsymbol.c,
++	dmd/expression.c, dmd/imphint.c, dmd/interpret.c,
++	dmd/lexer.c, dmd/mtype.c, dmd/parse.c, dmd/speller.h,
++	dmd/statement.c, dmd/toobj.c, dmd/unittests.c, dmd/utf.c:
++	Line endings, cleanups, and a missing ')'
++	[84378e5ef655]
++
++	* d-codegen.cc, d-glue.cc:
++	Glue updates for previous merge.
++	[a48e13277e67]
++
++2010-07-31  michaelp  <baseball.mjp@gmail.com>
++
++	* d-glue.cc, dmd/*, phobos/std/date.d:
++	Updated to 1.062
++	[9f7927e5f551]
++
++2010-07-30  Iain Buclaw  <ibuclaw@ubuntu.com>
++
++	* d-spec.c:
++	Added -defaultlib and -debuglib to allow building with another
++	library other than libphobos.
++	[f7a52f778a09]
++
++	* druntime/*:
++	Initial import of druntime into project.
++	[2f052aaedd25]
++
++	* d-glue.cc:
++	Fix generation of D array concatenation calls.
++	[d70321dcd604]
++
++	* phobos2/acinclude.m4, phobos2/configure, phobos2/configure.in,
++	phobos2/internal/arrayassign.d, phobos2/phobos-ver-syms.in:
++	D2 now defines Posix.
++	[575ed6d347e0]
++
++	* dmd/parse.c, dmd/speller.c:
++	Include header needed for MinGW to build.
++	[5260cab6c448]
++
++2010-07-29  michaelp  <baseball.mjp@gmail.com>
++
++	* phobos2/std/c/stdio.d:
++	Fixed accidentally reapplied Windows patch
++	[d4356fb371ee]
++
++	* d/Make-lang.in, dmd/aav.c, dmd/aav.h, dmd/class.c,
++	dmd/declaration.c, dmd/dsymbol.c, dmd/dsymbol.h,
++	dmd/expression.c, dmd/func.c, dmd/imphint.c, dmd/mars.c,
++	dmd/mars.h, dmd/optimize.c, dmd/scope.c, dmd/speller.c,
++	dmd/struct.c, dmd/template.c, phobos2/std/c/stdio.d:
++	Updated to 1.061
++	[9038432ea1ff]
++
++	* phobos/std/c/stdio.d, phobos2/std/c/stdio.d:
++	Remove stdio.d patches from Issue 21 patch
++	[a53c51fad1bd]
++
++	* d-decls.cc, phobos/std/c/stdio.d, phobos2/std/c/stdio.d:
++	Issue 21 - _iob undefined reference under Windows
++	[ea913c7eec42]
++
++	* d-glue.cc:
++	Fixed array ops bugs from 1.059
++	[92c39c74433f]
++
++	* d/Make-lang.in, dmd/cast.c, dmd/class.c, dmd/declaration.c,
++	dmd/declaration.h, dmd/dsymbol.c, dmd/expression.c,
++	dmd/expression.h, dmd/idgen.c, dmd/init.c, dmd/inline.c,
++	dmd/interpret.c, dmd/json.c, dmd/mars.c, dmd/mtype.c,
++	dmd/parse.c, dmd/speller.c, dmd/speller.h, dmd/statement.h,
++	dmd/unittests.c:
++	Updated to 1.060
++	[1c1cc97db718]
++
++2010-07-28  Iain Buclaw  <ibuclaw@ubuntu.com>
++
++	* d/dmd-script, d/lang-specs.h:
++	Issue 48: gdc/gdmd should be able to compile .di files
++	[976a611f59f3]
++
++	* d-lang.cc, dmd/*, phobos/*:
++	Updated to 1.058
++	[9ac6a02138c2]
++
++	* d/Make-lang.in, dmd/machobj.c:
++	Remove machobj.c from D1
++	[67d109f8fe79]
++
++	* d-lang.cc, d/dmd-script, d/symbol.cc:
++	Issue 42: -Wall should not error out compiler
++	[7593822be7c0]
++
++2010-07-27  michaelp  <baseball.mjp@gmail.com>
++
++	* d/Make-lang.in, d-lang.cc, d/dmd-script, dmd/dsymbol.c,
++	dmd/dsymbol.h, dmd/expression.c, dmd/func.c, dmd/init.c,
++	dmd/inline.c, dmd/interpret.c, dmd/machobj.c, dmd/mars.c,
++	dmd/mars.h, dmd/module.c, dmd/module.h, dmd/mtype.c,
++	dmd/root.c, dmd/root.h, dmd/scope.c, dmd/scope.h,
++	dmd/speller.c, dmd/speller.h, dmd/statement.c,
++	dmd/template.c, d/lang.opt, phobos/internal/aaA.d:
++	Updated to 1.057
++	[b4fb93e94c29]
++
++2010-07-27  Iain Buclaw  <ibuclaw@ubuntu.com>
++
++	* d/Make-lang.in, dmd/array.c, dmd/bit.c, dmd/complex_t.h,
++	dmd/constfold.c, dmd/e2ir.c, dmd/elfobj.c, dmd/expression.c,
++	dmd/irstate.c, dmd/irstate.h, dmd/lib.h, dmd/libelf.c,
++	dmd/libmach.c, dmd/link.c, dmd/man.c, dmd/mars.c,
++	dmd/mem.c, dmd/mem.h, dmd/mtype.c, dmd/port.c, dmd/port.h,
++	dmd/root.c, dmd/tocsym.c, dmd/toir.c, dmd/toir.h:
++	Issue 29 - Remove unused D1 files
++	[d74291c4230b]
++
++	* dmd/template.c, dmd2/template.c:
++	Issue 36: duplicate symbols created for negatively initialized template
++	arugments
++	[1bd9793d8fc6]
++
++	* d-builtins.c:
++	Partial fix for Issue 28
++	[7fb5519947d4]
++
++	* d-lang.cc:
++	Issue 44: strange code in d-asm-1386.h
++	[73c379cc9714]
++
++2010-07-26  Iain Buclaw  <ibuclaw@ubuntu.com>
++
++	* d-codegen.cc, d-glue.cc:
++	D2 postblit on struct literals finished!
++	[9ee37bd66bca]
++
++2010-07-25  michaelp  <baseball.mjp@gmail.com>
++
++	* d-lang.cc, d/dmd-script, dmd/*,
++	phobos/internal/arrayfloat.d:
++	Updated to 1.056
++	[4ff162deda23]
++
++2010-07-24  Iain Buclaw  <ibuclaw@ubuntu.com>
++
++	* d-glue.cc:
++	D2 postblit updates.
++	[d53a8be7c0ed]
++
++2010-07-23  michaelp  <baseball.mjp@gmail.com>
++
++	* dmd/class.c, dmd/enum.c, dmd/enum.h, dmd/mars.c,
++	dmd/struct.c:
++	Updated to 1.055
++	[9c62fb9d0abf]
++
++	* dmd/expression.c:
++	Fixed spot with wrong patch in it
++	[172855a888e9]
++
++	* dmd/*, phobos/internal/gc/gcx.d:
++	Updated to 1.054
++	[64df5a74b2c4]
++
++2010-07-21  Iain Buclaw  <ibuclaw@ubuntu.com>
++
++	* d-lang.cc:
++	Fixed warnings in d-lang.cc (thanks Trass3r)
++	[7a3c1ae0b625]
++
++	* d-asm-i386.h:
++	Fix cast warnings in d-asm-i386.h
++	[fa9b66399a13]
++
++	* dmd/lexer.c, dmd2/lexer.c:
++	Fix buffer overflow in certain error messages
++	[b91574453f5e]
++
++	* d-asm-i386.h:
++	Correctly check align value in asm.
++	[d5a0f3619810]
++
++2010-07-20  Iain Buclaw  <ibuclaw@ubuntu.com>
++
++	* d-glue.cc, dmd/root.c, dmd/statement.c, dmd/template.c,
++	dmd/template.h, phobos/std/c/stddef.d:
++	Quick updates to D1 and postblit code.
++	[214fbfbf5f3f]
++
++	* d-builtins2.cc, d-codegen.cc, d-codegen.h, d-glue.cc,
++	dmd/expression.c, dmd/func.c, dmd/machobj.c, dmd/mtype.c,
++	dmd/parse.c, dmd/statement.c, dmd/statement.h, dmd/toobj.c,
++	phobos/internal/gc/gc.d:
++	Some whitespace corrections.
++	[c9c54a275526]
++
++2010-07-20  michaelp  <baseball.mjp@gmail.com>
++
++	* d-builtins2.cc, d-codegen.cc, d-codegen.h, d-glue.cc,
++	dmd/*, phobos/*:
++	Updated to 1.053
++	[f02a96cfc1de]
++
++2010-07-20  Iain Buclaw  <ibuclaw@ubuntu.com>
++
++	* d-glue.cc:
++	Quick revision updates
++	[c79811b4f1fc]
++
++2010-07-19  Iain Buclaw  <ibuclaw@ubuntu.com>
++
++	* d-glue.cc, dmd2/attrib.c, dmd2/cast.c, dmd2/cond.c,
++	dmd2/constfold.c, dmd2/declaration.c, dmd2/declaration.h,
++	dmd2/e2ir.c, dmd2/expression.c, dmd2/func.c,
++	dmd2/impcnvgen.c, dmd2/lexer.c, dmd2/lexer.h, dmd2/link.c,
++	dmd2/mars.c, dmd2/mtype.c, dmd2/mtype.h, dmd2/parse.c,
++	dmd2/parse.h, dmd2/statement.c, dmd2/toir.c:
++	Updated to 2.020 - Frontend Only
++	[676f0aa79458]
++
++2010-07-17  Iain Buclaw  <ibuclaw@ubuntu.com>
++
++	* phobos2/Makefile.in:
++	libgphobos2 Makefile fixes.
++	[c4acdacfddd2]
++
+ 2010-07-16  Iain Buclaw  <ibuclaw@ubuntu.com>
+ 
+ 	Merge with DMD 2.019
+--- a/src/gcc/d/dmd-script.1
++++ b/src/gcc/d/dmd-script.1
+@@ -1,8 +1,8 @@
+-.TH dmd 1
++.TH gdmd 1
+ .SH NAME
+-dmd - wrapper script for gdc that emulates the dmd command
++gdmd - wrapper script for gdc that emulates the dmd command
+ .SH SYNOPSIS
+-.B dmd
++.B gdmd
+ files.d
+ ...
+ .I { -switch }
+@@ -11,56 +11,98 @@
+ .IP files.htm
+ .IP files.html
+ D source files
++.IP files.di
++D interface files
+ .IP files.o  
+ Object files to link in
+ .IP files.a
+ Library files to link in
+-.IP -vdmd
+-Print commands executed by this wrapper script
+-.IP -q<arg1>[,<arg2>,<arg3>,...]
+-Pass the comma-separated arguments to gdc
++.IP -arch ...
++pass -arch option to gdc
+ .IP -c
+ compile only, do not link
+-.IP  -d
++.IP -cov
++do code coverage analysis
++.IP -d
+ allow deprecated features
+-.IP  -g
++.IP -debug
++compile in debug code
++.IP -debug=level
++compile in debug code <= level
++.IP -debug=ident
++compile in debug code identified by ident
++.IP -deps=filename
++write module dependencies to filename
++.IP -g
+ add symbolic debug info
+-.IP  -gt
++.IP -gt
+ add trace profiling hooks (not supported under linux)
+-.IP  -v
+-verbose
+-.IP  -O
++.IP -H
++generate 'header' file
++.IP -Hdhdrdir
++write 'header' file to hdrdir directory
++.IP -Hffilename
++write 'header' file to filename
++.IP -inline
++do function inlining
++.IP -Llinkerflag
++pass linkerflag to linker
++.IP -lib
++generate library
++.IP -O
+ optimize
+-.IP  -odobjdir
++.IP -o-
++do not write object file
++.IP -odobjdir
+ write object files to directory objdir
+-.IP  -offilename
++.IP -offilename
+ name output file to filename
+-.IP  -op
++.IP -op
+ do not strip paths from source file
+-.IP  -Ipath
++.IP -Ipath
+ where to look for imports
+ 
+ .I path
+ is a ; separated list of paths. Multiple -I's can be used, and the paths are searched in the same order.
+-.IP  -Llinkerflag
+-pass linkerflag to linker
+-.IP  -debug
+-compile in debug code
+-.IP  -debug=level
+-compile in debug code <= level
+-.IP  -debug=ident
+-compile in debug code identified by ident
+-.IP  -inline
+-do function inlining
+-.IP  -release
++.IP -pipe
++use pipes instead of intermediate files
++.IP -profile
++profile runtime performance
++.IP -quiet
++suppress unnecessary error messages
++.IP -q<arg1>[,<arg2>,<arg3>,...]
++Pass the comma-separated arguments to gdc
++.IP -release
+ compile release version
+-.IP  -unittest
++.IP -run
++run resulting program, passing args
++.IP -unittest
+ compile in unit tests
+-.IP  -version=level
++.IP -v
++verbose
++.IP -vdmd
++Print commands executed by this wrapper script
++.IP -version=level
+ compile in version code >= level
+-.IP  -version=ident
++.IP  version=ident
+ compile in version code identified by ident
++.IP -X
++generate JSON file
++.IP -Xffilename
++write JSON to filename
++
+ .SH SEE ALSO
+ .BR gdc(1)
++
+ .SH AUTHOR
+-Copyright (C) 2004 David Friedman
++Copyright
++
++(C) 2004 David Friedman
++
++Modified by
++
++(C) 2010 Iain Buclaw
++
++(C) 2010 Michael Parrott
++
++(C) 2010 Vincenzo Ampolo
+--- a/src/gcc/d/gdc.1
++++ b/src/gcc/d/gdc.1
+@@ -14,18 +14,22 @@
+ .IP files.htm
+ .IP files.html
+ D source files
++.IP files.di
++D interface files
+ .IP files.o  
+ Object files to link in
+ .IP files.a
+ Library files to link in
+-.IP  -frelease
+-compile release version
+-.IP  -funittest
+-compile in unit tests
++.IP -fall-sources
++For each source file on the command line, semantically process each file
++preceding it.  Use this if compilation errors occur due to complicated
++.IP -f[no-]bounds-check
++Controls array bounds checking
++circular module references.  This will slow compilation noticeably.
+ .IP  -fdeprecated
+ allow deprecated features
+-.IP  -fversion=ident
+-compile in version code identified by ident
++.IP  -fdeps=<filename>
++output module dependencies to <filename>
+ .IP -femit-templates[=full|private|none|auto]
+ Controls whether or not template code is emitted.
+ 
+@@ -41,13 +45,34 @@
+ For targets that support templates, the "full" mode is used. 
+ Otherwise, the "private" mode is used.
+ .RE
+-.IP -f[no-]bounds-check
+-Controls array bounds checking
+-.IP -fall-sources
+-For each source file on the command line, semantically process each file
+-preceding it.  Use this if compilation errors occur due to complicated
+-circular module references.  This will slow compilation noticeably.
++
++.IP  -fintfc
++generate D interface files
++.IP  -fintfc-dir=<dir>
++write D interface files to directory <dir>
++.IP -fintfc-file=<filename>
++wite D interface file to <filename>
++.IP  -frelease
++compile release version
++.IP  -funittest
++compile in unit tests
++.IP  -fversion=ident
++compile in version code identified by ident
++.IP  -fXf=<filename>
++output JSON to <filename>
++
+ .SH SEE ALSO
+ .BR gcc(1)
++
+ .SH AUTHOR
+-Copyright (C) 2004 David Friedman
++Copyright
++
++(C) 2004 David Friedman
++
++Modified by
++
++(C) 2010 Iain Buclaw
++
++(C) 2010 Michael Parrott
++
++(C) 2010 Vincenzo Ampolo
+--- a/src/gcc/d/GDC.html
++++ b/src/gcc/d/GDC.html
+@@ -10,7 +10,7 @@
+ Last update: August 22, 2007<br>
+ <h3>Supported Systems</h3>
+ <ul>
+-  <li>GCC 3.4.x, 4.0.x, 4.1.x<br>
++  <li>GCC 3.4.x, 4.0.x, 4.1.x, 4.2.x, 4.3.x, 4.4.x<br>
+   </li>
+   <li>Linux (tested on Fedora Core 5 x86, x86_64, and PowerPC)<br>
+   </li>
+@@ -46,13 +46,13 @@
+ 
+ 
+ 
+-  <li><a href="http://sourceforge.net/projects/dgcc">Main
++  <li><a href="http://bitbucket.org/goshawk/gdc/wiki/Home">Main
+ package</a></li>
+ 
+ 
+ 
+ 
+-  <li><a href="install.html">Build Instructions</a></li>
++  <li><a href="INSTALL.html">Build Instructions</a></li>
+ 
+ 
+ 
+@@ -72,7 +72,7 @@
+ 
+ 
+ 
+-  <li><a href="http://dgcc.sourceforge.net/">GDC: D
++  <li><a href="http://bitbucket.org/goshawk/gdc">GDC: D
+ Compiler for GCC</a><br>
+ 
+ 
+@@ -147,11 +147,11 @@
+ 
+ 
+ David Friedman<br>
+-
+-
+-
+-
+ e-mail: dvdfrdmn &lt;at&gt; users.sf.net<br>
++Iain Buclaw<br>
++e-mail: ibuclaw &lt;at&gt; ubuntu.com<br>
++Michael Parrott<br>
++e-mail: baseball.mjp &lt;at&gt; gmail.com<br>
+ 
+ 
+ 
+--- a/src/gcc/d/History
++++ b/src/gcc/d/History
+@@ -1,4 +1,10 @@
+-0.25:
++0.25: (Future release)
++  * Support for GCC, 4.2.x, 4.3.x, and 4.4.x added
++  * Updated D1 to 1.063
++  * Updated D2 to 2.020
++  * Added druntime support
++  * Fixed Bugzilla ...
++  * Fixed Bitbucket issues ...
+ 
+ 0.24:
+   * Removed support for GCC 3.3.x
+--- a/src/gcc/d/README
++++ b/src/gcc/d/README
+@@ -12,7 +12,7 @@
+ 
+ Supported Systems
+ 
+-    * GCC 3.4.x, 4.0.x, 4.1.x
++    * GCC 3.4.x, 4.0.x, 4.1.x, 4.2.x, 4.3.x, 4.4.x
+     * Linux (tested on Fedora Core 5 x86, x86_64, and PowerPC)
+     * Mac OS X 10.3.9 and 10.4.x
+     * FreeBSD 6.x
+@@ -35,14 +35,15 @@
+ Downloads
+ 
+     * Main package
+-      http://sourceforge.net/projects/dgcc
++      http://bitbucket.org/goshawk/gdc/wiki/Home
+     * Build Instructions
+-      http://dgcc.sourceforge.net/gdc/install.html
++      http://bitbucket.org/goshawk/gdc/wiki/Home#installation
+       (or see INSTALL included in the main package)
+ 
+ Links
+ 
+-    * This Project -- http://dgcc.sourceforge.net/
++    * This Project -- http://bitbucket.org/goshawk/gdc/wiki/Home
++    * Previous home -- http://dgcc.sourceforge.net/
+     * The D Programming Language -- http://www.digitalmars.com/d/
+     * D Links Page -- http://digitalmars.com/d/dlinks.html
+     * The D.gnu newsgroup -- news://news.digitalmars.com/D.gnu
+@@ -54,6 +55,10 @@
+ Contact
+ David Friedman
+ e-mail: dvdfrdmn@users.sf.net
++Iain Buclaw
++e-mail: ibuclaw@ubuntu.com
++Michael Parrott
++e-mail: baseball.mjp@gmail.com
+ 
+ Status
+ 

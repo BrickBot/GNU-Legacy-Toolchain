@@ -1,0 +1,13 @@
+2011-07-20  Jakub Jelinek  <jakub@redhat.com>
+
+	* gcc.target/powerpc/pr48857.c: Skip if -fstack-protector.
+
+--- gcc/testsuite/gcc.target/powerpc/pr48857.c	2011-05-11 11:54:12.138421025 +0200
++++ gcc/testsuite/gcc.target/powerpc/pr48857.c	2011-07-20 17:19:54.230452295 +0200
+@@ -1,5 +1,6 @@
+ /* { dg-do compile { target { powerpc*-*-* } } } */
+ /* { dg-skip-if "" { powerpc*-*-darwin* } { "*" } { "" } } */
++/* { dg-skip-if "" { ! powerpc*-*-darwin* } { "-fstack-protector" } { "" } } */
+ /* { dg-require-effective-target powerpc_vsx_ok } */
+ /* { dg-options "-O2 -mcpu=power7 -mabi=altivec" } */
+ /* { dg-final { scan-assembler-times "lxvd2x" 1 } } */

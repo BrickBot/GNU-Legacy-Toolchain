@@ -1,0 +1,14 @@
+# DP: updates from the 4.4 branch upto 2011xxxx (r164607).
+
+last_updated()
+{
+	cat > ${dir}LAST_UPDATED <<EOF
+Fri Oct  1 13:13:02 CEST 2010
+Fri Oct  1 11:13:02 UTC 2010 (revision 164874)
+EOF
+}
+
+svn diff svn://gcc.gnu.org/svn/gcc/branches/gcc-4_4-branch@163945 svn://gcc.gnu.org/svn/gcc/branches/gcc-4_4-branch \
+	| sed -r 's,^--- (\S+)\t(\S+)(.*)$,--- a/src/\1\t\2,;s,^\+\+\+ (\S+)\t(\S+)(.*)$,+++ b/src/\1\t\2,' \
+	| awk '/^Index:.*\.(class|texi)/ {skip=1; next} /^Index:/ { skip=0 } skip==0'
+

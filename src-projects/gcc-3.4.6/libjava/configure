@@ -115,8 +115,8 @@ localstatedir='${prefix}/var'
 libdir='${exec_prefix}/lib'
 includedir='${prefix}/include'
 oldincludedir='/usr/include'
-infodir='${prefix}/info'
-mandir='${prefix}/man'
+infodir='${datadir}/info'
+mandir='${datadir}/man'
 
 # Initialize some other variables.
 subdirs=
@@ -4128,6 +4128,9 @@ use_gtk_awt=""
 # The default toolkit to use is the first one specified.
 TOOLKIT=
 
+if test -n "${with_multisubdir}"; then
+  peerlibs=no
+fi
 
 for peer in $peerlibs ; do
   case $peer in

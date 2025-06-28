@@ -1,0 +1,57 @@
+# DP: Work around PR middle-end/37053 by backporting a trunk commit
+# DP: Combine with pr41064.diff to avoid regressions!
+
+gcc/
+
+2009-08-10  Ulrich Weigand  <Ulrich.Weigand@de.ibm.com>
+
+	PR target/37053
+	* reload1.c (reload_as_needed): Use cancel_changes to completely
+	undo a failed replacement attempt.
+
+Index: trunk/gcc/reload1.c
+===================================================================
+--- a/src/gcc/reload1.c	(revision 150625)
++++ b/src/gcc/reload1.c	(revision 150626)
+@@ -4304,31 +4304,25 @@
+ 			    continue;
+ 			  if (n == 1)
+ 			    {
+-			      n = validate_replace_rtx (reload_reg,
+-							gen_rtx_fmt_e (code,
+-								       mode,
+-								       reload_reg),
+-							p);
++			      rtx replace_reg
++				= gen_rtx_fmt_e (code, mode, reload_reg);
+ 
++			      validate_replace_rtx_group (reload_reg,
++							  replace_reg, p);
++			      n = verify_changes (0);
++
+ 			      /* We must also verify that the constraints
+ 				 are met after the replacement.  */
+ 			      extract_insn (p);
+ 			      if (n)
+ 				n = constrain_operands (1);
+-			      else
+-				break;
+ 
+ 			      /* If the constraints were not met, then
+-				 undo the replacement.  */
++				 undo the replacement, else confirm it.  */
+ 			      if (!n)
+-				{
+-				  validate_replace_rtx (gen_rtx_fmt_e (code,
+-								       mode,
+-								       reload_reg),
+-							reload_reg, p);
+-				  break;
+-				}
+-
++				cancel_changes (0);
++			      else
++				confirm_change_group ();
+ 			    }
+ 			  break;
+ 			}

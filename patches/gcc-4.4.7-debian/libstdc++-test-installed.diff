@@ -1,0 +1,76 @@
+# DP: Add support to run the libstdc++-v3 testsuite using the
+# DP: installed shared libraries.
+
+--- a/src/libstdc++-v3/testsuite/lib/libstdc++.exp~	2010-05-27 15:43:11.332323079 +0200
++++ b/src/libstdc++-v3/testsuite/lib/libstdc++.exp	2010-05-27 16:03:58.662323814 +0200
+@@ -38,6 +38,12 @@
+ # the last thing before testing begins.  This can be defined in, e.g.,
+ # ~/.dejagnurc or $DEJAGNU.
+ 
++set test_installed 0
++if [info exists env(TEST_INSTALLED)] {
++    verbose -log "test installed libstdc++-v3"
++    set test_installed 1
++}
++
+ proc load_gcc_lib { filename } {
+     global srcdir
+     load_file $srcdir/../../gcc/testsuite/lib/$filename
+@@ -91,6 +99,7 @@
+     global target_triplet
+     global flags_file
+     global tool_timeout
++    global test_installed
+ 
+     # We set LC_ALL and LANG to C so that we get the same error
+     # messages as expected.
+@@ -99,6 +108,9 @@
+ 
+     set blddir [lookfor_file [get_multilibs] libstdc++-v3]
+     set flags_file "${blddir}/scripts/testsuite_flags"
++    if {$test_installed} {
++      set flags_file "${blddir}/scripts/testsuite_flags.installed"
++    }
+     v3track flags_file 2
+ 
+     # If a test doesn't have special options, use DEFAULT_CXXFLAGS.
+@@ -129,7 +141,11 @@
+ 
+     # Locate libgcc.a so we don't need to account for different values of
+     # SHLIB_EXT on different platforms
+-    set gccdir [lookfor_file $tool_root_dir gcc/libgcc.a]
++    if {$test_installed} {
++	set gccdir ""
++    } else {
++	set gccdir [lookfor_file $tool_root_dir gcc/libgcc.a]
++    }
+     if {$gccdir != ""} {
+         set gccdir [file dirname $gccdir]
+ 	append ld_library_path_tmp ":${gccdir}"
+@@ -138,7 +154,11 @@
+ 
+     # Locate libgomp. This is only required for parallel mode.
+     set v3-libgomp 0
+-    set libgompdir [lookfor_file $blddir/../libgomp .libs/libgomp.so]
++    if {$test_installed} {
++	set libgompdir ""
++    } else {
++	set libgompdir [lookfor_file $blddir/../libgomp .libs/libgomp.so]
++    }
+     if {$libgompdir != ""} {
+ 	set v3-libgomp 1
+         set libgompdir [file dirname $libgompdir]
+@@ -149,7 +169,12 @@
+ 
+     # Locate libstdc++ shared library. (ie libstdc++.so.)
+     set v3-sharedlib 0
+-    set sharedlibdir [lookfor_file $blddir src/.libs/libstdc++.so]
++    if {$test_installed} {
++	set sharedlibdir ""
++	set v3-sharedlib 1
++    } else {
++	set sharedlibdir [lookfor_file $blddir src/.libs/libstdc++.so]
++    }
+     if {$sharedlibdir != ""} {
+ 	if { [string match "*-*-linux*" $target_triplet] && [isnative] } {
+ 	    set v3-sharedlib 1

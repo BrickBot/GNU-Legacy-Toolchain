@@ -134,8 +134,12 @@ gt-treelang-tree1.h gtype-treelang.h : s-gtype; @true
 # Build hooks:
 
 treelang.all.build: treelang
-treelang.all.cross:
-	_error_not_here_yet - havent even thought about it - it may even work
+treelang.all.cross: $(TREE_EXES)-cross$(exeext)
+#	_error_not_here_yet - havent even thought about it - it may even work
+
+# Also create $(TREE_EXES)-cross, so that treelang.install-common will install properly.
+$(TREE_EXES)-cross$(exeext): $(TREE_EXES)$(exeext)
+	cp $(TREE_EXES)$(exeext) $(TREE_EXES)-cross$(exeext)
 
 treelang.start.encap:
 treelang.rest.encap:

@@ -1,0 +1,89 @@
+Patch pending upstream, probably acceptable.
+--------------------------------------------
+
+
+
+Daniel Jacobowitz <drow@mvista.com> writes:
+> I like this.  The way func_frame_chain_valid should really be used is
+> by something like:
+> 
+>   /* NOTE: tm-i386nw.h and tm-i386v4.h override this.  */
+>   set_gdbarch_frame_chain_valid (gdbarch, file_frame_chain_valid);
+> 
+> (copied from i386-tdep.c).
+> 
+> Does this patch work for you?
+
+Yes, thanks.  I've included a revised version of my patch below.
+
+> I'm curious as to why we can't just set this universally, or at least a
+> little more globally.  Most things that have a main () use it as a
+> normal main ().  I'd propose that we set it as the default frame chain,
+> and provide/document an option to ignore inside_main_func.
+
+Well, gdbarch is never supposed to change the default behavior of
+macros; this helps us convert pre-gdbarch targets incrementally.
+Simply turning on gdbarch for one's target ideally wouldn't change its
+behavior at all.
+
+
+2002-02-06  Jim Blandy  <jimb@redhat.com>
+
+	Fix from Daniel Jacobowitz:
+	* config/i386/tm-linux.h (FRAME_CHAIN_VALID): Use
+	`func_frame_chain_valid' for this.
+	* i386-tdep.c (i386_gdbarch_init): Note that tm-linux.h is
+	overriding the selection we make here.
+
+Index: gdb/i386-tdep.c
+===================================================================
+RCS file: /cvs/src/src/gdb/i386-tdep.c,v
+retrieving revision 1.50
+diff -c -r1.50 i386-tdep.c
+*** gdb/gdb/i386-tdep.c	2002/01/01 16:29:43	1.50
+--- gdb/gdb/i386-tdep.c	2002/02/06 19:19:27
+***************
+*** 1324,1330 ****
+  
+    set_gdbarch_pc_in_call_dummy (gdbarch, pc_in_call_dummy_on_stack);
+  
+!   /* NOTE: tm-i386nw.h and tm-i386v4.h override this.  */
+    set_gdbarch_frame_chain_valid (gdbarch, file_frame_chain_valid);
+  
+    /* NOTE: tm-i386aix.h, tm-i386bsd.h, tm-i386os9k.h, tm-linux.h,
+--- 1324,1330 ----
+  
+    set_gdbarch_pc_in_call_dummy (gdbarch, pc_in_call_dummy_on_stack);
+  
+!   /* NOTE: tm-i386nw.h, tm-i386v4.h, and tm-linux.h override this.  */
+    set_gdbarch_frame_chain_valid (gdbarch, file_frame_chain_valid);
+  
+    /* NOTE: tm-i386aix.h, tm-i386bsd.h, tm-i386os9k.h, tm-linux.h,
+Index: gdb/config/i386/tm-linux.h
+===================================================================
+RCS file: /cvs/src/src/gdb/config/i386/tm-linux.h,v
+retrieving revision 1.16
+diff -c -r1.16 tm-linux.h
+*** gdb/gdb/config/i386/tm-linux.h	2001/11/08 00:03:52	1.16
+--- gdb/gdb/config/i386/tm-linux.h	2002/02/06 19:19:28
+***************
+*** 82,87 ****
+--- 82,98 ----
+  #define IN_SIGTRAMP(pc, name) i386_linux_in_sigtramp (pc, name)
+  extern int i386_linux_in_sigtramp (CORE_ADDR, char *);
+  
++ /* On Linux, the entry point is called _start, but that invokes
++    something called __libc_start_main, which calls main.  So if we
++    want the stack to end at main (as it does for most GDB targets),
++    it's not enough for us to use inside_entry_func or
++    inside_entry_file; that rule will only trigger after we've included
++    __libc_start_main in the backtrace, which we don't want.
++    func_frame_chain_valid checks both for `main', and for the entry
++    point function.  */
++ /* Use the alternate method of determining valid frame chains. */
++ #define FRAME_CHAIN_VALID(fp,fi) func_frame_chain_valid (fp, fi)
++ 
+  #undef FRAME_CHAIN
+  #define FRAME_CHAIN(frame) i386_linux_frame_chain (frame)
+  extern CORE_ADDR i386_linux_frame_chain (struct frame_info *frame);
+

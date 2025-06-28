@@ -1,0 +1,253 @@
+# DP: Updates from the cell-4_4-branch (documentation) up to 20100518
+
+Index: gcc/doc/extend.texi
+===================================================================
+--- a/src/gcc/doc/extend.texi	(.../gcc-4_4-branch)
++++ b/src/gcc/doc/extend.texi	(.../cell-4_4-branch)
+@@ -38,6 +38,7 @@
+ * Decimal Float::       Decimal Floating Types. 
+ * Hex Floats::          Hexadecimal floating-point constants.
+ * Fixed-Point::         Fixed-Point Types.
++* Named Address Spaces::Named address spaces.
+ * Zero Length::         Zero-length arrays.
+ * Variable Length::     Arrays whose length is computed at run time.
+ * Empty Structures::    Structures with no members.
+@@ -1147,6 +1148,31 @@
+ 
+ Fixed-point types are supported by the DWARF2 debug information format.
+ 
++@node Named Address Spaces
++@section Named address spaces
++@cindex named address spaces
++
++As an extension, the GNU C compiler supports named address spaces as
++defined in the N1275 draft of ISO/IEC DTR 18037.  Support for named
++address spaces in GCC will evolve as the draft technical report changes.
++Calling conventions for any target might also change.  At present, only
++the SPU target supports other address spaces.  On the SPU target, for
++example, variables may be declared as belonging to another address space
++by qualifying the type with the @code{__ea} address space identifier:
++
++@smallexample
++extern int __ea i;
++@end smallexample
++
++When the variable @code{i} is accessed, the compiler will generate
++special code to access this variable.  It may use runtime library
++support, or generate special machine instructions to access that address
++space.
++
++The @code{__ea} identifier may be used exactly like any other C type
++qualifier (e.g., @code{const} or @code{volatile}).  See the N1275
++document for more details.
++
+ @node Zero Length
+ @section Arrays of Length Zero
+ @cindex arrays of length zero
+@@ -5700,7 +5726,7 @@
+ 
+ The types defined in this manner can be used with a subset of normal C
+ operations.  Currently, GCC will allow using the following operators
+-on these types: @code{+, -, *, /, unary minus, ^, |, &, ~}@.
++on these types: @code{+, -, *, /, unary minus, ^, |, &, ~, %}@.
+ 
+ The operations behave like C++ @code{valarrays}.  Addition is defined as
+ the addition of the corresponding elements of the operands.  For
+Index: gcc/doc/tm.texi
+===================================================================
+--- a/src/gcc/doc/tm.texi	(.../gcc-4_4-branch)
++++ b/src/gcc/doc/tm.texi	(.../cell-4_4-branch)
+@@ -55,6 +55,7 @@
+ * MIPS Coprocessors::   MIPS coprocessor support and how to customize it.
+ * PCH Target::          Validity checking for precompiled headers.
+ * C++ ABI::             Controlling C++ ABI changes.
++* Named Address Spaces:: Adding support for named address spaces
+ * Misc::                Everything else.
+ @end menu
+ 
+@@ -9622,6 +9623,105 @@
+ visibility or perform any other required target modifications).
+ @end deftypefn
+ 
++@node Named Address Spaces
++@section Adding support for named address spaces
++@cindex named address spaces
++
++The draft technical report of the ISO/IEC JTC1 S22 WG14 N1275
++standards committee, @cite{Programming Languages - C - Extensions to
++support embedded processors}, specifies a syntax for embedded
++processors to specify alternate address spaces.  You can configure a
++GCC port to support section 5.1 of the draft report to add support for
++address spaces other than the default address space.  These address
++spaces are new keywords that are similar to the @code{volatile} and
++@code{const} type attributes.
++
++Pointers to named address spaces can a a different size than
++pointers to the generic address space.
++
++For example, the SPU port uses the @code{__ea} address space to refer
++to memory in the host processor, rather than memory local to the SPU
++processor.  Access to memory in the @code{__ea} address space involves
++issuing DMA operations to move data between the host processor and the
++local processor memory address space.  Pointers in the @code{__ea}
++address space are either 32 bits or 64 bits based on the
++@option{-mea32} or @option{-mea64} switches (native SPU pointers are
++always 32 bits).
++
++Internally, address spaces are represented as a small integer in the
++range 0 to 15 with address space 0 being reserved for the generic
++address space.
++
++@defmac TARGET_ADDR_SPACE_KEYWORDS
++A list of @code{ADDR_SPACE_KEYWORD} macros to define each named
++address keyword.  The @code{ADDR_SPACE_KEYWORD} macro takes two
++arguments, the keyword string and the number of the named address
++space.  For example, the SPU port uses the following to declare
++@code{__ea} as the keyword for named address space #1:
++@smallexample
++#define ADDR_SPACE_EA 1
++#define TARGET_ADDR_SPACE_KEYWORDS ADDR_SPACE_KEYWORD ("__ea", ADDR_SPACE_EA)
++@end smallexample
++@end defmac
++
++@deftypefn {Target Hook} {enum machine_mode} TARGET_ADDR_SPACE_POINTER_MODE (addr_space_t @var{address_space})
++Define this to return the machine mode to use for pointers to
++@var{address_space} if the target supports named address spaces.
++The default version of this hook returns @code{ptr_mode} for the
++generic address space only.
++@end deftypefn
++
++@deftypefn {Target Hook} {enum machine_mode} TARGET_ADDR_SPACE_ADDRESS_MODE (addr_space_t @var{address_space})
++Define this to return the machine mode to use for addresses in
++@var{address_space} if the target supports named address spaces.
++The default version of this hook returns @code{Pmode} for the
++generic address space only.
++@end deftypefn
++
++@deftypefn {Target Hook} bool TARGET_ADDR_SPACE_VALID_POINTER_MODE (enum machine_mode @var{mode}, addr_space_t @var{as})
++Define this to return nonzero if the port can handle pointers
++with machine mode @var{mode} to address space @var{as}.  This target
++hook is the same as the @code{TARGET_VALID_POINTER_MODE} target hook,
++except that it includes explicit named address space support.  The default
++version of this hook returns true for the modes returned by either the
++@code{TARGET_ADDR_SPACE_POINTER_MODE} or @code{TARGET_ADDR_SPACE_ADDRESS_MODE}
++target hooks for the given address space.
++@end deftypefn
++
++@deftypefn {Target Hook} {bool} TARGET_ADDR_SPACE_LEGITIMATE_ADDRESS_P (enum machine_mode @var{mode}, rtx @var{exp}, bool @var{strict}, addr_space_t @var{as})
++Define this to return true if @var{exp} is a valid address for mode
++@var{mode} in the named address space @var{as}.  The @var{strict}
++parameter says whether strict addressing is in effect after reload has
++finished.  This target hook is the same as the
++@code{TARGET_LEGITIMATE_ADDRESS_P} target hook, except that it includes
++explicit named address space support.
++@end deftypefn
++
++@deftypefn {Target Hook} {rtx} TARGET_ADDR_SPACE_LEGITIMIZE_ADDRESS (rtx @var{x}, rtx @var{oldx}, enum machine_mode @var{mode}, addr_space_t @var{as})
++Define this to modify an invalid address @var{x} to be a valid address
++with mode @var{mode} in the named address space @var{as}.  This target
++hook is the same as the @code{TARGET_LEGITIMIZE_ADDRESS} target hook,
++except that it includes explicit named address space support.
++@end deftypefn
++
++@deftypefn {Target Hook} {bool} TARGET_ADDR_SPACE_SUBSET_P (addr_space_t @var{superset}, addr_space_t @var{subset})
++Define this to return whether the @var{subset} named address space is
++contained within the @var{superset} named address space.  Pointers to
++a named address space that is a subset of another named address space
++will be converted automatically without a cast if used together in
++arithmetic operations.  Pointers to a superset address space can be
++converted to pointers to a subset address space via explict casts.
++@end deftypefn
++
++@deftypefn {Target Hook} {rtx} TARGET_ADDR_SPACE_CONVERT (rtx @var{op}, tree @var{from_type}, tree @var{to_type})
++Define this to convert the pointer expression represented by the RTL
++@var{op} with type @var{from_type} that points to a named address
++space to a new pointer expression with type @var{to_type} that points
++to a different named address space.  When this hook it called, it is
++guaranteed that one of the two address spaces is a subset of the other,
++as determined by the @code{TARGET_ADDR_SPACE_SUBSET_P} target hook.
++@end deftypefn
++
+ @node Misc
+ @section Miscellaneous Parameters
+ @cindex parameters, miscellaneous
+Index: gcc/doc/invoke.texi
+===================================================================
+--- a/src/gcc/doc/invoke.texi	(.../gcc-4_4-branch)
++++ b/src/gcc/doc/invoke.texi	(.../cell-4_4-branch)
+@@ -800,7 +800,11 @@
+ -msafe-dma -munsafe-dma @gol
+ -mbranch-hints @gol
+ -msmall-mem -mlarge-mem -mstdmain @gol
+--mfixed-range=@var{register-range}}
++-mfixed-range=@var{register-range} @gol
++-mea32 -mea64 @gol
++-maddress-space-conversion -mno-address-space-conversion @gol
++-mcache-size=@var{cache-size} @gol
++-matomic-updates -mno-atomic-updates}
+ 
+ @emph{System V Options}
+ @gccoptlist{-Qy  -Qn  -YP,@var{paths}  -Ym,@var{dir}}
+@@ -15258,6 +15262,46 @@
+ two registers separated by a dash.  Multiple register ranges can be
+ specified separated by a comma.
+ 
++@item -mea32
++@itemx -mea64
++@opindex mea32
++@opindex mea64
++Compile code assuming that pointers to the PPU address space accessed
++via the @code{__ea} named address space qualifier are either 32 or 64
++bits wide.  The default is 32 bits.  As this is an ABI changing option,
++all object code in an executable must be compiled with the same setting.
++
++@item -maddress-space-conversion
++@itemx -mno-address-space-conversion
++@opindex maddress-space-conversion
++@opindex mno-address-space-conversion
++Allow/disallow treating the @code{__ea} address space as superset
++of the generic address space.  This enables explicit type casts
++between @code{__ea} and generic pointer as well as implicit
++conversions of generic pointers to @code{__ea} pointers.  The
++default is to allow address space pointer conversions.
++
++@item -mcache-size=@var{cache-size}
++@opindex mcache-size
++This option controls the version of libgcc that the compiler links to an
++executable and selects a software-managed cache for accessing variables
++in the @code{__ea} address space with a particular cache size.  Possible
++options for @var{cache-size} are @samp{8}, @samp{16}, @samp{32}, @samp{64}
++and @samp{128}.  The default cache size is 64KB.
++
++@item -matomic-updates
++@itemx -mno-atomic-updates
++@opindex matomic-updates
++@opindex mno-atomic-updates
++This option controls the version of libgcc that the compiler links to an
++executable and selects whether atomic updates to the software-managed
++cache of PPU-side variables are used.  If you use atomic updates, changes
++to a PPU variable from SPU code using the @code{__ea} named address space
++qualifier will not interfere with changes to other PPU variables residing
++in the same cache line from PPU code.  If you do not use atomic updates,
++such interference may occur; however, writing back cache lines will be
++more efficient.  The default behavior is to use atomic updates.
++
+ @item -mdual-nops
+ @itemx -mdual-nops=@var{n}
+ @opindex mdual-nops
+Index: gcc/doc/rtl.texi
+===================================================================
+--- a/src/gcc/doc/rtl.texi	(.../gcc-4_4-branch)
++++ b/src/gcc/doc/rtl.texi	(.../cell-4_4-branch)
+@@ -420,6 +420,11 @@
+ @findex MEM_ALIGN
+ @item MEM_ALIGN (@var{x})
+ The known alignment in bits of the memory reference.
++
++@findex MEM_ADDR_SPACE
++@item MEM_ADDR_SPACE (@var{x})
++The address space of the memory reference.  This will commonly be zero
++for the generic address space.
+ @end table
+ 
+ @item REG
