@@ -1,0 +1,16 @@
+Debian local - sync with current Debian readline.
+
+--- gdb-5.1.1-before/gdb/defs.h	Thu Aug  2 23:36:51 2001
++++ gdb-5.1.1/gdb/defs.h	Sat Feb 16 17:36:40 2002
+@@ -798,9 +798,9 @@
+ 
+ struct frame_info;
+ 
+-/* From readline (but not in any readline .h files).  */
++/* From readline (but not in old readline .h files).  */
+ 
+-extern char *tilde_expand (char *);
++extern char *tilde_expand (const char *);
+ 
+ /* Control types for commands */
+ 

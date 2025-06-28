@@ -1,0 +1,192 @@
+2009-09-07  Laurent GUERBY  <laurent@guerby.net>
+        
+	* make.adb: Add missing documentation for multilib handling.
+
+2009-08-17  Robert Dewar  <dewar@adacore.com>
+        
+	* make.adb: Add ??? comment
+
+2009-08-17  Arnaud Charlet  <charlet@adacore.com>
+        
+	* make.adb (Process_Multilib, Scan_Make_Arg): Refine previous change
+	and ignore -mieee switch to avoid spawning an extra gcc in this case.
+
+2009-08-10  Laurent GUERBY  <laurent@guerby.net>
+
+	* make.adb: Handle multilib
+
+--- gcc/ada/make.adb	(revision 150622,150828,150830,151472)
++++ gcc/ada/make.adb	(revision 150623,150829,150831,151473)
+@@ -195,6 +195,9 @@ package body Make is
+    RTS_Specified : String_Access := null;
+    --  Used to detect multiple --RTS= switches
+ 
++   N_M_Switch : Natural := 0;
++   --  Used to count -mxxx switches that can affect multilib
++
+    type Q_Record is record
+       File  : File_Name_Type;
+       Unit  : Unit_Name_Type;
+@@ -666,6 +669,9 @@ package body Make is
+    --  directory of the ultimate extending project. If it is not, we ignore
+    --  the fact that this ALI file is read-only.
+ 
++   procedure Process_Multilib;
++   --  Add appropriate --RTS argument to handle multilib.
++
+    ----------------------------------------------------
+    -- Compiler, Binder & Linker Data and Subprograms --
+    ----------------------------------------------------
+@@ -6854,6 +6860,7 @@ package body Make is
+       Dependencies.Init;
+ 
+       RTS_Specified := null;
++      N_M_Switch := 0;
+ 
+       Mains.Delete;
+ 
+@@ -6913,6 +6920,10 @@ package body Make is
+          Scan_Make_Arg (Argument (Next_Arg), And_Save => True);
+       end loop Scan_Args;
+ 
++      if N_M_Switch > 0 and RTS_Specified = null then
++         Process_Multilib;
++      end if;
++
+       if Commands_To_Stdout then
+          Set_Standard_Output;
+       end if;
+@@ -7587,6 +7598,117 @@ package body Make is
+       Set_Name_Table_Byte (N, B or Mark);
+    end Mark_Directory;
+ 
++   ----------------------
++   -- Process_Multilib --
++   ----------------------
++
++   procedure Process_Multilib is
++
++      Output_FD         : File_Descriptor;
++      Output_Name       : String_Access;
++      Arg_Index         : Natural := 0;
++      Success           : Boolean := False;
++      Return_Code       : Integer := 0;
++      Multilib_Gcc_Path : String_Access;
++      Multilib_Gcc      : String_Access;
++      N_Read            : Integer := 0;
++      Line              : String (1 .. 1000);
++      Args              : Argument_List (1 .. N_M_Switch + 1);
++
++   begin
++      pragma Assert (N_M_Switch > 0 and RTS_Specified = null);
++
++      --  In case we detected a multilib switch and the user has not
++      --  manually specified a specific RTS we emulate the following command:
++      --  gnatmake $FLAGS --RTS=$(gcc -print-multi-directory $FLAGS)
++
++      --  First select the flags which might have an impact on multilib
++      --  processing. Note that this is an heuristic selection and it
++      --  will need to be maintained over time. The condition has to
++      --  be kept synchronized with N_M_Switch counting in Scan_Make_Arg.
++
++      for Next_Arg in 1 .. Argument_Count loop
++         declare
++            Argv : constant String := Argument (Next_Arg);
++         begin
++            if Argv'Length > 2
++              and then Argv (1) = '-'
++              and then Argv (2) = 'm'
++              and then Argv /= "-margs"
++
++              --  Ignore -mieee to avoid spawning an extra gcc in this case
++
++              and then Argv /= "-mieee"
++            then
++               Arg_Index := Arg_Index + 1;
++               Args (Arg_Index) := new String'(Argv);
++            end if;
++
++         end;
++      end loop;
++
++      pragma Assert (Arg_Index = N_M_Switch);
++
++      Args (Args'Last) := new String'("-print-multi-directory");
++
++      --  Call the GCC driver with the collected flags and save its
++      --  output. Alternate design would be to link in gnatmake the
++      --  relevant part of the GCC driver.
++
++      if Saved_Gcc /= null then
++         Multilib_Gcc := Saved_Gcc;
++      else
++         Multilib_Gcc := Gcc;
++      end if;
++
++      Multilib_Gcc_Path :=
++        GNAT.OS_Lib.Locate_Exec_On_Path (Multilib_Gcc.all);
++
++      Create_Temp_File (Output_FD, Output_Name);
++      if Output_FD = Invalid_FD then
++         return;
++      end if;
++
++      GNAT.OS_Lib.Spawn (Multilib_Gcc_Path.all, Args, Output_FD,
++                         Return_Code, False);
++      Close (Output_FD);
++      if Return_Code /= 0 then
++         return;
++      end if;
++
++      --  Parse the GCC driver output which is a single line, removing CR/LF
++
++      Output_FD := Open_Read (Output_Name.all, Binary);
++      if Output_FD = Invalid_FD then
++         return;
++      end if;
++
++      N_Read := Read (Output_FD, Line (1)'Address, Line'Length);
++      Close (Output_FD);
++      Delete_File (Output_Name.all, Success);
++
++      for I in reverse 1 .. N_Read loop
++         if Line (I) = ASCII.CR or else Line (I) = ASCII.LF then
++            N_Read := N_Read - 1;
++         else
++            exit;
++         end if;
++      end loop;
++
++      --  In case the standard RTS is selected do nothing
++
++      if N_Read = 0 or else Line (1 .. N_Read) = "." then
++         return;
++      end if;
++
++      --  Otherwise add -margs --RTS=output
++
++      Scan_Make_Arg ("-margs", And_Save => True);
++      Scan_Make_Arg ("--RTS=" & Line (1 .. N_Read),
++                     And_Save => True);
++
++   end Process_Multilib;
++
+    -----------------------------
+    -- Recursive_Compute_Depth --
+    -----------------------------
+@@ -8043,6 +8165,15 @@ package body Make is
+             Add_Switch (Argv, Compiler, And_Save => And_Save);
+             Add_Switch (Argv, Linker, And_Save => And_Save);
+ 
++            --  The following condition has to be kept synchronized with
++            --  the Process_Multilib one.
++
++            if Argv (2) = 'm'
++              and then Argv /= "-mieee"
++            then
++               N_M_Switch := N_M_Switch + 1;
++            end if;
++
+          --  -C=<mapping file>
+ 
+          elsif Argv'Last > 2 and then Argv (2) = 'C' then

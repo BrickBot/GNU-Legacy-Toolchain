@@ -1,0 +1,47 @@
+# DP: Use lib instead of lib64 as multilibdir on amd64, sparc64, ppc64 and s390x.
+
+---
+ gcc/config/i386/t-linux64   |    2 +-
+ gcc/config/rs6000/t-linux64 |   12 ++++++------
+ 2 files changed, 7 insertions(+), 7 deletions(-)
+
+--- a/src/gcc/config/i386/t-linux64
++++ b/src/gcc/config/i386/t-linux64
+@@ -7,7 +7,7 @@
+ 
+ MULTILIB_OPTIONS = m64/m32
+ MULTILIB_DIRNAMES = 64 32 
+-MULTILIB_OSDIRNAMES = ../lib64 $(if $(wildcard $(shell echo $(SYSTEM_HEADER_DIR))/../../usr/lib32),../lib32,../lib)
++MULTILIB_OSDIRNAMES = ../lib $(if $(wildcard $(shell echo $(SYSTEM_HEADER_DIR))/../../usr/lib32),../lib32,../lib)
+ 
+ LIBGCC = stmp-multilib
+ INSTALL_LIBGCC = install-multilib
+--- a/src/gcc/config/rs6000/t-linux64
++++ b/src/gcc/config/rs6000/t-linux64
+@@ -19,7 +19,7 @@
+ MULTILIB_EXTRA_OPTS     = fPIC mstrict-align
+ MULTILIB_EXCEPTIONS     =
+ MULTILIB_EXCLUSIONS     =
+-MULTILIB_OSDIRNAMES	= ../lib64 $(if $(wildcard $(shell echo $(SYSTEM_HEADER_DIR))/../../usr/lib32),../lib32,../lib)
++MULTILIB_OSDIRNAMES	= ../lib $(if $(wildcard $(shell echo $(SYSTEM_HEADER_DIR))/../../usr/lib32),../lib32,../lib)
+ MULTILIB_MATCHES        =
+ 
+ softfp_wrap_start := '\#ifndef __powerpc64__'
+--- a/src/gcc/config/sparc/t-linux64
++++ b/src/gcc/config/sparc/t-linux64
+@@ -1,6 +1,6 @@
+ MULTILIB_OPTIONS = m64/m32
+ MULTILIB_DIRNAMES = 64 32
+-MULTILIB_OSDIRNAMES = ../lib64 ../lib
++MULTILIB_OSDIRNAMES = ../lib64 $(if $(wildcard $(shell echo $(SYSTEM_HEADER_DIR))/../../usr/lib32),../lib32,../lib)
+ 
+ LIBGCC = stmp-multilib
+ INSTALL_LIBGCC = install-multilib
+--- a/src/gcc/config/s390/t-linux64
++++ b/src/gcc/config/s390/t-linux64
+@@ -7,4 +7,4 @@
+
+ MULTILIB_OPTIONS = m64/m31
+ MULTILIB_DIRNAMES = 64 32
+-MULTILIB_OSDIRNAMES = ../lib64 $(if $(wildcard $(shell echo $(SYSTEM_HEADER_DIR))/../../usr/lib32),../lib32,../lib)
++MULTILIB_OSDIRNAMES = ../lib $(if $(wildcard $(shell echo $(SYSTEM_HEADER_DIR))/../../usr/lib32),../lib32,../lib)

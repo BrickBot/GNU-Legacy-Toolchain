@@ -1,0 +1,17 @@
+# DP: Avoid include paths starting with a double slash
+
+--- a/src/gcc/configure.ac
++++ b/src/gcc/configure.ac
+@@ -751,8 +751,10 @@
+  yes) TARGET_SYSTEM_ROOT='${exec_prefix}/${target_noncanonical}/sys-root' ;;
+  *) TARGET_SYSTEM_ROOT=$with_sysroot ;;
+  esac
+-   
+- TARGET_SYSTEM_ROOT_DEFINE='-DTARGET_SYSTEM_ROOT=\"$(TARGET_SYSTEM_ROOT)\"'
++
++ if test "x$TARGET_SYSTEM_ROOT" != x/; then
++  TARGET_SYSTEM_ROOT_DEFINE='-DTARGET_SYSTEM_ROOT=\"$(TARGET_SYSTEM_ROOT)\"'
++ fi
+  CROSS_SYSTEM_HEADER_DIR='$(TARGET_SYSTEM_ROOT)$${sysroot_headers_suffix}$(NATIVE_SYSTEM_HEADER_DIR)'
+ 	
+  if test "x$prefix" = xNONE; then

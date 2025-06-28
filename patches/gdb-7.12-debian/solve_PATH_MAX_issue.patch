@@ -1,0 +1,40 @@
+Description: Patch out a PATH_MAX usage, for Hurd's benefit
+
+Author: Svante Signell <svante.signell@gmail.com>
+Bug-Debian: http://bugs.debian.org/709508
+Forwarded: http://sourceware.org/ml/gdb-patches/2013-05/msg00878.html
+Reviewed-By: Héctor Orón Martínez <zumbi@debian.org>
+Last-Update: 2013-06-08
+
+--- a/gdb/nto-tdep.c
++++ b/gdb/nto-tdep.c
+@@ -152,10 +152,12 @@
+ void
+ nto_init_solib_absolute_prefix (void)
+ {
+-  char buf[PATH_MAX * 2], arch_path[PATH_MAX];
++  char *buf, *arch_path;
+   char *nto_root;
+   const char *endian;
+   const char *arch;
++  int arch_len, len;
++#define FMT "set solib-absolute-prefix %s"
+ 
+   nto_root = nto_target ();
+   if (strcmp (gdbarch_bfd_arch_info (target_gdbarch ())->arch_name, "i386") == 0)
+@@ -178,9 +180,13 @@
+ 	       == BFD_ENDIAN_BIG ? "be" : "le";
+     }
+ 
+-  xsnprintf (arch_path, sizeof (arch_path), "%s/%s%s", nto_root, arch, endian);
++  arch_len = strlen (nto_root) + 1 + strlen (arch) + strlen (endian) + 1;
++  arch_path = alloca (arch_len);
++  xsnprintf (arch_path, arch_len, "%s/%s%s", nto_root, arch, endian);
+ 
+-  xsnprintf (buf, sizeof (buf), "set solib-absolute-prefix %s", arch_path);
++  len = strlen (FMT) - 2 + strlen (arch_path) + 1;
++  buf =  alloca (len);
++  xsnprintf (buf, len, FMT, arch_path);
+   execute_command (buf, 0);
+ }
+ 

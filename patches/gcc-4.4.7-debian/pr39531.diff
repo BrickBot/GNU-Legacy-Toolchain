@@ -1,0 +1,58 @@
+# DP: Fix for PR39531, added by request of Finn Thain
+
+From: schwab <schwab@138bc75d-0d04-0410-961f-82ee72b054a4>
+Date: Mon, 18 May 2009 15:36:18 +0000 (+0000)
+Subject: PR target/39531
+X-Git-Url: http://gcc.gnu.org/git/?p=gcc.git;a=commitdiff_plain;h=f422081b5615ce3dc436377be3ce7da04b8fbc52
+
+PR target/39531
+* config/m68k/m68k.c (output_andsi3): Mask off sign bit copies
+before calling exact_log2.
+(output_iorsi3): Likewise.
+(output_xorsi3): Likewise.
+
+
+git-svn-id: svn+ssh://gcc.gnu.org/svn/gcc/trunk@147664 138bc75d-0d04-0410-961f-82ee72b054a4
+---
+
+gcc/
+
+2009-05-18  Andreas Schwab  <schwab@linux-m68k.org>
+
+	PR target/39531
+	* config/m68k/m68k.c (output_andsi3): Mask off sign bit copies
+	before calling exact_log2.
+	(output_iorsi3): Likewise.
+	(output_xorsi3): Likewise.
+
+diff --git a/gcc/config/m68k/m68k.c b/gcc/config/m68k/m68k.c
+index de20fdb..ec371e5 100644
+--- a/src/gcc/config/m68k/m68k.c
++++ b/src/gcc/config/m68k/m68k.c
+@@ -4829,7 +4829,7 @@ output_andsi3 (rtx *operands)
+       return "and%.w %2,%0";
+     }
+   if (GET_CODE (operands[2]) == CONST_INT
+-      && (logval = exact_log2 (~ INTVAL (operands[2]))) >= 0
++      && (logval = exact_log2 (~ INTVAL (operands[2]) & 0xffffffff)) >= 0
+       && (DATA_REG_P (operands[0])
+           || offsettable_memref_p (operands[0])))
+     {
+@@ -4866,7 +4866,7 @@ output_iorsi3 (rtx *operands)
+       return "or%.w %2,%0";
+     }
+   if (GET_CODE (operands[2]) == CONST_INT
+-      && (logval = exact_log2 (INTVAL (operands[2]))) >= 0
++      && (logval = exact_log2 (INTVAL (operands[2]) & 0xffffffff)) >= 0
+       && (DATA_REG_P (operands[0])
+ 	  || offsettable_memref_p (operands[0])))
+     {
+@@ -4901,7 +4901,7 @@ output_xorsi3 (rtx *operands)
+       return "eor%.w %2,%0";
+     }
+   if (GET_CODE (operands[2]) == CONST_INT
+-      && (logval = exact_log2 (INTVAL (operands[2]))) >= 0
++      && (logval = exact_log2 (INTVAL (operands[2]) & 0xffffffff)) >= 0
+       && (DATA_REG_P (operands[0])
+ 	  || offsettable_memref_p (operands[0])))
+     {

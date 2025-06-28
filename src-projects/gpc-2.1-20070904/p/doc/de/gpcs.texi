@@ -81,51 +81,51 @@ approved by the copyright holders.
 @node Top
 @top Version
 
-Letzte Änderung @value{lasttranslationupdate}.
+Letzte Ã„nderung @value{lasttranslationupdate}.
 Basierend auf der englischen Version von @value{lastupdate}.
 @end ifnottex
 
 @menu
-* Vorwort::                   Über die GNU Pascal Coding Standards
+* Vorwort::                   Ãœber die GNU Pascal Coding Standards
 * Rechtliches::               Freie Software soll frei bleiben
-* Gestaltungsratschläge::     Allgemeine Projektgestaltung
+* GestaltungsratschlÃ¤ge::     Allgemeine Projektgestaltung
 * Verhalten von Programmen::  Wie sich Programme verhalten sollten
-* Pascal Programmieren::      Ratschläge zur Gestaltung des Quelltextes
+* Pascal Programmieren::      RatschlÃ¤ge zur Gestaltung des Quelltextes
 * Dokumentation::             Programme dokumentieren
-* Veröffentlichungen::        Der Verlauf der Veröffentlichung
+* VerÃ¶ffentlichungen::        Der Verlauf der VerÃ¶ffentlichung
 * Glossar::                   Glossar der Worte in diesem Text
 * Index::
 @end menu
 
 @node Vorwort
-@chapter Über die GNU Pascal Coding Standards
+@chapter Ãœber die GNU Pascal Coding Standards
 
-Vorwort des Übersetzers:
-Dieses Dokument enthält die Übersetzung der
+Vorwort des Ãœbersetzers:
+Dieses Dokument enthÃ¤lt die Ãœbersetzung der
 ``GNU Pascal Coding Standards''. Einige Worte werden so beibehalten,
 wie sie im Englischen geschrieben wurden, weil es meiner Meinung
-nach die Lesbarkeit des Textes fördert. Für Fehler in der
-Übersetzung bin ich verantwortlich, nicht die ursprünglichen
-Autoren. Für Rückfragen zur Übersetzung bin ich erreichbar unter:
+nach die Lesbarkeit des Textes fÃ¶rdert. FÃ¼r Fehler in der
+Ãœbersetzung bin ich verantwortlich, nicht die ursprÃ¼nglichen
+Autoren. FÃ¼r RÃ¼ckfragen zur Ãœbersetzung bin ich erreichbar unter:
 Eike Lange @email{eike@@g-n-u.de}. Mein besonderer Dank gilt Roland
-Goretzki für seine unermüdliche Arbeit, dieses Dokument vom
+Goretzki fÃ¼r seine unermÃ¼dliche Arbeit, dieses Dokument vom
 Fehlerteufel zu befreien.
 
-Trotz aller Sorgfalt lassen sich Fehler in der Übersetzung nicht
-ganz ausschließen. In Konfliktfällen gilt stets das englische
+Trotz aller Sorgfalt lassen sich Fehler in der Ãœbersetzung nicht
+ganz ausschlieÃŸen. In KonfliktfÃ¤llen gilt stets das englische
 Original. Bitte teilen sie uns eventuelle Diskrepanzen mit, damit
-wir sie beheben können.
+wir sie beheben kÃ¶nnen.
 
 Die GNU Pascal Coding Standards wurden von einer Gruppe freiwilliger
 Helfer des GNU Pascal Projektes entwickelt. Das Ziel dieses
 Dokumentes ist es, die GNU Coding Standards um spezifische
-Informationen für Pascal-Programmierer zu ergänzen. Die
-Informationen in den GNU Coding Standard beziehen sich zu großen
-Teilen auf die Programmiersprache C. Gleichsam erklären sie jedoch
+Informationen fÃ¼r Pascal-Programmierer zu ergÃ¤nzen. Die
+Informationen in den GNU Coding Standard beziehen sich zu groÃŸen
+Teilen auf die Programmiersprache C. Gleichsam erklÃ¤ren sie jedoch
 viele der Regeln und Prinzipien, die zum Schreiben portabler,
-robuster und zuverlässiger Programme nützlich sind. Die meisten
-dieser Regeln können mit wenigen Anmerkungen versehen aus dem
-Dokument übernommen werden, weswegen sich Referenzen zu den GNU
+robuster und zuverlÃ¤ssiger Programme nÃ¼tzlich sind. Die meisten
+dieser Regeln kÃ¶nnen mit wenigen Anmerkungen versehen aus dem
+Dokument Ã¼bernommen werden, weswegen sich Referenzen zu den GNU
 Coding Standards in diesem Dokument befinden.
 
 Letzte Aktualisierung dieses Dokuments (original): @value{lastupdate}.
@@ -134,21 +134,21 @@ Letzte Aktualisierung dieses Dokuments (original): @value{lastupdate}.
 @cindex Download der Coding Standards
 
 Die GNU Pascal Coding Standards sind als Teil der GPC-Distributionen
-erhältlich -- in Binärdistributionen als Info-Dateien, in
+erhÃ¤ltlich -- in BinÃ¤rdistributionen als Info-Dateien, in
 Quelltext-Distributions auch als Texinfo-Dateien, aus denen sich
 weitere Formate wie HTML, PostScript und PDF erzeugen lassen. Eine
 HTML-Version befindet sich auch auf der Homepage von GPC,
 @uref{http://www.gnu-pascal.de}.
 
 @cindex Feedback
-@cindex Beiträge zum Dokument
+@cindex BeitrÃ¤ge zum Dokument
 
-Berichtigungen oder Vorschläge zu diesem Dokument können Sie direkt
-beim Autor einreichen: @email{eike@@g-n-u.de}. Für das
+Berichtigungen oder VorschlÃ¤ge zu diesem Dokument kÃ¶nnen Sie direkt
+beim Autor einreichen: @email{eike@@g-n-u.de}. FÃ¼r das
 englischsprachige Original wenden Sie sich bitte an die
 Dokumentations-Mailingliste des GNU Pascal Compilers,
 @email{gpc-doc@@gnu.de}. Da unsere Zeit begrenzt ist, sollten Ihre
-Vorschläge den geänderten Text enthalten. Ein ``context diff'' der
+VorschlÃ¤ge den geÃ¤nderten Text enthalten. Ein ``context diff'' der
 Quelldatei im Texinfo-Format ist sehr willkommen, wobei wir einer
 einfachen Mail auch nicht abgeneigt sind.
 
@@ -165,14 +165,14 @@ Heckenbach @samp{frank(at)pascal.gnu.de}, Markus Gerwinski
 @cindex legal aspects
 
 Dieses Kapitel der GNU Coding Standards beschreibt unter anderem,
-wie man sich versichert, daß GNU Software rechtliche
+wie man sich versichert, daÃŸ GNU Software rechtliche
 Schwierigkeiten vermeidet. @xref{Intellectual Property, , , standards}.
 
-@node Gestaltungsratschläge
+@node GestaltungsratschlÃ¤ge
 @chapter Allgemeine Projektgestaltung
 @cindex Projektgestaltung
 
-Dieses Kapitel beschäftigt sich mit einigen grundlegenden Themen
+Dieses Kapitel beschÃ¤ftigt sich mit einigen grundlegenden Themen
 zur Gestaltung eines Programmes.
 
 @menu
@@ -186,16 +186,16 @@ zur Gestaltung eines Programmes.
 @section Welche Sprache nimmt man
 @cindex Programmiersprache
 
-Wir unterstützen die Idee, daß die Vielfalt der Programmiersprachen
-etwas Gutes ist. Verschiedene Programmiersprachen sind nützlich für
+Wir unterstÃ¼tzen die Idee, daÃŸ die Vielfalt der Programmiersprachen
+etwas Gutes ist. Verschiedene Programmiersprachen sind nÃ¼tzlich fÃ¼r
 verschiedene Aufgaben. Anders als die GNU Coding Standards
 (@pxref{Source Language, , , standards}) wollen wir Sie nicht davon
-überzeugen, daß Sie C oder Pascal oder eine andere einzelne
-Programmiersprache für alles nutzen sollten.
+Ã¼berzeugen, daÃŸ Sie C oder Pascal oder eine andere einzelne
+Programmiersprache fÃ¼r alles nutzen sollten.
 
-Wenn Sie das lesen, dann haben Sie sich möglicherweise schon bei
-einigen Projekten für Pascal entschieden oder ziehen dies in
-Erwägung. Dieses Dokument will Ihnen Vorschläge unterbreiten,
+Wenn Sie das lesen, dann haben Sie sich mÃ¶glicherweise schon bei
+einigen Projekten fÃ¼r Pascal entschieden oder ziehen dies in
+ErwÃ¤gung. Dieses Dokument will Ihnen VorschlÃ¤ge unterbreiten,
 @emph{wie} Sie ihren Quellcode formatieren, wenn Sie in GNU Pascal
 programmieren.
 
@@ -204,7 +204,7 @@ programmieren.
 @cindex Pascal und C
 @cindex Linken mit C Bibliotheken
 
-Sie können eine C-Bibliothek oder eine C-Objektcode-Datei mit Ihrem
+Sie kÃ¶nnen eine C-Bibliothek oder eine C-Objektcode-Datei mit Ihrem
 Pascal-Programm oder ihrer Unit verlinken. Bitte beachten Sie die
 Hinweise im GPC-Handbuch bzgl. der Einzelheiten
 (@pxref{Other Languages, , , gpc}).
@@ -213,17 +213,17 @@ Hinweise im GPC-Handbuch bzgl. der Einzelheiten
 Wir empfehlen die Verwendung von in C geschriebenen
 ``Wrapper-Funktionen'' zum Zugriff auf C-Bibliotheken, also kleinen
 Funktionen, die i.w. nichts anderes machen, als die Funktionen der
-C-Bilbiothek aufzurufen. Der Grund dafür ist die Portabilität. Eines
-Tages könnte es Änderungen an der zu linkenden Bibliothek geben, die
-direkte @samp{external}-Deklarationen gefährden. Sie sollten dann
-die Wrapper anpassen, so daß Pascal Programme mit jeder Version
+C-Bilbiothek aufzurufen. Der Grund dafÃ¼r ist die PortabilitÃ¤t. Eines
+Tages kÃ¶nnte es Ã„nderungen an der zu linkenden Bibliothek geben, die
+direkte @samp{external}-Deklarationen gefÃ¤hrden. Sie sollten dann
+die Wrapper anpassen, so daÃŸ Pascal Programme mit jeder Version
 dieser Bibliothek zusammenarbeiten.
 
-Bei der Arbeit mit großen Paketen kann es passieren, daß
-die Kompatibilität zwischen Versionen einer Library und dem
+Bei der Arbeit mit groÃŸen Paketen kann es passieren, daÃŸ
+die KompatibilitÃ¤t zwischen Versionen einer Library und dem
 Programm nicht einfach aufrechterhalten werden kann. In diesem Fall
-kann man direkt zur Bibliothek linken, mit der man arbeiten möchte, und
-bindet ebenso eine ergänzende Datei hinzu, die ausschließlich der
+kann man direkt zur Bibliothek linken, mit der man arbeiten mÃ¶chte, und
+bindet ebenso eine ergÃ¤nzende Datei hinzu, die ausschlieÃŸlich der
 Versionskontrolle dient.
 Hier ein Beispiel:
 
@@ -237,88 +237,88 @@ Hier ein Beispiel:
 @end smallexample
 
 Beachten Sie die Benutzung von @samp{!=} anstelle von @samp{<} oder
-@samp{>}, um eine sehr präzise Versionskontrolle durchzuführen.
-Bitte beachten Sie auch, daß dieses Verfahren nur dann anwendbar
+@samp{>}, um eine sehr prÃ¤zise Versionskontrolle durchzufÃ¼hren.
+Bitte beachten Sie auch, daÃŸ dieses Verfahren nur dann anwendbar
 ist, wenn es nur eine einzige Implementation dieser Bibliothek gibt,
-d.h. es läßt sich mit einer Bibliothek wie GTK, aber nicht mit libc,
+d.h. es lÃ¤ÃŸt sich mit einer Bibliothek wie GTK, aber nicht mit libc,
 libm, curses etc. anwenden.
 
-@cindex Header-Übersetzung
-Ein automatischer Header-Übersetzer ist geplant. Dieses Werkzeug
-würde das Schreiben von Wrapperfunktionen überflüssig machen. Das
+@cindex Header-Ãœbersetzung
+Ein automatischer Header-Ãœbersetzer ist geplant. Dieses Werkzeug
+wÃ¼rde das Schreiben von Wrapperfunktionen Ã¼berflÃ¼ssig machen. Das
 Schreiben eines solchen Programmes ist eine schwierige Aufgabe, und
-niemand ist sich wirklich sicher, ob sie überhaupt durchführbar ist.
-Wann ein solches Programm verfügbar sein wird, ist ungewiß.
+niemand ist sich wirklich sicher, ob sie Ã¼berhaupt durchfÃ¼hrbar ist.
+Wann ein solches Programm verfÃ¼gbar sein wird, ist ungewiÃŸ.
 
 @cindex C-Code Compilation
-Sie können annehmen, daß der GNU C Compiler benutzt wird, um die Wrapper,
-und, allgemein, jedes bißchen C-Code zu übersetzen, das Sie Ihrem
-Programm hinzufügen.
-Der Grund für diese Annahme ist, daß nur der GNU C Compiler
-garantiert, daß alle Konventionen kompatibel zum GNU Pascal Compiler
+Sie kÃ¶nnen annehmen, daÃŸ der GNU C Compiler benutzt wird, um die Wrapper,
+und, allgemein, jedes biÃŸchen C-Code zu Ã¼bersetzen, das Sie Ihrem
+Programm hinzufÃ¼gen.
+Der Grund fÃ¼r diese Annahme ist, daÃŸ nur der GNU C Compiler
+garantiert, daÃŸ alle Konventionen kompatibel zum GNU Pascal Compiler
 sind, und das auf jeder Plattform! Der GNU C Compiler und der GNU
-Pascal Compiler teilen sich dasselbe Backend. Außerdem wird der GNU
+Pascal Compiler teilen sich dasselbe Backend. AuÃŸerdem wird der GNU
 C Compiler immer zusammen mit dem GNU Pascal Compiler erzeugt. Damit
-ist @samp{gcc} überall dort vorhanden, wo auch @samp{gpc}
+ist @samp{gcc} Ã¼berall dort vorhanden, wo auch @samp{gpc}
 installiert ist.
 
 @node Erweiterungen benutzen
 @section Das Benutzen von nicht standardisierten Erweiterungen
 @cindex Nicht-Standard Erweiterungen
 
-GNU Pascal hat viele Möglichkeiten, die Standard Pascal nicht bietet.
-Ob diese Möglichkeiten in einem Programm genutzt werden sollen, ist
-eine zu häufig diskutierte Frage.
+GNU Pascal hat viele MÃ¶glichkeiten, die Standard Pascal nicht bietet.
+Ob diese MÃ¶glichkeiten in einem Programm genutzt werden sollen, ist
+eine zu hÃ¤ufig diskutierte Frage.
 
-Auf der einen Seite kann das Benutzen dieser Möglichkeiten zu
-effizienteren oder übersichtlicheren Programmen führen. Auf der
+Auf der einen Seite kann das Benutzen dieser MÃ¶glichkeiten zu
+effizienteren oder Ã¼bersichtlicheren Programmen fÃ¼hren. Auf der
 anderen Seite ist dadurch nur der GNU Pascal Compiler in der Lage,
 diesen Quelltext zu bearbeiten. Dadurch wird das Kompilieren des
-Programmes auf Systemen unmöglich, auf denen dieser Compiler nicht
+Programmes auf Systemen unmÃ¶glich, auf denen dieser Compiler nicht
 vorhanden ist.
 
-Im allgemeinen ist es das beste, Kompatibilität zu anderen Compilern
+Im allgemeinen ist es das beste, KompatibilitÃ¤t zu anderen Compilern
 oder zum Sprachstandard beizubehalten, @emph{wenn diese
-Kompatibilität einfach zu erhalten ist}. Leider ist dies jedoch
+KompatibilitÃ¤t einfach zu erhalten ist}. Leider ist dies jedoch
 oftmals mit erheblichen Nachteilen verbunden. Als Beispiel dienen
-viele eingefügte @samp{@{$ifdef@}}s, um alle nicht-Standard-Compiler
+viele eingefÃ¼gte @samp{@{$ifdef@}}s, um alle nicht-Standard-Compiler
 zu versorgen, was den Code schwerer zu lesen, schreiben, testen und
-warten macht. Außerdem sind @samp{@{$ifdef@}}s selbst nicht
+warten macht. AuÃŸerdem sind @samp{@{$ifdef@}}s selbst nicht
 standardisiert. Sie gewinnen also nicht viel.
 
 Daher schlagen wir vor, sich nicht zu sehr an Fragen der
-Kompatibilität stören. Alles am GNU Pascal Compiler ist offen
-(Compiler und Laufzeit-System). Das bedeutet, daß das gesamte
-Interface bei Bedarf für andere Compiler verfügbar gemacht werden
-kann. Dazu können sogar einfach die Quelltexte übernommen werden,
+KompatibilitÃ¤t stÃ¶ren. Alles am GNU Pascal Compiler ist offen
+(Compiler und Laufzeit-System). Das bedeutet, daÃŸ das gesamte
+Interface bei Bedarf fÃ¼r andere Compiler verfÃ¼gbar gemacht werden
+kann. Dazu kÃ¶nnen sogar einfach die Quelltexte Ã¼bernommen werden,
 solange die Lizenzvereinbarung erhalten bleibt. Hier erfahren Sie
-mehr über die GNU General Public License:
+mehr Ã¼ber die GNU General Public License:
 @uref{http://www.gnu.org/copyleft/gpl.html}. Das ist sinnvoller als
-eine Zerstückelung des Codes. Ein (begrenztes) Beispiel dieser
-Strategie kann in der @samp{gpc-bp}-Unit (für Borland Pascal)
+eine ZerstÃ¼ckelung des Codes. Ein (begrenztes) Beispiel dieser
+Strategie kann in der @samp{gpc-bp}-Unit (fÃ¼r Borland Pascal)
 gefunden werden. Schauen Sie einfach in das Interface. Es ist
-meistens einfach, diese Unit um zusätzliche Features zu erweitern.
+meistens einfach, diese Unit um zusÃ¤tzliche Features zu erweitern.
 
 Bitte benutzen Sie die folgenden Features nicht, speziell solche
-nicht, die lediglich aus Gründen der Rückwärtskompatibilität
-eingeführt wurden:
+nicht, die lediglich aus GrÃ¼nden der RÃ¼ckwÃ¤rtskompatibilitÃ¤t
+eingefÃ¼hrt wurden:
 
 @itemize @bullet
 @item
-Kommentare der Form @samp{(* *)} für alte Terminals, wo es die
+Kommentare der Form @samp{(* *)} fÃ¼r alte Terminals, wo es die
 Zeichen @samp{@{} und @samp{@}} nicht gab.
 
 @item
 die @samp{#}-Direktiven und @samp{//}-Kommentare, wie in C/Delphi.
-Wenn eine Datei auch in C genutzt werden muß, so darf sie die
+Wenn eine Datei auch in C genutzt werden muÃŸ, so darf sie die
 @samp{#}-Direktiven, die C-Syntax in Conditionalen sowie
 @samp{//}-Kommentare enthalten.
-Gegenwärtig gibt es dazu das folgende Beispiel (das kann sich in
-Zukunft ändern): @file{p/rts/constants.h} in den GNU Pascal Compiler
+GegenwÃ¤rtig gibt es dazu das folgende Beispiel (das kann sich in
+Zukunft Ã¤ndern): @file{p/rts/constants.h} in den GNU Pascal Compiler
 Quellen.
 
 @item
-den Mißbrauch der typisierten Konstanten als Variablen, was eine
+den MiÃŸbrauch der typisierten Konstanten als Variablen, was eine
 seltsame Eigenschaft des Borland Pascal Compilers darstellt.
 
 @item
@@ -326,7 +326,7 @@ Zeichen-Konstanten der Form @samp{^A}. Benutzen Sie bitte @samp{#1}
 oder @samp{Chr (1)} stattdessen.
 
 @item
-@samp{CString}s (außer natürlich für C-Schnittstellen)
+@samp{CString}s (auÃŸer natÃ¼rlich fÃ¼r C-Schnittstellen)
 
 @item
 komplizierten Borland Pascal Code wie den folgenden anstelle von
@@ -338,7 +338,7 @@ s := 'Hallo ' + s;
 @end smallexample
 
 @item
-die meisten Fälle von @samp{FillChar} und @samp{Move}, außer für
+die meisten FÃ¤lle von @samp{FillChar} und @samp{Move}, auÃŸer fÃ¼r
 Low-Level-Programmierung und wenn es sich auf Zeichen innerhalb
 eines Strings bezieht. Das Benutzen von
 
@@ -346,36 +346,36 @@ eines Strings bezieht. Das Benutzen von
 FillChar (s, SizeOf (s), 0);
 @end smallexample
 
-um einen String zu leeren ist falsch in GNU Pascal und außerdem
+um einen String zu leeren ist falsch in GNU Pascal und auÃŸerdem
 ineffizient, sogar in Borland Pascal. Bitte benutzen Sie folgendes:
 
 @smallexample
 s := '';
 @end smallexample
 
-Dieses Beispiel ändert lediglich das Längenfeld des Strings
+Dieses Beispiel Ã¤ndert lediglich das LÃ¤ngenfeld des Strings
 @samp{s}, und leert ihn schon dadurch.
 
 @item
-die meisten Fälle von @samp{GetMem} und @samp{FreeMem}, die
-normalerweise ein Work-Around für fehlende Schemata in anderen
+die meisten FÃ¤lle von @samp{GetMem} und @samp{FreeMem}, die
+normalerweise ein Work-Around fÃ¼r fehlende Schemata in anderen
 Compilern sind.
 
 @item
-die meisten Fälle untypisierter Parameter.
+die meisten FÃ¤lle untypisierter Parameter.
 
 @item
 die meisten selbstgemachten dateinamenbezogenen Routinen.
 (Falls sie in Borland Pascal geschrieben wurden, so sind
 sie zumeist sowieso nur unter DOS anwendbar. Benutzen Sie die
-Möglichkeiten der @samp{GPC}-Unit, um einen portablen Weg
+MÃ¶glichkeiten der @samp{GPC}-Unit, um einen portablen Weg
 einzuschlagen.)
 
 @item
-Assembler-Code. Außer natürlich in seltenen Fällen, wo es um
+Assembler-Code. AuÃŸer natÃ¼rlich in seltenen FÃ¤llen, wo es um
 die Optimierung von Code geht. Dort sollte er mit Hilfe von
-@samp{@{$ifdef@}} (z.B. für den Prozessortyp) eingekapselt
-werden. Unterstützen Sie in einem solchen Fall auch bitte
+@samp{@{$ifdef@}} (z.B. fÃ¼r den Prozessortyp) eingekapselt
+werden. UnterstÃ¼tzen Sie in einem solchen Fall auch bitte
 eine reine Pascal-Version dieser Routinen innerhalb des
 @samp{@{$else@}}-Teiles. Testen Sie diese Routinen.
 
@@ -383,14 +383,14 @@ eine reine Pascal-Version dieser Routinen innerhalb des
 alles, was die @samp{System}-Unit erfordert.
 
 @item
-Annahmen über Typengrößen.
+Annahmen Ã¼ber TypengrÃ¶ÃŸen.
 
 @item
-Annahmen über ``Endianness''. (Einige Systeme verwenden für die
-Anordnung von höher- und niederwertige Bytes eine andere Reihenfolge
-als andere Systeme.) [Anm. d. Übersetzers: Die Begriffe ``Little
+Annahmen Ã¼ber ``Endianness''. (Einige Systeme verwenden fÃ¼r die
+Anordnung von hÃ¶her- und niederwertige Bytes eine andere Reihenfolge
+als andere Systeme.) [Anm. d. Ãœbersetzers: Die Begriffe ``Little
 Endian'' und ``Big Endian'' lassen sich leider nicht direkt
-übersetzen. Schauen Sie ins Glossar (@pxref{Glossar}), um mehr über
+Ã¼bersetzen. Schauen Sie ins Glossar (@pxref{Glossar}), um mehr Ã¼ber
 diese Begriffe herauszufinden.]
 
 @item
@@ -398,9 +398,9 @@ Bezeichner, die mit einem oder mehreren Unterstrichen (@samp{_})
 beginnen oder enden.
 
 @item
-Units, die nur zur Kompatibilität mit Borland Pascal geschrieben
+Units, die nur zur KompatibilitÃ¤t mit Borland Pascal geschrieben
 wurden. (@pxref{GPC Units, , , GPC}) Die Units @samp{CRT}
-und @samp{Printer} hingegen dienen sowohl der Kompatibilität
+und @samp{Printer} hingegen dienen sowohl der KompatibilitÃ¤t
 zu Borland Pascal als auch dem allgemeinen Nutzen.
 
 @end itemize
@@ -412,7 +412,7 @@ diesem Thema. @xref{Using Extensions, , , standards}.
 @chapter Wie sich Programme verhalten sollten
 
 Dieses Kapitel der GNU Coding Standards beschreibt Konventionen zum
-Schreiben stabiler Programme. Außerdem gibt es Richtlinien zur
+Schreiben stabiler Programme. AuÃŸerdem gibt es Richtlinien zur
 Ausgabe von Fehlermeldungen, zum Kommandozeilen-Interface
 und dazu, wie sich Bibliotheken verhalten sollten.
 Bitte lesen Sie auch den entsprechenden Abschnitt der
@@ -423,40 +423,40 @@ Einige Hinweise zur Pascal Programmierung:
 @cindex Signal-Funktionen
 Die in den GNU Coding Standards besprochene Auswahl zwischen
 verschiedenen Signal-Funktionen wurde bereits im Run Time System
-getroffen, so daß Sie sich nicht mehr darum kümmern müssen.
+getroffen, so daÃŸ Sie sich nicht mehr darum kÃ¼mmern mÃ¼ssen.
 
 @cindex Fehlerabfragen
 Ein weiterer Unterschied zu den GNU Coding Standards ist das
-Verhalten bei Fehlerabfragen, die einen ``unmöglichen'' Zustand
+Verhalten bei Fehlerabfragen, die einen ``unmÃ¶glichen'' Zustand
 entdecken. Wir empfehlen, das Programm nicht einfach abzubrechen.
-Dies würde implizieren, daß der Anwender ein Programmierer ist,
+Dies wÃ¼rde implizieren, daÃŸ der Anwender ein Programmierer ist,
 der den Fehler schon irgendwie findet. Diese Annahme ist nicht
 realistisch! Unser Vorschlag ist es deswegen, eine Fehlermeldung
-herauszugeben, die es dem Anwender ermöglicht, eine
+herauszugeben, die es dem Anwender ermÃ¶glicht, eine
 Fehlerbeschreibung an die Programmierer zu senden.
 
-Die GNU Coding Standards schlagen außerdem vor, jeden
-Funktionsaufruf auf Fehlerrückgaben zu überprüfen. Dieser
-Vorschlag paßt durchaus zu C, jedoch nicht unbedingt zu Pascal.
+Die GNU Coding Standards schlagen auÃŸerdem vor, jeden
+Funktionsaufruf auf FehlerrÃ¼ckgaben zu Ã¼berprÃ¼fen. Dieser
+Vorschlag paÃŸt durchaus zu C, jedoch nicht unbedingt zu Pascal.
 In Pascal wird das Abfangen von Fehlern oftmals automatisch
-durchgeführt, somit brauchen Sie sich in vielen Fällen nicht
-darum zu kümmern. Viele I/O-Routinen geben Ihnen nicht einmal einen
-Rückgabewert (beispielsweise @samp{Reset}). Diejenigen
-Fehlerwerte, die zurückgegeben werden, sollten aber auch
-überprüft werden.
+durchgefÃ¼hrt, somit brauchen Sie sich in vielen FÃ¤llen nicht
+darum zu kÃ¼mmern. Viele I/O-Routinen geben Ihnen nicht einmal einen
+RÃ¼ckgabewert (beispielsweise @samp{Reset}). Diejenigen
+Fehlerwerte, die zurÃ¼ckgegeben werden, sollten aber auch
+Ã¼berprÃ¼ft werden.
 
-Sie können die automatischen Fehlerabfragen ausschalten und sich
-selber darum kümmern. Tatsächlich ist es so, daß manche Fehler das
+Sie kÃ¶nnen die automatischen Fehlerabfragen ausschalten und sich
+selber darum kÃ¼mmern. TatsÃ¤chlich ist es so, daÃŸ manche Fehler das
 Programm mit einer Nachricht abbrechen lassen. Speziell in Units
 oder Modulen wollen Sie stattdessen vielleicht den Benutzern eine
-Möglichkeit einräumen, die Ursache des Fehlers zu beheben. Um das zu
+MÃ¶glichkeit einrÃ¤umen, die Ursache des Fehlers zu beheben. Um das zu
 tun, benutzen Sie bitte den Compiler-Switch @samp{@{$I-@}} und
 testen Sie den Wert der Funktion @samp{IOResult} (@pxref{IOResult, ,
 , gpc}) oder der globalen Fehlervariablen wie @samp{InOutRes}
-(@pxref{InOutRes, , , gpc}). Beachten Sie bitte, daß I/O-Routinen
-sofort zurückkehren, während @samp{InOutRes} gesetzt ist, so daß es
+(@pxref{InOutRes, , , gpc}). Beachten Sie bitte, daÃŸ I/O-Routinen
+sofort zurÃ¼ckkehren, wÃ¤hrend @samp{InOutRes} gesetzt ist, so daÃŸ es
 nicht notwendig ist, nach jeder Operation diesen Wert abzufragen.
-Folgendes wird dadurch möglich:
+Folgendes wird dadurch mÃ¶glich:
 
 @smallexample
 @{$local I-@}
@@ -473,54 +473,54 @@ if InOutRes <> 0 then
   end;
 @end smallexample
 
-Es kann jedoch nützlich sein, nach @samp{Rewrite} und anderen
-Aufrufe zum Öffnen auf Fehler zu testen, denn dort treten die
+Es kann jedoch nÃ¼tzlich sein, nach @samp{Rewrite} und anderen
+Aufrufe zum Ã–ffnen auf Fehler zu testen, denn dort treten die
 meisten Fehler auf, und ein Test macht andere, nachgestellte
-Aufrufe oftmals unnötig.
+Aufrufe oftmals unnÃ¶tig.
 
-Die GPC-Unit enthält eine Menge Routinen für den Umgang mit
-Temporärdateien, Konfigurationsdateien und vielen anderen
+Die GPC-Unit enthÃ¤lt eine Menge Routinen fÃ¼r den Umgang mit
+TemporÃ¤rdateien, Konfigurationsdateien und vielen anderen
 dateinamenbezogenen Aufgaben. Der Vorteil beim Gebrauch dieser
-Routinen liegt darin, daß sie unter verschiedenen Betriebssystemen
-laufen (zum Beispiel DOS und Unix) und daß evtl. dateinamenbezogene
+Routinen liegt darin, daÃŸ sie unter verschiedenen Betriebssystemen
+laufen (zum Beispiel DOS und Unix) und daÃŸ evtl. dateinamenbezogene
 Probleme an einer zentralen Stelle (dem Run Time System)
-behoben werden können. Das ist besser, als verschiedene Stellen
+behoben werden kÃ¶nnen. Das ist besser, als verschiedene Stellen
 im Code entsprechend anzupassen.
 
 Soweit es die Bibliotheken betrifft, raten wir davon ab, jede einzelne
-Routine in einer einzigen Datei unterzubringen. Wir hoffen, daß der GNU
+Routine in einer einzigen Datei unterzubringen. Wir hoffen, daÃŸ der GNU
 Pascal Compiler das eines Tages auf der Ebene des Linkers selber macht.
-Gegenwärtig, so glauben wir, ist Programmiererfreundlichkeit sinnvoller
-als die Größe der ausführbaren Datei. Außerdem empfehlen wir, auf
-Namens-Präfixe zu verzichten. Namenskonflikte können stattdessen
-durch qualifizierte Bezeichner (@samp{UnitName.RoutinenName}) gelöst
+GegenwÃ¤rtig, so glauben wir, ist Programmiererfreundlichkeit sinnvoller
+als die GrÃ¶ÃŸe der ausfÃ¼hrbaren Datei. AuÃŸerdem empfehlen wir, auf
+Namens-PrÃ¤fixe zu verzichten. Namenskonflikte kÃ¶nnen stattdessen
+durch qualifizierte Bezeichner (@samp{UnitName.RoutinenName}) gelÃ¶st
 werden.
 
 @node Pascal Programmieren
-@chapter Ratschläge zur Gestaltung des Quelltextes
+@chapter RatschlÃ¤ge zur Gestaltung des Quelltextes
 
-Dieses Kapitel gibt Ihnen Ratschläge, wie Sie Ihre Quelltexte gestalten
-sollten. Diese Regeln gelten eigentlich nur für veröffentlichten
+Dieses Kapitel gibt Ihnen RatschlÃ¤ge, wie Sie Ihre Quelltexte gestalten
+sollten. Diese Regeln gelten eigentlich nur fÃ¼r verÃ¶ffentlichten
 Code.
 Wenn Sie als Beispiel Kommentare in der alten Form @samp{(* this one *)}
-schreiben möchten, so geht das natürlich vorübergehend, bei der
-Veröffentlichung sollten Sie dann allerdings unsere diesbezüglichen
-Ratschläge beherzigen. Da man aber niemals wissen kann, ob und wann man
-den Code veröffentlicht, ist es vorzuziehen, sich von vornherein an
-diese Ratschläge zu halten.
+schreiben mÃ¶chten, so geht das natÃ¼rlich vorÃ¼bergehend, bei der
+VerÃ¶ffentlichung sollten Sie dann allerdings unsere diesbezÃ¼glichen
+RatschlÃ¤ge beherzigen. Da man aber niemals wissen kann, ob und wann man
+den Code verÃ¶ffentlicht, ist es vorzuziehen, sich von vornherein an
+diese RatschlÃ¤ge zu halten.
 
 @menu
 * Verschiedene Tips::           Verschiedene Tips zur Gestaltung
-* Konsitenzüberprüfung::        Über die Benutzung von @code{Assert}, um
-                                abzubrechen, wenn etwas ``Unmögliches''
+* KonsitenzÃ¼berprÃ¼fung::        Ãœber die Benutzung von @code{Assert}, um
+                                abzubrechen, wenn etwas ``UnmÃ¶gliches''
                                 passiert.
 * Formatierung::                Wie man die Quellen formatiert
 * Kommentare::                  Quellen kommentieren
 * Reihenfolge::                 Reihenfolge der Code-Bereiche
-* Großschreibung::              Großschreibung
+* GroÃŸschreibung::              GroÃŸschreibung
 * Compiler-Direktiven::         Benutzung von Compiler-Direktiven
 * Zwischenraum::                Wie man Leerzeichen in Code benutzt
-* Zeilenumbrüche::              Wo man seine Zeilen umbrechen sollte
+* ZeilenumbrÃ¼che::              Wo man seine Zeilen umbrechen sollte
 * Strings::                     Zeichenketten
 * Internationalisierung::       Techniken zur Internationalisierung
 * MemoryMap::                   Wie Sie sicher @samp{MemoryMap} benutzen
@@ -554,23 +554,23 @@ Gleichheitszeichen, es sei denn, Sie wollen PXSC-kompatibel sein.
 Wenn eine Funktion einen @samp{Boolean}-Wert liefert, um den
 Erfolg einer Operation anzuzeigen, so sollte @samp{True} den
 Erfolg melden und @samp{False} das Fehlschlagen.
-Beachten Sie, daß dieses Vorgehen anders ist als in C, wo
+Beachten Sie, daÃŸ dieses Vorgehen anders ist als in C, wo
 @samp{0} oftmals den Erfolg meldet.
 
-Vermeiden Sie @samp{goto} und ähnliche Statements, wie @samp{Exit},
+Vermeiden Sie @samp{goto} und Ã¤hnliche Statements, wie @samp{Exit},
 @samp{Return}, @samp{Break} und @samp{Continue}. Vermeiden Sie
-@samp{goto} um jeden Preis (außer @emph{möglicherweise} ein
+@samp{goto} um jeden Preis (auÃŸer @emph{mÃ¶glicherweise} ein
 nicht-lokales @samp{goto}, um aus einer @emph{sehr tief}
 geschachtelten rekursiven Funktion im Falle eines Fehlers
 herauszukommen). Vermeiden Sie die anderen Statements, wenn dies
-mit vertretbarem Aufwand möglich ist. Wenn Sie aber dafür eine
-weitere @samp{Boolean}-Variable einführen müssten, so darf dies als
-Entschuldigung für das Benutzen dieser Statements gelten.
-Beachten Sie, daß Code oftmals @emph{einfacher} wird, wenn Sie auf
+mit vertretbarem Aufwand mÃ¶glich ist. Wenn Sie aber dafÃ¼r eine
+weitere @samp{Boolean}-Variable einfÃ¼hren mÃ¼ssten, so darf dies als
+Entschuldigung fÃ¼r das Benutzen dieser Statements gelten.
+Beachten Sie, daÃŸ Code oftmals @emph{einfacher} wird, wenn Sie auf
 @samp{Break} verzichten und stattdessen eine bessere
 Abbruchbedingung oder eine andere Sorte Schleife benutzen.
 
-Niemals sollten Sie die @samp{for}-Zählvariable verändern oder dem
+Niemals sollten Sie die @samp{for}-ZÃ¤hlvariable verÃ¤ndern oder dem
 Wert der Variablen nach dem Durchlaufen dieser Schleife vertrauen.
 (Das ist nicht nur eine Art, seinen Quelltext zu gestalten, sondern
 mehr noch eine Definition von Pascal. Solche Dinge ergeben
@@ -580,14 +580,14 @@ Vertrauen Sie niemals undefiniertem Verhalten. Als Beispiele dienen
 globale Variablen, die zu Beginn des Programmes mit @samp{0}
 initialisiert zu sein scheinen, angeforderter Speicher, der
 initialisiert zu sein scheint, ein freigegebener Speicherbereich,
-dessen Inhalt immer noch gültig zu sein scheint oder die oben
-besprochenen @samp{for}-Zählvariablen. Nichts von all dem ist
+dessen Inhalt immer noch gÃ¼ltig zu sein scheint oder die oben
+besprochenen @samp{for}-ZÃ¤hlvariablen. Nichts von all dem ist
 garantiert und kann mit jeder Compilerversion oder Plattform
-geändert werden. Undefiniert ist eben undefiniert. Und der
-Eindruck, daß solche Dinge bei 42 anderen Compilern zu
-funktionieren scheinen, ist dabei völlig belanglos!
+geÃ¤ndert werden. Undefiniert ist eben undefiniert. Und der
+Eindruck, daÃŸ solche Dinge bei 42 anderen Compilern zu
+funktionieren scheinen, ist dabei vÃ¶llig belanglos!
 
-Bei Vergleichen sollte die sich häufiger ändernde Variable auf der
+Bei Vergleichen sollte die sich hÃ¤ufiger Ã¤ndernde Variable auf der
 linken Seite stehen.
 
 @smallexample
@@ -597,21 +597,21 @@ for i := 1 to 10 do
       if b[j] = a[i] then @dots{}
 @end smallexample
 
-In diesem Beispiel ändert sich @samp{a[i]} häufiger als @samp{Foo}
-und @samp{b[j]} ändert sich häufiger als @samp{a[i]} (da @samp{j}
-sich häufiger als @samp{i} ändert).
+In diesem Beispiel Ã¤ndert sich @samp{a[i]} hÃ¤ufiger als @samp{Foo}
+und @samp{b[j]} Ã¤ndert sich hÃ¤ufiger als @samp{a[i]} (da @samp{j}
+sich hÃ¤ufiger als @samp{i} Ã¤ndert).
 
-Wir nehmen bei diesem Beispiel an, daß @samp{Foo} konstant ist. Wenn
-@samp{Foo} ebenfalls von @samp{i} abhängt, so kann es angebracht
+Wir nehmen bei diesem Beispiel an, daÃŸ @samp{Foo} konstant ist. Wenn
+@samp{Foo} ebenfalls von @samp{i} abhÃ¤ngt, so kann es angebracht
 sein, @samp{Foo} auf die linke Seite zu stellen. Dies sollte dann
-aber durch einen Kommentar erläutert werden.
+aber durch einen Kommentar erlÃ¤utert werden.
 
 Vermeiden Sie es, Code doppelt zu schreiben. Es ist zwar so einfach,
 den Code an eine andere Stelle zu kopieren, aber es wird ein
 Alptraum sein, diesen dann zu pflegen. Benutzen Sie stattdessen
 Routinen oder Subroutinen, Units oder Module. Planen Sie Ihren Code
-so, daß er erweitert werden kann. Packen Sie schlaue Tricks nicht an
-Stellen, die Sie später ändern wollen.
+so, daÃŸ er erweitert werden kann. Packen Sie schlaue Tricks nicht an
+Stellen, die Sie spÃ¤ter Ã¤ndern wollen.
 
 Umfassen Sie einzelne Statements nicht mit @samp{begin} und @samp{end},
 es sei denn, Sie wollen das ``dangling else'' - Problem vermeiden oder
@@ -656,9 +656,9 @@ end;
 end.
 @end smallexample
 
-Schreiben Sie keine ungenutzten Deklarationen, außer
+Schreiben Sie keine ungenutzten Deklarationen, auÃŸer
 in Interfaces, wo diese vom importierenden Code genutzt
-werden können.
+werden kÃ¶nnen.
 
 @cindex Boolsche Werte
 @cindex Boolean
@@ -667,30 +667,30 @@ Bitte schreiben Sie @samp{if Foo then} statt
 @samp{if Foo = True then}, und @samp{if not Foo then} statt
 @samp{if Foo = False then}.
 Benutzen Sie auch @samp{until False} statt @samp{until 1 = 0},
-das sieht auch hübscher aus. Ein anderes Beispiel ist
+das sieht auch hÃ¼bscher aus. Ein anderes Beispiel ist
 @samp{Foo := Expression} statt @samp{if
 Expression then Foo := True else Foo := False}.
 
-Vermeiden Sie doppelte globale Bezeichner, überladen Sie eingebaute
+Vermeiden Sie doppelte globale Bezeichner, Ã¼berladen Sie eingebaute
 Bezeichner nicht, obwohl es der GNU Pascal Compiler verschmerzen
-würde. Benutzen Sie dieselben globalen Bezeichner auch nicht in
+wÃ¼rde. Benutzen Sie dieselben globalen Bezeichner auch nicht in
 verschiedenen Units oder Modulen. (Dank ``qualifizierter
-Bezeichner'' wäre dies für den Compiler kein Problem, aber für den
+Bezeichner'' wÃ¤re dies fÃ¼r den Compiler kein Problem, aber fÃ¼r den
 Benutzer verwirrend.)
 
 @cindex Globale Variablen
-Wir raten davon ab, globale Variablen für nicht-globale Zwecke
-einzusetzen, z.B. eine globale Variable @code{Counter} als Zähler in
+Wir raten davon ab, globale Variablen fÃ¼r nicht-globale Zwecke
+einzusetzen, z.B. eine globale Variable @code{Counter} als ZÃ¤hler in
 diversen lokalen Routinen zu verwenden. Deklarieren Sie stattdessen
-eine lokale Variable in jeder Routine, die eine benötigt. Dies
-ermöglicht i.a. auch eine bessere Optimierung des erzeugten Codes.
+eine lokale Variable in jeder Routine, die eine benÃ¶tigt. Dies
+ermÃ¶glicht i.a. auch eine bessere Optimierung des erzeugten Codes.
 
 @cindex Unendliche Schleifen
 Wenn Sie eine unendliche Schleife schreiben (auch wenn diese
-möglicherweise durch @samp{Break} verlassen wird), empfehlen wir die
+mÃ¶glicherweise durch @samp{Break} verlassen wird), empfehlen wir die
 Verwendung der @code{repeat} und nicht der @code{while} Schleife,
-weil dadurch der Code weniger weit nach rechts eingerückt wird
-(jedenfalls, sofern die Schleife mehr als eine Anweisung enthält).
+weil dadurch der Code weniger weit nach rechts eingerÃ¼ckt wird
+(jedenfalls, sofern die Schleife mehr als eine Anweisung enthÃ¤lt).
 Also:
 
 @smallexample
@@ -708,23 +708,23 @@ while True do
   end
 @end smallexample
 
-@node Konsitenzüberprüfung
-@section Explizite Überprüfung der internen Konsistenz
-@cindex Konsitenzüberprüfung
+@node KonsitenzÃ¼berprÃ¼fung
+@section Explizite ÃœberprÃ¼fung der internen Konsistenz
+@cindex KonsitenzÃ¼berprÃ¼fung
 @cindex Assert
 
 Wie in der GNU C-Bibliotheksdokumentation (@pxref{Consistency
-Checking, , , libc}) erläutert, ist es häufig von Vorteil, grundlegende
-Annahmen in eigenen Programmen zu überprüfen.
+Checking, , , libc}) erlÃ¤utert, ist es hÃ¤ufig von Vorteil, grundlegende
+Annahmen in eigenen Programmen zu Ã¼berprÃ¼fen.
 Schauen Sie sich dazu einmal folgende Prozedur an:
 
 @smallexample
 procedure MachWasMitPString (StrPtr: PString);
 @end smallexample
 
-Hierbei könnten Sie implizit annehmen, daß diese Prozedur niemals mit
+Hierbei kÃ¶nnten Sie implizit annehmen, daÃŸ diese Prozedur niemals mit
 @code{nil} als Argument aufgerufen wird. Es ist jedoch sicherer, diese
-``unmögliche Bedingung'' zu überprüfen, um sicher zu stellen, daß
+``unmÃ¶gliche Bedingung'' zu Ã¼berprÃ¼fen, um sicher zu stellen, daÃŸ
 @code{StrPtr} verschieden von @code{nil} ist:
 
 @smallexample
@@ -735,37 +735,37 @@ begin
 end;
 @end smallexample
 
-Wenn die Überprüfung fehlschlägt, dann erzeugt das Programm einen
-Laufzeitfehler. Daraus läßt sich der Schluß ziehen, daß der Code, welcher
+Wenn die ÃœberprÃ¼fung fehlschlÃ¤gt, dann erzeugt das Programm einen
+Laufzeitfehler. Daraus lÃ¤ÃŸt sich der SchluÃŸ ziehen, daÃŸ der Code, welcher
 diese Prozedur aufruft, fehlerhaft ist (oder diese Routine entsprechend
-ergänzt werden sollte). Dieses Verfahren kann sich bei der Fehlersuche
+ergÃ¤nzt werden sollte). Dieses Verfahren kann sich bei der Fehlersuche
 wirklich als hilfreich erweisen. Mit anderen Worten: fundamentale Annahmen
-am Anfang (oder einem anderen geeigneten Ort) einer Routine zu überprüfen
-stellt sicher, daß eine Funktion oder Prozedur nicht falsch benutzt werden
+am Anfang (oder einem anderen geeigneten Ort) einer Routine zu Ã¼berprÃ¼fen
+stellt sicher, daÃŸ eine Funktion oder Prozedur nicht falsch benutzt werden
 kann.
 
-Die GNU C-Bibliothek enthält das @code{assert}-Makro für diese Art von
-Überprüfungen. GNU-Pascals @code{Assert} verhält sich ein wenig anders.
-@code{Assert} bricht das Programm nicht vollständig ab, sondern erzeugt
+Die GNU C-Bibliothek enthÃ¤lt das @code{assert}-Makro fÃ¼r diese Art von
+ÃœberprÃ¼fungen. GNU-Pascals @code{Assert} verhÃ¤lt sich ein wenig anders.
+@code{Assert} bricht das Programm nicht vollstÃ¤ndig ab, sondern erzeugt
 einen Laufzeit-Fehler (@pxref{Assert, , , gpc}), den man z.B. mit der
 @samp{Trap}-Unit (@pxref{Trap, , , gpc}) abfangen kann.
 
 Wenn das Programm hinreichend getestet wurde, kann man die
-Überprüfung von @code{Assert} abstellen, indem man das Programm mit
+ÃœberprÃ¼fung von @code{Assert} abstellen, indem man das Programm mit
 der Option @samp{--no-assertions} neu compiliert. Am Code selbst ist
-keine Änderung nötig. Nebenwirkungen der Argumente von
+keine Ã„nderung nÃ¶tig. Nebenwirkungen der Argumente von
 @code{Assert} werden weiterhin ausgewertet (dies ist anders als
-in C), so daß man weiterhin schreiben kann:
+in C), so daÃŸ man weiterhin schreiben kann:
 
 @smallexample
   Assert (MeineFunktion (Foo, Bar) > 0)
 @end smallexample
 
-@code{MeineFunktion} wird auf jeden Fall aufgerufen, die Überprüfung,
-ob der Rückgabewert positiv ist, erfolgt jedoch nur, wenn
+@code{MeineFunktion} wird auf jeden Fall aufgerufen, die ÃœberprÃ¼fung,
+ob der RÃ¼ckgabewert positiv ist, erfolgt jedoch nur, wenn
 @samp{--no-assertions} nicht als Option angegeben wurde.
 
-Wir empfehlen, die Konsistenzüberprüfung nie abzuschalten, sofern man den
+Wir empfehlen, die KonsistenzÃ¼berprÃ¼fung nie abzuschalten, sofern man den
 kleinen Laufzeitzuwachs verschmerzen kann.
 
 @node Formatierung
@@ -774,45 +774,45 @@ kleinen Laufzeitzuwachs verschmerzen kann.
 
 @cindex Blanks
 @cindex Leerzeichen
-Als erstes: Vermeiden Sie unnötige Leerzeichen am Ende einer Zeile.
-Vergewissern Sie sich außerdem, daß Sie den Quelltext nicht mit
+Als erstes: Vermeiden Sie unnÃ¶tige Leerzeichen am Ende einer Zeile.
+Vergewissern Sie sich auÃŸerdem, daÃŸ Sie den Quelltext nicht mit
 Tabulatorzeichen speichern. Verschiedene Editoren oder auch verschiedene
 Konfigurationen eines Editors interpretieren diese Zeichen
 mit einer unterschiedlichen Anzahl Leerzeichen.
-Dies gefährdet Ihre mühsam erarbeitete Einrückung.
+Dies gefÃ¤hrdet Ihre mÃ¼hsam erarbeitete EinrÃ¼ckung.
 (Wenn Sie GNU Emacs benutzen, so ist die Funktion @samp{untabify}
-sehr nützlich; wenn sie VIM benutzen, die Umgebungsoption
+sehr nÃ¼tzlich; wenn sie VIM benutzen, die Umgebungsoption
 @samp{expandtab} (@samp{:set et}); in PENG kann die Option
 @samp{Expand tabs} verwendet werden.)
 
 @cindex Steuerzeichen
-Bitte vermeiden Sie es, in Ihren Quelltext Steuerzeichen einzufügen
-(außer NewLine, selbstverständlich). Bitte auch keine Form-Feeds
+Bitte vermeiden Sie es, in Ihren Quelltext Steuerzeichen einzufÃ¼gen
+(auÃŸer NewLine, selbstverstÃ¤ndlich). Bitte auch keine Form-Feeds
 (@samp{#12}), wenngleich sie in den GNU Coding Standards zum
 Separieren von logischen Bereichen empfohlen werden. Auch keine
-@samp{SUB}-Zeichen (@samp{#26}), diese werden nämlich unter DOS
-als Ende-der-Datei-Zeichen mißbraucht. Ältere DOS-Editoren
-fügen dieses Zeichen an das Ende der Datei an, obwohl selbst das
-FAT-Dateisystem selbst über das Ende der Datei Bescheid weiß.
+@samp{SUB}-Zeichen (@samp{#26}), diese werden nÃ¤mlich unter DOS
+als Ende-der-Datei-Zeichen miÃŸbraucht. Ã„ltere DOS-Editoren
+fÃ¼gen dieses Zeichen an das Ende der Datei an, obwohl selbst das
+FAT-Dateisystem selbst Ã¼ber das Ende der Datei Bescheid weiÃŸ.
 
-@cindex Zeilenlänge
-Wir empfehlen eine maximale Länge von 68 Zeichen pro Zeile, so daß
+@cindex ZeilenlÃ¤nge
+Wir empfehlen eine maximale LÃ¤nge von 68 Zeichen pro Zeile, so daÃŸ
 eine Quelldatei in @TeX{} mit voreingestelltem Font auf A4 gedruckt
-werden kann. oder 78 Zeichen, geeignet für 80 Zeichen breite
+werden kann. oder 78 Zeichen, geeignet fÃ¼r 80 Zeichen breite
 Bildschirme. Dies ist keine feste Regel, denn umgebrochene Zeilen
 verringern nur allzuoft die Lesbarkeit.
 
 @cindex Leerzeilen
-Benutzen Sie Leerzeilen zwischen Blöcken. Blöcke sind lange
+Benutzen Sie Leerzeilen zwischen BlÃ¶cken. BlÃ¶cke sind lange
 Kommentare, @samp{type}, @samp{const}, @samp{var}, @samp{label}
-Abschnitte, Routinen-Rümpfe, Unit- oder
+Abschnitte, Routinen-RÃ¼mpfe, Unit- oder
 Modulinitialisierung/-finalisierung, @samp{interface},
 @samp{implementation}, @samp{module}, @samp{export}, @samp{uses},
 @samp{import} Zeilen, globale Compiler-Direktiven.
 Soweit lange Kommentare eine folgende Deklaration betreffen,
 bitten wir Sie, nur eine Zeile vor dem Kommentar abzusetzen,
 nicht zwischen Kommentar und Deklaration.
-Eine besondere Ausnahme ist zwischen den Blöcken innerhalb
+Eine besondere Ausnahme ist zwischen den BlÃ¶cken innerhalb
 derselben Routine. Benutzen Sie hier keine Leerzeilen:
 
 @smallexample
@@ -832,7 +832,7 @@ procedure Long;
 const
   @dots{}
 var
-  Variablen, die von Sub genutzt werden können @dots{}
+  Variablen, die von Sub genutzt werden kÃ¶nnen @dots{}
 
   procedure Sub;
   var
@@ -842,7 +842,7 @@ var
   end;
 
 var
-  Variablen, die nicht von Sub genutzt werden können @dots{}
+  Variablen, die nicht von Sub genutzt werden kÃ¶nnen @dots{}
 begin
   @dots{}
 end;
@@ -850,15 +850,15 @@ end;
 
 Benutzen Sie bitte auch keine Leerzeile nach der Deklaration des
 Namens der Hauptroutine, es sei denn, eine Subroutine folgt sofort.
-Andernfalls würde die Deklaration aussehen wie eine
+Andernfalls wÃ¼rde die Deklaration aussehen wie eine
 Forward-Deklaration.
 
-Beachten Sie bitte, daß wir im obigen Beispiel die lokalen Variablen
+Beachten Sie bitte, daÃŸ wir im obigen Beispiel die lokalen Variablen
 in Abschnitte vor und nach der Subroutine aufgeteilt haben. Dies ist
 nicht zwingend.
 
-Alles, was wir über Subroutinen gesagt haben, gilt
-selbstverständlich auch für Sub-Subroutinen beliebiger
+Alles, was wir Ã¼ber Subroutinen gesagt haben, gilt
+selbstverstÃ¤ndlich auch fÃ¼r Sub-Subroutinen beliebiger
 Verschachtelungstiefe.
 
 Eine Leerzeile sollte dann zwischen Deklarationen desselben Types
@@ -867,7 +867,7 @@ vor der Deklaration ein Kommentar steht, so soll die Leerzeile vor
 dem Kommentar stehen. Anderenfalls soll die Leerzeile vor der
 Deklaration stehen.
 
-Leerzeilen können in langen Kommentaren Absätze teilen.
+Leerzeilen kÃ¶nnen in langen Kommentaren AbsÃ¤tze teilen.
 
 Keine Leerzeile am Anfang oder am Ende einer Datei. Lediglich ein
 einzelnes Zeilenendzeichen nach dem letzten @samp{end.}. Niemals
@@ -887,20 +887,20 @@ Altmodische Kommentare zwischen Klammern und Sternchen sollten
 nicht mehr benutzt werden:
 
 @smallexample
-(* Ein häßlicher Kommentar. So etwas braucht man nicht mehr! *)
+(* Ein hÃ¤ÃŸlicher Kommentar. So etwas braucht man nicht mehr! *)
 @end smallexample
 
 Auch sollten keine Kommentare mehr geschrieben werden, die mit
-doppelten Schrägzeichen eingeleitet werden und bis zum Ende der
+doppelten SchrÃ¤gzeichen eingeleitet werden und bis zum Ende der
 Zeile gehen:
 
 @smallexample
 // Machen Sie es nicht.
 @end smallexample
 
-Obwohl ISO Pascal gemischte Kommentare ausdrücklich erlaubt und
+Obwohl ISO Pascal gemischte Kommentare ausdrÃ¼cklich erlaubt und
 der GNU Pascal Compiler sich mit der Option
-@samp{@{$mixed-comments@}} auch nicht darüber beschweren würde,
+@samp{@{$mixed-comments@}} auch nicht darÃ¼ber beschweren wÃ¼rde,
 sollten solche Kommentare nicht benutzt werden:
 
 @smallexample
@@ -911,38 +911,38 @@ sollten solche Kommentare nicht benutzt werden:
 @cindex Verschachtelte Kommentare
 Vermeiden Sie verschachtelte Kommentare wie
 @samp{@{ @{ diesen hier @} @}}. Das ist nur dann in Ordnung,
-wenn Sie @TeX{} in einem Kommentar setzen wollen oder ähnlich
-exotische Dinge. Was auch immer Sie für Gründe haben mögen, müssen
-Sie diese Option dann zunächst mit der Direktive
+wenn Sie @TeX{} in einem Kommentar setzen wollen oder Ã¤hnlich
+exotische Dinge. Was auch immer Sie fÃ¼r GrÃ¼nde haben mÃ¶gen, mÃ¼ssen
+Sie diese Option dann zunÃ¤chst mit der Direktive
 @samp{@{$nested-comments@}} anschalten. Benutzen Sie bitte nicht die
 Kommandozeilenoption @samp{--nested-comments}. Packen Sie all
 diese Optionen in den Quellcode, damit niemand, der den Quellcode
-übersetzen möchte, erst die benötigten Optionen erraten muß, und
+Ã¼bersetzen mÃ¶chte, erst die benÃ¶tigten Optionen erraten muÃŸ, und
 auch, weil Kommandozeilenoptionen z.B. bein Kompilieren eines
 Projektes mit mehreren Units/Modules @emph{alle} Dateien betreffen
-würden.
+wÃ¼rden.
 
 @cindex Sprache in Kommentaren
 Bitte schreiben Sie Kommentare in Englisch! Englisch ist diejenige
-Sprache, die die meisten Programmierer in allen Ländern lesen
-können. Wenn Sie sich im Englischen nicht fit genug fühlen, dann bitten
+Sprache, die die meisten Programmierer in allen LÃ¤ndern lesen
+kÃ¶nnen. Wenn Sie sich im Englischen nicht fit genug fÃ¼hlen, dann bitten
 Sie jemanden, Ihnen dabei zu helfen. Schreiben Sie so gut, wie Sie
-können.
+kÃ¶nnen.
 
 @cindex Kommentarraster
-Sie sollten sich ``French Spacing'' angewöhnen, d.h. nur ein
-Leerzeichen am Ende eines Satzes. Dabei können Sie in GNU Emacs
-@samp{M-a} und @samp{M-e} nicht benutzen. Wir hoffen, daß Sie das
-verschmerzen können. Bitte lassen Sie nur ein Leerzeichen nach der
-öffnenden und der schließenden geschweiften Klammer des Kommentares
+Sie sollten sich ``French Spacing'' angewÃ¶hnen, d.h. nur ein
+Leerzeichen am Ende eines Satzes. Dabei kÃ¶nnen Sie in GNU Emacs
+@samp{M-a} und @samp{M-e} nicht benutzen. Wir hoffen, daÃŸ Sie das
+verschmerzen kÃ¶nnen. Bitte lassen Sie nur ein Leerzeichen nach der
+Ã¶ffnenden und der schlieÃŸenden geschweiften Klammer des Kommentares
 Platz.
 
 @cindex Plazierung der Kommentare
 Wenn ein Kommentar sich nur auf eine Zeile Code bezieht, so sollte
 der Kommentar in derselben Zeile hinter dem Code stehen, soweit
-das möglich ist. Bitte lassen Sie zwei Leerzeichen Platz.
-Dies ist ebenfalls für den Interface-Bereich einer Unit und bei
-globalen Variablen angemessen. Oftmals benötigt man diese Sorte
+das mÃ¶glich ist. Bitte lassen Sie zwei Leerzeichen Platz.
+Dies ist ebenfalls fÃ¼r den Interface-Bereich einer Unit und bei
+globalen Variablen angemessen. Oftmals benÃ¶tigt man diese Sorte
 Kommentare neben Record-Feldern. Andernfalls sollten Kommentare
 in eigenen Zeilen stehen:
 
@@ -950,14 +950,14 @@ in eigenen Zeilen stehen:
 @{ foo bar baz @}
 @end smallexample
 
-Oder etwas länger:
+Oder etwas lÃ¤nger:
 
 @smallexample
 @{ foo bar
    baz @}
 @end smallexample
 
-Mit Absätzen:
+Mit AbsÃ¤tzen:
 
 @smallexample
 @{ foo bar
@@ -966,8 +966,8 @@ Mit Absätzen:
    qux @}
 @end smallexample
 
-Die Kommentare sollten gewöhnlich vor den Code plaziert werden,
-auf den sie sich beziehen. Sie erhalten dieselbe Einrückung:
+Die Kommentare sollten gewÃ¶hnlich vor den Code plaziert werden,
+auf den sie sich beziehen. Sie erhalten dieselbe EinrÃ¼ckung:
 
 @smallexample
 @{ Meine Typen. @}
@@ -984,7 +984,7 @@ begin
   Bla;
   @{ Anfang der Schleife. @}
   repeat
-    @{ Schleifenkörper. @}
+    @{ SchleifenkÃ¶rper. @}
     @dots{}
   @{ Beende die Schleife, wenn irgendwas passiert. @}
   until Something
@@ -1004,7 +1004,7 @@ procedure Foo;
 @cindex Dumme Kommentare
 @cindex Triviale Kommentare
 Schreiben Sie keine ``trivialen'' Kommentare wie den obigen.
-Sie sollten Kommentare dadurch vermeiden, daß Sie durchdachten
+Sie sollten Kommentare dadurch vermeiden, daÃŸ Sie durchdachten
 Code schreiben. Linus Torvalds macht das in seinem
 Kernel Coding Style deutlich:
 
@@ -1017,19 +1017,19 @@ Generally, you want your comments to tell @strong{what} your code does,
 not @strong{how}.
 @end quotation
 
-Übersetzung:
+Ãœbersetzung:
 
 @quotation
-Kommentare sind grundsätzlich sinnvoll, aber es besteht die Gefahr
-der ``Überkommentierung''. @strong{Niemals} sollten Sie im
-Kommentar erklären, @strong{wie} der Code arbeitet:
-Es ist viel besser, offensichtlichen Code zu schreiben, so daß
+Kommentare sind grundsÃ¤tzlich sinnvoll, aber es besteht die Gefahr
+der ``Ãœberkommentierung''. @strong{Niemals} sollten Sie im
+Kommentar erklÃ¤ren, @strong{wie} der Code arbeitet:
+Es ist viel besser, offensichtlichen Code zu schreiben, so daÃŸ
 seine @emph{Arbeitsweise} sich ergibt. Es ist verschwendete Zeit,
 schlecht geschriebenen Code zu kommentieren. Allgemein sollte man
 mitteilen, @strong{was} der Code macht, nicht @strong{wie} er es macht.
 @end quotation
 
-(Beachten Sie, daß wir in anderen Bereichen ziemlich stark von seinem
+(Beachten Sie, daÃŸ wir in anderen Bereichen ziemlich stark von seinem
 Coding Style abweichen.)
 
 @cindex Kommentare bei nicht naheliegendem Code
@@ -1037,20 +1037,20 @@ Coding Style abweichen.)
 ``Trickreicher'' Code ist es wert, kommentiert zu werden. Wir
 definieren den Code als ``trickreich'', der nicht naheliegende Dinge
 tut, auf nicht sofort einleuchtenden Annahmen basiert, unerwartete
-Implikationen beinhaltet, bei dessen Änderung etwas Spezielles
-beachtet werden muss, der sich nicht so verhält, wie es auf den
-ersten Eindruck scheint, der Seiteneffekte enthält oder es
-erfordert, daß andere Teile des Codes an anderer Stelle gleichzeitig
-mit ihm geändert werden. Trickreicher Code sollte grundsätzlich nur
-in bescheidenem Maße benutzt werden.
+Implikationen beinhaltet, bei dessen Ã„nderung etwas Spezielles
+beachtet werden muss, der sich nicht so verhÃ¤lt, wie es auf den
+ersten Eindruck scheint, der Seiteneffekte enthÃ¤lt oder es
+erfordert, daÃŸ andere Teile des Codes an anderer Stelle gleichzeitig
+mit ihm geÃ¤ndert werden. Trickreicher Code sollte grundsÃ¤tzlich nur
+in bescheidenem MaÃŸe benutzt werden.
 
 @cindex Kommentare zu externen Quellen
-In dem Fall, daß sich ein Kommentar auf eine andere
+In dem Fall, daÃŸ sich ein Kommentar auf eine andere
 Stelle des Codes bezieht, wobei es egal ist, ob die Referenz in
 derselben oder einer anderen Datei liegt, beziehen Sie sich bitte
 auf den Namen der Routine oder einen Kontext. Bitte geben Sie den
-Bezug nicht in Form von Zeilennummern an (diese ändern sich zu
-häufig). Lassen Sie in den Kommentaren außerdem beide Stellen
+Bezug nicht in Form von Zeilennummern an (diese Ã¤ndern sich zu
+hÃ¤ufig). Lassen Sie in den Kommentaren auÃŸerdem beide Stellen
 aufeinander verweisen, wo es Sinn macht. Diese Art der
 ``Kreuzverweise'' erwies sich schon oft als sinnvoll.
 
@@ -1060,7 +1060,7 @@ Code, der auskommentiert werden soll, sollte mit Hilfe von
 ausgeschlossen werden. Bitte benutzen Sie dazu keine Kommentare.
 
 @cindex Kommentare zur Trennung logischer Abschnitte
-Um logische Abschnitte innerhalb größerer Module oder Units zu
+Um logische Abschnitte innerhalb grÃ¶ÃŸerer Module oder Units zu
 markieren, sollten Sie Kommentare benutzen. Wir schlagen Ihnen
 folgende leicht zu suchende festgelegte Form vor:
 
@@ -1069,48 +1069,48 @@ folgende leicht zu suchende festgelegte Form vor:
 @{@@subsection Name des Abschnitts@}
 @end smallexample
 
-Beachten Sie, daß in diesem Fall ausnahmsweise keine Leerzeichen
-neben den geschweiften Klammern eingefügt werden.
+Beachten Sie, daÃŸ in diesem Fall ausnahmsweise keine Leerzeichen
+neben den geschweiften Klammern eingefÃ¼gt werden.
 
 @cindex Beschreibende Kommentare
 Ein Modul, eine Unit oder Library sollte im Interface-Bereich
-Kommentare haben, so daß dieses Interface zu einer verläßlichen
+Kommentare haben, so daÃŸ dieses Interface zu einer verlÃ¤ÃŸlichen
 Dokumentationsquelle wird. Es ist freigestellt, solche Kommentare
-für Routinen zu benutzen, die nur im Implementationsbereich
+fÃ¼r Routinen zu benutzen, die nur im Implementationsbereich
 oder in Programmen (im Gegensatz zu Modulen etc.) deklariert werden.
-Mehrere zusammenhängende Deklarationen (z.B. Gruppen von Konstanten)
-können sich einen Kommentar teilen.
+Mehrere zusammenhÃ¤ngende Deklarationen (z.B. Gruppen von Konstanten)
+kÃ¶nnen sich einen Kommentar teilen.
 
 @cindex Kommentare mit Textauszeichnung
 Es wird ein Utility namens @samp{pas2texi} geschrieben, welches
 Texinfo-Dateien aus Pascal-Kommentaren erzeugt. Dieses Utility
-wird verschiedene Textauszeichnungsmöglichkeiten innerhalb von
+wird verschiedene TextauszeichnungsmÃ¶glichkeiten innerhalb von
 Kommentaren erlauben. Diese Textauszeichnungen werden innerhalb
-der Dokumentation von @samp{pas2texi} oder in späteren
-Versionen dieses Dokumentes erläutert werden.
+der Dokumentation von @samp{pas2texi} oder in spÃ¤teren
+Versionen dieses Dokumentes erlÃ¤utert werden.
 
 @cindex Fixme Kommentare
-``Fixme''-Kommentare dienen dazu, aufzuzeigen, daß an dieser Stelle
-Code etwas zu verändern ist. Den Kommentaren werden mindestens
-zwei @samp{@@} vorangestellt. Fügen Sie soviele @samp{@@} ein,
+``Fixme''-Kommentare dienen dazu, aufzuzeigen, daÃŸ an dieser Stelle
+Code etwas zu verÃ¤ndern ist. Den Kommentaren werden mindestens
+zwei @samp{@@} vorangestellt. FÃ¼gen Sie soviele @samp{@@} ein,
 wie es der Dringlichkeit der Korrektur entspricht.
 
 Die Kommentare sollten das Wesentliche des Problems enthalten, vor
-allem wenn die Wurzel des Übels woanderes liegt. Beispielsweise
-erklärt der Kommentar @samp{@{ @@@@fjf226 @}} den folgenden Code als
-Work-Around für ein Problem des GNU Pascal Compilers, welches von
+allem wenn die Wurzel des Ãœbels woanderes liegt. Beispielsweise
+erklÃ¤rt der Kommentar @samp{@{ @@@@fjf226 @}} den folgenden Code als
+Work-Around fÃ¼r ein Problem des GNU Pascal Compilers, welches von
 einem Test-Programm namens @samp{fjf226.pas} verdeutlicht wird.
-(Diese Datei können Sie tatsächlich innerhalb des Quellpaketes des
+(Diese Datei kÃ¶nnen Sie tatsÃ¤chlich innerhalb des Quellpaketes des
 GNU Pascal Compilers finden.)
 
 ``Fixme''-Kommentare sollten nicht mit anderen Kommentaren vermischt
 werden. Wenn beide Kommentare gebraucht werden, so sollten sie
 getrennt, wenn auch direkt hintereinander stehen. Da sie
-vorübergehender Natur sind, dürfen solche Kommentare überall stehen,
+vorÃ¼bergehender Natur sind, dÃ¼rfen solche Kommentare Ã¼berall stehen,
 sogar innerhalb von Anweisungen. Normalerweise stehen sie im Rumpf
 einer Routine, solange sie nicht das Interface eines Modules bzw.
 einer Unit beeinflussen. Interfaces, die voraussichtlich in der
-Zukunft geändert werden, sollten @samp{@@@@}-Kommentare direkt vor
+Zukunft geÃ¤ndert werden, sollten @samp{@@@@}-Kommentare direkt vor
 ihren beschreibenden Kommentaren aufweisen.
 
 @node Reihenfolge
@@ -1124,7 +1124,7 @@ nach folgendes beinhaltet:
 @item
 eine kurze Beschreibung, was der Code in dieser Datei macht
 @item
-eine längere Beschreibung über Details des Codes und wo man sich
+eine lÃ¤ngere Beschreibung Ã¼ber Details des Codes und wo man sich
 informieren kann
 @item
 Copyright-Informationen (Autoren)
@@ -1149,7 +1149,7 @@ Allgemein sollte man diese Deklarations-Reihenfolge einhalten:
 Routinen
 @end itemize
 
-Sie können von dieser Reihenfolge abweichen, wenn es notwendig
+Sie kÃ¶nnen von dieser Reihenfolge abweichen, wenn es notwendig
 erscheint oder den Code lesbarer gestaltet. Im folgenden sehen Sie
 ein Beispiel, bei dem diese Reihenfolge nicht eingehalten werden
 kann:
@@ -1164,37 +1164,37 @@ const
   IrgendEineKonstante = SizeOf (TIrgendwas);
 @end smallexample
 
-Die obigen Regeln gelten selbstverständlich auch für
+Die obigen Regeln gelten selbstverstÃ¤ndlich auch fÃ¼r
 Deklarationsbereiche innerhalb von Routinen.
 
-Wenn Sie mehrere mehr oder weniger unabhängige Bereiche in einer
-großen Unit oder einem großen Modul haben, so sollten sie obige
+Wenn Sie mehrere mehr oder weniger unabhÃ¤ngige Bereiche in einer
+groÃŸen Unit oder einem groÃŸen Modul haben, so sollten sie obige
 Reihenfolge auf jeden Teilbereich des Modules anwenden. Es sollten
 z.B. nicht alle Konstanten aller Bereiche in eine einzelne
 @samp{const}-Deklaration geschrieben werden, das macht den Code
 eher unleserlich.
 
 @cindex Variablen-Deklaration
-Variablen, die nur im Hauptprogramm genutzt werden, müssen in
+Variablen, die nur im Hauptprogramm genutzt werden, mÃ¼ssen in
 Pascal global deklariert werden, wobei GNU Pascal eine Erweiterung
-kennt, um diese Beschränkung zu umgehen und Variablen im
+kennt, um diese BeschrÃ¤nkung zu umgehen und Variablen im
 Anweisungsteil zu deklarieren (@pxref{var, , , gpc}). In einem
 solchen Fall sollten diese Variablen direkt vor dem @samp{begin} des
 Hauptprogrammes geschrieben werden, nach allen Routinen etc. Das
-gilt besonders dann, wenn das Programm groß ist und viele Variablen
+gilt besonders dann, wenn das Programm groÃŸ ist und viele Variablen
 deklariert werden. Dadurch wird der Variablen-Deklarations-Bereich
 leichter einsehbar und ist einfacher mit den entsprechenden
-Code-Bereichen änderbar. Außerdem vermeidet man so, daß
+Code-Bereichen Ã¤nderbar. AuÃŸerdem vermeidet man so, daÃŸ
 versehentlich Routinen diese Variablen nutzen.
 
 @cindex Deklarationen innerhalb eines Typ-Deklarations-Blocks
-Wenn Sie einen Typ und seinen zugehörigen Zeiger gleich mit
+Wenn Sie einen Typ und seinen zugehÃ¶rigen Zeiger gleich mit
 deklarieren wollen, so deklarieren Sie bitte zuerst den Zeiger.
-Dies ist übersichtlicher, besonders wenn der zugehörige Typ eine
-größere Struktur (@samp{record} oder @samp{object}) ist. Auch wird
-es damit möglich, rekursive Strukturen aufzubauen (Typdefinitionen,
+Dies ist Ã¼bersichtlicher, besonders wenn der zugehÃ¶rige Typ eine
+grÃ¶ÃŸere Struktur (@samp{record} oder @samp{object}) ist. Auch wird
+es damit mÃ¶glich, rekursive Strukturen aufzubauen (Typdefinitionen,
 die Zeiger auf denselben Typ beinhalten). Bitte stellen Sie den
-Typen ein @samp{T}, und den zugehörigen Zeigern ein @samp{P} voran.
+Typen ein @samp{T}, und den zugehÃ¶rigen Zeigern ein @samp{P} voran.
 Folgendes Beispiel veranschaulicht das:
 
 @smallexample
@@ -1209,14 +1209,14 @@ type
   end;
 @end smallexample
 
-Bitte beachten Sie in dem Beispiel, daß das @samp{Next}-Feld als
-erstes aufgeführt ist. Wir schlagen vor, daß Sie es bei rekursiven
-Typen immer so machen, es ermöglicht einige generische
+Bitte beachten Sie in dem Beispiel, daÃŸ das @samp{Next}-Feld als
+erstes aufgefÃ¼hrt ist. Wir schlagen vor, daÃŸ Sie es bei rekursiven
+Typen immer so machen, es ermÃ¶glicht einige generische
 Listenroutinen und ist etwas effizienter, da beim Durchlaufen der
 Liste keine Offsets auftauchen.
 
 Nicht verpflichtend ist es, alle Zeigertypen innerhalb einer
-@samp{type}-Deklaration zuerst aufzuführen, aber wir raten Ihnen
+@samp{type}-Deklaration zuerst aufzufÃ¼hren, aber wir raten Ihnen
 dazu. Hier ist ein Beispiel dazu:
 
 @smallexample
@@ -1226,7 +1226,7 @@ type
   PBar = ^TBar;
   PBaz = ^TBaz;
 
-  @{ Einige maßgefertigte Integertypen @}
+  @{ Einige maÃŸgefertigte Integertypen @}
   TFoo = Integer attribute (Size = 16);
   TBar = Cardinal attribute (Size = 16);
   TBaz = Cardinal attribute (Size = 32);
@@ -1234,7 +1234,7 @@ type
 
 @cindex Deklarationen innerhalb von Objekttypen
 Innerhalb von Objekt-Typen gibt es drei Deklarationsbereiche. Drei
-reservierte Wörter leiten diese Bereiche ein: @samp{public},
+reservierte WÃ¶rter leiten diese Bereiche ein: @samp{public},
 @samp{protected}, @samp{private}. Innerhalb eines jeden dieser
 Bereiche sollte man folgende Reihenfolge einhalten:
 
@@ -1251,50 +1251,50 @@ Methoden
 
 @cindex Reihenfolge der Implementation
 Im Implementationsbereich sollte man dieselbe Reihenfolge
-einhalten wie bei der Deklaration. Dies gilt selbstverständlich
-ebenso für Units und Module.
+einhalten wie bei der Deklaration. Dies gilt selbstverstÃ¤ndlich
+ebenso fÃ¼r Units und Module.
 
 Benutzen Sie nie ein @samp{;} am Ende eines Blockes, also vor
-@samp{end}, @samp{until}, usw, außer im Fall von @samp{case}.
+@samp{end}, @samp{until}, usw, auÃŸer im Fall von @samp{case}.
 Der letzte Zweig vor @samp{else} (oder der letzte Zweig, wenn es
-keinen @samp{else}-Zweig gibt) @emph{sollte} ein abschließendes
+keinen @samp{else}-Zweig gibt) @emph{sollte} ein abschlieÃŸendes
 @samp{;} haben, um Probleme wie diese zu vermeiden:
 
 @smallexample
 case @dots{}
   Foo:
-    if Bar then  @{ später eingefügt @}
+    if Bar then  @{ spÃ¤ter eingefÃ¼gt @}
       begin
         @dots{}
       end  @{ wenn es hier kein Semikolon gibt @dots{} @}
-  else  @{ @dots{} dann wird dieses @samp{else} plötzlich dem @samp{then} zugerechnet @}
+  else  @{ @dots{} dann wird dieses @samp{else} plÃ¶tzlich dem @samp{then} zugerechnet @}
     @dots{}
 @end smallexample
 
 (Dasselbe gilt auch, wenn es @samp{if} schon gibt und das
-@samp{else} des @samp{case} später eingefügt wird.)
+@samp{else} des @samp{case} spÃ¤ter eingefÃ¼gt wird.)
 
-In Objekten mag es merkwürdig aussehen, das @samp{;} nach dem
+In Objekten mag es merkwÃ¼rdig aussehen, das @samp{;} nach dem
 letzten Eintrag (meistens eine Objekt-Methode) wegzulassen.
 Deswegen erlauben wir es hier und zur Erhaltung der Konsistenz auch
 in Records.
 
-@node Großschreibung
-@section Großschreibung
-@cindex Großschreibung
+@node GroÃŸschreibung
+@section GroÃŸschreibung
+@cindex GroÃŸschreibung
 
-Reservierte Wörter sollten allesamt kleingeschrieben werden,
-einschließlich aller Direktiven und Wörter, die nur in manchen
+Reservierte WÃ¶rter sollten allesamt kleingeschrieben werden,
+einschlieÃŸlich aller Direktiven und WÃ¶rter, die nur in manchen
 Kontexten reserviert sind (wie @samp{protected}). Wenn Sie
-Direktiven außerhalb ihres Kontextes als Bezeichner benutzen (was
-leicht zu Problemen führen kann), so schreiben Sie diese bitte wie
+Direktiven auÃŸerhalb ihres Kontextes als Bezeichner benutzen (was
+leicht zu Problemen fÃ¼hren kann), so schreiben Sie diese bitte wie
 Bezeichner.
 
-Als besondere Ausnahme darf man @samp{File} großschreiben, wenn
+Als besondere Ausnahme darf man @samp{File} groÃŸschreiben, wenn
 dieses als eigener Typ gebraucht wird. Anders ist es
-selbstverständlich bei @samp{file of Char}. Im Fall von
+selbstverstÃ¤ndlich bei @samp{file of Char}. Im Fall von
 @samp{procedure} als Typ (Borland Pascal) kann man diese Regel
-nicht anwenden, denn @samp{File} kann ein Typ an sich sein, während
+nicht anwenden, denn @samp{File} kann ein Typ an sich sein, wÃ¤hrend
 @samp{procedure} ein Typ-Konstruktor ist. Beispiel:
 
 @smallexample
@@ -1302,15 +1302,15 @@ procedure Foo (var a: File);  @{ Das geht @}
 procedure Foo (var a: procedure);  @{ Das geht nicht! @}
 @end smallexample
 
-@cindex Großschreibung von Bezeichnern
-Der nächste Punkt betrifft die Großschreibung von Bezeichnern. Es
+@cindex GroÃŸschreibung von Bezeichnern
+Der nÃ¤chste Punkt betrifft die GroÃŸschreibung von Bezeichnern. Es
 gibt hierbei keinen Unterschied zwischen eingebauten und
-selbstdefinierten Bezeichnern. Grundsätzlich sollte nur der erste
-Buchstabe großgeschrieben werden, außer wenn es sich um
-zusammengesetzte Wörter oder Akronyme handelt, dann sollte jeder
-Anfangsbuchstabe eines jeden Teilwortes großgeschrieben werden.
+selbstdefinierten Bezeichnern. GrundsÃ¤tzlich sollte nur der erste
+Buchstabe groÃŸgeschrieben werden, auÃŸer wenn es sich um
+zusammengesetzte WÃ¶rter oder Akronyme handelt, dann sollte jeder
+Anfangsbuchstabe eines jeden Teilwortes groÃŸgeschrieben werden.
 Unterstriche sollten vermieden werden. Akronyme, die zu einem Teil
-der natürlichen Sprache geworden sind, sollten so geschrieben
+der natÃ¼rlichen Sprache geworden sind, sollten so geschrieben
 werden wie in der Sprache. Beispielsweise @samp{Dos} oder @samp{DOS},
 aber immer @samp{GPC} und niemals @samp{Gpc}!
 Hier einige Beispiele von Bezeichnern:
@@ -1318,29 +1318,29 @@ Hier einige Beispiele von Bezeichnern:
 @samp{IOResult}, @samp{WriteLn}, @samp{Sqr}, @samp{SqRt},
 @samp{EOF}, @samp{EOLn}.
 
-@cindex Großschreibung von Konstanten
-Anders als bei C-Makros gelten diese Regeln auch für Konstanten.
+@cindex GroÃŸschreibung von Konstanten
+Anders als bei C-Makros gelten diese Regeln auch fÃ¼r Konstanten.
 
-Sehr kurze Bezeichner dürfen kleingschrieben werden, z.B. @samp{i},
+Sehr kurze Bezeichner dÃ¼rfen kleingschrieben werden, z.B. @samp{i},
 @samp{s1} oder @samp{xx}. Solche kurzen Bezeichnernamen sollten nur
-in lokalen Blöcken auftauchen. Dazu zählen auch Parameter globaler
-Routinen, denn der Gültigkeitsbereich solcher Parameter ist lokal.
+in lokalen BlÃ¶cken auftauchen. Dazu zÃ¤hlen auch Parameter globaler
+Routinen, denn der GÃ¼ltigkeitsbereich solcher Parameter ist lokal.
 Der Gebrauch dieser Bezeichner sollte nicht in einem globalen
 Kontext erfolgen, besonders nicht in Units oder Modulen. Der Autor
 kann ja nie wissen, in welchen Kontexten die Units/Module benutzt
 werden.
 
-Bitte bleiben Sie einheitlich, was die Groß- und Kleinschreibung
+Bitte bleiben Sie einheitlich, was die GroÃŸ- und Kleinschreibung
 ihrer Bezeichner anbelangt. Wenngleich Pascal Sie auch nicht
-schlägt, wenn Sie mal die Großschreibung einer Variablen innerhalb
-eines Blockes ändern: Bitte halten Sie sich an eine Form.
+schlÃ¤gt, wenn Sie mal die GroÃŸschreibung einer Variablen innerhalb
+eines Blockes Ã¤ndern: Bitte halten Sie sich an eine Form.
 
-@cindex Aufzählungstypen
+@cindex AufzÃ¤hlungstypen
 @cindex Konstanten
-Für Bezeichner für die Werte von Aufzählungstypen und für Gruppen
+FÃ¼r Bezeichner fÃ¼r die Werte von AufzÃ¤hlungstypen und fÃ¼r Gruppen
 von Konstanten, d.h. an Stellen, wo viele Bezeichner auf einmal
-eingeführt werden, kann es nützlich sein, ein zweibuchstabiges
-kleingeschriebenes Präfix zu verwenden, dem im Gegensatz zu obigen
+eingefÃ¼hrt werden, kann es nÃ¼tzlich sein, ein zweibuchstabiges
+kleingeschriebenes PrÃ¤fix zu verwenden, dem im Gegensatz zu obigen
 Regeln ein Unterstrich (@samp{_}) folgt:
 
 @smallexample
@@ -1358,37 +1358,37 @@ const
 
 @cindex OOP
 In objektorientiertem Code, meistens in Konstruktoren, hat man den
-Fall, daß der Parameter einer Funktion zu einem Feldnamen passen
+Fall, daÃŸ der Parameter einer Funktion zu einem Feldnamen passen
 soll, den dieser Parameter initialisiert. Da beide Namen nicht
-übereinstimmen dürfen, sollte das Feld den ``natürlichen'' Namen
+Ã¼bereinstimmen dÃ¼rfen, sollte das Feld den ``natÃ¼rlichen'' Namen
 haben, da es an mehreren Stellen verwendet wird, und der
-Parametername verändert werden. Wir haben bislang keine einheitliche
-Regel für den Namen des Parameters in einem solchen Fall gefunden.
-Manche Programmierer verwenden @samp{a} als Präfix. Wenn Sie eine
+Parametername verÃ¤ndert werden. Wir haben bislang keine einheitliche
+Regel fÃ¼r den Namen des Parameters in einem solchen Fall gefunden.
+Manche Programmierer verwenden @samp{a} als PrÃ¤fix. Wenn Sie eine
 gute Idee haben, so lassen Sie es uns wissen.
 
-@cindex Großschreibung von Makros
+@cindex GroÃŸschreibung von Makros
 Makros sollten nicht genutzt werden! Sie sind die Reinkarnation
-des Bösen! Wenn Sie es doch tun, so müssen Sie zur Strafe alle
-Buchstaben groß schreiben und einzelne Teilwörter mit
-Unterstrichen trennen. Da Makros außerhalb der
+des BÃ¶sen! Wenn Sie es doch tun, so mÃ¼ssen Sie zur Strafe alle
+Buchstaben groÃŸ schreiben und einzelne TeilwÃ¶rter mit
+Unterstrichen trennen. Da Makros auÃŸerhalb der
 Pascal-Geltungsbereiche stehen, macht es durchaus Sinn, sie anders
-zu schreiben als den übrigen Pascal-Code. Das gilt ebenso für
+zu schreiben als den Ã¼brigen Pascal-Code. Das gilt ebenso fÃ¼r
 Bedingungen im Rahmen der bedingten Kompilierung (Conditionale).
 
 @node Compiler-Direktiven
 @section Benutzung von Compiler-Direktiven
 @cindex Compiler-Direktiven
 
-Anmerkung des Übersetzers:
+Anmerkung des Ãœbersetzers:
 Um der Doppeldeutigkeit von ``condition'', wie sie in einer
 @samp{if}-Anweisung vorkommt, und wie sie in der bedingten
-Ausführung von Code vorkommt, Herr zu werden, habe ich mich
-entschieden, in diesem Abschnitt durchgängig ``Conditional'' im
-letztgenannten Kontext zu verwenden. Der Leser möge mir verzeihen.
+AusfÃ¼hrung von Code vorkommt, Herr zu werden, habe ich mich
+entschieden, in diesem Abschnitt durchgÃ¤ngig ``Conditional'' im
+letztgenannten Kontext zu verwenden. Der Leser mÃ¶ge mir verzeihen.
 
-Grundsätzlich sollten Sie so wenig Compiler-Direktiven wie nur
-irgend möglich verwenden, weil sie den Code schwerer lesbar
+GrundsÃ¤tzlich sollten Sie so wenig Compiler-Direktiven wie nur
+irgend mÃ¶glich verwenden, weil sie den Code schwerer lesbar
 und wartbar machen. So sollten Direktiven aussehen:
 
 @smallexample
@@ -1402,7 +1402,7 @@ und niemals so: (@pxref{Kommentare})
 @end smallexample
 
 und auch nicht so, weil dies im Gegensatz zu Pascal, von
-Zeilenumbrüchen anhängt:
+ZeilenumbrÃ¼chen anhÃ¤ngt:
 
 @smallexample
 #so-auch-nicht-Direktive
@@ -1414,18 +1414,18 @@ Dasselbe bei Makro-Definitionen:
 @{$define @dots{}@}
 @end smallexample
 
-Dies spart außerdem den Backslash vor dem Zeilenumbruch, im
+Dies spart auÃŸerdem den Backslash vor dem Zeilenumbruch, im
 Gegensatz zu @samp{#define}. Aber Sie wollen ohnehin keine Makros
-benutzen, ODER? (@pxref{Großschreibung})
+benutzen, ODER? (@pxref{GroÃŸschreibung})
 
 @cindex Blanks bei Direktiven
-Fügen Sie niemals ein Leerzeichen vor der schließenden Klammer ein,
-denn es darf auch keines nach der öffnenden Klammer kommen. Wenn
-Sie mehrere Direktiven zusammenfügen, so fügen Sie zwischen zweien
-kein Leerzeichen ein, ein einfaches Komma genügt.
+FÃ¼gen Sie niemals ein Leerzeichen vor der schlieÃŸenden Klammer ein,
+denn es darf auch keines nach der Ã¶ffnenden Klammer kommen. Wenn
+Sie mehrere Direktiven zusammenfÃ¼gen, so fÃ¼gen Sie zwischen zweien
+kein Leerzeichen ein, ein einfaches Komma genÃ¼gt.
 
 @cindex Kommentare und Direktiven
-Es sollten keine Kommentare innerhalb der Direktiven eingefügt
+Es sollten keine Kommentare innerhalb der Direktiven eingefÃ¼gt
 werden. Schreiben Sie Kommentare stattdessen separat:
 
 @smallexample
@@ -1433,17 +1433,17 @@ werden. Schreiben Sie Kommentare stattdessen separat:
 @end smallexample
 
 Borland Pascal erlaubt, Kommentare mit Direktiven zu vermischen.
-Das ist ein Mißbrauch eines solchen Kommentares!
+Das ist ein MiÃŸbrauch eines solchen Kommentares!
 
 Kurze Formen der Direktiven sind in Ordnung, aber man sollte den
-langen Formen den Vorzug geben. Die kurzen Formen müssen
-großgeschrieben werden, während die langen Formen kleingeschrieben
+langen Formen den Vorzug geben. Die kurzen Formen mÃ¼ssen
+groÃŸgeschrieben werden, wÃ¤hrend die langen Formen kleingeschrieben
 werden sollten (ausgenommen Argumente, bei denen es auf die
 richtige Schreibweise ankommt, wie Fehlermeldungen, Warnungen,
-Dateinamen -- bei letzteren ist auch unter DOS die korrekte Groß-
+Dateinamen -- bei letzteren ist auch unter DOS die korrekte GroÃŸ-
 und Kleinschreibung zu verwenden, damit der Code portabel bleibt).
 
-Sie können verschiedene Direktiven kombinieren, dabei auch kurze
+Sie kÃ¶nnen verschiedene Direktiven kombinieren, dabei auch kurze
 und lange Formen mischen, wie im folgenden Beispiel:
 
 @smallexample
@@ -1454,14 +1454,14 @@ und lange Formen mischen, wie im folgenden Beispiel:
 Jede Unit und jedes Modul sollte @samp{@{$gnu-pascal,I-@}} oder
 @samp{@{$gnu-pascal,I+@}} nahe am Anfang stehen haben, und zwar
 nach dem einleitenden Kommentar mit der Beschreibung und der
-Lizenz. @samp{@{$gnu-pascal@}} bewirkt, daß die Unit ohne
+Lizenz. @samp{@{$gnu-pascal@}} bewirkt, daÃŸ die Unit ohne
 Dialekt-Optionen kompiliert wird, selbst wenn das aufrufende
 Programm Dialekt-Optionen nutzt. @samp{@{$I-@}} und @samp{@{$I+@}}
-zeigen dem Nutzer der Unit, daß Ein-/Ausgabe-Fehler von den Routinen
+zeigen dem Nutzer der Unit, daÃŸ Ein-/Ausgabe-Fehler von den Routinen
 abgefangen werden oder Laufzeitfehler zu erwarten sind. Der erste
-Fall ist dem anderen in den meisten Fällen vorzuziehen.
-Für Programme ist dies optional. Routinen, die Ein-/Ausgabe-Fehler
-hervorrufen können, sollten mit dem Attribut @samp{iocritical}
+Fall ist dem anderen in den meisten FÃ¤llen vorzuziehen.
+FÃ¼r Programme ist dies optional. Routinen, die Ein-/Ausgabe-Fehler
+hervorrufen kÃ¶nnen, sollten mit dem Attribut @samp{iocritical}
 (@pxref{attribute, , , gpc}) deklariert werden:
 
 @smallexample
@@ -1494,82 +1494,82 @@ Sondern so:
 @end smallexample
 
 Das erste Beispiel ist falsch, wenn vorher schon @samp{@{$I-@}}
-geschrieben wurde. Selbst wenn ein Programmierer weiß, welches
-die aktuellen globalen Einstellungen sind, so können sich diese
-eines Tages ändern. Auch dadurch, daß Teile des Codes an
+geschrieben wurde. Selbst wenn ein Programmierer weiÃŸ, welches
+die aktuellen globalen Einstellungen sind, so kÃ¶nnen sich diese
+eines Tages Ã¤ndern. Auch dadurch, daÃŸ Teile des Codes an
 eine andere Stelle kopiert werden.
 Das untere der beiden Beispiele ist daher die sichere Form.
 
 Um zu verdeutlichen, was wir meinen, hier noch ein Beispiel:
 
 @smallexample
-@{$local W-@} Foo; @{$endlocal@}  @{ @@ GPC gibt hier eine überflüssige Warnung @}
+@{$local W-@} Foo; @{$endlocal@}  @{ @@ GPC gibt hier eine Ã¼berflÃ¼ssige Warnung @}
 @end smallexample
 
 Nochmal: Vermeiden Sie es, lokale Direktiven zu gebrauchen.
-@samp{@{$I-@}} kann manchmal nütztlich sein. @samp{@{$X+@}} sollte
+@samp{@{$I-@}} kann manchmal nÃ¼tztlich sein. @samp{@{$X+@}} sollte
 nur dann gebraucht werden, wenn es @emph{wirklich} notwendig ist,
-und dann auch bitte so lokal wie nur irgend möglich. Vermeiden Sie
+und dann auch bitte so lokal wie nur irgend mÃ¶glich. Vermeiden Sie
 Zeiger-Arithmetik!
 
-@cindex Testen der Rückgabewerte
+@cindex Testen der RÃ¼ckgabewerte
 Benutzen Sie weder @samp{@{$X+@}} noch
 @samp{@{$ignore-function-results@}}, um Funktionswerte zu
-überprüfen. Es ist schlicht zu einfach, ein beachtenswertes
+Ã¼berprÃ¼fen. Es ist schlicht zu einfach, ein beachtenswertes
 Funktionsergebnis zu ignorieren. Manchmal, besonders dann, wenn man
 eine C-Bibliothek linkt, hat man es mit Funktionsergebnissen zu tun,
-die überflüssig erscheinen, weshalb man sie nicht überprüfen möchte.
+die Ã¼berflÃ¼ssig erscheinen, weshalb man sie nicht Ã¼berprÃ¼fen mÃ¶chte.
 Solche Funktionen lassen sich bald mit dem Attribut @samp{ignorable}
-deklarieren, so daß das Funktionsergebnis stillschweigend ignoriert
+deklarieren, so daÃŸ das Funktionsergebnis stillschweigend ignoriert
 wird.
 
 Benutzen Sie auch dann Dummy-Variablen, wenn Sie
 Funktionsergebnisse von Funktionen, deren Ergebnisse
 gemeinhin nicht ignoriert werden sollen, ignorieren wollen.
-Überprüfen Sie sehr sorgfältig, ob ein solches Ergebnis wirklich
+ÃœberprÃ¼fen Sie sehr sorgfÃ¤ltig, ob ein solches Ergebnis wirklich
 sicher ignoriert werden kann! Wenn jedoch ein unerwarteter Wert
-Sie in eine ``unmögliche'' Situation bringen würde, so ist es
-normalerweise besser, das Funktionsergebnis zu überprüfen
+Sie in eine ``unmÃ¶gliche'' Situation bringen wÃ¼rde, so ist es
+normalerweise besser, das Funktionsergebnis zu Ã¼berprÃ¼fen
 und im unerwarteten Fall eine Warnung auszudrucken oder gar
 abzubrechen. Tun Sie das wenigstens dann, wenn @samp{DEBUG}
 gesetzt ist. (@pxref{Compiler-Direktiven}).
 
 @cindex Linker-Direktiven
-Linker-Direktiven, d.h. @samp{@{$L@}} fürBibliotheken und
+Linker-Direktiven, d.h. @samp{@{$L@}} fÃ¼rBibliotheken und
 C-Code-Dateien (oder Dateien anderer Sprachen) sollten nahe am
 Anfang des Programmes und nahe am Implementationsanfang von Units
-oder Modulen stehen. Mehrere Bibliotheken und C-Quelldateien können
+oder Modulen stehen. Mehrere Bibliotheken und C-Quelldateien kÃ¶nnen
 in eine Direktive geschrieben werden, wenn sie logisch
-zusammengehören (bspw. eine Bibliothek und ihre zugehörige
-Wrapper-Funktion), nicht aber dann, wenn sie nicht zusammengehören.
+zusammengehÃ¶ren (bspw. eine Bibliothek und ihre zugehÃ¶rige
+Wrapper-Funktion), nicht aber dann, wenn sie nicht zusammengehÃ¶ren.
 Diese Direktiven sollten nicht mit anderen Direktiven gemischt
-werden (was auch nicht geht, wenn @samp{L} zuerst angeführt wird;
+werden (was auch nicht geht, wenn @samp{L} zuerst angefÃ¼hrt wird;
 anders herum geht es, ist aber nicht ratsam). Die externen
 Deklarationen der Bibliothek oder C-Routinen sollten sofort der
-zugehörigen Direktive folgen (außer für Units oder Module bei
-denjenigen Deklarationen, die in das Interface gehören). Das
+zugehÃ¶rigen Direktive folgen (auÃŸer fÃ¼r Units oder Module bei
+denjenigen Deklarationen, die in das Interface gehÃ¶ren). Das
 Benutzen von @samp{@{$L@}} innerhalb eines Programmes ist
 normalerweise keine gute Idee. Da lohnt es sich schon, eine Unit zu
 schreiben, welche abstrahiert und wiederverwertet werden kann.
 
 @cindex Bedingte Kompilierung
-Bedingtes Kompilieren kann manchmal nützlich sein, aber es sollten
-sowenige @samp{@{$ifdef@}}s wie nur irgend möglich geschrieben
+Bedingtes Kompilieren kann manchmal nÃ¼tzlich sein, aber es sollten
+sowenige @samp{@{$ifdef@}}s wie nur irgend mÃ¶glich geschrieben
 werden, denn sie vermindern die Lesbarkeit des Codes sehr stark.
 Wo Conditionale eingesetzt werden, um verschiedene Systeme zu
-unterscheiden, sollten die Fähigkeiten des Systems (bspw.
+unterscheiden, sollten die FÃ¤higkeiten des Systems (bspw.
 @samp{__BYTES_LITTLE_ENDIAN__}) oder Gruppen von Systemen
-(bspw. @samp{__OS_DOS__}) überprüft werden, nicht einzelne Systeme.
-Dieses Vorgehen funktioniert dann oftmals auch später noch auf
-Systemen, von denen man noch nichts weiß oder die noch nicht
+(bspw. @samp{__OS_DOS__}) Ã¼berprÃ¼ft werden, nicht einzelne Systeme.
+Dieses Vorgehen funktioniert dann oftmals auch spÃ¤ter noch auf
+Systemen, von denen man noch nichts weiÃŸ oder die noch nicht
 existieren.
 
-Wann immer dies möglich ist, sollte vordefinierten Konstanten der
-Vorzug gegenüber @samp{define}s gegeben werden (bspw.
+Wann immer dies mÃ¶glich ist, sollte vordefinierten Konstanten der
+Vorzug gegenÃ¼ber @samp{define}s gegeben werden (bspw.
 @samp{BytesBigEndian}, @samp{OSDosFlag}). Dies ist im Anweisungsteil
-möglich (der ``immer false'' - Zweig wird schlicht wegoptimiert,
-trotzdem wird seine Syntax überprüft). Bei Typen-Deklarationen ist
-es normalerweise nicht möglich. Hier muß man @samp{define}s
+mÃ¶glich (der ``immer false'' - Zweig wird schlicht wegoptimiert,
+trotzdem wird seine Syntax Ã¼berprÃ¼ft). Bei Typen-Deklarationen ist
+es normalerweise nicht mÃ¶glich. Hier muÃŸ man @samp{define}s
 einsetzen. Folgendes ist ein Beispiel aus der CRT-Unit:
 
 @smallexample
@@ -1589,39 +1589,39 @@ end;
 @end smallexample
 
 @cindex Debug-Flag
-Das @samp{DEBUG}-Flag sollte eine Unterstützung beim Debuggen des
-Codes sein, also Code, der die Funktionalität beim Debuggen nicht
-verändert. Nur dafür sollte er eingesetzt werden. Programme müssen
-mit und ohne @samp{DEBUG} lauffähig sein. Es kann sein, daß der
-Code mit @samp{DEBUG} langsamer läuft und eine Vielzahl von
+Das @samp{DEBUG}-Flag sollte eine UnterstÃ¼tzung beim Debuggen des
+Codes sein, also Code, der die FunktionalitÃ¤t beim Debuggen nicht
+verÃ¤ndert. Nur dafÃ¼r sollte er eingesetzt werden. Programme mÃ¼ssen
+mit und ohne @samp{DEBUG} lauffÃ¤hig sein. Es kann sein, daÃŸ der
+Code mit @samp{DEBUG} langsamer lÃ¤uft und eine Vielzahl von
 Mitteilungen produziert. Diese Mitteilungen sollten klar als
-Debug-Mitteilungen erkennbar sein, bspw. dadurch, daß der Ausgabe
+Debug-Mitteilungen erkennbar sein, bspw. dadurch, daÃŸ der Ausgabe
 ein @samp{DEBUG: } vorangestellt wird. Solcher Code @emph{darf} auch
-einfach abbrechen, wenn fehlerhafte oder merkwürdige Zustände
+einfach abbrechen, wenn fehlerhafte oder merkwÃ¼rdige ZustÃ¤nde
 eintreten.
 
 @cindex Conditionale und Versionsverwaltung
-Conditionale können ebenfalls herangezogen werden, um verschiedene
+Conditionale kÃ¶nnen ebenfalls herangezogen werden, um verschiedene
 Versionen ein und desselben Codes anzufertigen. So ist es z.B.
-innerhalb eines Mathematik-Programmes möglich, eine eigene
+innerhalb eines Mathematik-Programmes mÃ¶glich, eine eigene
 Version mit GMP-Zahlen (GMP ist eine Bibliothek zur
-Bearbeitung beliebig großer Zahlen) zu erzeugen und eine
+Bearbeitung beliebig groÃŸer Zahlen) zu erzeugen und eine
 ohne, je nachdem, welches Conditional gesetzt ist. In diesem
 Fall sollten die Namen und Bedeutungen aller Conditionale in einem
-weit oben im Quelltext stehenden Kommentar erklärt werden. Sehen Sie
+weit oben im Quelltext stehenden Kommentar erklÃ¤rt werden. Sehen Sie
 sich bitte @samp{__BP_TYPE_SIZES__}, @samp{__BP_RANDOM__} und
 @samp{__BP_PARAMSTR_0__} als Beispiele aus der Unit @samp{System}
 an. Der Code sollte mit jeder Kombination dieser Conditionale
 kompilierbar sein, was bedeutet, eine exponentielle Menge an
 Kombinationen zu testen. Noch ein guter Grund, Conditionale so
-selten wie möglich zu benutzen oder gar zu vermeiden.
+selten wie mÃ¶glich zu benutzen oder gar zu vermeiden.
 
 @cindex Conditionale und Implementationsverwaltung
 Eine andere denkbare Benutzung von Conditionalen besteht darin, mit
 ihrer Hilfe verschiedene Implementationen desselben Codes
 anzufertigen. Sie sollten diese Strategie @emph{nur} dann anwenden,
-wenn alle Implementationen unterstützt werden oder es geplant ist,
-sie zu unterstützen. Andernfalls sollte die alte Implementation
+wenn alle Implementationen unterstÃ¼tzt werden oder es geplant ist,
+sie zu unterstÃ¼tzen. Andernfalls sollte die alte Implementation
 besser ins Museum wandern. Halten Sie den Code in einem solchen Fall
 besser ``sauber''. Die Hinweise bzgl. des Testens gelten auch hier.
 
@@ -1649,7 +1649,7 @@ Oder noch schlimmer:
 
 @cindex Auskommentieren von Code
 Eine spezielle Conditionale kann genutzt werden, um Code kurzfristig
-auszukommentieren. Hier ist die zugehörige Syntax:
+auszukommentieren. Hier ist die zugehÃ¶rige Syntax:
 
 @smallexample
 @{$if False@} @dots{} @{$endif@}
@@ -1657,7 +1657,7 @@ auszukommentieren. Hier ist die zugehörige Syntax:
 
 @cindex Conditionale und GPC-Versionen
 Ein Standard-Conditional sollte in Programmen, Units oder Modulen
-genutzt werden, wenn Sie sicherstellen wollen, daß die richtige
+genutzt werden, wenn Sie sicherstellen wollen, daÃŸ die richtige
 Version des GNU Pascal Compilers verwendet wird. Folgen Sie diesem
 Beispiel:
 
@@ -1671,7 +1671,7 @@ Beispiel:
 @section Wie man Leerzeichen in Code benutzt.
 
 Im allgemeinen sollten nie mehrere Leerzeichen aufeinander
-folgen, außer für Einrückungen und in speziellen Fällen, die im
+folgen, auÃŸer fÃ¼r EinrÃ¼ckungen und in speziellen FÃ¤llen, die im
 folgenden Beschrieben werden.
 
 Ein einzelner Blank soll vor und nach Operatoren, Zuweisungen
@@ -1690,7 +1690,7 @@ begin
 end;
 @end smallexample
 
-Kein Leerzeichen sollte hingegen nach dem unären Minuszeichen
+Kein Leerzeichen sollte hingegen nach dem unÃ¤ren Minuszeichen
 @samp{-} stehen. Dieses sind die korrekten Formen: @samp{x - 1},
 @samp{-x} und @samp{-1}.
 
@@ -1698,14 +1698,14 @@ Ein Leerzeichen sollte vor und eines nach den Klammerzeichen
 (@samp{(}) und (@samp{)}) stehen, solange diese nicht neben anderen
 Klammern, eckigen Klammern, dem Pointer-Symbol (@samp{^}), einem
 Semikolon oder einem Komma auftreten. Mit anderen Worten: Ein
-Leerzeichen sollte zwischen Bezeichnern/Schlüsselwörtern und
-der öffnenden Klammern stehen. Beispiel:
+Leerzeichen sollte zwischen Bezeichnern/SchlÃ¼sselwÃ¶rtern und
+der Ã¶ffnenden Klammern stehen. Beispiel:
 
 @smallexample
 Foo (Bar^(Baz[Qux * (i + 2)]), Fred (i) + 3);
 @end smallexample
 
-Für Arrayindizierung wird kein Leerzeichen verwendet (schreiben Sie
+FÃ¼r Arrayindizierung wird kein Leerzeichen verwendet (schreiben Sie
 @samp{Foo[42]} anstelle von @samp{Foo [42]}), jedoch schon bei
 Arraydeklarationen:
 
@@ -1713,7 +1713,7 @@ Arraydeklarationen:
 Foo: array [1 .. 42] of Integer;
 @end smallexample
 
-Bei Mengen-Konstruktoren sollte ggf. ein Blank vor der öffnenden
+Bei Mengen-Konstruktoren sollte ggf. ein Blank vor der Ã¶ffnenden
 Klammer stehen -- diese eckigen Klammern sollten wie normale
 Klammern behandelt werden:
 
@@ -1733,27 +1733,27 @@ Kein Leerzeichen bei @samp{.} und @samp{^}:
 Rec.List^.Next^.Field := Foo
 @end smallexample
 
-Wie wir schon ausführten, soll je ein Blank nach den öffnenden und
-vor den schließenden geschweiften Klammern in Kommentaren stehen.
-Dies gilt jedoch nicht für Compiler-Direktiven. Außerdem sollten vor
+Wie wir schon ausfÃ¼hrten, soll je ein Blank nach den Ã¶ffnenden und
+vor den schlieÃŸenden geschweiften Klammern in Kommentaren stehen.
+Dies gilt jedoch nicht fÃ¼r Compiler-Direktiven. AuÃŸerdem sollten vor
 Kommentaren, die einer Code-Zeile folgen, zwei Leerzeichen stehen:
 
 @smallexample
 Inc (x);  @{ Increment x. @}
 @end smallexample
 
-@cindex Abstand, Einrückung
-@cindex Einrückung, Abstand
-Wenn Sie mögen, so fügen Sie beliebig viele Leerzeichen ein, um
+@cindex Abstand, EinrÃ¼ckung
+@cindex EinrÃ¼ckung, Abstand
+Wenn Sie mÃ¶gen, so fÃ¼gen Sie beliebig viele Leerzeichen ein, um
 ``tabellarisch'' aussehenden Quellcode zu erzeugen. Unserer
-Meinung nach erhöht dies die Lesbarkeit des Codes ungemein, weil
+Meinung nach erhÃ¶ht dies die Lesbarkeit des Codes ungemein, weil
 der menschliche Geist auf solche Strukturen trainiert ist,
-Unterschiede in Zeilen besser gesehen werden können, und man
-bei Änderungen im Quellcode verwandte Stellen nicht so leicht
-übersieht. Eine Anwendung dieser Prinzipien sollte in
+Unterschiede in Zeilen besser gesehen werden kÃ¶nnen, und man
+bei Ã„nderungen im Quellcode verwandte Stellen nicht so leicht
+Ã¼bersieht. Eine Anwendung dieser Prinzipien sollte in
 Interface-Deklarationen zu finden sein (es ist nicht leicht
 anwendbar, wenn jede Routine durch Kommentare getrennt wird, daher
-ist in einem solchen Fall möglicherweise ein gemeinsamer Kommentar
+ist in einem solchen Fall mÃ¶glicherweise ein gemeinsamer Kommentar
 empfehlenswert):
 
 @smallexample
@@ -1769,7 +1769,7 @@ function PosFromCase     (const SubString, s: String; From: Integer): Integer;
 function LastPosTillCase (const SubString, s: String; Till: Integer): Integer;
 @end smallexample
 
-Ebenfalls möglich:
+Ebenfalls mÃ¶glich:
 
 @smallexample
 procedure Foo;
@@ -1777,7 +1777,7 @@ function  Bar @dots{};
 procedure Baz;
 @end smallexample
 
-Und natürlich:
+Und natÃ¼rlich:
 
 @smallexample
 const
@@ -1786,7 +1786,7 @@ const
   Quux   = 3;
 @end smallexample
 
-Dieselbe ``Tabellenanordnung'' kann man für Initialisierungen
+Dieselbe ``Tabellenanordnung'' kann man fÃ¼r Initialisierungen
 gebrauchen:
 
 @smallexample
@@ -1823,13 +1823,13 @@ WriteCharAt (2, 1, w - 2, Frame[2], TextAttr);
 WriteCharAt (w, 1, 1,     Frame[3], TextAttr);
 @end smallexample
 
-@node Zeilenumbrüche
+@node ZeilenumbrÃ¼che
 @section Wo man seine Zeilen umbrechen sollte
-@cindex Zeilenumbrüche
+@cindex ZeilenumbrÃ¼che
 
-Zeilenumbrüche sind nach @emph{lokalen} @samp{const}-, @samp{type}-
+ZeilenumbrÃ¼che sind nach @emph{lokalen} @samp{const}-, @samp{type}-
 und @samp{var}-Deklarationen freigestellt, wenn sie nur eine
-einzige Deklaration beinhalten (Sie können auch mehrere Bezeichner
+einzige Deklaration beinhalten (Sie kÃ¶nnen auch mehrere Bezeichner
 in einer Zeile deklarieren/definieren):
 
 @smallexample
@@ -1862,9 +1862,9 @@ begin
 end;
 @end smallexample
 
-Wenn Sie viele Deklarationen haben, so können Sie Zeilenumbrüche
+Wenn Sie viele Deklarationen haben, so kÃ¶nnen Sie ZeilenumbrÃ¼che
 auf verschiedene Weisen vornehmen. Folgendes Beispiel ist die
-bevorzugte Fassung für @samp{var}-Deklarationen:
+bevorzugte Fassung fÃ¼r @samp{var}-Deklarationen:
 
 @smallexample
 var
@@ -1881,7 +1881,7 @@ var
 @end smallexample
 
 Die folgende Form ist eher bei der Definition von @samp{record}-
-oder öffentlichen @samp{object}-Feldern gebräuchlich, besonders,
+oder Ã¶ffentlichen @samp{object}-Feldern gebrÃ¤uchlich, besonders,
 wenn jeder Zeile ein Kommentar folgt:
 
 @smallexample
@@ -1893,8 +1893,8 @@ var
 @end smallexample
 
 Kein Zeilenumbruch darf nach @samp{var}-Deklarationen
-innerhalb von Blöcken erfolgen. Solche Zeilenumbrüche setzen das
-falsche Signal, daß hier mehrere Deklarationsgruppen erlaubt wären:
+innerhalb von BlÃ¶cken erfolgen. Solche ZeilenumbrÃ¼che setzen das
+falsche Signal, daÃŸ hier mehrere Deklarationsgruppen erlaubt wÃ¤ren:
 
 @smallexample
 Foo := Bar;
@@ -1902,15 +1902,15 @@ var Baz: array [1 .. Foo] of Integer;
 @end smallexample
 
 Da dieses Statement eine GNU Pascal Erweiterung ist, sollte es
-selten eingesetzt werden, bei Variablen, deren Größe erst innerhalb
-der Routine berechnet wird oder für Variablen innerhalb von
-Modul-/Unit-Initialisierungen beispielsweise, um dafür keine
-globalen Variablen zu benötigen. Denken Sie bitte bei der Anwendung
-dieses Features über Unterroutinen nach.
+selten eingesetzt werden, bei Variablen, deren GrÃ¶ÃŸe erst innerhalb
+der Routine berechnet wird oder fÃ¼r Variablen innerhalb von
+Modul-/Unit-Initialisierungen beispielsweise, um dafÃ¼r keine
+globalen Variablen zu benÃ¶tigen. Denken Sie bitte bei der Anwendung
+dieses Features Ã¼ber Unterroutinen nach.
 
-@cindex Einrückung von Labeln
-Fügen Sie bitte keinen Zeilenumbruch nach @samp{label} durch. Sie
-sollten Label folgendermaßen deklarieren:
+@cindex EinrÃ¼ckung von Labeln
+FÃ¼gen Sie bitte keinen Zeilenumbruch nach @samp{label} durch. Sie
+sollten Label folgendermaÃŸen deklarieren:
 
 @smallexample
 label Foo, Bar, Baz;
@@ -1968,7 +1968,7 @@ end;
 
 @cindex Umbruch langer Zeilen
 Lange Zeilen sollten immer vor oder immer nach Operatoren, sowie
-nach Kommata umbrochen werden, wobei die Einrückung die
+nach Kommata umbrochen werden, wobei die EinrÃ¼ckung die
 Gruppierungen verdeutlichen sollte:
 
 @smallexample
@@ -1989,14 +1989,14 @@ if (x = y) and
     fred) then
 @end smallexample
 
-@cindex if then else Anweisungen und Zeilenumbrüche
-Hier sehen Sie, wie Sie Zeilenumbrüche innerhalb von if-then-else
-Anweisungen vornehmen können. Diese Art der Einrückung sollte auch
+@cindex if then else Anweisungen und ZeilenumbrÃ¼che
+Hier sehen Sie, wie Sie ZeilenumbrÃ¼che innerhalb von if-then-else
+Anweisungen vornehmen kÃ¶nnen. Diese Art der EinrÃ¼ckung sollte auch
 verwendet werden, wenn Sie die @samp{case}-Anweisung verwenden
-würden, dies aber nicht möglich ist (weil die Typen nicht aufzählbar
+wÃ¼rden, dies aber nicht mÃ¶glich ist (weil die Typen nicht aufzÃ¤hlbar
 sind, oder die Werte nicht konstant sind oder ein Vergleich die
 Benutzung einer Funktion wie @samp{StrEqualCase} notwendig machen
-würde, oder zusätzliche Bedingungen auftauchen):
+wÃ¼rde, oder zusÃ¤tzliche Bedingungen auftauchen):
 
 @smallexample
 if @dots{} then
@@ -2007,8 +2007,8 @@ else
   c
 @end smallexample
 
-Wenn @samp{a} und ``nicht @samp{a}'' die Hauptfälle sind und
-@samp{b} und @samp{c} Unterfälle von ``nicht @samp{a}'', so benutzen
+Wenn @samp{a} und ``nicht @samp{a}'' die HauptfÃ¤lle sind und
+@samp{b} und @samp{c} UnterfÃ¤lle von ``nicht @samp{a}'', so benutzen
 Sie bitte die folgende Form (die Unterscheidung ist manchmal
 Geschmackssache):
 
@@ -2022,8 +2022,8 @@ else
     c
 @end smallexample
 
-Das folgende (biologisch gesehen ziemlich unvollständige) Beispiel
-enthält eine Mischung beider Formen, die wir für vernünftig halten:
+Das folgende (biologisch gesehen ziemlich unvollstÃ¤ndige) Beispiel
+enthÃ¤lt eine Mischung beider Formen, die wir fÃ¼r vernÃ¼nftig halten:
 
 @smallexample
 if Wohnort = 'Wasser' then
@@ -2040,8 +2040,8 @@ else
     WriteLn ('Ist es ein Gnu?')
 @end smallexample
 
-Die Hauptfälle werden hier durch den Wohnort bestimmt, die Anzahl
-der Beine bestimmen einige untergeordnete Fälle.
+Die HauptfÃ¤lle werden hier durch den Wohnort bestimmt, die Anzahl
+der Beine bestimmen einige untergeordnete FÃ¤lle.
 
 @cindex Schleifen
 Hier eine kurze Zusammenfassung der normalen Schleifen:
@@ -2064,7 +2064,7 @@ until @dots{}
 
 Wenn nur eine einzelne Anweisung nach @samp{if} oder in einer
 @samp{do}- oder @samp{for}-Schleife bzw. zwischen @samp{repeat} und
-@samp{until} existiert und diese Anweisung kurz genug für eine Zeile
+@samp{until} existiert und diese Anweisung kurz genug fÃ¼r eine Zeile
 ist, so darf diese Anweisung in eine Zeile wie folgt geschrieben
 werden:
 
@@ -2085,7 +2085,7 @@ repeat @dots{} until @dots{}
 @end smallexample
 
 Wenn mehrere Anweisungen mit @samp{begin} und @samp{end} in einen
-Block gefaßt werden, sieht es folgendermaßen aus:
+Block gefaÃŸt werden, sieht es folgendermaÃŸen aus:
 
 @smallexample
 if @dots{} then
@@ -2108,16 +2108,16 @@ while @dots{} do
   end
 @end smallexample
 
-@cindex Einrückung
-Es wird nach folgenden Ausdrücken 2 Leerzeichen eingerückt:
+@cindex EinrÃ¼ckung
+Es wird nach folgenden AusdrÃ¼cken 2 Leerzeichen eingerÃ¼ckt:
 @samp{begin}, @samp{then}, @samp{else}, @samp{case}, @samp{do}
 (@samp{for}, @samp{while}, @samp{with}, @samp{to begin},
 @samp{to end}), @samp{repeat}, @samp{record}, @samp{object},
 @samp{type}, @samp{const}, @samp{var}, @samp{label}.
 
 Globale Routinen und ihre lokalen Variablen etc. werden nicht
-eingerückt, ebenso wie globale Variablen etc. Jede Subroutine (Kopf
-und Körper sowie ihre lokalen Variablen etc.) soll eingerückt
+eingerÃ¼ckt, ebenso wie globale Variablen etc. Jede Subroutine (Kopf
+und KÃ¶rper sowie ihre lokalen Variablen etc.) soll eingerÃ¼ckt
 werden.
 
 @smallexample
@@ -2144,7 +2144,7 @@ begin
 end.
 @end smallexample
 
-Variante Records sollten so eingerückt werden:
+Variante Records sollten so eingerÃ¼ckt werden:
 
 @smallexample
 type
@@ -2162,12 +2162,12 @@ var
   end = [ Initialisierung ]
 @end smallexample
 
-Größere Einrückung (mehr als zwei Leerzeichen) kann bei
-Zeilenumbrüchen im Code erfolgen, um einen ``tabularen'' Code
+GrÃ¶ÃŸere EinrÃ¼ckung (mehr als zwei Leerzeichen) kann bei
+ZeilenumbrÃ¼chen im Code erfolgen, um einen ``tabularen'' Code
 zu erzeugen.
 
-Conditionale (@samp{@{$ifdef@}}) sollten dieselbe Einrückung wie
-der zugehörige Code haben:
+Conditionale (@samp{@{$ifdef@}}) sollten dieselbe EinrÃ¼ckung wie
+der zugehÃ¶rige Code haben:
 
 @smallexample
 begin
@@ -2178,11 +2178,11 @@ begin
 end;
 @end smallexample
 
-Kurze Conditionale, die sich nur auf einen Ausdruck beziehen, dürfen
+Kurze Conditionale, die sich nur auf einen Ausdruck beziehen, dÃ¼rfen
 auch in eine Zeile geschrieben werden:
 
 @smallexample
-Foo := @{$ifdef DEBUG@} 'Debugging' @{$else@} 'Veröffentlichung' @{$endif@};
+Foo := @{$ifdef DEBUG@} 'Debugging' @{$else@} 'VerÃ¶ffentlichung' @{$endif@};
 @end smallexample
 
 Wenn Conditionale beabsichtigterweise entgegen den normalen
@@ -2191,7 +2191,7 @@ passende Stellen und schreiben Kommentare dazu:
 
 @smallexample
 begin
-  @{ Führe den Code bedingungslos aus, wenn wir debuggen @}
+  @{ FÃ¼hre den Code bedingungslos aus, wenn wir debuggen @}
   @{$ifndef DEBUG@}
   if EinigeBedingungen then
   @{$endif@}
@@ -2201,7 +2201,7 @@ begin
 end;
 @end smallexample
 
-Oftmals finden Sie schönere und nicht weniger effiziente Wege,
+Oftmals finden Sie schÃ¶nere und nicht weniger effiziente Wege,
 dasselbe zu schreiben. In diesem Fall kann es auch so erfolgen:
 
 @smallexample
@@ -2237,18 +2237,18 @@ Die meisten der bisherigen Regeln gelten nicht innerhalb von
 Strings. Allgemein sollten Textausgaben innerhalb von Zeichenketten
 den GNU Coding Standards folgen. Beispielsweise sollten zitierte
 Namen von @samp{`} und @samp{'} begrenzt werden. In Pascal bedeutet
-das, daß Sie doppelte @samp{'} benutzen müssen. Mehr Informationen:
+das, daÃŸ Sie doppelte @samp{'} benutzen mÃ¼ssen. Mehr Informationen:
 @xref{Errors, , , standards}.
 
-Normalerweise sollten Strings in einfachen Anführungszeichen
-so wie @samp{'dieser schöne Satz, den Sie lesen'} eingeschlossen
-sein. Mit doppelten Anführungszeichen sollen nur Zeichenketten
-umfaßt werden, die C-Escape-Sequenzen beinhalten, wie
-@samp{"\t"}. Beachten Sie bitte, daß @samp{NewLine} (@samp{"\n"})
+Normalerweise sollten Strings in einfachen AnfÃ¼hrungszeichen
+so wie @samp{'dieser schÃ¶ne Satz, den Sie lesen'} eingeschlossen
+sein. Mit doppelten AnfÃ¼hrungszeichen sollen nur Zeichenketten
+umfaÃŸt werden, die C-Escape-Sequenzen beinhalten, wie
+@samp{"\t"}. Beachten Sie bitte, daÃŸ @samp{NewLine} (@samp{"\n"})
 vordefiniert ist. Geben Sie daher @samp{NewLine} den Vorzug, wenn
-Sie nicht gerade C-Strings für andere Zwecke benötigen.
+Sie nicht gerade C-Strings fÃ¼r andere Zwecke benÃ¶tigen.
 
-Mehrzeilige Strings können folgendermaßen genutzt werden:
+Mehrzeilige Strings kÃ¶nnen folgendermaÃŸen genutzt werden:
 
 @smallexample
 WriteLn ('Hallo
@@ -2256,7 +2256,7 @@ Welt!')
 @end smallexample
 
 Oder (diese Form ist vor allem dann vorzuziehen, wenn der String
-selbst Einrückungen und/oder Absätze enthält):
+selbst EinrÃ¼ckungen und/oder AbsÃ¤tze enthÃ¤lt):
 
 @smallexample
 WriteLn (
@@ -2264,23 +2264,23 @@ WriteLn (
 Welt!')
 @end smallexample
 
-Folgendes ist auch möglich:
+Folgendes ist auch mÃ¶glich:
 
 @smallexample
 WriteLn ('Hallo' + NewLine + 'Welt!')
 @end smallexample
 
-(Beachten Sie, daß obiger Code nicht ohne die Unit @code{GPC}
+(Beachten Sie, daÃŸ obiger Code nicht ohne die Unit @code{GPC}
 kompiliert werden kann.)
 
-Oder natürlich:
+Oder natÃ¼rlich:
 
 @smallexample
 WriteLn ('Hallo');
 WriteLn ('Welt!')
 @end smallexample
 
-Wenn Sie testen möchten, ob ein String leer ist, benutzen Sie
+Wenn Sie testen mÃ¶chten, ob ein String leer ist, benutzen Sie
 folgende Syntax:
 
 @smallexample
@@ -2289,7 +2289,7 @@ if s = '' then
 @end smallexample
 
 Der GNU Pascal Compiler optimiert dies automatisch zu folgendem
-schnelleren Test. Daher können Sie den vorhergehende, kürzere
+schnelleren Test. Daher kÃ¶nnen Sie den vorhergehende, kÃ¼rzere
 Schreibweise ohne Bedenken verwenden:
 
 @smallexample
@@ -2297,7 +2297,7 @@ if Length (s) = 0 then
   @dots{}
 @end smallexample
 
-Dasselbe gilt natürlich auch für @samp{<>} und sogar für
+Dasselbe gilt natÃ¼rlich auch fÃ¼r @samp{<>} und sogar fÃ¼r
 Zuweisungen, bei denen @samp{s := ''} die empfohlene Form ist,
 welche von GPC intern zu @samp{SetLength (s, 0)} optimiert wird.
 
@@ -2313,8 +2313,8 @@ GPC-Dokumentation (@pxref{I18N, , , gpc}).
 @findex MemoryMap
 
 Dieser Abschnitt der GNU Coding Standards kann so, wie er ist,
-auf GNU Pascal übertragen werden.
-Beachten Sie, daß @samp{mmap} hier @samp{MemoryMap} bedeutet.
+auf GNU Pascal Ã¼bertragen werden.
+Beachten Sie, daÃŸ @samp{mmap} hier @samp{MemoryMap} bedeutet.
 @xref{Mmap, , , standards}.
 
 @node Dokumentation
@@ -2323,40 +2323,40 @@ Beachten Sie, daß @samp{mmap} hier @samp{MemoryMap} bedeutet.
 
 Wir empfehlen Ihnen, das entsprechende Kapitel der GNU Coding
 Standards zu lesen @xref{Documentation, , , standards}, die
-dortigen Informationen gelten auch für GNU Pascal. Einige
+dortigen Informationen gelten auch fÃ¼r GNU Pascal. Einige
 Anmerkungen haben wir aber trotzdem.
 
-Es wäre schön, eine Man-Page für jedes Programm zu haben. Diese
+Es wÃ¤re schÃ¶n, eine Man-Page fÃ¼r jedes Programm zu haben. Diese
 Man-Page sollte auf eine Info-Dokumentation verweisen. Es existiert
 ein GNU Programm namens @samp{help2man}, welches Man-Pages aus der
 Ausgabe der @samp{--help}- und @samp{--version}-Optionen Ihres
-Programmes generiert. Es funktioniert gut, bis auf die Tatsache, daß
-es @samp{FSF} an den Anfang der Man-Page schreibt, was nicht für
+Programmes generiert. Es funktioniert gut, bis auf die Tatsache, daÃŸ
+es @samp{FSF} an den Anfang der Man-Page schreibt, was nicht fÃ¼r
 jedes mit dem GNU Pascal Compiler erzeugte Programm richtig ist.
 Dies kann jedoch leicht mit der Hand oder automatisch mit einem
-Programm wie @samp{sed} geändert werden.
+Programm wie @samp{sed} geÃ¤ndert werden.
 
-Geben Sie sich mit den Man-Pages nicht zuviel Mühe. Sie
+Geben Sie sich mit den Man-Pages nicht zuviel MÃ¼he. Sie
 gleichzeitig mit der Texinfo-Dokumentation auf dem neusten Stand
-zu halten, bedeutet eine Menge Arbeit und ist möglicherweise sehr
-fehlerträchtig. Wenn Sie die Man-Page nicht auf dem neuesten Stand
+zu halten, bedeutet eine Menge Arbeit und ist mÃ¶glicherweise sehr
+fehlertrÃ¤chtig. Wenn Sie die Man-Page nicht auf dem neuesten Stand
 halten, so schafft sie mehr Verwirrung als Nutzen.
 
 Auf der einen Seite fehlen wichtige Informationen, wenn Man-Pages
-zu knapp ausfallen, auf der anderen Seite werden längere Man-Pages
-sehr unübersichtlich.
+zu knapp ausfallen, auf der anderen Seite werden lÃ¤ngere Man-Pages
+sehr unÃ¼bersichtlich.
 
 Mit anderen Worten: Schreiben Sie Info- (bzw.
 Texinfo-)Dokumentation!
 
-@node Veröffentlichungen
-@chapter Der Verlauf der Veröffentlichung
-@cindex Veröffentlichung des Programmes
+@node VerÃ¶ffentlichungen
+@chapter Der Verlauf der VerÃ¶ffentlichung
+@cindex VerÃ¶ffentlichung des Programmes
 
 Bitte lesen Sie das entsprechende Kapitel der GNU Coding
-Standards. Beachten Sie, daß der ganze Aufwand mit den auto-Tools
+Standards. Beachten Sie, daÃŸ der ganze Aufwand mit den auto-Tools
 (@samp{autoconf}, @samp{automake}, @dots{}) im Rahmen von GNU
-Pascal normalerweise nicht gebraucht werden. Außerdem sind Makefiles
+Pascal normalerweise nicht gebraucht werden. AuÃŸerdem sind Makefiles
 in GNU Pascal Programmen nicht immer notwendig.
 @xref{Managing Releases, , , standards}.
 
@@ -2368,14 +2368,14 @@ in GNU Pascal Programmen nicht immer notwendig.
 @section Wie man Makefiles schreibt
 @cindex Makefile-Regeln
 
-Für Ihre Pascal-Projekte benötigen Sie keine großen @samp{Makefile}s
+FÃ¼r Ihre Pascal-Projekte benÃ¶tigen Sie keine groÃŸen @samp{Makefile}s
 und Sie brauchen sich ebenfalls nicht in @samp{autoconf} und
 @samp{automake} einzuarbeiten. Sie brauchen nur die
 Kommandozeilenoption @samp{--automake}. Alles Weitere erledigt GNU
-Pascal für Sie! (Zum Zeitpunkt des Schreibens hat GNU Pascal
+Pascal fÃ¼r Sie! (Zum Zeitpunkt des Schreibens hat GNU Pascal
 einige kleinere Bugs im Zusammenhang mit der
 @samp{automake}-Option. Diese Fehler werden aber nachgebessert.
-Außerdem wird gerade an einem Utility namens @samp{gp} gearbeitet,
+AuÃŸerdem wird gerade an einem Utility namens @samp{gp} gearbeitet,
 welches Ihnen noch mehr Arbeit beim Kompilieren abnimmt.)
 
 Ein @emph{einfaches} Makefile wie das folgende mag angebracht sein:
@@ -2403,9 +2403,9 @@ maintainer-clean: extraclean
 @end smallexample
 
 Sie wollen vielleicht dem @samp{Makefile} noch weitere Regeln
-hinzufügen, sei es zur Erstellung der Dokumentation, Datendateien,
-Paketen zur Veröffentlichung oder zu was auch immer. Diese Dinge
-liegen außerhalb des Rahmens dieses Textes. Die Kompilierung eines
+hinzufÃ¼gen, sei es zur Erstellung der Dokumentation, Datendateien,
+Paketen zur VerÃ¶ffentlichung oder zu was auch immer. Diese Dinge
+liegen auÃŸerhalb des Rahmens dieses Textes. Die Kompilierung eines
 GNU Pascal Programmes erfolgt normalerweise mit
 @samp{gpc --automake}.
 
@@ -2419,8 +2419,8 @@ Routinen sind Prozeduren (@samp{procedure}), Funktionen
 Operatoren.
 
 Deklarationen sind diejenigen Bereiche des Programmes, die die
-Eigenschaften irgendwelcher Objekte ``erklären'', wie Konstanten,
-Typen, Variablen, Units, Module, und selbstverständlich das
+Eigenschaften irgendwelcher Objekte ``erklÃ¤ren'', wie Konstanten,
+Typen, Variablen, Units, Module, und selbstverstÃ¤ndlich das
 Programm.
 
 Anweisungen bzw. Statements sind solche Teile des Programmes, die
@@ -2431,26 +2431,26 @@ ein Sprungbefehl (@samp{goto}, @samp{Exit}, @samp{Return},
 eine zusammengesetzte Anweisung (@samp{begin} @dots{} @samp{end},
 @samp{if}, @samp{case}, @samp{repeat}, @samp{while}, @samp{for},
 @samp{with}), die ihrerseits wieder verschiedene Anweisungen
-enthalten dürfen.
+enthalten dÃ¼rfen.
 
 Bezeichner (identifiers) sind Sprachelemente, die Objekten
 (Routinen, Konstanten, Variablen, Typen, Units oder Modulen) ihre
-Namen geben. Sie können lokal umdefiniert werden, anders als
-Schlüsselwörter (keywords), die Teil einer festen Syntax sind
+Namen geben. Sie kÃ¶nnen lokal umdefiniert werden, anders als
+SchlÃ¼sselwÃ¶rter (keywords), die Teil einer festen Syntax sind
 (beispielsweise @samp{if} @dots{} @samp{then} @dots{} @samp{else})
-und nicht umdefiniert werden können. Makros sind keine
+und nicht umdefiniert werden kÃ¶nnen. Makros sind keine
 Sprachelemente, da sie niemals vom Compiler verarbeitet werden,
-sondern von einem Präprozessor.
+sondern von einem PrÃ¤prozessor.
 
 Endianess ist ein Begriff, der sich auf die Reihenfolge der
-Anordnung der höher- und niederwertigen Bytes bezieht. Diese
+Anordnung der hÃ¶her- und niederwertigen Bytes bezieht. Diese
 Reihenfolge ist auf manchen Systeme anders als auf anderen. Schauen
-Sie sich bitte die Erklärung dazu im GPC-Info Dokument an
+Sie sich bitte die ErklÃ¤rung dazu im GPC-Info Dokument an
 (@pxref{Endianness, , , gpc}).
 
-@emph{Hinweis:} Andere Begriffe können hier eingefügt werden,
+@emph{Hinweis:} Andere Begriffe kÃ¶nnen hier eingefÃ¼gt werden,
 sobald es sinnvoll erscheint. Wenn Sie die Definition eines
-Ausdruckes wissen möchten, so teilen Sie es uns bitte mit.
+Ausdruckes wissen mÃ¶chten, so teilen Sie es uns bitte mit.
 
 @node Index
 @unnumbered Index

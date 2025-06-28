@@ -1,0 +1,22 @@
+From: Nicolas Schodet <nico@ni.fr.eu.org>
+Date: Wed, 19 Mar 2025 18:00:49 +0100
+Subject: Install ld scripts in libdir
+
+Forwarded: not-needed
+---
+ ld/Makefile.am | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/ld/Makefile.am b/ld/Makefile.am
+index 9bc95c1..dbd6ac5 100644
+--- a/ld/Makefile.am
++++ b/ld/Makefile.am
+@@ -20,7 +20,7 @@ AM_CFLAGS = $(WARN_CFLAGS)
+ # We put the scripts in the directory $(scriptdir)/ldscripts.
+ # We can't put the scripts in $(datadir) because the SEARCH_DIR
+ # directives need to be different for native and cross linkers.
+-scriptdir = $(tooldir)/lib
++scriptdir = $(libdir)
+ 
+ EMUL = @EMUL@
+ EMULATION_OFILES = @EMULATION_OFILES@

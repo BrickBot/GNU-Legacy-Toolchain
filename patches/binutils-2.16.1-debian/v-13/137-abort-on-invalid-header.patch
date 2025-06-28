@@ -1,0 +1,20 @@
+From: Michael Tautschnig <mt@debian.org>
+Subject: Abort on invalid header
+
+Bug-Debian: http://bugs.debian.org/729274
+---
+ bfd/tekhex.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/bfd/tekhex.c b/bfd/tekhex.c
+index df1dab5..ecb27b4 100644
+--- a/bfd/tekhex.c
++++ b/bfd/tekhex.c
+@@ -330,6 +330,7 @@ getsym (dstp, srcp)
+   char *src = *srcp;
+   unsigned int i;
+   unsigned int len = hex_value(*src++);
++  if(len>=16) abort();
+ 
+   if (len == 0)
+     len = 16;

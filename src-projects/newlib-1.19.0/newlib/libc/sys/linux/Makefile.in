@@ -484,7 +484,7 @@ ELIX_4_SOURCES = \
 
 # This will handle both /usr/src/linux-2.4/include/asm/signal.h (in Red Hat Linux 7.1)
 # and also /usr/src/linux/include/asm/signal.h in older versions of Red Hat Linux
-SIGNAL_H = /usr/include/asm/signal.h
+SIGNAL_H = /usr/include/$(DEB_HOST_MULTIARCH)/asm/signal.h
 liblinux_la_LDFLAGS = -Xcompiler -nostdlib
 ADD_OBJS = \
 	$(LINUX_MACH_LIB)

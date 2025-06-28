@@ -1,0 +1,19 @@
+# DP: Pass -mimplicit-it=thumb if -mthumb to as on ARM.
+
+gcc/
+
+2010-07-09  Andrew Stubbs  <ams@codesourcery.com>
+
+	* config/arm/elf.h (ASM_SPEC): Pass -mimplicit-it=thumb if -mthumb.
+
+--- a/src/gcc/config/arm/elf.h	2008-07-14 20:01:42 +0000
++++ b/src/gcc/config/arm/elf.h	2010-07-09 12:18:59 +0000
+@@ -63,6 +63,7 @@
+ %{mthumb-interwork:-mthumb-interwork} \
+ %{msoft-float:-mfloat-abi=soft} %{mhard-float:-mfloat-abi=hard} \
+ %{mfloat-abi=*} %{mfpu=*} \
++%{mthumb:%{!-mimplicit-it=*:-mimplicit-it=thumb}} \
+ %(subtarget_extra_asm_spec)"
+ #endif
+ 
+

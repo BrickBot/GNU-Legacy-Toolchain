@@ -1,0 +1,32 @@
+diff --git a/gcc/ChangeLog b/gcc/ChangeLog
+index 143f9b69e8687..d17872fec44b0 100644
+--- a/gcc/ChangeLog
++++ b/gcc/ChangeLog
+@@ -1,3 +1,9 @@
++2006-04-25  Nick Clifton  <nickc@redhat.com>
++
++	* config/m32r/m32r.c (gen_compare): Fix reg/smallconst equal code,
++	the patch for which was accidentally omitted from the previous
++	commit.
++
+ 2006-04-04  Kazuhiro Inaoka <inaoka.kazuhiro@renesas.com>
+ 
+ 	PR target/26775
+diff --git a/gcc/config/m32r/m32r.c b/gcc/config/m32r/m32r.c
+index abeea182859ca..ab0b303823db8 100644
+--- a/gcc/config/m32r/m32r.c
++++ b/gcc/config/m32r/m32r.c
+@@ -1150,11 +1150,11 @@ gen_compare (enum rtx_code code, rtx x, rtx y, int need_compare)
+       /* Reg/smallconst equal comparison.  */
+       if (compare_code == EQ
+ 	  && GET_CODE (y) == CONST_INT
+-	  && CMP_INT16_P (INTVAL (y)))
++	  && UINT16_P (INTVAL (y)))
+ 	{
+ 	  rtx tmp = gen_reg_rtx (SImode);
+ 
+-	  emit_insn (gen_addsi3 (tmp, x, GEN_INT (-INTVAL (y))));
++	  emit_insn (gen_xorsi3 (tmp, x, GEN_INT (INTVAL (y))));
+ 	  return gen_rtx (code, CCmode, tmp, const0_rtx);
+ 	}
+       

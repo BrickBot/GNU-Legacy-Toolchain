@@ -121,6 +121,13 @@ public class GregorianCalendar extends Calendar
     this(TimeZone.getDefault(), locale);
   }
 
+  private GregorianCalendar(TimeZone zone, Locale locale, boolean unused)
+  {
+    super(zone, locale);
+    ResourceBundle rb = getBundle(locale);
+    gregorianCutover = ((Date) rb.getObject("gregorianCutOver")).getTime();
+  }
+
   /**
    * Constructs a new GregorianCalender representing the current
    * time with the given time zone and the given locale.
@@ -129,9 +136,7 @@ public class GregorianCalendar extends Calendar
    */
   public GregorianCalendar(TimeZone zone, Locale locale)
   {
-    super(zone, locale);
-    ResourceBundle rb = getBundle(locale);
-    gregorianCutover = ((Date) rb.getObject("gregorianCutOver")).getTime();
+    this(zone, locale, false);
     setTimeInMillis(System.currentTimeMillis());
   }
 
@@ -144,7 +149,8 @@ public class GregorianCalendar extends Calendar
    */
   public GregorianCalendar(int year, int month, int day)
   {
-    super();
+    this(TimeZone.getDefault(), Locale.getDefault(), false);
+    clear();
     set(year, month, day);
   }
 
@@ -159,7 +165,8 @@ public class GregorianCalendar extends Calendar
    */
   public GregorianCalendar(int year, int month, int day, int hour, int minute)
   {
-    super();
+    this(TimeZone.getDefault(), Locale.getDefault(), false);
+    clear();
     set(year, month, day, hour, minute);
   }
 
@@ -176,7 +183,8 @@ public class GregorianCalendar extends Calendar
   public GregorianCalendar(int year, int month, int day,
 			   int hour, int minute, int second)
   {
-    super();
+    this(TimeZone.getDefault(), Locale.getDefault(), false);
+    clear();
     set(year, month, day, hour, minute, second);
   }
 

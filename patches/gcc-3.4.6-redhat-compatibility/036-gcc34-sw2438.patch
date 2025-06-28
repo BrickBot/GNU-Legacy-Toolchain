@@ -1,0 +1,232 @@
+2006-05-23  Alexandre Oliva  <aoliva@redhat.com>
+
+	* simplify-rtx.c (simplify_subreg): Adjust REG_OFFSET for
+	big-endian paradoxical subregs.
+	* var-tracking.c (struct micro_operation_def): Document that,
+	for modify micro operations, insn is the subsequent instruction.
+	(var_reg_delete_and_set, var_mem_delete_and_set): Split into...
+	(var_reg_set, var_mem_set): ... new functions.
+	(add_stores): Record subsequent insn.
+	(compute_bb_dataflow): Use new functions for MO_USE.
+	(emit_notes_in_bb): Use new functions for MO_USE.  Emit use
+	notes after the insn, and modify notes before the insn known
+	to be the subsequent one.
+	(vt_initialize): Invert sorting of MO_CLOBBERs and MO_SETs.
+
+--- gcc/simplify-rtx.c	2005-11-21 11:55:29.000000000 -0200
++++ gcc/simplify-rtx.c	2006-05-16 01:47:01.000000000 -0300
+@@ -3473,7 +3473,22 @@ simplify_subreg (enum machine_mode outer
+       if (HARD_REGNO_MODE_OK (final_regno, outermode)
+ 	  || ! HARD_REGNO_MODE_OK (REGNO (op), innermode))
+ 	{
+-	  rtx x = gen_rtx_REG_offset (op, outermode, final_regno, byte);
++	  rtx x;
++	  int final_offset = byte;
++
++	  /* Adjust offset for paradoxical subregs.  */
++	  if (byte == 0
++	      && GET_MODE_SIZE (innermode) < GET_MODE_SIZE (outermode))
++	    {
++	      int difference = (GET_MODE_SIZE (innermode)
++				- GET_MODE_SIZE (outermode));
++	      if (WORDS_BIG_ENDIAN)
++		final_offset += (difference / UNITS_PER_WORD) * UNITS_PER_WORD;
++	      if (BYTES_BIG_ENDIAN)
++		final_offset += difference % UNITS_PER_WORD;
++	    }
++
++	  x = gen_rtx_REG_offset (op, outermode, final_regno, final_offset);
+ 
+ 	  /* Propagate original regno.  We don't have any way to specify
+ 	     the offset inside original regno, so do so only for lowpart.
+--- gcc/var-tracking.c	2006-05-10 17:17:51.000000000 -0300
++++ gcc/var-tracking.c	2006-05-16 03:25:32.000000000 -0300
+@@ -138,7 +138,11 @@ typedef struct micro_operation_def
+     HOST_WIDE_INT adjust;
+   } u;
+ 
+-  /* The instruction which the micro operation is in.  */
++  /* The instruction which the micro operation is in, for MO_USE,
++     MO_USE_NO_VAR, MO_CALL and MO_ADJUST, or the subsequent
++     instruction or note in the original flow (before any var-tracking
++     notes are inserted, to simplify emission of notes), for MO_SET
++     and MO_CLOBBER.  */
+   rtx insn;
+ } micro_operation;
+ 
+@@ -289,9 +293,11 @@ static void vars_clear (htab_t);
+ static variable unshare_variable (dataflow_set *set, variable var);
+ static int vars_copy_1 (void **, void *);
+ static void vars_copy (htab_t, htab_t);
++static void var_reg_set (dataflow_set *, rtx);
+ static void var_reg_delete_and_set (dataflow_set *, rtx);
+ static void var_reg_delete (dataflow_set *, rtx);
+ static void var_regno_delete (dataflow_set *, int);
++static void var_mem_set (dataflow_set *, rtx);
+ static void var_mem_delete_and_set (dataflow_set *, rtx);
+ static void var_mem_delete (dataflow_set *, rtx);
+ 
+@@ -788,6 +794,19 @@ vars_copy (htab_t dst, htab_t src)
+   htab_traverse (src, vars_copy_1, dst);
+ }
+ 
++/* Set the register to contain REG_EXPR (LOC), REG_OFFSET (LOC).  */
++
++static void
++var_reg_set (dataflow_set *set, rtx loc)
++{
++  tree decl = REG_EXPR (loc);
++  HOST_WIDE_INT offset = REG_OFFSET (loc);
++
++  if (set->regs[REGNO (loc)] == NULL)
++    attrs_list_insert (&set->regs[REGNO (loc)], decl, offset, loc);
++  set_variable_part (set, loc, decl, offset);
++}
++
+ /* Delete current content of register LOC in dataflow set SET
+    and set the register to contain REG_EXPR (LOC), REG_OFFSET (LOC).  */
+ 
+@@ -815,9 +834,7 @@ var_reg_delete_and_set (dataflow_set *se
+ 	  nextp = &node->next;
+ 	}
+     }
+-  if (set->regs[REGNO (loc)] == NULL)
+-    attrs_list_insert (&set->regs[REGNO (loc)], decl, offset, loc);
+-  set_variable_part (set, loc, decl, offset);
++  var_reg_set (set, loc);
+ }
+ 
+ /* Delete current content of register LOC in dataflow set SET.  */
+@@ -854,12 +871,12 @@ var_regno_delete (dataflow_set *set, int
+   *reg = NULL;
+ }
+ 
+-/* Delete and set the location part of variable MEM_EXPR (LOC)
+-   in dataflow set SET to LOC.
++/* Set the location part of variable MEM_EXPR (LOC) in dataflow set
++   SET to LOC.
+    Adjust the address first if it is stack pointer based.  */
+ 
+ static void
+-var_mem_delete_and_set (dataflow_set *set, rtx loc)
++var_mem_set (dataflow_set *set, rtx loc)
+ {
+   tree decl = MEM_EXPR (loc);
+   HOST_WIDE_INT offset = MEM_OFFSET (loc) ? INTVAL (MEM_OFFSET (loc)) : 0;
+@@ -867,6 +884,16 @@ var_mem_delete_and_set (dataflow_set *se
+   set_variable_part (set, loc, decl, offset);
+ }
+ 
++/* Delete and set the location part of variable MEM_EXPR (LOC)
++   in dataflow set SET to LOC.
++   Adjust the address first if it is stack pointer based.  */
++
++static void
++var_mem_delete_and_set (dataflow_set *set, rtx loc)
++{
++  var_mem_set (set, loc);
++}
++
+ /* Delete the location part LOC from dataflow set SET.
+    Adjust the address first if it is stack pointer based.  */
+ 
+@@ -1547,7 +1574,7 @@ add_stores (rtx loc, rtx expr, void *ins
+ 		   && track_expr_p (REG_EXPR (loc)))
+ 		  ? MO_SET : MO_CLOBBER);
+       mo->u.loc = loc;
+-      mo->insn = (rtx) insn;
++      mo->insn = NEXT_INSN ((rtx) insn);
+     }
+   else if (GET_CODE (loc) == MEM
+ 	   && MEM_EXPR (loc)
+@@ -1558,7 +1585,7 @@ add_stores (rtx loc, rtx expr, void *ins
+ 
+       mo->type = GET_CODE (expr) == CLOBBER ? MO_CLOBBER : MO_SET;
+       mo->u.loc = loc;
+-      mo->insn = (rtx) insn;
++      mo->insn = NEXT_INSN ((rtx) insn);
+     }
+ }
+ 
+@@ -1589,6 +1616,16 @@ compute_bb_dataflow (basic_block bb)
+ 	    break;
+ 
+ 	  case MO_USE:
++	    {
++	      rtx loc = VTI (bb)->mos[i].u.loc;
++
++	      if (GET_CODE (loc) == REG)
++		var_reg_set (out, loc);
++	      else if (GET_CODE (loc) == MEM)
++		var_mem_set (out, loc);
++	    }
++	    break;
++
+ 	  case MO_SET:
+ 	    {
+ 	      rtx loc = VTI (bb)->mos[i].u.loc;
+@@ -2364,6 +2401,18 @@ emit_notes_in_bb (basic_block bb)
+ 	    break;
+ 
+ 	  case MO_USE:
++	    {
++	      rtx loc = VTI (bb)->mos[i].u.loc;
++
++	      if (GET_CODE (loc) == REG)
++		var_reg_set (&set, loc);
++	      else
++		var_mem_set (&set, loc);
++
++	      emit_notes_for_changes (insn, EMIT_NOTE_AFTER_INSN);
++	    }
++	    break;
++
+ 	  case MO_SET:
+ 	    {
+ 	      rtx loc = VTI (bb)->mos[i].u.loc;
+@@ -2373,10 +2422,7 @@ emit_notes_in_bb (basic_block bb)
+ 	      else
+ 		var_mem_delete_and_set (&set, loc);
+ 
+-	      if (VTI (bb)->mos[i].type == MO_USE)
+-		emit_notes_for_changes (insn, EMIT_NOTE_BEFORE_INSN);
+-	      else
+-		emit_notes_for_changes (insn, EMIT_NOTE_AFTER_INSN);
++	      emit_notes_for_changes (insn, EMIT_NOTE_BEFORE_INSN);
+ 	    }
+ 	    break;
+ 
+@@ -2391,9 +2437,9 @@ emit_notes_in_bb (basic_block bb)
+ 		var_mem_delete (&set, loc);
+ 
+ 	      if (VTI (bb)->mos[i].type == MO_USE_NO_VAR)
+-		emit_notes_for_changes (insn, EMIT_NOTE_BEFORE_INSN);
+-	      else
+ 		emit_notes_for_changes (insn, EMIT_NOTE_AFTER_INSN);
++	      else
++		emit_notes_for_changes (insn, EMIT_NOTE_BEFORE_INSN);
+ 	    }
+ 	    break;
+ 
+@@ -2616,15 +2662,18 @@ vt_initialize (void)
+ 		}
+ 
+ 	      n1 = VTI (bb)->n_mos;
++	      /* This will record NEXT_INSN (insn), such that we can
++		 insert notes before it without worrying about any
++		 notes that MO_USEs might emit after the insn.  */
+ 	      note_stores (PATTERN (insn), add_stores, insn);
+ 	      n2 = VTI (bb)->n_mos - 1;
+ 
+-	      /* Order the MO_SETs to be before MO_CLOBBERs.  */
++	      /* Order the MO_CLOBBERs to be before MO_SETs.  */
+ 	      while (n1 < n2)
+ 		{
+-		  while (n1 < n2 && VTI (bb)->mos[n1].type == MO_SET)
++		  while (n1 < n2 && VTI (bb)->mos[n1].type == MO_CLOBBER)
+ 		    n1++;
+-		  while (n1 < n2 && VTI (bb)->mos[n2].type == MO_CLOBBER)
++		  while (n1 < n2 && VTI (bb)->mos[n2].type == MO_SET)
+ 		    n2--;
+ 		  if (n1 < n2)
+ 		    {

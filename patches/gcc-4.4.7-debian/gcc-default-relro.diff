@@ -1,0 +1,29 @@
+# DP: Turn on -Wl,-z,relro by default.
+
+---
+ gcc/doc/invoke.texi |    3 +++
+ gcc/gcc.c           |    1 +
+ 2 files changed, 4 insertions(+), 0 deletions(-)
+
+--- a/src/gcc/doc/invoke.texi
++++ b/src/gcc/doc/invoke.texi
+@@ -8082,6 +8082,9 @@ For example, @samp{-Wl,-Map,output.map} passes @samp{-Map output.map} to the
+ linker.  When using the GNU linker, you can also get the same effect with
+ @samp{-Wl,-Map=output.map}.
+ 
++NOTE: In Ubuntu 8.10 and later versions, for LDFLAGS, the option
++@option{-Wl,-z,relro} is used.  To disable, use @option{-Wl,-z,norelro}.
++
+ @item -u @var{symbol}
+ @opindex u
+ Pretend the symbol @var{symbol} is undefined, to force linking of
+--- a/src/gcc/gcc.c~	2010-03-21 09:32:25.000000000 +0100
++++ b/src/gcc/gcc.c	2010-03-21 09:34:26.434838978 +0100
+@@ -749,6 +749,7 @@
+     %{fuse-ld=gold:-use-gold} \
+     %{fuse-ld=bfd:-use-ld}" \
+     "%X %{o*} %{A} %{d} %{e*} %{m} %{N} %{n} %{r}\
++    -z relro\
+     %{s} %{t} %{u*} %{x} %{z} %{Z} %{!A:%{!nostdlib:%{!nostartfiles:%S}}}\
+     %{static:} %{L*} %(mfwrap) %(link_libgcc) %o\
+     %{fopenmp|ftree-parallelize-loops=*:%:include(libgomp.spec)%(link_gomp)} %(mflib)\

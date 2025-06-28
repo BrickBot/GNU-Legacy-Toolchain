@@ -1,0 +1,28 @@
+--- gcc/tree-ssa-ccp.c.jj	2013-07-10 14:23:48.649363309 +1000
++++ gcc/tree-ssa-ccp.c	2013-07-10 14:25:46.767447105 +1000
+@@ -2877,6 +2877,12 @@ fold_stmt (gimple_stmt_iterator *gsi)
+   /* Fold the individual operands.
+      For example, fold instances of *&VAR into VAR, etc.  */
+   res = walk_gimple_op (stmt, fold_stmt_r, &wi);
++  if (res && is_gimple_debug (stmt))
++    {
++      gimple_debug_bind_reset_value (stmt);
++      changed = true;
++      res = NULL_TREE;
++    }
+   gcc_assert (!res);
+ 
+   /* Fold the main computation performed by the statement.  */
+@@ -2941,6 +2947,12 @@ fold_stmt_inplace (gimple stmt)
+      a call to _builtin_trap.  This functionality is currently
+      disabled, as noted in a FIXME, and cannot be supported here.  */
+   res = walk_gimple_op (stmt, fold_stmt_r, &wi);
++  if (res && is_gimple_debug (stmt))
++    {
++      gimple_debug_bind_reset_value (stmt);
++      changed = true;
++      res = NULL_TREE;
++    }
+   gcc_assert (!res);
+ 
+   /* Fold the main computation performed by the statement.  */

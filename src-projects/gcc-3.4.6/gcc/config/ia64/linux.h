@@ -46,6 +46,7 @@ do {						\
       %{!dynamic-linker:-dynamic-linker /lib/ld-linux-ia64.so.2}} \
       %{static:-static}}"
 
+#define CPP_SPEC "%{posix:-D_POSIX_SOURCE} %{pthread:-D_REENTRANT}"
 
 #define JMP_BUF_SIZE  76
 
@@ -54,6 +55,8 @@ do {						\
    linked against -lgcc_s.  */
 #undef LINK_EH_SPEC
 #define LINK_EH_SPEC ""
+
+#define MULTILIB_DEFAULTS { "m64" }
 
 /* Do code reading to identify a signal frame, and set the frame
    state data appropriately.  See unwind-dw2.c for the structs.  */
@@ -77,7 +80,7 @@ do {						\
       struct sigframe {							\
 	char scratch[16];						\
 	unsigned long sig_number;					\
-	struct siginfo *info;						\
+	siginfo_t *info;						\
 	struct sigcontext *sc;						\
       } *frame_ = (struct sigframe *)(CONTEXT)->psp;			\
       struct sigcontext *sc_ = frame_->sc;				\
@@ -150,7 +153,7 @@ do {						\
       struct sigframe {							\
 	char scratch[16];						\
 	unsigned long sig_number;					\
-	struct siginfo *info;						\
+	siginfo_t *info;						\
 	struct sigcontext *sc;						\
       } *frame_ = (struct sigframe *)(CONTEXT)->psp;			\
       struct sigcontext *sc_ = frame_->sc;				\

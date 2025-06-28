@@ -1,0 +1,40 @@
+--- gcc/config.gcc.jj	2008-04-24 15:42:46.000000000 -0500
++++ gcc/config.gcc	2008-04-24 15:44:51.000000000 -0500
+@@ -2175,7 +2175,7 @@ sparc-*-elf*)
+ 	tmake_file="sparc/t-elf sparc/t-crtfm"
+ 	extra_parts="crti.o crtn.o crtbegin.o crtend.o"
+ 	;;
+-sparc-*-linux*)		# SPARC's running GNU/Linux, libc6
++sparc-*-linux* | sparcv9*-*-linux*)		# SPARC's running GNU/Linux, libc6
+ 	tm_file="${tm_file} dbxelf.h elfos.h svr4.h sparc/sysv4.h sparc/gas.h linux.h"
+ 	extra_options="${extra_options} sparc/long-double-switch.opt"
+ 	tmake_file="${tmake_file} sparc/t-linux"
+@@ -2287,7 +2287,7 @@ sparc64-*-freebsd*|ultrasparc-*-freebsd*
+ 		*) echo "$with_cpu not supported for freebsd target"; exit 1 ;;
+ 	esac
+ 	;;
+-sparc64-*-linux*)		# 64-bit SPARC's running GNU/Linux
++sparc64*-*-linux*)		# 64-bit SPARC's running GNU/Linux
+ 	tm_file="sparc/biarch64.h ${tm_file} dbxelf.h elfos.h svr4.h sparc/sysv4.h sparc/gas.h linux.h sparc/linux64.h"
+ 	extra_options="${extra_options} sparc/long-double-switch.opt"
+ 	tmake_file="${tmake_file} sparc/t-linux sparc/t-linux64 sparc/t-crtfm"
+--- libgcc/config.host.jj	2008-04-24 15:46:19.000000000 -0500
++++ libgcc/config.host	2008-04-24 15:46:49.000000000 -0500
+@@ -572,7 +572,7 @@ sparc64-*-openbsd*)
+ 	;;
+ sparc-*-elf*)
+ 	;;
+-sparc-*-linux*)		# SPARC's running GNU/Linux, libc6
++sparc-*-linux* | sparcv9*-*-linux*)		# SPARC's running GNU/Linux, libc6
+ 	extra_parts="$extra_parts crtfastmath.o"
+ 	tmake_file="${tmake_file} sparc/t-crtfm"
+ 	;;
+@@ -590,7 +590,7 @@ sparc-wrs-vxworks)
+ 	;;
+ sparc64-*-freebsd*|ultrasparc-*-freebsd*)
+ 	;;
+-sparc64-*-linux*)		# 64-bit SPARC's running GNU/Linux
++sparc64*-*-linux*)		# 64-bit SPARC's running GNU/Linux
+ 	extra_parts="$extra_parts crtfastmath.o"
+ 	tmake_file="${tmake_file} sparc/t-crtfm"
+ 	;;

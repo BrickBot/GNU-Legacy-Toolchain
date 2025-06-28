@@ -1,0 +1,39 @@
+#!/bin/sh
+
+# While a legacy native build of GCC is needed for things like GPC and FORTRAN/g77,
+#   the legacy GDB is really NOT needed for the targets like the H8/300 that are
+#   no longer supported.
+
+SCRIPT_DIR=$(dirname $0)
+DEFAULT_PREFIX_ARG="--prefix=/opt/stow/gcc3-toolchain"
+DEFAULT_SUFFIX_ARG="--program-suffix=3"
+
+if [ $# -gt 0 ]; then
+  ALL_ARGS=$(printf -- '"%s" ' "$@")
+fi
+
+for ARG in "$@"; do
+  case "$ARG" in
+    --prefix=*)
+      unset DEFAULT_PREFIX_ARG
+      ;;
+    --program-suffix=*)
+      unset DEFAULT_SUFFIX_ARG
+      ;;
+  esac
+done
+
+CONFIGURE_ARGS=" \
+  --with-gcc \
+  --with-gnu-as \
+  --with-gnu-ld \
+  $DEFAULT_PREFIX_ARG \
+  $DEFAULT_SUFFIX_ARG \
+  $ALL_ARGS"
+#  --enable-target-optspace \
+
+# For any quoted substrings in variables (such as $ALL_ARGS might have)
+#   to be properly processed as a single quoted argument,
+#   the command must be eval'd instead of being executed directly.
+#   c.f. https://stackoverflow.com/q/39583838/#comment66478321_39583915
+eval "$SCRIPT_DIR/configure $CONFIGURE_ARGS"

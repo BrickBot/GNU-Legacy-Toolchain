@@ -1,0 +1,105 @@
+# DP: add support for arm-linux-*eabi* triplets; useful for armhf
+
+--- a/src/configure.ac	2011-03-18 19:10:48.804622758 +0000
++++ b/src/configure.ac	2011-03-18 19:11:18.324622793 +0000
+@@ -592,7 +592,7 @@
+     noconfigdirs="$noconfigdirs target-libffi target-qthreads"
+     libgloss_dir=arm
+     ;;
+-  arm*-*-linux-gnueabi)
++  arm*-*-linux-*eabi*)
+     noconfigdirs="$noconfigdirs target-qthreads"
+     case ${with_newlib} in
+       no) noconfigdirs="$noconfigdirs target-newlib target-libgloss"
+--- a/src/gcc/ada/gcc-interface/Makefile.in	2011-03-18 19:11:37.296622753 +0000
++++ b/src/gcc/ada/gcc-interface/Makefile.in	2011-03-18 19:11:52.964621827 +0000
+@@ -1857,7 +1857,7 @@
+   LIBRARY_VERSION := $(LIB_VERSION)
+ endif
+ 
+-ifeq ($(strip $(filter-out arm% linux-gnueabi,$(arch) $(osys)-$(word 4,$(targ)))),)
++ifeq ($(strip $(filter-out arm%-linux,$(arch)-$(osys)) $(if $(findstring eabi,$(word 4,$(targ))),,$(word 4,$(targ)))),)
+   LIBGNAT_TARGET_PAIRS = \
+   a-intnam.ads<a-intnam-linux.ads \
+   s-inmaop.adb<s-inmaop-posix.adb \
+--- a/src/gcc/config.gcc	2011-03-18 19:12:05.128622749 +0000
++++ b/src/gcc/config.gcc	2011-03-18 19:12:52.960622752 +0000
+@@ -736,7 +736,7 @@
+ 	esac
+ 	tmake_file="${tmake_file} t-linux arm/t-arm"
+ 	case ${target} in
+-	arm*-*-linux-*eabi)
++	arm*-*-linux-*eabi*)
+ 	    tm_file="$tm_file arm/bpabi.h arm/linux-eabi.h"
+ 	    tmake_file="$tmake_file arm/t-arm-elf arm/t-bpabi arm/t-linux-eabi t-slibgcc-libgcc"
+   	    # The BPABI long long divmod functions return a 128-bit value in
+@@ -757,7 +757,7 @@
+ 	tm_file="dbxelf.h elfos.h arm/unknown-elf.h arm/elf.h arm/linux-gas.h arm/uclinux-elf.h glibc-stdint.h"
+ 	tmake_file="arm/t-arm arm/t-arm-elf"
+ 	case ${target} in
+-	arm*-*-uclinux*eabi)
++	arm*-*-uclinux*eabi*)
+ 	    tm_file="$tm_file arm/bpabi.h arm/uclinux-eabi.h"
+ 	    tmake_file="$tmake_file arm/t-bpabi"
+   	    # The BPABI long long divmod functions return a 128-bit value in
+--- a/src/gcc/testsuite/lib/target-supports.exp	2011-03-18 19:13:48.604622749 +0000
++++ b/src/gcc/testsuite/lib/target-supports.exp	2011-03-18 19:14:24.132622629 +0000
+@@ -2593,7 +2593,7 @@
+ 	     || [istarget i?86-*-*]
+ 	     || [istarget x86_64-*-*]
+ 	     || [istarget alpha*-*-*] 
+-	     || [istarget arm*-*-linux-gnueabi] 
++	     || [istarget arm*-*-linux-*eabi*] 
+ 	     || [istarget s390*-*-*] 
+ 	     || [istarget powerpc*-*-*]
+ 	     || [istarget sparc64-*-*]
+@@ -2622,7 +2622,7 @@
+ 	     || [istarget i?86-*-*]
+ 	     || [istarget x86_64-*-*]
+ 	     || [istarget alpha*-*-*] 
+-	     || [istarget arm*-*-linux-gnueabi] 
++	     || [istarget arm*-*-linux-*eabi*] 
+ 	     || [istarget s390*-*-*] 
+ 	     || [istarget powerpc*-*-*]
+ 	     || [istarget sparc64-*-*]
+--- a/src/libjava/configure.ac	2011-03-18 19:14:37.464622750 +0000
++++ b/src/libjava/configure.ac	2011-03-18 19:15:00.780622755 +0000
+@@ -920,7 +920,7 @@
+     # on Darwin -single_module speeds up loading of the dynamic libraries.
+     extra_ldflags_libjava=-Wl,-single_module
+     ;;
+-arm*linux*eabi)
++arm*-*-linux-*eabi*)
+     # Some of the ARM unwinder code is actually in libstdc++.  We
+     # could in principle replicate it in libgcj, but it's better to
+     # have a dependency on libstdc++.
+--- a/src/libstdc++-v3/configure.host	2011-03-18 19:15:16.288622758 +0000
++++ b/src/libstdc++-v3/configure.host	2011-03-18 19:15:30.932622217 +0000
+@@ -325,7 +325,7 @@
+         fi
+     esac
+     case "${host}" in
+-      arm*-*-linux-*eabi)
++      arm*-*-linux-*eabi*)
+ 	port_specific_symbol_files="\$(srcdir)/../config/os/gnu-linux/arm-eabi-extra.ver"
+ 	;;
+     esac
+--- a/src/libstdc++-v3/testsuite/20_util/make_signed/requirements/typedefs-2.cc	2011-03-18 19:15:43.204622783 +0000
++++ b/src/libstdc++-v3/testsuite/20_util/make_signed/requirements/typedefs-2.cc	2011-03-18 19:16:06.324622740 +0000
+@@ -1,5 +1,5 @@
+ // { dg-options "-std=gnu++0x -funsigned-char -fshort-enums" }
+-// { dg-options "-std=gnu++0x -funsigned-char -fshort-enums -Wl,--no-enum-size-warning" { target arm*-*-linux*eabi } }
++// { dg-options "-std=gnu++0x -funsigned-char -fshort-enums -Wl,--no-enum-size-warning" { target arm*-*-linux-*eabi* } }
+ 
+ // 2007-05-03  Benjamin Kosnik  <bkoz@redhat.com>
+ //
+--- a/src/libstdc++-v3/testsuite/20_util/make_unsigned/requirements/typedefs-2.cc	2011-03-18 19:16:31.144622761 +0000
++++ b/src/libstdc++-v3/testsuite/20_util/make_unsigned/requirements/typedefs-2.cc	2011-03-18 19:16:41.420622950 +0000
+@@ -1,5 +1,5 @@
+ // { dg-options "-std=gnu++0x -funsigned-char -fshort-enums" }
+-// { dg-options "-std=gnu++0x -funsigned-char -fshort-enums -Wl,--no-enum-size-warning" { target arm*-*-linux*eabi } }
++// { dg-options "-std=gnu++0x -funsigned-char -fshort-enums -Wl,--no-enum-size-warning" { target arm*-*-linux-*eabi* } }
+ 
+ // 2007-05-03  Benjamin Kosnik  <bkoz@redhat.com>
+ //
+

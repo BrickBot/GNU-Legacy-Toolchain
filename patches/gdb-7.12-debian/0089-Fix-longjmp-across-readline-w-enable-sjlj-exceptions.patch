@@ -1,0 +1,141 @@
+From ada8ff522ce970e11dae4a3463c899b64e6f5006 Mon Sep 17 00:00:00 2001
+From: Pedro Alves <palves@redhat.com>
+Date: Tue, 20 Dec 2016 16:25:54 +0000
+Subject: [PATCH 089/122] Fix longjmp across readline w/
+ --enable-sjlj-exceptions toolchains
+
+Nowadays, GDB propagates C++ exceptions across readline using
+setjmp/longjmp 89525768cd08 ("Propagate GDB/C++ exceptions across
+readline using sj/lj-based TRY/CATCH") because DWARF-based unwinding
+can't cross C functions compiled without -fexceptions (see details
+from the commit above).
+
+Unfortunately, toolchains that use SjLj-based C++ exceptions got
+broken with that fix, because _Unwind_SjLj_Unregister, which is put at
+the exit of a function, is not executed due to the longjmp added by
+that commit.
+
+ (gdb) [New Thread 2936.0xb80]
+ kill
+
+ Thread 1 received signal SIGSEGV, Segmentation fault.
+ 0x03ff662b in ?? ()
+ top?bt 15
+ #0  0x03ff662b in ?? ()
+ #1  0x00526b92 in stdin_event_handler (error=0, client_data=0x172ed8)
+    at ../../binutils-gdb/gdb/event-top.c:555
+ #2  0x00525a94 in handle_file_event (ready_mask=<optimized out>,
+    file_ptr=0x3ff5cb8) at ../../binutils-gdb/gdb/event-loop.c:733
+ #3  gdb_wait_for_event (block=block@entry=1)
+    at ../../binutils-gdb/gdb/event-loop.c:884
+ #4  0x00525bfb in gdb_do_one_event ()
+    at ../../binutils-gdb/gdb/event-loop.c:347
+ #5  0x00525ce5 in start_event_loop ()
+    at ../../binutils-gdb/gdb/event-loop.c:371
+ #6  0x0051fada in captured_command_loop (data=0x0)
+    at ../../binutils-gdb/gdb/main.c:324
+ #7  0x0051cf5d in catch_errors (
+    func=func@entry=0x51fab0 <captured_command_loop(void*)>,
+    func_args=func_args@entry=0x0,
+    errstring=errstring@entry=0x7922bf <VEC_interp_factory_p_quick_push(VEC_inte rp_factory_p*, interp_factory*, char const*, unsigned int)::__PRETTY_FUNCTION__+351> "", mask=mask@entry=RETURN_MASK_ALL)
+    at ../../binutils-gdb/gdb/exceptions.c:236
+ #8  0x00520f0c in captured_main (data=0x328feb4)
+    at ../../binutils-gdb/gdb/main.c:1149
+ #9  gdb_main (args=args@entry=0x328feb4) at ../../binutils-gdb/gdb/main.c:1159
+ #10 0x0071e400 in main (argc=1, argv=0x171220)
+    at ../../binutils-gdb/gdb/gdb.c:32
+
+Fix this by making the functions involved in setjmp/longjmp as
+noexcept, so that the compiler knows it doesn't need to emit the
+_Unwind_SjLj_Register / _Unwind_SjLj_Unregister calls for C++
+exceptions.
+
+Tested on x86_64 Fedora 23 with:
+ - GCC 5.3.1 w/ DWARF-based exceptions.
+ - GCC 7 built with --enable-sjlj-exceptions.
+
+gdb/ChangeLog:
+2016-12-20  Pedro Alves  <palves@redhat.com>
+	    Yao Qi  <yao.qi@linaro.org>
+
+	PR gdb/20977
+	* event-top.c (gdb_rl_callback_read_char_wrapper_noexcept): New
+	noexcept function, factored out from ...
+	(gdb_rl_callback_read_char_wrapper): ... this.
+	(gdb_rl_callback_handler): Mark noexcept.
+---
+ gdb/ChangeLog   |  9 +++++++++
+ gdb/event-top.c | 23 ++++++++++++++++++-----
+ 2 files changed, 27 insertions(+), 5 deletions(-)
+
+diff --git a/gdb/ChangeLog b/gdb/ChangeLog
+index ee33cb518a..e99025eea3 100644
+--- a/gdb/ChangeLog
++++ b/gdb/ChangeLog
+@@ -1,3 +1,12 @@
++2016-12-20  Pedro Alves  <palves@redhat.com>
++	    Yao Qi  <yao.qi@linaro.org>
++
++	PR gdb/20977
++	* event-top.c (gdb_rl_callback_read_char_wrapper_noexcept): New
++	noexcept function, factored out from ...
++	(gdb_rl_callback_read_char_wrapper): ... this.
++	(gdb_rl_callback_handler): Mark noexcept.
++
+ 2016-12-12  Yao Qi  <yao.qi@linaro.org>
+ 
+ 	PR tdep/20955
+diff --git a/gdb/event-top.c b/gdb/event-top.c
+index 576eded22c..3e218ff146 100644
+--- a/gdb/event-top.c
++++ b/gdb/event-top.c
+@@ -157,10 +157,12 @@ void (*after_char_processing_hook) (void);
+    sjlj-based TRY/CATCH mechanism, which knows to handle multiple
+    levels of active setjmp/longjmp frames, needed in order to handle
+    the readline callback recursing, as happens with e.g., secondary
+-   prompts / queries, through gdb_readline_wrapper.  */
++   prompts / queries, through gdb_readline_wrapper.  This must be
++   noexcept in order to avoid problems with mixing sjlj and
++   (sjlj-based) C++ exceptions.  */
+ 
+-static void
+-gdb_rl_callback_read_char_wrapper (gdb_client_data client_data)
++static struct gdb_exception
++gdb_rl_callback_read_char_wrapper_noexcept () noexcept
+ {
+   struct gdb_exception gdb_expt = exception_none;
+ 
+@@ -180,6 +182,15 @@ gdb_rl_callback_read_char_wrapper (gdb_client_data client_data)
+     }
+   END_CATCH_SJLJ
+ 
++  return gdb_expt;
++}
++
++static void
++gdb_rl_callback_read_char_wrapper (gdb_client_data client_data)
++{
++  struct gdb_exception gdb_expt
++    = gdb_rl_callback_read_char_wrapper_noexcept ();
++
+   /* Rethrow using the normal EH mechanism.  */
+   if (gdb_expt.reason < 0)
+     throw_exception (gdb_expt);
+@@ -187,10 +198,12 @@ gdb_rl_callback_read_char_wrapper (gdb_client_data client_data)
+ 
+ /* GDB's readline callback handler.  Calls the current INPUT_HANDLER,
+    and propagates GDB exceptions/errors thrown from INPUT_HANDLER back
+-   across readline.  See gdb_rl_callback_read_char_wrapper.  */
++   across readline.  See gdb_rl_callback_read_char_wrapper.  This must
++   be noexcept in order to avoid problems with mixing sjlj and
++   (sjlj-based) C++ exceptions.  */
+ 
+ static void
+-gdb_rl_callback_handler (char *rl)
++gdb_rl_callback_handler (char *rl) noexcept
+ {
+   struct gdb_exception gdb_rl_expt = exception_none;
+   struct ui *ui = current_ui;
+-- 
+2.11.0
+

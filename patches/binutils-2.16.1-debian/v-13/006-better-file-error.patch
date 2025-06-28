@@ -1,0 +1,27 @@
+From: David Kimdon <dwhedon@gordian.com>
+Subject: Specify which filename is causing an error if the filename is a
+ directory
+
+Bug-Debian: http://bugs.debian.org/45832
+---
+ bfd/opncls.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/bfd/opncls.c b/bfd/opncls.c
+index 788b034..1f67ac0 100644
+--- a/bfd/opncls.c
++++ b/bfd/opncls.c
+@@ -150,6 +150,13 @@ bfd_openr (const char *filename, const char *target)
+ {
+   bfd *nbfd;
+   const bfd_target *target_vec;
++  struct stat s;
++
++  if (stat (filename, &s) == 0)
++    if (S_ISDIR(s.st_mode)) {
++      bfd_set_error (bfd_error_file_not_recognized);
++      return NULL;
++    }
+ 
+   nbfd = _bfd_new_bfd ();
+   if (nbfd == NULL)

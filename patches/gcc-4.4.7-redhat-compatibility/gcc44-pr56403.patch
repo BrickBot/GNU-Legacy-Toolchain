@@ -1,0 +1,34 @@
+2013-02-24  Jakub Jelinek  <jakub@redhat.com>
+
+	PR c++/56403
+	* init.c (build_zero_init_1): Use RECORD_OR_UNION_CODE_P instead
+	of CLASS_TYPE_P.
+
+	* g++.dg/torture/pr56403.C: New test.
+
+--- gcc/cp/init.c	(revision 196259)
++++ gcc/cp/init.c	(revision 196260)
+@@ -183,7 +183,7 @@ build_zero_init_1 (tree type, tree nelts
+     ;
+   else if (SCALAR_TYPE_P (type))
+     init = convert (type, integer_zero_node);
+-  else if (CLASS_TYPE_P (type))
++  else if (RECORD_OR_UNION_CODE_P (TREE_CODE (type)))
+     {
+       tree field;
+       VEC(constructor_elt,gc) *v = NULL;
+--- gcc/testsuite/g++.dg/torture/pr56403.C	(revision 0)
++++ gcc/testsuite/g++.dg/torture/pr56403.C	(revision 196260)
+@@ -0,0 +1,12 @@
++// PR c++/56403
++// { dg-do compile }
++
++#include <stdarg.h>
++
++struct S { va_list err_args; };
++
++void *
++foo ()
++{
++  return new S ();
++}

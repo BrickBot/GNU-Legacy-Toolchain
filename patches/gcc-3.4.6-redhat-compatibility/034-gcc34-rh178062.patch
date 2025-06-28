@@ -1,0 +1,56 @@
+2006-02-25  Alexandre Oliva  <aoliva@redhat.com>
+
+	* varasm.c (copy_constant): Handle VECTOR_CST.
+
+	* gcc.dg/altivec-23.c: New test.
+
+--- gcc/varasm.c	2006-02-25 03:52:54.000000000 -0300
++++ gcc/varasm.c	2006-02-25 03:54:56.000000000 -0300
+@@ -2464,6 +2464,19 @@ copy_constant (tree exp)
+ 	return copy;
+       }
+ 
++    case VECTOR_CST:
++      {
++	tree copy = copy_node (exp);
++	tree list = copy_list (TREE_VECTOR_CST_ELTS (exp));
++	tree tail;
++
++	TREE_VECTOR_CST_ELTS (copy) = list;
++	for (tail = list; tail; tail = TREE_CHAIN (tail))
++	  TREE_VALUE (tail) = copy_constant (TREE_VALUE (tail));
++
++	return copy;
++      }
++
+     default:
+       {
+ 	tree t;
+--- gcc/testsuite/gcc.dg/altivec-23.c	1970-01-01 00:00:00.000000000 +0000
++++ gcc/testsuite/gcc.dg/altivec-23.c	2006-02-25 04:10:36.000000000 -0300
+@@ -0,0 +1,25 @@
++/* Verify that it is possible to define variables of composite types
++   containing vector types.  We used to crash handling the
++   initializer of automatic ones.  */
++
++/* { dg-do compile { target powerpc*-*-* } } */
++/* { dg-xfail-if "" { "powerpc-ibm-aix*" } { "-maltivec" } { "" } } */
++/* { dg-options "-maltivec -mabi=altivec" } */
++
++#include <altivec.h>
++
++typedef int bt;
++typedef vector bt vt;
++typedef struct { vt x; bt y[sizeof(vt) / sizeof (bt)]; } st;
++#define INIT { 1, 2, 3, 4 }
++
++void f ()
++{
++  vt x = INIT;
++  vt y[1] = { INIT };
++  st s = { INIT, INIT };
++}
++
++vt x = INIT;
++vt y[1] = { INIT };
++st s = { INIT, INIT };

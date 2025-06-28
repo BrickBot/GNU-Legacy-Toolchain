@@ -1,0 +1,16 @@
+2009-08-14  Ulrich Weigand  <Ulrich.Weigand@de.ibm.com>
+
+	* c-lex.c (c_lex_with_flags): Increase size of local variable
+	to avoid memory clobber.
+
+--- gcc/c-lex.c	(revision 150755)
++++ gcc/c-lex.c	(revision 150756)
+@@ -390,7 +390,7 @@ c_lex_with_flags (tree *value, location_
+     case CPP_HASH:
+     case CPP_PASTE:
+       {
+-	unsigned char name[4];
++	unsigned char name[8];
+ 
+ 	*cpp_spell_token (parse_in, tok, name, true) = 0;
+ 

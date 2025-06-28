@@ -1,0 +1,28 @@
+# DP: Possibly fix PR target/46179 with Attachment #22191 from Finn Thain
+
+--- a/src/gcc/config/m68k/m68k.c	2010-06-15 06:01:39.000000000 +1000
++++ b/src/gcc/config/m68k/m68k.c	2010-10-29 02:04:44.000000000 +1100
+@@ -3478,6 +3478,7 @@ handle_move_double (rtx operands[2],
+ 
+   /* Normal case: do the two words, low-numbered first.  */
+ 
++  m68k_final_prescan_insn (NULL, operands, 2);
+   handle_movsi (operands);
+ 
+   /* Do the middle one of the three words for long double */
+@@ -3488,6 +3489,7 @@ handle_move_double (rtx operands[2],
+       if (addreg1)
+ 	handle_reg_adjust (addreg1, 4);
+ 
++      m68k_final_prescan_insn (NULL, middlehalf, 2);
+       handle_movsi (middlehalf);
+     }
+ 
+@@ -3498,6 +3500,7 @@ handle_move_double (rtx operands[2],
+     handle_reg_adjust (addreg1, 4);
+ 
+   /* Do that word.  */
++  m68k_final_prescan_insn (NULL, latehalf, 2);
+   handle_movsi (latehalf);
+ 
+   /* Undo the adds we just did.  */

@@ -681,7 +681,7 @@ convert_array_to_pointer (tree exp)
             of the ADDR_EXPR itself.
             Question is, can this lossage be avoided? */
       adr = build1 (ADDR_EXPR, ptrtype, exp);
-      if (!mark_addressable (exp))
+      if (!pas_mark_addressable (exp))
         return error_mark_node;
       TREE_CONSTANT (adr) = staticp (exp) != 0;
       TREE_SIDE_EFFECTS (adr) = 0;  /* Default would be, same as EXP. */
@@ -1264,7 +1264,7 @@ handle_typed_arg (tree type, tree val, struct argument_error_context * errc,
                               }
                             else
                               break;
-                          if (TREE_CODE (val) == CALL_EXPR && mark_addressable (val))  /* fjf806e.pas */
+                          if (TREE_CODE (val) == CALL_EXPR && pas_mark_addressable (val))  /* fjf806e.pas */
                             val = build1 (ADDR_EXPR, build_pointer_type (TREE_TYPE (val)), val);
                           else
                             val = build_unary_op (ADDR_EXPR, val, 0);
@@ -2126,7 +2126,7 @@ check_simple_pascal_initializer (tree init, tree type)
     {
       tree op = CALL_EXPR_FN (TREE_VALUE (init));
       if (TREE_CODE (op) == ADDR_EXPR)
-        /* Set TREE_CONSTANT correctly, mark_addressable, etc. */
+        /* Set TREE_CONSTANT correctly, pas_mark_addressable, etc. */
         op = build_pascal_address_expression (TREE_OPERAND (op, 0), 0);
       TREE_VALUE (init) = convert (type, op);
       return 0;
@@ -2837,9 +2837,9 @@ bool
 #else
 int
 #endif
-mark_addressable (tree exp)
+pas_mark_addressable (tree exp)
 {
-  return mark_addressable2 (exp, 0);
+  return pas_mark_addressable2 (exp, 0);
 }
 
 #ifdef GCC_3_3
@@ -2847,7 +2847,7 @@ bool
 #else
 int
 #endif
-mark_addressable2 (tree exp, int allow_packed)
+pas_mark_addressable2 (tree exp, int allow_packed)
 {
   tree x = exp;
   while (1)

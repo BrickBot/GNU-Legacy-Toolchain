@@ -1,0 +1,11 @@
+000_no_libstdc++-v3
+001_h8300_64bit
+gcc-textdomain.dpatch
+bin_false_fixup
+debian-changes-1:3.4.6+dfsg-1
+fix_ftbs.diff
+150-configure-signatures.patch
+0030-Add-now-mandatory-parameter-to-AM_GNU_GETTEXT.patch
+0032-Fix-format-not-a-string-literal.patch
+0033-Remove-AC_CONFIG_AUX_DIR-in-libiberty-configure-temp.patch
+0034-Fix-c-parse.y-build-error.patch

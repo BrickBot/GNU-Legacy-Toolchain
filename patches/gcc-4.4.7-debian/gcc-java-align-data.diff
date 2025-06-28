@@ -1,0 +1,14 @@
+# DP: java: Align data in .rodata.jutf8.* sections, taken from the trunk.
+
+http://gcc.gnu.org/ml/java-patches/2010-q3/msg00014.html
+
+--- a/src/gcc/java/class.c
++++ b/src/gcc/java/class.c
+@@ -972,6 +972,7 @@
+   TREE_READONLY (decl) = 1;
+   TREE_THIS_VOLATILE (decl) = 0;
+   DECL_INITIAL (decl) = cinit;
++  DECL_USER_ALIGN (decl) = 1;
+ 
+   if (HAVE_GAS_SHF_MERGE)
+     {

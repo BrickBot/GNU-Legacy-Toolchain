@@ -1,0 +1,170 @@
+#DP: Link libraries with -01.
+
+---
+ gcc/config/t-slibgcc-elf-ver |    1 +
+ libffi/Makefile.am           |    2 +-
+ libffi/Makefile.in           |    2 +-
+ libgfortran/Makefile.am      |    2 +-
+ libgfortran/Makefile.in      |    2 +-
+ libjava/Makefile.am          |    2 +-
+ libjava/Makefile.in          |    2 +-
+ libmudflap/Makefile.am       |    4 ++--
+ libmudflap/Makefile.in       |    4 ++--
+ libobjc/Makefile.in          |    2 ++
+ libstdc++-v3/src/Makefile.am |    1 +
+ libstdc++-v3/src/Makefile.in |    1 +
+ 12 files changed, 15 insertions(+), 10 deletions(-)
+
+--- a/src/gcc/config/t-slibgcc-elf-ver
++++ b/src/gcc/config/t-slibgcc-elf-ver
+@@ -14,6 +14,7 @@ SHLIB_LC = -lc
+ SHLIB_LINK = $(GCC_FOR_TARGET) $(LIBGCC2_CFLAGS) -shared -nodefaultlibs \
+ 	-Wl,--soname=$(SHLIB_SONAME) \
+ 	-Wl,--version-script=$(SHLIB_MAP) \
++	-Wl,-O1 \
+ 	-o $(SHLIB_DIR)/$(SHLIB_SONAME).tmp @multilib_flags@ \
+ 	$(SHLIB_OBJS) $(SHLIB_LC) && \
+ 	rm -f $(SHLIB_DIR)/$(SHLIB_SOLINK) && \
+--- a/src/libffi/Makefile.am
++++ b/src/libffi/Makefile.am
+@@ -158,7 +158,7 @@ AM_CFLAGS = -Wall -g -fexceptions
+ 
+ LTLDFLAGS = $(shell $(SHELL) $(top_srcdir)/../libtool-ldflags $(LDFLAGS))
+ 
+-libffi_la_LDFLAGS = -version-info `grep -v '^\#' $(srcdir)/libtool-version` $(LTLDFLAGS)
++libffi_la_LDFLAGS = -version-info `grep -v '^\#' $(srcdir)/libtool-version` $(LTLDFLAGS) -Wl,-O1
+ 
+ AM_CPPFLAGS = -I. -I$(top_srcdir)/include -Iinclude -I$(top_srcdir)/src
+ AM_CCASFLAGS = $(AM_CPPFLAGS)
+--- a/src/libffi/Makefile.in
++++ b/src/libffi/Makefile.in
+@@ -455,7 +455,7 @@ libffi_convenience_la_SOURCES = $(libffi_la_SOURCES)
+ nodist_libffi_convenience_la_SOURCES = $(nodist_libffi_la_SOURCES)
+ AM_CFLAGS = -Wall -g -fexceptions
+ LTLDFLAGS = $(shell $(SHELL) $(top_srcdir)/../libtool-ldflags $(LDFLAGS))
+-libffi_la_LDFLAGS = -version-info `grep -v '^\#' $(srcdir)/libtool-version` $(LTLDFLAGS)
++libffi_la_LDFLAGS = -version-info `grep -v '^\#' $(srcdir)/libtool-version` $(LTLDFLAGS) -Wl,-O1
+ AM_CPPFLAGS = -I. -I$(top_srcdir)/include -Iinclude -I$(top_srcdir)/src
+ AM_CCASFLAGS = $(AM_CPPFLAGS)
+ all: fficonfig.h
+--- a/src/libgfortran/Makefile.am
++++ b/src/libgfortran/Makefile.am
+@@ -17,7 +17,7 @@ LTLDFLAGS = $(shell $(SHELL) $(top_srcdir)/../libtool-ldflags $(LDFLAGS))
+ 
+ toolexeclib_LTLIBRARIES = libgfortran.la
+ libgfortran_la_LINK = $(LINK)
+-libgfortran_la_LDFLAGS = -version-info `grep -v '^\#' $(srcdir)/libtool-version` $(LTLDFLAGS) -lm $(extra_ldflags_libgfortran) $(version_arg)
++libgfortran_la_LDFLAGS = -version-info `grep -v '^\#' $(srcdir)/libtool-version` $(LTLDFLAGS) -lm $(extra_ldflags_libgfortran) $(version_arg) -Wl,-O1
+ 
+ myexeclib_LTLIBRARIES = libgfortranbegin.la
+ myexeclibdir = $(libdir)/gcc/$(target_alias)/$(gcc_version)$(MULTISUBDIR)
+--- a/src/libgfortran/Makefile.in
++++ b/src/libgfortran/Makefile.in
+@@ -953,7 +953,7 @@ gcc_version := $(shell cat $(top_srcdir)/../gcc/BASE-VER)
+ LTLDFLAGS = $(shell $(SHELL) $(top_srcdir)/../libtool-ldflags $(LDFLAGS))
+ toolexeclib_LTLIBRARIES = libgfortran.la
+ libgfortran_la_LINK = $(LINK)
+-libgfortran_la_LDFLAGS = -version-info `grep -v '^\#' $(srcdir)/libtool-version` $(LTLDFLAGS) -lm $(extra_ldflags_libgfortran) $(version_arg)
++libgfortran_la_LDFLAGS = -version-info `grep -v '^\#' $(srcdir)/libtool-version` $(LTLDFLAGS) -lm $(extra_ldflags_libgfortran) $(version_arg) -Wl,-O1
+ myexeclib_LTLIBRARIES = libgfortranbegin.la
+ myexeclibdir = $(libdir)/gcc/$(target_alias)/$(gcc_version)$(MULTISUBDIR)
+ libgfortranbegin_la_SOURCES = fmain.c
+--- a/src/libjava/Makefile.am
++++ b/src/libjava/Makefile.am
+@@ -134,7 +134,7 @@ GCJLINK = $(LIBTOOL) --tag=GCJ --mode=link $(GCJ) -L$(here) $(JC1FLAGS) \
+ GCJ_FOR_ECJX = @GCJ_FOR_ECJX@
+ GCJ_FOR_ECJX_LINK = $(GCJ_FOR_ECJX) -o $@
+ LIBLINK = $(LIBTOOL) --tag=CXX --mode=link $(CXX) -L$(here) $(JC1FLAGS) \
+-          $(LTLDFLAGS) $(extra_ldflags_libjava) $(extra_ldflags) -o $@
++          $(LTLDFLAGS) $(extra_ldflags_libjava) $(extra_ldflags) -Wl,-O1 -o $@
+ CXXLINK = $(LIBTOOL) --tag=CXX --mode=link $(CXXLD) $(AM_CXXFLAGS) \
+ 	$(CXXFLAGS) $(AM_LDFLAGS) $(LTLDFLAGS) -o $@
+ 
+--- a/src/libjava/Makefile.in
++++ b/src/libjava/Makefile.in
+@@ -938,7 +938,7 @@ GCJLINK = $(LIBTOOL) --tag=GCJ --mode=link $(GCJ) -L$(here) $(JC1FLAGS) \
+ 
+ GCJ_FOR_ECJX_LINK = $(GCJ_FOR_ECJX) -o $@
+ LIBLINK = $(LIBTOOL) --tag=CXX --mode=link $(CXX) -L$(here) $(JC1FLAGS) \
+-          $(LTLDFLAGS) $(extra_ldflags_libjava) $(extra_ldflags) -o $@
++          $(LTLDFLAGS) $(extra_ldflags_libjava) $(extra_ldflags) -Wl,-O1 -o $@
+ 
+ CXXLINK = $(LIBTOOL) --tag=CXX --mode=link $(CXXLD) $(AM_CXXFLAGS) \
+ 	$(CXXFLAGS) $(AM_LDFLAGS) $(LTLDFLAGS) -o $@
+--- a/src/libmudflap/Makefile.am
++++ b/src/libmudflap/Makefile.am
+@@ -34,7 +34,7 @@ libmudflap_la_SOURCES = \
+ 	mf-hooks2.c
+ libmudflap_la_LIBADD = 
+ libmudflap_la_DEPENDENCIES = $(libmudflap_la_LIBADD)
+-libmudflap_la_LDFLAGS = -version-info `grep -v '^\#' $(srcdir)/libtool-version`
++libmudflap_la_LDFLAGS = -version-info `grep -v '^\#' $(srcdir)/libtool-version` -Wl,-O1
+ 
+ 
+ libmudflapth_la_SOURCES = \
+@@ -46,7 +46,7 @@ libmudflapth_la_SOURCES = \
+ libmudflapth_la_CFLAGS = -DLIBMUDFLAPTH
+ libmudflapth_la_LIBADD =
+ libmudflapth_la_DEPENDENCIES = $(libmudflapth_la_LIBADD)
+-libmudflapth_la_LDFLAGS = -version-info `grep -v '^\#' $(srcdir)/libtool-version`
++libmudflapth_la_LDFLAGS = -version-info `grep -v '^\#' $(srcdir)/libtool-version` -Wl,-O1
+ 
+ 
+ # XXX hack alert
+--- a/src/libmudflap/Makefile.in
++++ b/src/libmudflap/Makefile.in
+@@ -269,7 +269,7 @@ libmudflap_la_SOURCES = \
+ 
+ libmudflap_la_LIBADD = 
+ libmudflap_la_DEPENDENCIES = $(libmudflap_la_LIBADD)
+-libmudflap_la_LDFLAGS = -version-info `grep -v '^\#' $(srcdir)/libtool-version`
++libmudflap_la_LDFLAGS = -version-info `grep -v '^\#' $(srcdir)/libtool-version` -Wl,-O1
+ libmudflapth_la_SOURCES = \
+ 	mf-runtime.c \
+ 	mf-heuristics.c \
+@@ -280,7 +280,7 @@ libmudflapth_la_SOURCES = \
+ libmudflapth_la_CFLAGS = -DLIBMUDFLAPTH
+ libmudflapth_la_LIBADD = 
+ libmudflapth_la_DEPENDENCIES = $(libmudflapth_la_LIBADD)
+-libmudflapth_la_LDFLAGS = -version-info `grep -v '^\#' $(srcdir)/libtool-version`
++libmudflapth_la_LDFLAGS = -version-info `grep -v '^\#' $(srcdir)/libtool-version` -Wl,-O1
+ 
+ # XXX hack alert
+ # From libffi/Makefile.am
+--- a/src/libobjc/Makefile.in
++++ b/src/libobjc/Makefile.in
+@@ -283,12 +283,14 @@ LTLDFLAGS = $(shell $(SHELL) $(top_srcdir)/../libtool-ldflags $(LDFLAGS))
+ libobjc$(libsuffix).la: $(OBJS)
+ 	$(LIBTOOL_LINK) $(CC) -o $@ $(OBJS) \
+ 		-rpath $(toolexeclibdir) \
++		-Wl,-O1 \
+ 		-version-info $(LIBOBJC_VERSION) $(extra_ldflags_libobjc) \
+ 		$(LTLDFLAGS)
+ 
+ libobjc_gc$(libsuffix).la: $(OBJS_GC)
+ 	$(LIBTOOL_LINK) $(CC) -o $@ $(OBJS_GC) $(OBJC_BOEHM_GC_LIBS) \
+ 		-rpath $(toolexeclibdir) \
++		-Wl,-O1 \
+ 		-version-info $(LIBOBJC_GC_VERSION) $(extra_ldflags_libobjc) \
+ 		$(LTLDFLAGS)
+ 
+--- a/src/libstdc++-v3/src/Makefile.am
++++ b/src/libstdc++-v3/src/Makefile.am
+@@ -207,6 +207,7 @@ libstdc___la_DEPENDENCIES = \
+ 	$(top_builddir)/libsupc++/libsupc++convenience.la
+ 
+ libstdc___la_LDFLAGS = \
++	-Wl,-O1 \
+ 	-version-info $(libtool_VERSION) ${version_arg} -lm 
+ 
+ # Use special rules for the deprecated source files so that they find
+--- a/src/libstdc++-v3/src/Makefile.in
++++ b/src/libstdc++-v3/src/Makefile.in
+@@ -454,6 +454,7 @@ libstdc___la_DEPENDENCIES = \
+ 	$(top_builddir)/libsupc++/libsupc++convenience.la
+ 
+ libstdc___la_LDFLAGS = \
++	-Wl,-O1 \
+ 	-version-info $(libtool_VERSION) ${version_arg} -lm 
+ 
+ 

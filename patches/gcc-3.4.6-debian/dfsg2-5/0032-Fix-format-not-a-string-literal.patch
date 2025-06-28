@@ -1,0 +1,40 @@
+From: Nicolas Schodet <nico@ni.fr.eu.org>
+Date: Fri, 7 Mar 2025 23:31:28 +0100
+Subject: Fix format not a string literal
+
+Forwarded: not-needed
+
+Fix needed to enable hardening=format build option.
+
+This code is no longer present in recent GCC versions.
+---
+ gcc/c-typeck.c     | 2 +-
+ gcc/gengtype-lex.l | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/gcc/c-typeck.c b/gcc/c-typeck.c
+index 42c7b77..0a6959a 100644
+--- a/gcc/c-typeck.c
++++ b/gcc/c-typeck.c
+@@ -3741,7 +3741,7 @@ warn_for_assignment (const char *msgid, const char *opname, tree function,
+ 	      /* Function name unknown (call through ptr).  */
+ 	      const char *const argnofun = _("passing arg of pointer to function");
+ 	      new_opname = alloca (strlen (argnofun) + 1 + 1);
+-	      sprintf (new_opname, argnofun);
++	      sprintf (new_opname, "%s", argnofun);
+ 	    }
+ 	}
+       else if (function)
+diff --git a/gcc/gengtype-lex.l b/gcc/gengtype-lex.l
+index 2d0462b..dbbde15 100644
+--- a/gcc/gengtype-lex.l
++++ b/gcc/gengtype-lex.l
+@@ -337,7 +337,7 @@ ITYPE	{IWORD}({WS}{IWORD})*
+ void
+ yyerror (const char *s)
+ {
+-  error_at_line (&lexer_line, s);
++  error_at_line (&lexer_line, "%s", s);
+ }
+ 
+ void

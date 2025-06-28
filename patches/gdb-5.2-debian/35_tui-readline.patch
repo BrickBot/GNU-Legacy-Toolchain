@@ -1,0 +1,73 @@
+Debian local - some variables were renamed in readline 4.2.
+
+diff -urNp gdb-5.2.cvs20010401/gdb/tui.orig/tuiWin.c gdb-5.2.cvs20010401/gdb/tui/tuiWin.c
+--- gdb-5.2.cvs20010401/gdb/tui.orig/tuiWin.c	Sun Mar 31 22:09:42 2002
++++ gdb-5.2.cvs20010401/gdb/tui/tuiWin.c	Sun Mar 31 23:01:27 2002
+@@ -639,10 +639,10 @@ void
+ tuiResizeAll (void)
+ {
+   int heightDiff, widthDiff;
+-  extern int screenheight, screenwidth;		/* in readline */
++  extern int _rl_screenheight, _rl_screenwidth;		/* in readline */
+ 
+-  widthDiff = screenwidth - termWidth ();
+-  heightDiff = screenheight - termHeight ();
++  widthDiff = _rl_screenwidth - termWidth ();
++  heightDiff = _rl_screenheight - termHeight ();
+   if (heightDiff || widthDiff)
+     {
+       TuiLayoutType curLayout = currentLayout ();
+@@ -656,8 +656,8 @@ tuiResizeAll (void)
+       if (winWithFocus != cmdWin)
+ 	keypad (cmdWin->generic.handle, FALSE);
+       init_page_info ();
+-      setTermHeightTo (screenheight);
+-      setTermWidthTo (screenwidth);
++      setTermHeightTo (_rl_screenheight);
++      setTermWidthTo (_rl_screenwidth);
+       if (curLayout == SRC_DISASSEM_COMMAND ||
+ 	curLayout == SRC_DATA_COMMAND || curLayout == DISASSEM_DATA_COMMAND)
+ 	numWinsDisplayed++;
+@@ -684,8 +684,8 @@ tuiResizeAll (void)
+ 	  if (heightDiff == 0)
+ 	    newHeight = firstWin->generic.height;
+ 	  else if ((firstWin->generic.height + splitDiff) >=
+-		   (screenheight - MIN_CMD_WIN_HEIGHT - 1))
+-	    newHeight = screenheight - MIN_CMD_WIN_HEIGHT - 1;
++		   (_rl_screenheight - MIN_CMD_WIN_HEIGHT - 1))
++	    newHeight = _rl_screenheight - MIN_CMD_WIN_HEIGHT - 1;
+ 	  else if ((firstWin->generic.height + splitDiff) <= 0)
+ 	    newHeight = MIN_WIN_HEIGHT;
+ 	  else
+@@ -694,7 +694,7 @@ tuiResizeAll (void)
+ 	  _makeInvisibleAndSetNewHeight (firstWin, newHeight);
+ 	  cmdWin->generic.origin.y = locator->origin.y + 1;
+ 	  cmdWin->generic.width += widthDiff;
+-	  newHeight = screenheight - cmdWin->generic.origin.y;
++	  newHeight = _rl_screenheight - cmdWin->generic.origin.y;
+ 	  _makeInvisibleAndSetNewHeight (cmdWin, newHeight);
+ 	  _makeVisibleWithNewHeight (firstWin);
+ 	  _makeVisibleWithNewHeight (cmdWin);
+@@ -722,8 +722,8 @@ tuiResizeAll (void)
+ 	    newHeight = firstWin->generic.height;
+ 	  else if ((firstWin->generic.height +
+ 		    secondWin->generic.height + (splitDiff * 2)) >=
+-		   (screenheight - MIN_CMD_WIN_HEIGHT - 1))
+-	    newHeight = (screenheight - MIN_CMD_WIN_HEIGHT - 1) / 2;
++		   (_rl_screenheight - MIN_CMD_WIN_HEIGHT - 1))
++	    newHeight = (_rl_screenheight - MIN_CMD_WIN_HEIGHT - 1) / 2;
+ 	  else if ((firstWin->generic.height + splitDiff) <= 0)
+ 	    newHeight = MIN_WIN_HEIGHT;
+ 	  else
+@@ -742,9 +742,9 @@ tuiResizeAll (void)
+ 	    newHeight = secondWin->generic.height;
+ 	  else if ((firstWin->generic.height +
+ 		    secondWin->generic.height + (splitDiff * 2)) >=
+-		   (screenheight - MIN_CMD_WIN_HEIGHT - 1))
++		   (_rl_screenheight - MIN_CMD_WIN_HEIGHT - 1))
+ 	    {
+-	      newHeight = screenheight - MIN_CMD_WIN_HEIGHT - 1;
++	      newHeight = _rl_screenheight - MIN_CMD_WIN_HEIGHT - 1;
+ 	      if (newHeight % 2)
+ 		newHeight = (newHeight / 2) + 1;
+ 	      else

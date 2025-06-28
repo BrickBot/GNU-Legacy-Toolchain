@@ -1,0 +1,119 @@
+From: mkuvyrkov <mkuvyrkov@138bc75d-0d04-0410-961f-82ee72b054a4>
+Date: Wed, 4 Nov 2009 09:57:55 +0000 (+0000)
+Subject: 2009-11-04  Maxim Kuvyrkov  <maxim@codesourcery.com>
+X-Git-Url: http://gcc.gnu.org/git/gitweb.cgi?p=gcc.git;a=commitdiff_plain;h=d09fd72c630c4886367f1977cdb366aa82950e32
+
+git-svn-id: svn+ssh://gcc.gnu.org/svn/gcc/trunk@153890 138bc75d-0d04-0410-961f-82ee72b054a4
+---
+
+gcc/
+
+2010-10-14  Thorsten Glaser  <tg@debian.org>
+
+	Backport from mainline
+	2009-11-04  Maxim Kuvyrkov  <maxim@codesourcery.com>
+
+	PR target/41302
+	* config/m68k/m68k.c (m68k_reg_present_p): New static function.
+	(m68k_ok_for_sibcall_p): Handle different result return locations.
+
+gcc/testsuite/
+
+2010-10-14  Thorsten Glaser  <tg@debian.org>
+
+	Backport from mainline
+	2009-11-04  Carlos O'Donell  <carlos@codesourcery.com>
+
+	PR target/41302
+	* gcc.target/m68k/pr41302.c: New test.
+
+--- a/src/gcc/config/m68k/m68k.c	2010-10-14 15:23:42.000000000 +0000
++++ b/src/gcc/config/m68k/m68k.c	2010-10-14 16:43:31.000000000 +0000
+@@ -1383,6 +1383,30 @@ flags_in_68881 (void)
+   return cc_status.flags & CC_IN_68881;
+ }
+ 
++/* Return true if PARALLEL contains register REGNO.  */
++static bool
++m68k_reg_present_p (const_rtx parallel, unsigned int regno)
++{
++  int i;
++
++  if (REG_P (parallel) && REGNO (parallel) == regno)
++    return true;
++
++  if (GET_CODE (parallel) != PARALLEL)
++    return false;
++
++  for (i = 0; i < XVECLEN (parallel, 0); ++i)
++    {
++      const_rtx x;
++
++      x = XEXP (XVECEXP (parallel, 0, i), 0);
++      if (REG_P (x) && REGNO (x) == regno)
++	return true;
++    }
++
++  return false;
++}
++
+ /* Implement TARGET_FUNCTION_OK_FOR_SIBCALL_P.  */
+ 
+ static bool
+@@ -1395,6 +1419,26 @@ m68k_ok_for_sibcall_p (tree decl, tree e
+   if (CALL_EXPR_STATIC_CHAIN (exp))
+     return false;
+ 
++  if (!VOID_TYPE_P (TREE_TYPE (DECL_RESULT (cfun->decl))))
++    {
++      /* Check that the return value locations are the same.  For
++	 example that we aren't returning a value from the sibling in
++	 a D0 register but then need to transfer it to a A0 register.  */
++      rtx cfun_value;
++      rtx call_value;
++
++      cfun_value = FUNCTION_VALUE (TREE_TYPE (DECL_RESULT (cfun->decl)),
++				   cfun->decl);
++      call_value = FUNCTION_VALUE (TREE_TYPE (exp), decl);
++
++      /* Check that the values are equal or that the result the callee
++	 function returns is superset of what the current function returns.  */
++      if (!(rtx_equal_p (cfun_value, call_value)
++	    || (REG_P (cfun_value)
++		&& m68k_reg_present_p (call_value, REGNO (cfun_value)))))
++	return false;
++    }
++
+   kind = m68k_get_function_kind (current_function_decl);
+   if (kind == m68k_fk_normal_function)
+     /* We can always sibcall from a normal function, because it's
+@@ -5091,6 +5135,9 @@ m68k_libcall_value (enum machine_mode mo
+   return gen_rtx_REG (mode, m68k_libcall_value_in_a0_p ? A0_REG : D0_REG);
+ }
+ 
++/* Location in which function value is returned.
++   NOTE: Due to differences in ABIs, don't call this function directly,
++   use FUNCTION_VALUE instead.  */
+ rtx
+ m68k_function_value (const_tree valtype, const_tree func ATTRIBUTE_UNUSED)
+ {
+diff --git a/gcc/testsuite/gcc.target/m68k/pr41302.c b/gcc/testsuite/gcc.target/m68k/pr41302.c
+new file mode 100644
+index 0000000..8e1c310
+--- /dev/null
++++ b/src/gcc/testsuite/gcc.target/m68k/pr41302.c
+@@ -0,0 +1,14 @@
++/* { dg-do compile } */
++/* { dg-options "-O2" } */
++/* { dg-final { scan-assembler "move.l \%d0,\%a0" { target *linux* } } } */
++
++struct pts {
++  int c;
++};
++
++unsigned int bar (struct pts *a, int b);
++
++struct pts * foo (struct pts *a, int b)
++{
++  return (struct pts *) bar (a, b);
++}

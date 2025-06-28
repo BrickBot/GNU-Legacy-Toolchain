@@ -1,0 +1,21 @@
+Needed to build on PowerPC without system readline.  Committed upstream.
+
+2002-04-01  Daniel Jacobowitz  <drow@mvista.com>
+
+        * rs6000-tdep.c: Change #include of "bfd/libcoff.h"
+        and "bfd/libbfd.h" to "libcoff.h" and "libbfd.h".
+
+--- gdb-5.2.cvs20020401/gdb/rs6000-tdep.c.orig	Mon Apr  1 00:55:18 2002
++++ gdb-5.2.cvs20020401/gdb/rs6000-tdep.c	Mon Apr  1 00:55:31 2002
+@@ -35,9 +35,9 @@
+ #include "value.h"
+ #include "parser-defs.h"
+ 
+-#include "bfd/libbfd.h"		/* for bfd_default_set_arch_mach */
++#include "libbfd.h"		/* for bfd_default_set_arch_mach */
+ #include "coff/internal.h"	/* for libcoff.h */
+-#include "bfd/libcoff.h"	/* for xcoff_data */
++#include "libcoff.h"		/* for xcoff_data */
+ 
+ #include "elf-bfd.h"
+ 

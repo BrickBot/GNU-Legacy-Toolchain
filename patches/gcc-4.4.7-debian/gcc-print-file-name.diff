@@ -1,0 +1,78 @@
+# DP: For -print-file-name, resolve . and .., and remove the subminor
+# DP: version number.
+
+--- a/src/gcc/gcc.c
++++ b/src/gcc/gcc.c
+@@ -6753,7 +6753,71 @@
+ 
+   if (print_file_name)
+     {
+-      printf ("%s\n", find_file (print_file_name));
++      const char *file_name = find_file (print_file_name);
++
++      /* Resolve . and .. in file_name, and remove the subminor version number */
++      if (file_name && *file_name == '/')
++	{
++	  char *buf = xstrdup (file_name);
++	  char *normalized = XNEWVEC (char, strlen (file_name) + 1);
++	  char *p = (char *) buf + 1;
++	  char *q = p, *end = buf + strlen (buf);
++	  char **paths;
++	  size_t n_paths = 0, i, j;
++
++	  while (p < end && *p == '/')
++	    p++;
++	  strncpy (normalized, buf, p - buf);
++	  normalized[p - buf] = '\0';
++
++	  for (q = p; q < end; q++)
++	    if (*q == '/')
++	      n_paths++;
++	  paths = XNEWVEC (char *, n_paths + 2);
++	  n_paths = 0;
++	  paths[n_paths++] = p;
++	  for (q = p; q < end; q++)
++	    if (*q == '/')
++	      {
++		*q++ = '\0';
++		while (q < end && *q == '/')
++		  q++;
++		if (q < end)
++		  paths[n_paths++] = q;
++	      }
++	  paths[n_paths] = NULL;
++
++	  for (i = 0, j = 0; i < n_paths; i++)
++	    {
++	      if (strcmp (paths[i], ".") == 0)
++		continue;
++	      else if (strcmp (paths[i], "..") == 0)
++		{
++		  if (j == 0)
++		      break;
++		  j--;
++		  continue;
++		}
++	      else if (strcmp (paths[i], DEFAULT_TARGET_VERSION) == 0)
++		paths[i][3] = '\0';
++	      paths[j++] = paths[i];
++	    }
++	  paths[j] = NULL;
++
++	  for (i = 0; paths[i]; i++)
++	    {
++	      strcat (normalized, paths[i]);
++	      if (paths[i + 1])
++		strcat (normalized, "/");
++	    }
++
++	  if (j > 0)
++	    {
++	      printf ("%s\n", normalized);
++	      return (0);
++	    }
++	}
++      printf ("%s\n", file_name);
+       return (0);
+     }
+ 

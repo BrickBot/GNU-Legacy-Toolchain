@@ -1,0 +1,26 @@
+2006-11-07  Alexandre Oliva  <aoliva@redhat.com>
+
+	* tree-inline.c (expand_call_inline): Set BLOCK_SOURCE_LOCATION.
+
+--- gcc/tree-inline.c.orig	2006-10-13 04:31:24.000000000 -0300
++++ gcc/tree-inline.c	2006-11-07 04:06:10.000000000 -0200
+@@ -1253,6 +1253,7 @@ expand_call_inline (tree *tp, int *walk_
+   tree args;
+   tree return_slot_addr;
+   const char *reason;
++  location_t incoming_loc = input_location;
+ 
+   /* See what we've got.  */
+   id = (inline_data *) data;
+@@ -1464,7 +1465,10 @@ expand_call_inline (tree *tp, int *walk_
+   /* Tell the debugging backends that this block represents the
+      outermost scope of the inlined function.  */
+   if (SCOPE_STMT_BLOCK (scope_stmt))
+-    BLOCK_ABSTRACT_ORIGIN (SCOPE_STMT_BLOCK (scope_stmt)) = DECL_ORIGIN (fn);
++    {
++      BLOCK_ABSTRACT_ORIGIN (SCOPE_STMT_BLOCK (scope_stmt)) = DECL_ORIGIN (fn);
++      BLOCK_SOURCE_LOCATION (SCOPE_STMT_BLOCK (scope_stmt)) = incoming_loc;
++    }
+ 
+   /* Declare the return variable for the function.  */
+   COMPOUND_BODY (stmt)

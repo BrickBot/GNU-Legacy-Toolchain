@@ -1398,6 +1398,7 @@ int extract_jar(int fd, char **files, int file_num){
       const ub1 *start = filename;
       char *tmp_buff;
       struct stat sbuf;
+      int depth = 0;
 
       tmp_buff = malloc(sizeof(char) * strlen((const char *)filename));
 
@@ -1418,7 +1419,14 @@ int extract_jar(int fd, char **files, int file_num){
 #ifdef DEBUG    
         printf("checking the existance of %s\n", tmp_buff);
 #endif
-
+	if(strcmp(tmp_buff, "..") == 0){
+	  --depth;
+	  if (depth < 0){
+	    fprintf(stderr, "Traversal to parent directories during unpacking!\n");
+	    exit(1);
+	  }
+	} else if (strcmp(tmp_buff, ".") != 0)
+	  ++depth;
         if(stat(tmp_buff, &sbuf) < 0){
           if(errno != ENOENT){
             perror("stat");

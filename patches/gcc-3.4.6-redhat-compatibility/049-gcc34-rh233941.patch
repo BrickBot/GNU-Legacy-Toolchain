@@ -1,0 +1,43 @@
+2007-04-02  Jakub Jelinek  <jakub@redhat.com>
+
+	* expr.c (expand_expr_real) <case COMPLEX_EXPR>: Force op1
+	into register if target overlaps with op1.
+
+	* g77.f-torture/execute/20070402.f: New test.
+
+--- gcc/expr.c.jj	2006-10-05 00:37:01.000000000 +0200
++++ gcc/expr.c	2007-04-02 13:28:52.000000000 +0200
+@@ -8949,6 +8949,9 @@ expand_expr_real (tree exp, rtx target, 
+ 
+ 	if (! target)
+ 	  target = gen_reg_rtx (TYPE_MODE (TREE_TYPE (exp)));
++	else if (GET_CODE (target) == MEM
++		 && reg_overlap_mentioned_p (target, op1))
++	  op1 = force_reg (mode, op1);
+ 
+ 	start_sequence ();
+ 
+--- gcc/testsuite/g77.f-torture/execute/20070402.f.jj	2007-04-02 13:29:51.000000000 +0200
++++ gcc/testsuite/g77.f-torture/execute/20070402.f	2007-04-02 12:11:00.000000000 +0200
+@@ -0,0 +1,21 @@
++      program rh233941
++      implicit none
++      complex*16 z
++      z = dcmplx(1.0, 2.0)
++      call sub(z)
++      stop
++      end program rh233941
++
++      subroutine sub(z)
++      implicit none
++      complex*16 z
++      z = dcmplx(-dimag(z), dreal(z))
++      call sub2(z)
++      return
++      end subroutine sub
++
++      subroutine sub2(z)
++      implicit none
++      complex*16 z
++      if (dreal(z).ne.-2.0.or.dimag(z).ne.1.0) call abort
++      end subroutine sub2

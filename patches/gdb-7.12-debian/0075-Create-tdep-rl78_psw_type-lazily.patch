@@ -1,0 +1,122 @@
+From 68647b569da041a33a6504cd80f51fbd43bfa134 Mon Sep 17 00:00:00 2001
+From: Yao Qi <yao.qi@linaro.org>
+Date: Fri, 9 Dec 2016 15:52:37 +0000
+Subject: [PATCH 075/122] Create tdep->rl78_psw_type lazily
+
+I build GDB for all targets enabled.  When I "set architecture rl78",
+GDB crashes,
+
+(gdb) set architecture rl78
+
+Program received signal SIGSEGV, Segmentation fault.
+append_flags_type_flag (type=0x20cc0e0, bitpos=bitpos@entry=0, name=name@entry=0x11dba3f "CY") at ../../binutils-gdb/gdb/gdbtypes.c:4926
+4926                               name);
+(gdb) bt 10
+ #0  append_flags_type_flag (type=0x20cc0e0, bitpos=bitpos@entry=0, name=name@entry=0x11dba3f "CY") at ../../binutils-gdb/gdb/gdbtypes.c:4926
+ #1  0x00000000004aaca8 in rl78_gdbarch_init (info=..., arches=<optimized out>) at ../../binutils-gdb/gdb/rl78-tdep.c:1410
+ #2  0x00000000006b05a4 in gdbarch_find_by_info (info=...) at ../../binutils-gdb/gdb/gdbarch.c:5269
+ #3  0x000000000060eee4 in gdbarch_update_p (info=...) at ../../binutils-gdb/gdb/arch-utils.c:557
+ #4  0x000000000060f8a8 in set_architecture (ignore_args=<optimized out>, from_tty=1, c=<optimized out>) at ../../binutils-gdb/gdb/arch-utils.c:531
+ #5  0x0000000000593d0b in do_set_command (arg=<optimized out>, arg@entry=0x20be851 "rl78", from_tty=from_tty@entry=1, c=c@entry=0x20b1540)
+    at ../../binutils-gdb/gdb/cli/cli-setshow.c:455
+ #6  0x00000000007665c3 in execute_command (p=<optimized out>, p@entry=0x20be840 "set architecture rl78", from_tty=1) at ../../binutils-gdb/gdb/top.c:666
+ #7  0x00000000006935f4 in command_handler (command=0x20be840 "set architecture rl78") at ../../binutils-gdb/gdb/event-top.c:577
+ #8  0x00000000006938d8 in command_line_handler (rl=<optimized out>) at ../../binutils-gdb/gdb/event-top.c:767
+ #9  0x0000000000692c2c in gdb_rl_callback_handler (rl=0x20be890 "") at ../../binutils-gdb/gdb/event-top.c:200
+
+The cause is that we want to access some builtin types in gdbarch init, but
+it is not initialized yet.  I fix it by creating the type when it is to be
+used.  We've already done this in sparc, sparc64 and m68k.
+
+gdb:
+
+2016-12-09  Yao Qi  <yao.qi@linaro.org>
+
+	PR tdep/20953
+	* rl78-tdep.c (rl78_psw_type): New function.
+	(rl78_register_type): Call rl78_psw_type.
+	(rl78_gdbarch_init): Move code to rl78_psw_type.
+---
+ gdb/ChangeLog   |  7 +++++++
+ gdb/rl78-tdep.c | 36 +++++++++++++++++++++++++-----------
+ 2 files changed, 32 insertions(+), 11 deletions(-)
+
+diff --git a/gdb/ChangeLog b/gdb/ChangeLog
+index f4ac03b158..7773e56a2e 100644
+--- a/gdb/ChangeLog
++++ b/gdb/ChangeLog
+@@ -1,3 +1,10 @@
++2016-12-09  Yao Qi  <yao.qi@linaro.org>
++
++	PR tdep/20953
++	* rl78-tdep.c (rl78_psw_type): New function.
++	(rl78_register_type): Call rl78_psw_type.
++	(rl78_gdbarch_init): Move code to rl78_psw_type.
++
+ 2016-10-25  Rainer Orth  <ro@CeBiTec.Uni-Bielefeld.DE>
+ 
+ 	PR build/20712
+diff --git a/gdb/rl78-tdep.c b/gdb/rl78-tdep.c
+index 420ee868fa..8c34adcce2 100644
+--- a/gdb/rl78-tdep.c
++++ b/gdb/rl78-tdep.c
+@@ -261,6 +261,30 @@ struct rl78_prologue
+   int reg_offset[RL78_NUM_TOTAL_REGS];
+ };
+ 
++/* Construct type for PSW register.  */
++
++static struct type *
++rl78_psw_type (struct gdbarch *gdbarch)
++{
++  struct gdbarch_tdep *tdep = gdbarch_tdep (gdbarch);
++
++  if (tdep->rl78_psw_type == NULL)
++    {
++      tdep->rl78_psw_type = arch_flags_type (gdbarch,
++					     "builtin_type_rl78_psw", 1);
++      append_flags_type_flag (tdep->rl78_psw_type, 0, "CY");
++      append_flags_type_flag (tdep->rl78_psw_type, 1, "ISP0");
++      append_flags_type_flag (tdep->rl78_psw_type, 2, "ISP1");
++      append_flags_type_flag (tdep->rl78_psw_type, 3, "RBS0");
++      append_flags_type_flag (tdep->rl78_psw_type, 4, "AC");
++      append_flags_type_flag (tdep->rl78_psw_type, 5, "RBS1");
++      append_flags_type_flag (tdep->rl78_psw_type, 6, "Z");
++      append_flags_type_flag (tdep->rl78_psw_type, 7, "IE");
++    }
++
++  return tdep->rl78_psw_type;
++}
++
+ /* Implement the "register_type" gdbarch method.  */
+ 
+ static struct type *
+@@ -273,7 +297,7 @@ rl78_register_type (struct gdbarch *gdbarch, int reg_nr)
+   else if (reg_nr == RL78_RAW_PC_REGNUM)
+     return tdep->rl78_uint32;
+   else if (reg_nr == RL78_PSW_REGNUM)
+-    return (tdep->rl78_psw_type);
++    return rl78_psw_type (gdbarch);
+   else if (reg_nr <= RL78_MEM_REGNUM
+            || (RL78_X_REGNUM <= reg_nr && reg_nr <= RL78_H_REGNUM)
+ 	   || (RL78_BANK0_R0_REGNUM <= reg_nr
+@@ -1421,16 +1445,6 @@ rl78_gdbarch_init (struct gdbarch_info info, struct gdbarch_list *arches)
+   TYPE_TARGET_TYPE (tdep->rl78_code_pointer) = tdep->rl78_void;
+   TYPE_UNSIGNED (tdep->rl78_code_pointer) = 1;
+ 
+-  tdep->rl78_psw_type = arch_flags_type (gdbarch, "builtin_type_rl78_psw", 1);
+-  append_flags_type_flag (tdep->rl78_psw_type, 0, "CY");
+-  append_flags_type_flag (tdep->rl78_psw_type, 1, "ISP0");
+-  append_flags_type_flag (tdep->rl78_psw_type, 2, "ISP1");
+-  append_flags_type_flag (tdep->rl78_psw_type, 3, "RBS0");
+-  append_flags_type_flag (tdep->rl78_psw_type, 4, "AC");
+-  append_flags_type_flag (tdep->rl78_psw_type, 5, "RBS1");
+-  append_flags_type_flag (tdep->rl78_psw_type, 6, "Z");
+-  append_flags_type_flag (tdep->rl78_psw_type, 7, "IE");
+-
+   /* Registers.  */
+   set_gdbarch_num_regs (gdbarch, RL78_NUM_REGS);
+   set_gdbarch_num_pseudo_regs (gdbarch, RL78_NUM_PSEUDO_REGS);
+-- 
+2.11.0
+

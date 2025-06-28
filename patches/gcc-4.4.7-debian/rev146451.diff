@@ -1,0 +1,23 @@
+# DP: Fix a typo in the arm back-end.
+
+2009-07-20  Mikael Pettersson  <mikpe@it.uu.se>
+
+gcc/
+	Backport from mainline:
+	2009-04-20  Ian Lance Taylor  <ian@gcc.gnu.org>
+	Fix enum conversions which are invalid in C++.
+
+	* config/arm/arm.c (arm_rtx_costs_1) <case ABS>: Fix
+	typo in call to GET_MODE_CLASS.
+
+--- a/src/gcc/config/arm/arm.c	2009-06-02 09:18:16.000000000 +0200
++++ b/src/gcc/config/arm/arm.c	2009-07-18 21:26:09.000000000 +0200
+@@ -5458,7 +5458,7 @@ arm_rtx_costs_1 (rtx x, enum rtx_code ou
+       return true;
+ 
+     case ABS:
+-      if (GET_MODE_CLASS (mode == MODE_FLOAT))
++      if (GET_MODE_CLASS (mode) == MODE_FLOAT)
+ 	{
+ 	  if (TARGET_HARD_FLOAT && (mode == SFmode || mode == DFmode))
+ 	    {

@@ -1,0 +1,96 @@
+# DP: Check for large file support (backport from 4.6).
+
+gcc/
+
+2010-11-02  Ian Lance Taylor  <iant@google.com>
+
+	* configure.ac: Use AC_SYS_LARGEFILE.
+	* configure: Rebuild.
+	* config.in: Rebuild.
+
+2010-11-11  Paolo Bonzini  <bonzini@gnu.org>
+
+	* Makefile.in (gengtype-lex.c): Include bconfig.h first.
+
+libcpp/
+
+2010-11-02  Ian Lance Taylor  <iant@google.com>
+
+	* configure.ac: Use AC_SYS_LARGEFILE.
+	* configure: Rebuild.
+	* config.in: Rebuild.
+
+ 
+--- a/src/gcc/configure.ac
++++ b/src/gcc/configure.ac
+@@ -303,6 +303,8 @@
+ AC_PROG_CPP
+ AC_C_INLINE
+ 
++AC_SYS_LARGEFILE
++
+ # sizeof(char) is 1 by definition.
+ AC_CHECK_SIZEOF(void *)
+ AC_CHECK_SIZEOF(short)
+--- a/src/gcc/config.in
++++ b/src/gcc/config.in
+@@ -1546,6 +1546,18 @@
+ #endif
+ 
+ 
++/* Number of bits in a file offset, on hosts where this is settable. */
++#ifndef USED_FOR_TARGET
++#undef _FILE_OFFSET_BITS
++#endif
++
++
++/* Define for large files, on AIX-style hosts. */
++#ifndef USED_FOR_TARGET
++#undef _LARGE_FILES
++#endif
++
++
+ /* Define to 1 if on MINIX. */
+ #ifndef USED_FOR_TARGET
+ #undef _MINIX
+--- a/src/gcc/Makefile.in
++++ b/src/gcc/Makefile.in
+@@ -3457,7 +3457,11 @@
+ 
+ # Generated source files for gengtype.
+ gengtype-lex.c : gengtype-lex.l
+-	-$(FLEX) $(FLEXFLAGS) -o$@ $<
++	-$(FLEX) $(FLEXFLAGS) -o$@ $< && { \
++	  echo '#include "bconfig.h"' > $@.tmp; \
++	  cat $@ >> $@.tmp; \
++	  mv $@.tmp $@; \
++	}
+ 
+ #
+ # Remake internationalization support.
+--- a/src/libcpp/configure.ac
++++ b/src/libcpp/configure.ac
+@@ -13,6 +13,8 @@
+ AC_PROG_CC
+ AC_PROG_RANLIB
+ 
++AC_SYS_LARGEFILE
++
+ MISSING=`cd $ac_aux_dir && ${PWDCMD-pwd}`/missing
+ AC_CHECK_PROGS([ACLOCAL], [aclocal], [$MISSING aclocal])
+ AC_CHECK_PROGS([AUTOCONF], [autoconf], [$MISSING autoconf])
+--- a/src/libcpp/config.in
++++ b/src/libcpp/config.in
+@@ -266,6 +266,12 @@
+ /* Define to 1 if your <sys/time.h> declares `struct tm'. */
+ #undef TM_IN_SYS_TIME
+ 
++/* Number of bits in a file offset, on hosts where this is settable. */
++#undef _FILE_OFFSET_BITS
++
++/* Define for large files, on AIX-style hosts. */
++#undef _LARGE_FILES
++
+ /* Define to empty if `const' does not conform to ANSI C. */
+ #undef const
+ 

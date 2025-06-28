@@ -1,0 +1,78 @@
+# DP: gcc-multiarch, differing parts in FSF/Linaro
+
+Index: b/src/gcc/genmultilib
+===================================================================
+--- a/src/gcc/genmultilib
++++ b/src/gcc/genmultilib
+@@ -87,6 +87,8 @@
+ #   "be mbig-endian mthumb;",
+ #   "thumb !mbig-endian mthumb;",
+ 
++# The optional ninth argument is the multiarch name.
++
+ # The last option should be "yes" if multilibs are enabled.  If it is not
+ # "yes", all GCC multilib dir names will be ".".
+ 
+@@ -136,7 +138,8 @@
+ exclusions=$6
+ osdirnames=$7
+ aliases=$8
+-enable_multilib=$9
++multiarch=$9
++enable_multilib=${10}
+ 
+ echo "static const char *const multilib_raw[] = {"
+ 
+@@ -269,6 +272,9 @@
+ # names.
+ toosdirnames=
+ defaultosdirname=
++if [ -n "${multiarch}" ]; then
++  defaultosdirname=:.:${multiarch}
++fi
+ if [ -n "${osdirnames}" ]; then
+   set x ${osdirnames}
+   shift
+@@ -276,6 +282,9 @@
+     case "$1" in
+       .=*)
+         defaultosdirname=`echo $1 | sed 's|^.=|:|'`
++	if [ -n "${multiarch}" ]; then
++	  defaultosdirname=${defaultosdirname}:${multiarch}
++	fi
+ 	shift
+ 	;;
+       *=*)
+@@ -361,13 +370,13 @@
+     dirout=`echo ${combo} | sed -e 's/=/-/g'`
+   fi
+   # Remove the leading and trailing slashes.
+-  dirout=`echo ${dirout} | sed -e 's|^/||' -e 's|/$||g'`
++  dirout=`echo ${dirout} | sed -e 's|^/||' -e 's|/*:/*|:|' -e 's|/$||g'`
+ 
+   # Use the OS directory names rather than the option names.
+   if [ -n "${toosdirnames}" ]; then
+     osdirout=`echo ${combo} | sed ${toosdirnames}`
+     # Remove the leading and trailing slashes.
+-    osdirout=`echo ${osdirout} | sed -e 's|^/||' -e 's|/$||g'`
++    osdirout=`echo ${osdirout} | sed -e 's|^/||' -e 's|/*:/*|:|' -e 's|/$||g'`
+     if [ "x${enable_multilib}" != xyes ]; then
+       dirout=".:${osdirout}"
+       disable_multilib=yes
+Index: b/src/gcc/Makefile.in
+===================================================================
+--- a/src/gcc/Makefile.in
++++ b/src/gcc/Makefile.in
+@@ -1751,10 +1751,11 @@
+ 	    "$(MULTILIB_EXCLUSIONS)" \
+ 	    "$(MULTILIB_OSDIRNAMES)" \
+ 	    "$(MULTILIB_ALIASES)" \
++	    "$(MULTIARCH_DIRNAME)" \
+ 	    "@enable_multilib@" \
+ 	    > tmp-mlib.h; \
+ 	else \
+-	  $(SHELL) $(srcdir)/genmultilib '' '' '' '' '' '' '' '' no \
++	  $(SHELL) $(srcdir)/genmultilib '' '' '' '' '' '' '' '' "$(MULTIARCH_DIRNAME)" no \
+ 	    > tmp-mlib.h; \
+ 	fi
+ 	$(SHELL) $(srcdir)/../move-if-change tmp-mlib.h multilib.h

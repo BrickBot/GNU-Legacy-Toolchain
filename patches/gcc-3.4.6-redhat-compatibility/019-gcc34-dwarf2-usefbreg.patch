@@ -1,0 +1,112 @@
+2005-08-10  Jakub Jelinek  <jakub@redhat.com>
+
+	* dwarf2out.c (concat_loc_descriptor): Add can_use_fbreg argument,
+	pass it down to loc_descriptor.
+	(loc_descriptor): Pass can_use_fbreg to concat_loc_descriptor.
+	(containing_function_has_frame_base): Move earlier in the file.
+	(loc_descriptor_from_tree_1): Use containing_function_has_frame_base
+	instead of always assuming fbreg can't be used.
+
+--- gcc/dwarf2out.c.orig	2005-09-22 17:13:19.000000000 -0300
++++ gcc/dwarf2out.c	2005-11-15 20:26:07.000000000 -0200
+@@ -3755,7 +3755,7 @@
+ static dw_loc_descr_ref based_loc_descr (unsigned, HOST_WIDE_INT, bool);
+ static int is_based_loc (rtx);
+ static dw_loc_descr_ref mem_loc_descriptor (rtx, enum machine_mode mode, bool);
+-static dw_loc_descr_ref concat_loc_descriptor (rtx, rtx);
++static dw_loc_descr_ref concat_loc_descriptor (rtx, rtx, bool);
+ static dw_loc_descr_ref loc_descriptor (rtx, bool);
+ static dw_loc_descr_ref loc_descriptor_from_tree (tree, int);
+ static HOST_WIDE_INT ceiling (HOST_WIDE_INT, unsigned int);
+@@ -8562,11 +8562,11 @@
+    This is typically a complex variable.  */
+ 
+ static dw_loc_descr_ref
+-concat_loc_descriptor (rtx x0, rtx x1)
++concat_loc_descriptor (rtx x0, rtx x1, bool can_use_fbreg)
+ {
+   dw_loc_descr_ref cc_loc_result = NULL;
+-  dw_loc_descr_ref x0_ref = loc_descriptor (x0, true);
+-  dw_loc_descr_ref x1_ref = loc_descriptor (x1, true);
++  dw_loc_descr_ref x0_ref = loc_descriptor (x0, can_use_fbreg);
++  dw_loc_descr_ref x1_ref = loc_descriptor (x1, can_use_fbreg);
+ 
+   if (x0_ref == 0 || x1_ref == 0)
+     return 0;
+@@ -8580,6 +8580,29 @@
+   return cc_loc_result;
+ }
+ 
++/* Return true if DECL's containing function has a frame base attribute.
++   Return false otherwise.  */
++
++static bool
++containing_function_has_frame_base (tree decl)
++{
++  tree declcontext = decl_function_context (decl);
++  dw_die_ref context;
++  dw_attr_ref attr;
++
++  if (!declcontext)
++    return false;
++
++  context = lookup_decl_die (declcontext);
++  if (!context)
++    return false;
++
++  for (attr = context->die_attr; attr; attr = attr->dw_attr_next)
++    if (attr->dw_attr == DW_AT_frame_base)
++      return true;
++  return false;
++}
++
+ /* Output a proper Dwarf location descriptor for a variable or parameter
+    which is either allocated in a register or in a memory location.  For a
+    register, we just generate an OP_REG and the register number.  For a
+@@ -8615,7 +8638,8 @@
+       break;
+ 
+     case CONCAT:
+-      loc_result = concat_loc_descriptor (XEXP (rtl, 0), XEXP (rtl, 1));
++      loc_result = concat_loc_descriptor (XEXP (rtl, 0), XEXP (rtl, 1),
++					  can_use_fbreg);
+       break;
+ 
+     case VAR_LOCATION:
+@@ -8765,6 +8789,7 @@
+ 	else
+ 	  {
+ 	    enum machine_mode mode = GET_MODE (rtl);
++	    bool can_use_fb = containing_function_has_frame_base (loc);
+ 
+ 	    if (GET_CODE (rtl) == MEM)
+ 	      {
+@@ -8772,7 +8797,7 @@
+ 		rtl = XEXP (rtl, 0);
+ 	      }
+ 
+-	    ret = mem_loc_descriptor (rtl, mode, true);
++	    ret = mem_loc_descriptor (rtl, mode, can_use_fb);
+ 	  }
+       }
+       break;
+@@ -8847,16 +8872,18 @@
+ 	/* Get an RTL for this, if something has been emitted.  */
+ 	rtx rtl = lookup_constant_def (loc);
+ 	enum machine_mode mode;
++	bool can_use_fb;
+ 
+ 	if (GET_CODE (rtl) != MEM)
+ 	  return 0;
++	can_use_fb = containing_function_has_frame_base (loc);
+ 	mode = GET_MODE (rtl);
+ 	rtl = XEXP (rtl, 0);
+ 
+ 	rtl = (*targetm.delegitimize_address) (rtl);
+ 
+ 	indirect_p = 1;
+-	ret = mem_loc_descriptor (rtl, mode, true);
++	ret = mem_loc_descriptor (rtl, mode, can_use_fb);
+ 	break;
+       }
+ 

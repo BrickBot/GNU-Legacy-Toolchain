@@ -1,0 +1,47 @@
+--- libstdc++-v3/doc/html/index.html	2009-01-14 12:06:37.000000000 +0100
++++ libstdc++-v3/doc/html/index.html	2009-05-06 09:17:30.000000000 +0200
+@@ -12,7 +12,8 @@
+ <div>
+ <h1>The GNU C++ Library Documentation</h1>
+ 
+-<p>Copyright 2008 FSF</p>
++<p>Release 4.4.0</p>
++<p>Copyright 2008, 2009 FSF</p>
+ 
+ <p>
+   Permission is granted to copy, distribute and/or modify this
+--- libstdc++-v3/doc/html/api.html	2009-04-20 21:21:15.000000000 +0200
++++ libstdc++-v3/doc/html/api.html	2009-05-06 09:17:24.000000000 +0200
+@@ -17,27 +17,12 @@ useful for examining the signatures of p
+ the library classes, finding out what is in a particular include
+ file, looking at inheritance diagrams, etc.
+ </p><p>
+-The source-level documentation for the most recent releases can be
+-viewed online:
+-</p><div class="itemizedlist"><ul type="disc"><li><p>
+-      <a class="ulink" href="libstdc++-html-USERS-3.4/index.html" target="_top">for the 3.4 release
++The source-level documentation can be viewed here:
++</p>
++<div class="itemizedlist"><ul type="disc">
++    <li><p>
++      <a class="ulink" href="api/index.html" target="_top">for the 4.4 release
+       </a>
+-    </p></li><li><p>
+-      <a class="ulink" href="libstdc++-html-USERS-4.1/index.html" target="_top">for the 4.1 release
+-      </a>
+-    </p></li><li><p>
+-      <a class="ulink" href="libstdc++-html-USERS-4.2/index.html" target="_top">for the 4.2 release
+-      </a>
+-    </p></li><li><p>
+-      <a class="ulink" href="libstdc++-html-USERS-4.3/index.html" target="_top">for the 4.3 release
+-      </a>
+-    </p></li><li><p>
+-      <a class="ulink" href="libstdc++-html-USERS-4.4/index.html" target="_top">for the 4.4 release
+-      </a>
+-    </p></li><li><p>
+-      <a class="ulink" href="latest-doxygen/index.html" target="_top">"the latest collection"
+-      </a>
+-      (For the main development tree; see the date on the first page.)
+     </p></li></ul></div><p>
+ This generated HTML collection, as above, is also available for download in the libstdc++ snapshots directory at
+    <code class="literal">&lt;URL:ftp://gcc.gnu.org/pub/gcc/libstdc++/doxygen/&gt;</code>.

@@ -411,6 +411,7 @@ public class Date implements Cloneable, Comparable, java.io.Serializable
 	  }
 	else if (firstch >= '0' && firstch <= '9')
 	  {
+	    int lastPunct = -1;
 	    while (tok != null && tok.length() > 0)
 	      {
 		int punctOffset = tok.length();
@@ -447,6 +448,13 @@ public class Date implements Cloneable, Comparable, java.io.Serializable
 		      hour = num;
 		    else
 		      minute = num;
+		  }
+		else if (lastPunct == ':' && hour >= 0 && (minute < 0 || second < 0))
+		  {
+		    if (minute < 0)
+		      minute = num;
+		    else
+		      second = num;
 		  }
 	        else if ((num >= 70
 			  && (punct == ' ' || punct == ','
@@ -486,6 +494,7 @@ public class Date implements Cloneable, Comparable, java.io.Serializable
 		  tok = null;
 		else
 		  tok = tok.substring(punctOffset + 1);
+		lastPunct = punct;
 	      }
 	  }
 	else if (firstch >= 'A' && firstch <= 'Z')

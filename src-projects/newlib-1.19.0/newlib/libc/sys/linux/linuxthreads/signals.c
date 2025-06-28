@@ -73,7 +73,7 @@ typedef void (*arch_sighandler_t) (int, SIGCONTEXT);
 static union
 {
   arch_sighandler_t old;
-  void (*rt) (int, struct siginfo *, struct ucontext *);
+  void (*rt) (int, siginfo_t *, ucontext_t *);
 } sighandler[NSIG] = { [1 ... NSIG - 1] = { (arch_sighandler_t) SIG_ERR } };
 
 /* The wrapper around user-provided signal handlers */
@@ -100,8 +100,8 @@ static void pthread_sighandler(int signo, SIGCONTEXT ctx)
 }
 
 /* The same, this time for real-time signals.  */
-static void pthread_sighandler_rt(int signo, struct siginfo *si,
-				  struct ucontext *uc)
+static void pthread_sighandler_rt(int signo, siginfo_t *si,
+				  ucontext_t *uc)
 {
   pthread_descr self;
   char * in_sighandler;

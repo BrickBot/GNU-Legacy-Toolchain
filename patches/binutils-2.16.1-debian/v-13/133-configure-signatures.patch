@@ -1,0 +1,43 @@
+From: Petter Reinholdtsen <pere@hungry.com>
+Subject: Fix configure and build problem with newer GCC
+
+Forwarded: no
+Last-Update: 2025-02-14
+
+Make sure main() return int.  Also make sure required prototypes are
+available, despite STDC_HEADERS not being defined for some reason.
+---
+ libiberty/md5.c     | 2 ++
+ libiberty/regex.c   | 6 ++++--
+ 7 files changed, 18 insertions(+), 14 deletions(-)
+
+diff --git a/libiberty/md5.c b/libiberty/md5.c
+index e458f2a..a4ddb67 100644
+--- a/libiberty/md5.c
++++ b/libiberty/md5.c
+@@ -33,6 +33,8 @@
+ #else
+ # ifndef HAVE_MEMCPY
+ #  define memcpy(d, s, n) bcopy ((s), (d), (n))
++# else
++void memcpy(void *, const void*, long unsigned int);
+ # endif
+ #endif
+ 
+diff --git a/libiberty/regex.c b/libiberty/regex.c
+index 3babf6c..6c47744 100644
+--- a/libiberty/regex.c
++++ b/libiberty/regex.c
+@@ -133,8 +133,10 @@
+ #  if defined STDC_HEADERS || defined _LIBC
+ #   include <stdlib.h>
+ #  else
+-char *malloc ();
+-char *realloc ();
++void *malloc (long unsigned int);
++void *realloc (void *, long unsigned int);
++void free(void*);
++void abort(void);
+ #  endif
+ 
+ /* When used in Emacs's lib-src, we need to get bzero and bcopy somehow.

@@ -1,0 +1,169 @@
+From: Michael Tautschnig <mt@debian.org>
+Subject: Updated to newer texinfo notation
+
+Forwarded: no
+Last-Update: 2025-03-12
+---
+ bfd/doc/archive.texi | 2 +-
+ bfd/doc/bfdt.texi    | 2 +-
+ bfd/doc/cache.texi   | 2 +-
+ bfd/doc/core.texi    | 2 +-
+ bfd/doc/elf.texi     | 5 ++---
+ bfd/doc/format.texi  | 2 +-
+ bfd/doc/init.texi    | 2 +-
+ bfd/doc/libbfd.texi  | 2 +-
+ bfd/doc/opncls.texi  | 2 +-
+ bfd/doc/reloc.texi   | 2 +-
+ ld/ld.texinfo        | 6 +++---
+ 11 files changed, 14 insertions(+), 15 deletions(-)
+
+diff --git a/bfd/doc/archive.texi b/bfd/doc/archive.texi
+index e20906a..5ec2c39 100644
+--- a/bfd/doc/archive.texi
++++ b/bfd/doc/archive.texi
+@@ -51,7 +51,7 @@ of a restriction.
+ Archives are supported in BFD in @code{archive.c}.
+ 
+ @findex bfd_get_next_mapent
+-@subsubsection @code{bfd_get_next_mapent}
++@subsection @code{bfd_get_next_mapent}
+ @strong{Synopsis}
+ @example
+ symindex bfd_get_next_mapent
+diff --git a/bfd/doc/bfdt.texi b/bfd/doc/bfdt.texi
+index b5e4e32..4ca25b1 100644
+--- a/bfd/doc/bfdt.texi
++++ b/bfd/doc/bfdt.texi
+@@ -306,7 +306,7 @@ bfd_error_handler_type bfd_get_error_handler (void);
+ @strong{Description}@*
+ Return the BFD error handler function.
+ 
+-@section Symbols
++@subsection Symbols
+ 
+ 
+ @findex bfd_get_reloc_upper_bound
+diff --git a/bfd/doc/cache.texi b/bfd/doc/cache.texi
+index d8b1aec..eac2d77 100644
+--- a/bfd/doc/cache.texi
++++ b/bfd/doc/cache.texi
+@@ -1,4 +1,4 @@
+-@section File caching
++@subsection File caching
+ The file caching mechanism is embedded within BFD and allows
+ the application to open as many BFDs as it wants without
+ regard to the underlying operating system's file descriptor
+diff --git a/bfd/doc/core.texi b/bfd/doc/core.texi
+index e45759c..5b7de2a 100644
+--- a/bfd/doc/core.texi
++++ b/bfd/doc/core.texi
+@@ -1,4 +1,4 @@
+-@section Core files
++@subsection Core files
+ 
+ 
+ @strong{Description}@*
+diff --git a/bfd/doc/elf.texi b/bfd/doc/elf.texi
+index 101001c..2821682 100644
+--- a/bfd/doc/elf.texi
++++ b/bfd/doc/elf.texi
+@@ -1,5 +1,4 @@
+-@section 
+-ELF backends
++@section ELF backends
+ 
+ BFD support for ELF formats is being worked on.
+ Currently, the best supported back ends are for sparc and i386
+@@ -10,7 +9,7 @@ to be written.  The code is changing quickly enough that we
+ haven't bothered yet.
+ 
+ @findex bfd_elf_find_section
+-@subsubsection @code{bfd_elf_find_section}
++@subsection @code{bfd_elf_find_section}
+ @strong{Synopsis}
+ @example
+ struct elf_internal_shdr *bfd_elf_find_section (bfd *abfd, char *name);
+diff --git a/bfd/doc/format.texi b/bfd/doc/format.texi
+index 32a1d75..f57d612 100644
+--- a/bfd/doc/format.texi
++++ b/bfd/doc/format.texi
+@@ -1,4 +1,4 @@
+-@section File formats
++@subsection File formats
+ A format is a BFD concept of high level file contents type. The
+ formats supported by BFD are:
+ 
+diff --git a/bfd/doc/init.texi b/bfd/doc/init.texi
+index 0905f6b..b4639c7 100644
+--- a/bfd/doc/init.texi
++++ b/bfd/doc/init.texi
+@@ -1,4 +1,4 @@
+-@section Initialization
++@subsection Initialization
+ These are the functions that handle initializing a BFD.
+ 
+ @findex bfd_init
+diff --git a/bfd/doc/libbfd.texi b/bfd/doc/libbfd.texi
+index 5c9ced0..5c1c366 100644
+--- a/bfd/doc/libbfd.texi
++++ b/bfd/doc/libbfd.texi
+@@ -1,4 +1,4 @@
+-@section Internal functions
++@subsection Internal functions
+ 
+ 
+ @strong{Description}@*
+diff --git a/bfd/doc/opncls.texi b/bfd/doc/opncls.texi
+index 9b8f092..589d40c 100644
+--- a/bfd/doc/opncls.texi
++++ b/bfd/doc/opncls.texi
+@@ -1,4 +1,4 @@
+-@section Opening and closing BFDs
++@subsection Opening and closing BFDs
+ 
+ 
+ @findex bfd_openr
+diff --git a/bfd/doc/reloc.texi b/bfd/doc/reloc.texi
+index dde0522..f393b87 100644
+--- a/bfd/doc/reloc.texi
++++ b/bfd/doc/reloc.texi
+@@ -492,7 +492,7 @@ know what the target machine might call it, it can find out by
+ using this bit of code.
+ 
+ @findex bfd_reloc_code_type
+-@subsubsection @code{bfd_reloc_code_type}
++@subsection @code{bfd_reloc_code_type}
+ @strong{Description}@*
+ The insides of a reloc code.  The idea is that, eventually, there
+ will be one enumerator for every type of relocation we ever do.
+diff --git a/ld/ld.texinfo b/ld/ld.texinfo
+index 29f637f..31e0dc5 100644
+--- a/ld/ld.texinfo
++++ b/ld/ld.texinfo
+@@ -1589,7 +1589,7 @@ the linker script being used by the linker.
+ 
+ @kindex --version-script=@var{version-scriptfile}
+ @cindex version script, symbol versions
+-@itemx --version-script=@var{version-scriptfile}
++@item --version-script=@var{version-scriptfile}
+ Specify the name of a version script to the linker.  This is typically
+ used when creating shared libraries to specify additional information
+ about the version hierarchy for the library being created.  This option
+@@ -6256,7 +6256,7 @@ If you have more than one @code{SECT} statement for the same
+ @printindex cp
+ 
+ @tex
+-% I think something like @colophon should be in texinfo.  In the
++% I think something like <at>colophon should be in texinfo.  In the
+ % meantime:
+ \long\def\colophon{\hbox to0pt{}\vfill
+ \centerline{The body of this manual is set in}
+@@ -6267,7 +6267,7 @@ If you have more than one @code{SECT} statement for the same
+ \centerline{{\sl\fontname\tensl\/}}
+ \centerline{are used for emphasis.}\vfill}
+ \page\colophon
+-% Blame: doc@cygnus.com, 28mar91.
++% Blame: doc<at>cygnus.com, 28mar91.
+ @end tex
+ 
+ 

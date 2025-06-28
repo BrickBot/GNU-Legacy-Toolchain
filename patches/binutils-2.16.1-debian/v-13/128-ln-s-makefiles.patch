@@ -1,0 +1,50 @@
+From: Michael Tautschnig <mt@debian.org>
+Subject: Use $(LN_S) instead of hardcoded ln for linking between /usr/bin and
+ /usr/lib/h8300-hitachi-coff/bin
+
+Forwarded: not-needed
+---
+ binutils/Makefile.am | 2 +-
+ gas/Makefile.am      | 2 +-
+ ld/Makefile.am       | 2 +-
+ 6 files changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/binutils/Makefile.am b/binutils/Makefile.am
+index 79ed321..f191a9c 100644
+--- a/binutils/Makefile.am
++++ b/binutils/Makefile.am
+@@ -352,7 +352,7 @@ install-exec-local: install-binPROGRAMS $(bin_PROGRAMS) $(noinst_PROGRAMS)
+ 	    k=`echo $$j | sed '$(transform)'`; \
+ 	    if [ "$(bindir)/$$k" != "$(tooldir)/bin/$$j" ]; then \
+ 	      rm -f $(DESTDIR)$(tooldir)/bin/$$j$(EXEEXT); \
+-	      ln $(DESTDIR)$(bindir)/$$k$(EXEEXT) $(DESTDIR)$(tooldir)/bin/$$j$(EXEEXT) >/dev/null 2>/dev/null \
++	      $(LN_S) ../../../bin/$$k$(EXEEXT) $(DESTDIR)$(tooldir)/bin/$$j$(EXEEXT) >/dev/null 2>/dev/null \
+ 		|| $(LIBTOOL) --mode=install $(INSTALL_PROGRAM) $$i$(EXEEXT) $(DESTDIR)$(tooldir)/bin/$$j$(EXEEXT); \
+ 	    fi; \
+ 	  else true; \
+diff --git a/gas/Makefile.am b/gas/Makefile.am
+index 38676b8..dab60f7 100644
+--- a/gas/Makefile.am
++++ b/gas/Makefile.am
+@@ -711,7 +711,7 @@ install-exec-tooldir: install-exec-bindir $(noinst_PROGRAMS)
+ 	n=`echo as | sed '$(transform)'`; \
+ 	if [ "$(bindir)/$$n$(EXEEXT)" != "$(tooldir)/bin/as$(EXEEXT)" ]; then \
+ 	  rm -f $(DESTDIR)$(tooldir)/bin/as$(EXEEXT); \
+-	  ln $(DESTDIR)$(bindir)/$$n$(EXEEXT) $(DESTDIR)$(tooldir)/bin/as$(EXEEXT) >/dev/null 2>/dev/null \
++	  $(LN_S) ../../../bin/$$n$(EXEEXT) $(DESTDIR)$(tooldir)/bin/as$(EXEEXT) >/dev/null 2>/dev/null \
+ 	    || $(LIBTOOL) --mode=install $(INSTALL_PROGRAM) as-new$(EXEEXT) $(DESTDIR)$(tooldir)/bin/as$(EXEEXT); \
+ 	else \
+ 	  true ; \
+diff --git a/ld/Makefile.am b/ld/Makefile.am
+index 4f6f58c..f354adf 100644
+--- a/ld/Makefile.am
++++ b/ld/Makefile.am
+@@ -1671,7 +1671,7 @@ install-exec-local: ld-new$(EXEEXT)
+ 	n=`echo ld | sed '$(transform)'`; \
+ 	if [ "$(bindir)/$$n$(EXEEXT)" != "$(tooldir)/bin/ld$(EXEEXT)" ]; then \
+ 	  rm -f $(DESTDIR)$(tooldir)/bin/ld$(EXEEXT); \
+-	  ln $(DESTDIR)$(bindir)/$$n$(EXEEXT) $(DESTDIR)$(tooldir)/bin/ld$(EXEEXT) >/dev/null 2>/dev/null \
++	  $(LN_S) ../../../bin/$$n$(EXEEXT) $(DESTDIR)$(tooldir)/bin/ld$(EXEEXT) >/dev/null 2>/dev/null \
+ 	  || $(LIBTOOL) --mode=install $(INSTALL_PROGRAM) ld-new$(EXEEXT) $(DESTDIR)$(tooldir)/bin/ld$(EXEEXT); \
+ 	fi
+ 

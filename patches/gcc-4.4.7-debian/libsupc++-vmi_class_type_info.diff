@@ -1,0 +1,222 @@
+# DP: Update libsupc++/vmi_class_type_info.cc from the 4.5 branch.
+
+libstdc++-v3/
+
+2009-07-06  Jason Merrill  <jason@redhat.com>
+
+	* libsupc++/vmi_class_type_info.cc (__do_dyncast): Use src2dst hint
+	to defer searching bases that don't overlap the desired address.
+
+gcc/testsuite/
+
+2009-07-06  Jason Merrill  <jason@redhat.com>
+
+	* g++.dg/rtti/dyncast[34].C: New.
+
+Index: gcc/testsuite/g++.dg/rtti/dyncast3.C
+===================================================================
+--- a/src/gcc/testsuite/g++.dg/rtti/dyncast3.C	(revision
++++ b/src/gcc/testsuite/g++.dg/rtti/dyncast3.C	(revision
+@@ -0,0 +1,81 @@
++// This testcase used to crash while looking in A for my_module.  I'm still
++// not sure it's well-formed, but it works now because of the optimization
++// to look at the expected address first.
++
++// { dg-do run }
++
++extern "C" int puts (const char *);
++extern "C" void abort ();
++
++struct my_object
++{
++  my_object() { puts ("in my_object ctor");}
++  virtual ~my_object() { puts ("in my_object dtor"); }
++};
++
++my_object* my_module_ptr = 0;
++
++struct my_module : my_object
++{
++  my_module()
++  {
++    puts ("in my_module ctor, setting up ptr");
++    my_module_ptr = this;
++  }
++  ~my_module() { puts ("in my_module dtor");}
++};
++
++struct D
++{
++  D() { puts ("in D ctor"); }
++  virtual ~D();
++};
++
++D::~D()
++{
++  puts ("in D dtor");
++  puts ("before DCASTing to my_module*");
++  my_module* m = dynamic_cast<my_module*>(my_module_ptr);
++  if (m != my_module_ptr)
++    abort ();
++  puts ("after DCASTing to my_module*");
++}
++
++struct my_interface
++{
++  my_interface() { puts ("in my_interface ctor");}
++  ~my_interface() { puts ("in my_interface dtor");}
++};
++
++struct myif : virtual my_interface
++{
++  myif() { puts ("in myif ctor");}
++  ~myif() { puts ("in myif dtor");}
++};
++
++struct A: virtual myif
++{
++  A() { puts ("in A ctor"); }
++  ~A() { puts ("in A dtor"); }
++
++  D d;
++};
++
++struct B: virtual myif
++{
++  B() { puts ("in B ctor"); }
++  ~B() { puts ("in B dtor"); }
++
++  D d;
++};
++
++struct C : my_module, A, B
++{
++  C() { puts ("in C ctor");}
++  ~C() { puts ("in C dtor"); }
++};
++
++int main(int, char**)
++{
++  C t;
++}
+Index: gcc/testsuite/g++.dg/rtti/dyncast4.C
+===================================================================
+--- a/src/gcc/testsuite/g++.dg/rtti/dyncast4.C	(revision
++++ b/src/gcc/testsuite/g++.dg/rtti/dyncast4.C	(revision
+@@ -0,0 +1,26 @@
++// Test to make sure that we keep searching if we don't find the type we
++// want at the expected address.
++
++// { dg-do run }
++
++struct A
++{
++  virtual void f() {};
++};
++
++struct B: A { };
++
++struct C: A { };
++
++struct D: B, C { };
++
++int main()
++{
++  D d;
++  A* ap = static_cast<B*>(&d);
++  C* cp = dynamic_cast<C*>(ap);
++  if (cp == 0)
++    return 1;
++  else
++    return 0;
++}
+Index: libstdc++-v3/libsupc++/vmi_class_type_info.cc
+===================================================================
+--- a/src/libstdc++-v3/libsupc++/vmi_class_type_info.cc	(revision
++++ b/src/libstdc++-v3/libsupc++/vmi_class_type_info.cc	(revision
+@@ -108,7 +108,17 @@
+       return false;
+     }
+ 
++  // If src_type is a unique non-virtual base of dst_type, we have a good
++  // guess at the address we want, so in the first pass try skipping any
++  // bases which don't contain that address.
++  const void *dst_cand = NULL;
++  if (src2dst >= 0)
++    dst_cand = adjust_pointer<void>(src_ptr, -src2dst);
++  bool first_pass = true;
++  bool skipped = false;
++
+   bool result_ambig = false;
++ again:
+   for (std::size_t i = __base_count; i--;)
+     {
+       __dyncast_result result2 (result.whole_details);
+@@ -121,6 +131,20 @@
+         base_access = __sub_kind (base_access | __contained_virtual_mask);
+       base = convert_to_base (base, is_virtual, offset);
+ 
++      if (dst_cand)
++	{
++	  bool skip_on_first_pass = base > dst_cand;
++	  if (skip_on_first_pass == first_pass)
++	    {
++	      // We aren't interested in this base on this pass: either
++	      // we're on the first pass and this base doesn't contain the
++	      // likely address, or we're on the second pass and we checked
++	      // this base on the first pass.
++	      skipped = true;
++	      continue;
++	    }
++	}
++
+       if (!__base_info[i].__is_public_p ())
+         {
+           if (src2dst == -2 &&
+@@ -267,6 +291,14 @@
+         return result_ambig;
+     }
+ 
++  if (skipped && first_pass)
++    {
++      // We didn't find dst where we expected it, so let's go back and try
++      // the bases we skipped (if any).
++      first_pass = false;
++      goto again;
++    }
++
+   return result_ambig;
+ }
+ 
+Index: libstdc++-v3/libsupc++/dyncast.cc
+===================================================================
+--- a/src/libstdc++-v3/libsupc++/dyncast.cc	(revision
++++ b/src/libstdc++-v3/libsupc++/dyncast.cc	(revision
+@@ -28,12 +28,26 @@
+ 
+ 
+ // this is the external interface to the dynamic cast machinery
++/* sub: source address to be adjusted; nonnull, and since the
++ *      source object is polymorphic, *(void**)sub is a virtual pointer.
++ * src: static type of the source object.
++ * dst: destination type (the "T" in "dynamic_cast<T>(v)").
++ * src2dst_offset: a static hint about the location of the
++ *    source subobject with respect to the complete object;
++ *    special negative values are:
++ *       -1: no hint
++ *       -2: src is not a public base of dst
++ *       -3: src is a multiple public base type but never a
++ *           virtual base type
++ *    otherwise, the src type is a unique public nonvirtual
++ *    base type of dst at offset src2dst_offset from the
++ *    origin of dst.  */
+ extern "C" void *
+ __dynamic_cast (const void *src_ptr,    // object started from
+                 const __class_type_info *src_type, // type of the starting object
+                 const __class_type_info *dst_type, // desired target type
+                 ptrdiff_t src2dst) // how src and dst are related
+-{
++  {
+   const void *vtable = *static_cast <const void *const *> (src_ptr);
+   const vtable_prefix *prefix =
+       adjust_pointer <vtable_prefix> (vtable, 

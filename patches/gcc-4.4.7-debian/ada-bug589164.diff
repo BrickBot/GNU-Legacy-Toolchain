@@ -1,0 +1,63 @@
+DP: Backport a patch from GCC 4.5 that fixes Debian bug #589164.
+
+commit e24057574351e460afdd3ab007c36f34c7ae7398
+Author: charlet <charlet@138bc75d-0d04-0410-961f-82ee72b054a4>
+Date:   Fri Apr 17 12:12:07 2009 +0000
+
+    2009-04-17  Thomas Quinot  <quinot@adacore.com>
+    
+    	* exp_ch7.adb (Expand_Ctrl_Function_Call): Remove incorrect special
+    	case for the case of an aggregate component, the attach call for the
+    	result is actually needed.
+    
+    	* exp_aggr.adb (Backend_Processing_Possible): Backend processing for
+    	an array aggregate must be disabled if the component type requires
+    	controlled actions.
+    
+    git-svn-id: svn://gcc.gnu.org/svn/gcc/trunk@146254 138bc75d-0d04-0410-961f-82ee72b054a4
+
+Index: b/src/gcc/ada/exp_aggr.adb
+===================================================================
+--- a/src/gcc/ada/exp_aggr.adb
++++ b/src/gcc/ada/exp_aggr.adb
+@@ -505,6 +505,8 @@
+    --    9. There cannot be any discriminated record components, since the
+    --       back end cannot handle this complex case.
+ 
++   --   10. No controlled actions need to be generated for components.
++
+    function Backend_Processing_Possible (N : Node_Id) return Boolean is
+       Typ : constant Entity_Id := Etype (N);
+       --  Typ is the correct constrained array subtype of the aggregate
+@@ -579,9 +581,9 @@
+    --  Start of processing for Backend_Processing_Possible
+ 
+    begin
+-      --  Checks 2 (array must not be bit packed)
++      --  Checks 2 (array not bit packed) and 10 (no controlled actions)
+ 
+-      if Is_Bit_Packed_Array (Typ) then
++      if Is_Bit_Packed_Array (Typ) or else Needs_Finalization (Typ) then
+          return False;
+       end if;
+ 
+Index: b/src/gcc/ada/exp_ch7.adb
+===================================================================
+--- a/src/gcc/ada/exp_ch7.adb
++++ b/src/gcc/ada/exp_ch7.adb
+@@ -1403,15 +1403,6 @@
+ 
+       --    Attach_To_Final_List (_Lx, Resx (Resx'last)._controller, 3);
+ 
+-      --  If the context is an aggregate, the call will be expanded into an
+-      --  assignment, and the attachment will be done when the aggregate
+-      --  expansion is complete. See body of Exp_Aggr for the treatment of
+-      --  other controlled components.
+-
+-      if Nkind (Parent (N)) = N_Aggregate then
+-         return;
+-      end if;
+-
+       --  Case where type has controlled components
+ 
+       if Has_Controlled_Component (Rtype) then

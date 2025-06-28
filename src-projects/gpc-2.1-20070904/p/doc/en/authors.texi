@@ -328,7 +328,7 @@ translated them to German.
 @item Prof.@: Phil Nelson
 created a bug reporting system for GPC in October 1996.
 
-@item Robert Höhne
+@item Robert HÃ¶hne
 wrote @uref{http://www.rhide.com,RHIDE}, an integrated development
 environment for GNU compilers running under Dos (DJGPP) and Linux,
 and added support for GNU Pascal in autumn 1996.
