@@ -39,10 +39,11 @@ env:
   
 jobs:
   build_toolchain_job:
-    name:     ${{ matrix.toolchain-set }} ${{ matrix.toolchain-set }} Toolchain Build & Install on ${{ matrix.os }}
+    name:     ${{ matrix.target-arch }} ${{ matrix.toolchain-set }} Toolchain Build & Install on ${{ matrix.os }}
     env:
       Toolchain: gdb5,gcc3,gcc44
     strategy:
+      fail-fast:       false
       matrix:
         os:            [ ubuntu-latest ]
         target-arch:   [ "h8300-hitachi-coff" ]
@@ -86,7 +87,7 @@ jobs:
       run:  |
         cd $BUILD_DIR
         echo "Current working directory: $PWD"
-        ../../sym-combined/${{ matrix.target-arch }}-configure  --prefix=$GITHUB_WORKSPACE/$SYSROOT_DIR  --toolchain-sets=${{ matrix.toolchain-set }}
+        ../sym-combined/${{ matrix.target-arch }}-configure  --prefix=$GITHUB_WORKSPACE/$SYSROOT_DIR  --toolchain-sets=${{ matrix.toolchain-set }}
 
     - name: Execute the build
       run:  |
