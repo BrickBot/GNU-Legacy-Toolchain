@@ -777,32 +777,76 @@ link_static_flag="$ac_cv_prog_cc_static"
 no_builtin_flag="$ac_cv_prog_cc_no_builtin"
 can_build_shared="$ac_cv_prog_cc_can_build_shared"
 
+
 # find the maximum length of command line arguments
-echo "$progname:780: finding the maximum length of command line arguments" 1>&5
-echo $ac_n "finding the maximum length of command line arguments... $ac_c" 1>&6
+
+# On cross builds, this will actually incorrectly run under the guise of
+#   being the target, which is INCORRECT.  Fortunately for us in this case,
+#   $build_os is empty, so we can rectify this situation.
+current_os="$build_os"
+if test "X${current_os}" = X; then
+  # If config.guess is unable to guess, that's fine; we'll just fall through the case statement.
+  current_os=`$SHELL $(dirname $0)/config.guess`
+fi
+
+echo "$progname:780: finding the maximum length of command line arguments for OS '$current_os'" 1>&5
+echo $ac_n "finding the maximum length of command line arguments for OS '$current_os'... $ac_c" 1>&6
 if test "${lt_cv_sys_max_cmd_len+set}" = set; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   i=0
   testring="ABCD"
-  # If test is not a shell built-in, we'll probably end up computing a
-  # maximum length that is only half of the actual maximum length, but
-  # we can't tell.
-  while test "X"`$CONFIG_SHELL $0 --fallback-echo "X$testring" 2>/dev/null` \
-             = "XX$testring" &&
-          new_result=`expr "X$testring" : ".*" 2>&1` &&
-          lt_cv_sys_max_cmd_len=$new_result &&
-          test $i != 17 # 1/2 MB should be enough
-  do
-    i=`expr $i + 1`
-    testring=$testring$testring
-  done
-  testring=
-  # add a significant safety factor because C++ compilers can tack on massive amounts
-  # of additional arguments before passing them to the linker.  1/4 should be good.
-  len=`expr $lt_cv_sys_max_cmd_len \/ 4`
-  lt_cv_sys_max_cmd_len=`expr $lt_cv_sys_max_cmd_len - $len`
+
+  case $current_os in
+  msdosdjgpp*)
+    # On DJGPP, this test can blow up pretty badly due to problems in libc
+    # (any single argument exceeding 2000 bytes causes a buffer overrun
+    # during glob expansion).  Even if it were fixed, the result of this
+    # check would be larger than it should be.
+    lt_cv_sys_max_cmd_len=12288;    # 12K is about right
+    ;;
+
+  gnu*)
+    # Under GNU Hurd, this test is not required because there is
+    # no limit to the length of command line arguments.
+    # Libtool will interpret -1 as no limit whatsoever
+    lt_cv_sys_max_cmd_len=-1;
+    ;;
+
+  cygwin* | mingw*)
+    # On Win9x/ME, this test blows up -- it succeeds, but takes
+    # about 5 minutes as the teststring grows exponentially.
+    # Worse, since 9x/ME are not pre-emptively multitasking,
+    # you end up with a "frozen" computer, even though with patience
+    # the test eventually succeeds (with a max line length of 256k).
+    # Instead, let's just punt: use the minimum linelength reported by
+    # all of the supported platforms: 8192 (on NT/2K/XP).
+    lt_cv_sys_max_cmd_len=8192;
+    ;;
+
+ *)
+    # If test is not a shell built-in, we'll probably end up computing a
+    # maximum length that is only half of the actual maximum length, but
+    # we can't tell.
+    while (test "X"`$CONFIG_SHELL $0 --fallback-echo "X$testring" 2>/dev/null` \
+	       = "XX$testring") >/dev/null 2>&1 &&
+	    new_result=`expr "X$testring" : ".*" 2>&1` &&
+	    lt_cv_sys_max_cmd_len=$new_result &&
+	    test $i != 17 # 1/2 MB should be enough
+    do
+      i=`expr $i + 1`
+      testring=$testring$testring
+    done
+    testring=
+    # Add a significant safety factor because C++ compilers can tack on massive
+    # amounts of additional arguments before passing them to the linker.
+    # It appears as though 1/2 is a usable value.
+    lt_cv_sys_max_cmd_len=`expr $lt_cv_sys_max_cmd_len \/ 2`
+    ;;
+  esac
+
 fi
+
 echo "$progname:@lineno@: result: $lt_cv_sys_max_cmd_len" 1>&5
 echo "${ac_t}$lt_cv_sys_max_cmd_len" 1>&6
 
@@ -811,6 +855,7 @@ if test -n $lt_cv_sys_max_cmd_len ; then
 else
   max_cmd_len=none
 fi
+
 
 # Check to see if options -o and -c are simultaneously supported by compiler
 echo $ac_n "checking if $compiler supports -c -o file.$objext... $ac_c" 1>&6
