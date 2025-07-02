@@ -28,7 +28,9 @@ env:
   # Cygwin package search:  https://cygwin.com/packages/
   # Cygwin package list:    https://cygwin.com/packages/package_list.html
   # Cygwin-official Action: https://github.com/marketplace/actions/install-cygwin-action
-  CYGWIN_BUILD_DEPENDS: git autoconf automake m4 make binutils gcc-core gcc-g++ gcc-objc bison flex libtool gawk gettext texinfo file libisl-dev dejagnu  stow
+  # ** NOTE **: On Cygwin, need to create a symlink for libtermcap.a -> libncurses.a
+  #  - https://superuser.com/a/1020342
+  CYGWIN_BUILD_DEPENDS: git autoconf automake m4 make binutils gcc-core gcc-g++ gcc-objc bison flex libtool gawk gettext gettext-devel gettext-debuginfo texinfo  file libisl-devel libncurses-devel dejagnu  stow
   CYGWIN_GCC4_BUILD_DEPENDS: libglib2.0-devel libgmp-devel libmpfr-devel libmpc-devel zip unzip
   # Cygwin lacks packages for Mono, so the "gcc44" toolchain set is unsupported unless Mono is built and installed manually
   CYGWIN_MISSING_DEPENDS:    mono-runtime libmono-2.0-dev
@@ -42,23 +44,34 @@ env:
   OUTPUT_DIR:  outputs
   SYSROOT_DIR: sysroot
   
+  # Prevent the Cygwin profile script from doing an automatic `cd ${HOME}`
+  CHERE_INVOKING: 1
+  CYGWIN:         winsymlinks:native
+  
   # Set to "--keep-going" to apply this flag to the "make all" commands
   COMMON_MAKE_ALL_ARGS: 
 
+defaults:
+  run:
+    shell: bash
+
 jobs:
   build_toolchain_job:
-    name:     ${{ matrix.toolchain-set }} for ${{ matrix.target-arch }} on ${{ matrix.os }}
+    name:     ${{ matrix.toolchain-set }} targeting ${{ matrix.target-system }} on ${{ matrix.os }}-${{ matrix.platform }}
     strategy:
       fail-fast:       false
       matrix:
-        os:            [ ubuntu-latest ]
-        target-arch:   [ "h8300-hitachi-coff" ]
+        os:            [ "ubuntu-latest", "windows-latest" ]
+        platform:      [ "x86_64", "x86" ]
+        target-system: [ "h8300-hitachi-coff" ]
         toolchain-set: [ "binutils216", "gdb5", "gcc3", "gdb5,gcc3", "gcc44", "gdb5,gcc3,gcc44", ]
-        #exclude:
-        #  - os:            windows-latest
-        #    toolchain-set: gcc44
-        #  - os:            windows-latest
-        #    toolchain-set: gdb5,gcc3,gcc44
+        exclude:
+          - os:            ubuntu-latest
+            platform:      x86
+          - os:            windows-latest
+            toolchain-set: gcc44
+          - os:            windows-latest
+            toolchain-set: gdb5,gcc3,gcc44
     runs-on:  ${{ matrix.os }}
     
     steps:
@@ -79,15 +92,25 @@ jobs:
       #uses: chetan/git-restore-mtime-action@v2
 
     - name: Update build environment
+      if:   runner.os == 'Linux'
       run:  sudo apt-get --assume-yes update
 
     - name: Install build dependencies
+      if:   runner.os == 'Linux'
       run:  sudo apt-get --assume-yes install $UBUNTU_BUILD_DEPENDS $UBUNTU_GCC4_BUILD_DEPENDS
 
+      # Cygwin action docs – https://github.com/marketplace/actions/install-cygwin-action
+    - name: Setup Cygwin Environment
+      if:   runner.os == 'Windows'
+      uses: cygwin/cygwin-install-action@v5
+      with:
+        platform: ${{ matrix.platform }}
+        packages: ${{ env.CYGWIN_BUILD_DEPENDS }}
+
       # Fix timestamps (needed to prevent some files from attempting to regenerate and failing during build)
-    - name: Restore source timestamps
       # While a GitHub Action is available, use the Git command directly
       #   as a reference for those who might be replicating this build locally
+    - name: Fix source timestamps
       run:  ./fix-mtime
 
     - name: Setup the build and output directories
@@ -95,40 +118,28 @@ jobs:
 
     # Run the build steps
     - name: Configure the build
-      run:  |
-        cd $BUILD_DIR
-        echo "Current working directory: $PWD"
-        ../sym-combined/${{ matrix.target-arch }}-configure  --prefix=$GITHUB_WORKSPACE/$SYSROOT_DIR  --toolchain-sets=${{ matrix.toolchain-set }}
+      run:  cd $BUILD_DIR  &&  echo "Current working directory: $PWD"  &&  ../sym-combined/${{ matrix.target-system }}-configure  --prefix=$GITHUB_WORKSPACE/$SYSROOT_DIR  --toolchain-sets=${{ matrix.toolchain-set }}
 
     - name: Execute the build
-      run:  |
-        cd $BUILD_DIR
-        echo "Current working directory: $PWD"
-        make $COMMON_MAKE_ALL_ARGS
+      run:  cd $BUILD_DIR  &&  echo "Current working directory: $PWD"  &&  make $COMMON_MAKE_ALL_ARGS
 
     - name: Test install the new build to a sysroot
-      run:  |
-        cd $BUILD_DIR
-        echo "Current working directory: $PWD"
-        sudo make install
+      run:  cd $BUILD_DIR  &&  echo "Current working directory: $PWD"  &&  sudo make install
 
     # Before archiving, tar the host installation output to preserve file permission
     # c.f. https://github.com/actions/upload-artifact?tab=readme-ov-file#permission-loss
     # To avoid including a "." or other unwanted directory, c.f. https://stackoverflow.com/a/39530409
     - name: Tar the host installation snapshot to preserve file permissions
-      run:  find $SYSROOT_DIR -printf "%P\n" | sort | tar --verbose --create --file $OUTPUT_DIR/${{ matrix.target-arch }}-${{ matrix.toolchain-set }}-[${{ matrix.os }}].tar --no-recursion --directory=$SYSROOT_DIR --files-from=-
+      run:  find $SYSROOT_DIR -printf "%P\n" | sort | tar --verbose --create --file $OUTPUT_DIR/[${{ matrix.os }}-${{ matrix.platform }}]_${{ matrix.target-system }}-${{ matrix.toolchain-set }}.tar --no-recursion --directory=$SYSROOT_DIR --files-from=-
 
     - name: Archive the host installation snapshot tar file
       uses: actions/upload-artifact@v4
       with:
-        name: ${{ matrix.target-arch }}-${{ matrix.toolchain-set }}_[${{ matrix.os }}]_${{ github.run_id }}.${{ github.run_number }}.${{ github.run_attempt }}
-        path: ${{ env.OUTPUT_DIR }}/${{ matrix.target-arch }}-${{ matrix.toolchain-set }}-[${{ matrix.os }}].tar
+        name: [${{ matrix.os }}-${{ matrix.platform }}]_${{ matrix.target-system }}-${{ matrix.toolchain-set }}_${{ github.run_id }}.${{ github.run_number }}.${{ github.run_attempt }}
+        path: ${{ env.OUTPUT_DIR }}/[${{ matrix.os }}-${{ matrix.platform }}]_${{ matrix.target-system }}-${{ matrix.toolchain-set }}.tar
 
     - name: Install the new build using Stow
-      run:  |
-        cd $BUILD_DIR
-        echo "Current working directory: $PWD"
-        sudo make stow
+      run:  cd $BUILD_DIR  &&  echo "Current working directory: $PWD"  &&  sudo make stow
 
     - name: Check always if any version-controlled files were modified
       if:   always()
