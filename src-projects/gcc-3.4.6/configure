@@ -1255,6 +1255,12 @@ case "${target}" in
     ;;
   h8300*-*-*)
     noconfigdirs="$noconfigdirs target-libgloss ${libgcj} target-libf2c"
+    case "${host}" in
+      *-*-cygwin*)
+        # libstdc++-v3 does not build under Cygwin  
+        noconfigdirs="$noconfigdirs target-libstdc++-v3 "
+	    ;;
+    esac
     ;;
   h8500-*-*)
     noconfigdirs="$noconfigdirs target-libstdc++-v3 target-libgloss ${libgcj} target-libf2c"
