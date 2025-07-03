@@ -786,7 +786,8 @@ can_build_shared="$ac_cv_prog_cc_can_build_shared"
 current_os="$build_os"
 if test "X${current_os}" = X; then
   # If config.guess is unable to guess, that's fine; we'll just fall through the case statement.
-  current_os=`$SHELL $(dirname $0)/config.guess`
+  current_machine=`$SHELL $(dirname $0)/config.guess`
+  current_os=`echo $current_machine | sed 's/^\([^-]*\)-\([^-]*\)-\(.*\)$/\3/'`
 fi
 
 echo "$progname:780: finding the maximum length of command line arguments for OS '$current_os'" 1>&5
