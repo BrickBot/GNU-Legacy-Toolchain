@@ -3,6 +3,7 @@
 SCRIPT_DIR=$(dirname $0)
 
 DEFAULT_NLS_ARG="--disable-nls"
+DEFAULT_LIBIBERTY_INSTALL_ARG="--disable-install-libiberty"
 DEFAULT_TOOLCHAIN_SETS_ARG="--toolchain-sets=gdb5,gcc3"
 DEFAULT_TOOLCHAIN_SETS_NAME_ARG="--toolchain-sets-name=rcx"
 
@@ -28,6 +29,14 @@ for ARG in "$@"; do
       # If disable NLS is already specified, don't double-set the argument
       unset DISABLE_NLS
       ;;
+    --enable-install-libiberty | --enable-install-libiberty=yes)
+      # If enable libiberty install is specified, ensure the disable argument is removed
+      unset DISABLE_NLS
+      ;;
+    --disable-install-libiberty | --enable-install-libiberty=no)
+      # If disable libiberty install is already specified, don't double-set the argument
+      unset DISABLE_NLS
+      ;;
   esac
 done
 
@@ -35,6 +44,7 @@ done
 # Enumerate default H8/300 arguments for configure
 CONFIGURE_ARGS=" \
   $DEFAULT_NLS_ARG \
+  $DEFAULT_LIBIBERTY_INSTALL_ARG \
   $DEFAULT_TOOLCHAIN_SETS_ARG \
   $DEFAULT_TOOLCHAIN_SETS_NAME_ARG \
   $ALL_ARGS"
