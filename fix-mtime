@@ -21,8 +21,8 @@ echo "Preparing to fix timestamps, which could take several minutes."
   cd $SCRIPT_DIR/src-projects && \
   for dir in */ ; do
     echo -n "Processing directory $(basename $dir)..." ;
-    find "$dir" -depth -type f -exec touch -t $STANDARDIZED_TIMESTAMP {} \;
-    #find "$dir" -depth -type f -exec echo "File: {}" \; -exec touch -t $STANDARDIZED_TIMESTAMP {} \;
+    find "$dir" -depth -type f -exec touch --no-create -t $STANDARDIZED_TIMESTAMP {} \;
+    #find "$dir" -depth -type f -exec echo "File: {}" \; -exec touch --no-create -t $STANDARDIZED_TIMESTAMP {} \;
 	echo "done."
   done && \
   echo "Completed setting of file modified timestamps to match a standard reference"
