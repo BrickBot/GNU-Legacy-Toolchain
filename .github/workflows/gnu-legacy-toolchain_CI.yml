@@ -129,7 +129,7 @@ jobs:
       run:  cd $BUILD_DIR  &&  echo "Current working directory is '$PWD'"  &&  make $COMMON_MAKE_ALL_ARGS
 
     - name: Test install the new build to a sysroot
-      run:  cd $BUILD_DIR  &&  echo "Current working directory is '$PWD'"  &&  sudo make install
+      run:  cd $BUILD_DIR  &&  echo "Current working directory is '$PWD'"  &&  make install
 
     # Before archiving, tar the host installation output to preserve file permission
     # c.f. https://github.com/actions/upload-artifact?tab=readme-ov-file#permission-loss
@@ -144,14 +144,15 @@ jobs:
         path: "${{ env.OUTPUT_DIR }}/[${{ matrix.os }}-${{ matrix.platform }}]_${{ matrix.target-system }}-${{ matrix.toolchain-set }}.tar"
 
     - name: Install the new build using Stow
+      if:   runner.os != 'Windows'
       run:  cd $BUILD_DIR  &&  echo "Current working directory is '$PWD'"  &&  sudo make stow
 
     - name: Check always if any version-controlled files were modified
-      if:   always()
+      if:   always() && runner.os != 'Windows'
       run:  git status
 
     - name: Show always any diffs of version-controlled files
-      if:   always()
+      if:   always() && runner.os != 'Windows'
       run:  git diff
 
 
