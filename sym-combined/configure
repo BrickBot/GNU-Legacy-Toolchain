@@ -14,6 +14,9 @@ MAKEFILE_PATH=$BUILD_DIR/Makefile
 
 ARG_DELIM=,
 
+# Defaults
+DEFAULT_PREFIX_ROOT=/opt/stow
+
 # Check if a high-level component should be included.
 # In this case, the function return value is treated as an exit code,
 #    so zero means include and non-zero means exclude.
@@ -59,6 +62,11 @@ for ARG in "${ARGS[@]}" ; do
       # Don't pass this argument along to sub-configures
       unset ARGS[i]
       ;;
+    --toolchain-sets-name=*)
+      toolchain_sets_name="${ARG#*=}"
+      # Don't directly pass this argument along to sub-configures
+      unset ARGS[i]
+      ;;
     --stow-target=*)
       STOW_TARGET=$(realpath -s "${ARG#*=}")
       # Don't pass this argument along to sub-configures
@@ -98,25 +106,27 @@ if [ -n "$target" -a -z "$program_prefix" ] ; then
 fi
 
 # Set the default prefix if one has not been specified
-if [ "$prefix" == "" ] ; then
-  for TOOLCHAIN_SET in $(echo "$ALL_TOOLCHAIN_SETS" | sed -e "s, ,\n,g" | tac)
-  do
-    if isIncluded "$toolchain_sets" "$TOOLCHAIN_SET" ; then
-      if [ "$INSTALL_DIR_NAME" != "" ] ; then
-        INSTALL_DIR_NAME="${INSTALL_DIR_NAME}+${TOOLCHAIN_SET}"
-      else
-        INSTALL_DIR_NAME="${TOOLCHAIN_SET}"
+if [ "$prefix" = "" ] ; then
+  if [ "$toolchain_sets_name" = "" ] ; then
+    for TOOLCHAIN_SET in $(echo "$ALL_TOOLCHAIN_SETS" | sed -e "s, ,\n,g" | tac)
+    do
+      if isIncluded "$toolchain_sets" "$TOOLCHAIN_SET" ; then
+        if [ "$toolchain_sets_name" != "" ] ; then
+          toolchain_sets_name="${toolchain_sets_name}+${TOOLCHAIN_SET}"
+        else
+          toolchain_sets_name="${TOOLCHAIN_SET}"
+        fi
       fi
-    fi
-  done
-  
-  if [ "$INSTALL_DIR_NAME" != "" ] ; then
-    INSTALL_DIR_NAME="${program_prefix}${INSTALL_DIR_NAME}"
-  elif [ "$target" != "" ] ; then
-    INSTALL_DIR_NAME="${program_prefix}gnu-legacy-toolchain"
+    done
   fi
   
-  prefix="/opt/stow/${INSTALL_DIR_NAME}"
+  if [ "$toolchain_sets_name" != "" ] ; then
+    toolchain_sets_name="${program_prefix}${toolchain_sets_name}"
+  elif [ "$target" != "" ] ; then
+    toolchain_sets_name="${program_prefix}gnu-legacy-toolchain"
+  fi
+  
+  prefix="${DEFAULT_PREFIX_ROOT}/${toolchain_sets_name}"
 fi
 
 # Generate Makefile
@@ -165,7 +175,7 @@ do
   for TOOLCHAIN_SET in $ALL_TOOLCHAIN_SETS
   do
     if isIncluded "$toolchain_sets" "$TOOLCHAIN_SET" ; then
-      if [ "$TARGET_TO_GENERATE" == "install" ] ; then
+      if [ "$TARGET_TO_GENERATE" = "install" ] ; then
         # Output target name but setup dependencies as distinct sub-make commands
         # Otherwise, target names will be output with dependencies on a single line
         echo -n -e "\n\t\$(MAKE) "  >> $MAKEFILE_PATH
