@@ -87,9 +87,11 @@ jobs:
       # While a GitHub Action is available, as a reference for those who might be replicating this build locally,
       #   we will install its Debian package and use the script included in this repository
       #   that runs this Git command directly.
-      # uses: chetan/git-restore-mtime-action@v2
-    #- name: Restore source timestamps
-      #uses: chetan/git-restore-mtime-action@v2
+      # NOTE: The "fix-mtime" script takes a really long time under Cygwin,
+      #   so we will bypass that part of the build and execute this action instead.
+    - name: Restore source timestamps
+      if:   runner.os == 'Windows'
+      uses: chetan/git-restore-mtime-action@v2
 
     - name: Update build environment
       if:   runner.os == 'Linux'
@@ -110,7 +112,10 @@ jobs:
       # Fix timestamps (needed to prevent some files from attempting to regenerate and failing during build)
       # While a GitHub Action is available, use the Git command directly
       #   as a reference for those who might be replicating this build locally
+      # NOTE: This step takes a really long time under Cygwin,
+      #   so we will bypass this when on Windows and use the available GitHub action instead.
     - name: Fix source timestamps
+      if:   runner.os != 'Windows'
       run:  ./fix-mtime
 
     - name: Setup the build and output directories
@@ -118,7 +123,7 @@ jobs:
 
     # Run the build steps
     - name: Configure the build
-      run:  cd $BUILD_DIR  &&  echo "Current working directory is '$PWD'"  &&  ../sym-combined/${{ matrix.target-system }}-configure  --prefix=$GITHUB_WORKSPACE/$SYSROOT_DIR  --toolchain-sets=${{ matrix.toolchain-set }}
+      run:  cd $BUILD_DIR  &&  echo "Current working directory is '$PWD'"  &&  ../sym-combined/${{ matrix.target-system }}-configure  --prefix=$(realpath -L -s ../$SYSROOT_DIR)  --toolchain-sets=${{ matrix.toolchain-set }}
 
     - name: Execute the build
       run:  cd $BUILD_DIR  &&  echo "Current working directory is '$PWD'"  &&  make $COMMON_MAKE_ALL_ARGS
