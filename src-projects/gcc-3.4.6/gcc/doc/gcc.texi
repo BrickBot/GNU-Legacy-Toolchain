@@ -92,9 +92,11 @@ Published by:
 @item GNU Press
 @tab Website: www.gnupress.org
 @item a division of the
-@tab General: @tex press@@gnu.org @end tex
+@tab General:
+@tex press@@gnu.org @end tex
 @item Free Software Foundation
-@tab Orders:  @tex sales@@gnu.org @end tex
+@tab Orders:
+@tex sales@@gnu.org @end tex
 @item 59 Temple Place Suite 330
 @tab Tel 617-542-5942
 @item Boston, MA 02111-1307 USA
