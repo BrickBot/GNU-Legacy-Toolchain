@@ -118,13 +118,13 @@ jobs:
 
     # Run the build steps
     - name: Configure the build
-      run:  cd $BUILD_DIR  &&  echo "Current working directory: $PWD"  &&  ../sym-combined/${{ matrix.target-system }}-configure  --prefix=$GITHUB_WORKSPACE/$SYSROOT_DIR  --toolchain-sets=${{ matrix.toolchain-set }}
+      run:  cd $BUILD_DIR  &&  echo "Current working directory is '$PWD'"  &&  ../sym-combined/${{ matrix.target-system }}-configure  --prefix=$GITHUB_WORKSPACE/$SYSROOT_DIR  --toolchain-sets=${{ matrix.toolchain-set }}
 
     - name: Execute the build
-      run:  cd $BUILD_DIR  &&  echo "Current working directory: $PWD"  &&  make $COMMON_MAKE_ALL_ARGS
+      run:  cd $BUILD_DIR  &&  echo "Current working directory is '$PWD'"  &&  make $COMMON_MAKE_ALL_ARGS
 
     - name: Test install the new build to a sysroot
-      run:  cd $BUILD_DIR  &&  echo "Current working directory: $PWD"  &&  sudo make install
+      run:  cd $BUILD_DIR  &&  echo "Current working directory is '$PWD'"  &&  sudo make install
 
     # Before archiving, tar the host installation output to preserve file permission
     # c.f. https://github.com/actions/upload-artifact?tab=readme-ov-file#permission-loss
@@ -135,11 +135,11 @@ jobs:
     - name: Archive the host installation snapshot tar file
       uses: actions/upload-artifact@v4
       with:
-        name: [${{ matrix.os }}-${{ matrix.platform }}]_${{ matrix.target-system }}-${{ matrix.toolchain-set }}_${{ github.run_id }}.${{ github.run_number }}.${{ github.run_attempt }}
-        path: ${{ env.OUTPUT_DIR }}/[${{ matrix.os }}-${{ matrix.platform }}]_${{ matrix.target-system }}-${{ matrix.toolchain-set }}.tar
+        name: "[${{ matrix.os }}-${{ matrix.platform }}]_${{ matrix.target-system }}-${{ matrix.toolchain-set }}_${{ github.run_id }}.${{ github.run_number }}.${{ github.run_attempt }}"
+        path: "${{ env.OUTPUT_DIR }}/[${{ matrix.os }}-${{ matrix.platform }}]_${{ matrix.target-system }}-${{ matrix.toolchain-set }}.tar"
 
     - name: Install the new build using Stow
-      run:  cd $BUILD_DIR  &&  echo "Current working directory: $PWD"  &&  sudo make stow
+      run:  cd $BUILD_DIR  &&  echo "Current working directory is '$PWD'"  &&  sudo make stow
 
     - name: Check always if any version-controlled files were modified
       if:   always()
