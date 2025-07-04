@@ -786,11 +786,13 @@ can_build_shared="$ac_cv_prog_cc_can_build_shared"
 current_os="$build_os"
 if test "X${current_os}" = X; then
   # If config.guess is unable to guess, that's fine; we'll just fall through the case statement.
+  echo "$progname:789: running config.guess to determine the current machine" 1>&5
+  echo "running config.guess to determine the current machine" 1>&6
   current_machine=`$SHELL $(dirname $0)/config.guess`
   current_os=`echo $current_machine | sed 's/^\([^-]*\)-\([^-]*\)-\(.*\)$/\3/'`
 fi
 
-echo "$progname:780: finding the maximum length of command line arguments for OS '$current_os'" 1>&5
+echo "$progname:795: finding the maximum length of command line arguments for OS '$current_os'" 1>&5
 echo $ac_n "finding the maximum length of command line arguments for OS '$current_os'... $ac_c" 1>&6
 if test "${lt_cv_sys_max_cmd_len+set}" = set; then
   echo $ac_n "(cached) $ac_c" 1>&6
@@ -848,7 +850,7 @@ else
 
 fi
 
-echo "$progname:@lineno@: result: $lt_cv_sys_max_cmd_len" 1>&5
+echo "$progname:853: result: $lt_cv_sys_max_cmd_len" 1>&5
 echo "${ac_t}$lt_cv_sys_max_cmd_len" 1>&6
 
 if test -n $lt_cv_sys_max_cmd_len ; then
@@ -931,7 +933,7 @@ if test "$with_gcc" = yes; then
   echo $lt_simple_compile_test_code > conftest.$ac_ext
   save_CFLAGS="$CFLAGS"
   CFLAGS="$CFLAGS -fno-rtti -fno-exceptions -c conftest.$ac_ext"
-  echo "$progname:887: checking if $compiler supports -fno-rtti -fno-exceptions" >&5
+  echo "$progname:936: checking if $compiler supports -fno-rtti -fno-exceptions" >&5
   if { (eval echo $progname:888: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>conftest.err; } && test -s conftest.$objext; then
 
     # The compiler can only warn and ignore the option if not recognized
@@ -1539,11 +1541,11 @@ void nm_test_func(){}
 int main(){nm_test_var='a';nm_test_func();return(0);}
 EOF
 
-  echo "$progname:1431: checking if global_symbol_pipe works" >&5
-  if { (eval echo $progname:1432: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; } && test -s conftest.$objext; then
+  echo "$progname:1544: checking if global_symbol_pipe works" >&5
+  if { (eval echo $progname:1545: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; } && test -s conftest.$objext; then
     # Now try to grab the symbols.
     nlist=conftest.nm
-    if { echo "$progname:1435: eval \"$NM conftest.$objext | $global_symbol_pipe > $nlist\"" >&5; eval "$NM conftest.$objext | $global_symbol_pipe > $nlist 2>&5"; } && test -s "$nlist"; then
+    if { echo "$progname:1548: eval \"$NM conftest.$objext | $global_symbol_pipe > $nlist\"" >&5; eval "$NM conftest.$objext | $global_symbol_pipe > $nlist 2>&5"; } && test -s "$nlist"; then
 
       # Try sorting and uniquifying the output.
       if sort "$nlist" | uniq > "$nlist"T; then
@@ -1595,7 +1597,7 @@ EOF
 	  save_CFLAGS="$CFLAGS"
 	  LIBS="conftstm.$objext"
 	  CFLAGS="$CFLAGS$no_builtin_flag"
-	  if { (eval echo $progname:1487: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest; then
+	  if { (eval echo $progname:1600: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest; then
 	    pipe_works=yes
 	  else
 	    echo "$progname: failed program was:" >&5
