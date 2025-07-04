@@ -2647,6 +2647,11 @@ doc: $(BUILD_INFO) $(GENERATED_MANPAGES) gccbug
 INFOFILES = doc/cpp.info doc/gcc.info doc/gccint.info \
             doc/gccinstall.info doc/cppinternals.info
 
+# If BUILD_INFO is set to no-info by configure, we still want to check
+# 'info' dependencies even if the build rules are no-ops because
+# BUILD_INFO != info (see %.info rule)
+no-info: info
+
 info: $(INFOFILES) lang.info @GENINSRC@ srcinfo lang.srcinfo
 
 srcinfo: $(INFOFILES)
