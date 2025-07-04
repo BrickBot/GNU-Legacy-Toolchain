@@ -284,6 +284,5 @@ DISTCLEANFILES = bfd.?? bfd.??? bfd.h libbfd.h libcoff.h texput.log
 
 MAINTAINERCLEANFILES = $(DOCFILES)
 
-# We want install to imply install-info as per GNU standards, despite the
-# cygnus option.
-install: install-info
+# We do NOT want install to imply install-info, despite GNU standards.
+install:

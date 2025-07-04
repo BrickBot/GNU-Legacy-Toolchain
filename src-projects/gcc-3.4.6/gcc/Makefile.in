@@ -2870,7 +2870,7 @@ maintainer-clean:
 # Install the driver last so that the window when things are
 # broken is small.
 install: install-common $(INSTALL_HEADERS) $(INSTALL_LIBGCC) \
-    install-cpp install-man install-info install-@POSUB@ \
+    install-cpp install-man install-@POSUB@ \
     lang.install-normal install-driver
 
 # Handle cpp installation.
@@ -2892,6 +2892,8 @@ installdirs:
 	$(SHELL) ${srcdir}/mkinstalldirs $(DESTDIR)$(infodir)
 	$(SHELL) ${srcdir}/mkinstalldirs $(DESTDIR)$(slibdir)
 	$(SHELL) ${srcdir}/mkinstalldirs $(DESTDIR)$(man1dir)
+
+installdirs-man7:
 	$(SHELL) ${srcdir}/mkinstalldirs $(DESTDIR)$(man7dir)
 
 # Install the compiler executables built during cross compilation.
@@ -2964,7 +2966,7 @@ install-driver: installdirs xgcc$(exeext)
 # Install the info files.
 # $(INSTALL_DATA) might be a relative pathname, so we can't cd into srcdir
 # to do the install.
-install-info:: doc installdirs \
+install-info:: doc installdirs install-man7 \
 	$(DESTDIR)$(infodir)/cpp.info \
 	$(DESTDIR)$(infodir)/gcc.info \
 	$(DESTDIR)$(infodir)/cppinternals.info \
@@ -2990,7 +2992,9 @@ $(DESTDIR)$(infodir)/%.info: doc/%.info installdirs
 install-man: installdirs lang.install-man \
 	$(DESTDIR)$(man1dir)/$(GCC_INSTALL_NAME)$(man1ext) \
 	$(DESTDIR)$(man1dir)/$(CPP_INSTALL_NAME)$(man1ext) \
-	$(DESTDIR)$(man1dir)/$(GCOV_INSTALL_NAME)$(man1ext) \
+	$(DESTDIR)$(man1dir)/$(GCOV_INSTALL_NAME)$(man1ext)
+
+install-man7: installdirs-man7 \
 	$(DESTDIR)$(man7dir)/fsf-funding$(man7ext) \
 	$(DESTDIR)$(man7dir)/gfdl$(man7ext) \
 	$(DESTDIR)$(man7dir)/gpl$(man7ext)

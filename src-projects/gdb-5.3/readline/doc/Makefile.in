@@ -152,7 +152,10 @@ maintainer-clean: clean
 installdirs:	$(topdir)/support/mkdirs
 	-$(SHELL) $(topdir)/support/mkdirs $(infodir) $(man3dir)
 
-install:	installdirs
+# We do NOT want install to imply install-info, despite GNU standards.
+install:
+
+install-info:	installdirs
 	if test -f readline.info; then \
 		${INSTALL_DATA} readline.info $(infodir)/readline.info; \
 	else \
