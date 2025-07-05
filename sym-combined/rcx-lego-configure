@@ -7,6 +7,7 @@ DEFAULT_LIBIBERTY_INSTALL_ARG="--disable-install-libiberty"
 DEFAULT_LIBMMALLOC_INSTALL_ARG="--disable-install-libmmalloc"
 DEFAULT_TOOLCHAIN_SETS_ARG="--toolchain-sets=gdb5,gcc3"
 DEFAULT_TOOLCHAIN_SETS_NAME_ARG="--toolchain-sets-name=rcx"
+DEFAULT_PROGRAM_SUFFIX_CONFIG_ARG="--without-program-suffix"
 
 
 # Process any command-line arguments
@@ -46,6 +47,14 @@ for ARG in "$@"; do
       # If disable libmmalloc install is already specified, don't double-set the argument
       unset DEFAULT_LIBMMALLOC_INSTALL_ARG
       ;;
+    --with-program-suffix)
+      # If a program suffix is specified, ensure the default "without" argument is removed
+      unset DEFAULT_PROGRAM_SUFFIX_CONFIG_ARG
+      ;;
+    --without-program-suffix)
+      # If without program suffix is already specified, don't double-set the argument
+      unset DEFAULT_PROGRAM_SUFFIX_CONFIG_ARG
+      ;;
   esac
 done
 
@@ -57,6 +66,7 @@ CONFIGURE_ARGS=" \
   $DEFAULT_LIBMMALLOC_INSTALL_ARG \
   $DEFAULT_TOOLCHAIN_SETS_ARG \
   $DEFAULT_TOOLCHAIN_SETS_NAME_ARG \
+  $DEFAULT_PROGRAM_SUFFIX_CONFIG_ARG \
   $ALL_ARGS"
 
 # For any quoted substrings in variables (such as $ALL_ARGS might have)

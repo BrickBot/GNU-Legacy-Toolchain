@@ -46,6 +46,14 @@ for ARG in "${ARGS[@]}" ; do
       program_prefix="${ARG#*=}"
       # We only need to read this value (if it was provided)
       ;;
+    --with-program-suffix)
+      program_suffix_arg="--program-suffix"
+      unset ARGS[i]
+      ;;
+    --without-program-suffix)
+      program_suffix_arg=""
+      unset ARGS[i]
+      ;;
     --target=*)
       target="${ARG#*=}"
       # We only need to read this value (if it was provided)
@@ -229,7 +237,8 @@ if isIncluded "$toolchain_sets" "GDB5" ; then
   toolchain_set_id=gdb5
   echo "================="
   echo "CONFIGURE: GDB v5"
-  GCC3_COMMAND="CFLAGS='-g -O2 -std=gnu89'  $COMBINED_SRC_DIR/${toolchain_set_id}/configure $ARGS_TO_PASS --disable-werror --prefix=$prefix --program-suffix=-5 "
+  if [ -n "$program_suffix_arg" ] ; then gdb5_suffix_arg="${program_suffix_arg}=-5" ; fi
+  GCC3_COMMAND="CFLAGS='-g -O2 -std=gnu89'  $COMBINED_SRC_DIR/${toolchain_set_id}/configure $ARGS_TO_PASS --disable-werror --prefix=$prefix $gdb5_suffix_arg "
   echo "COMMAND: $GCC3_COMMAND"
   mkdir -p "${BUILD_DIR}/${toolchain_set_id}" && pushd "${BUILD_DIR}/${toolchain_set_id}" > /dev/null
   eval "$GCC3_COMMAND" || exit 1
@@ -244,7 +253,8 @@ if isIncluded "$toolchain_sets" "BINUTILS216" ; then
   toolchain_set_id=binutils216
   echo "================="
   echo "CONFIGURE: BinUtils v2.16"
-  BINUTILS216_COMMAND="CFLAGS='-g -O2 -std=gnu89'  $COMBINED_SRC_DIR/${toolchain_set_id}/configure $ARGS_TO_PASS --prefix=$prefix --program-suffix=-2.16.1 "
+  if [ -n "$program_suffix_arg" ] ; then binutils216_suffix_arg="${program_suffix_arg}=-2.16.1" ; fi
+  BINUTILS216_COMMAND="CFLAGS='-g -O2 -std=gnu89'  $COMBINED_SRC_DIR/${toolchain_set_id}/configure $ARGS_TO_PASS --prefix=$prefix $binutils216_suffix_arg "
   echo "COMMAND: $BINUTILS216_COMMAND"
   mkdir -p "${BUILD_DIR}/${toolchain_set_id}" && pushd "${BUILD_DIR}/${toolchain_set_id}" > /dev/null
   eval "$BINUTILS216_COMMAND" || exit 1
@@ -262,7 +272,8 @@ if isIncluded "$toolchain_sets" "GCC3" ; then
   toolchain_set_id=gcc3
   echo "================="
   echo "CONFIGURE: GCC v3"
-  GCC3_COMMAND="CFLAGS='-g -O2 -std=gnu89'  $COMBINED_SRC_DIR/${toolchain_set_id}/configure --enable-languages=$gcc3_languages $GCC3_FLAGS_IF_GDB5 $ARGS_TO_PASS --disable-werror --prefix=$prefix --program-suffix=-3 "
+  if [ -n "$program_suffix_arg" ] ; then gcc3_suffix_arg="${program_suffix_arg}=-3" ; fi
+  GCC3_COMMAND="CFLAGS='-g -O2 -std=gnu89'  $COMBINED_SRC_DIR/${toolchain_set_id}/configure --enable-languages=$gcc3_languages $GCC3_FLAGS_IF_GDB5 $ARGS_TO_PASS --disable-werror --prefix=$prefix $gcc3_suffix_arg "
   echo "COMMAND: $GCC3_COMMAND"
   mkdir -p "${BUILD_DIR}/${toolchain_set_id}" && pushd "${BUILD_DIR}/${toolchain_set_id}" > /dev/null
   eval "$GCC3_COMMAND" || exit 1
@@ -273,7 +284,8 @@ if isIncluded "$toolchain_sets" "GCC44" ; then
   toolchain_set_id=gcc44
   echo "==================="
   echo "CONFIGURE: GCC v4.4"
-  GCC44_COMMAND="$COMBINED_SRC_DIR/${toolchain_set_id}/configure  CFLAGS='-g -O2 -std=gnu89'  --enable-languages=$gcc44_languages $FLAGS_IF_GDB5 $ARGS_TO_PASS --disable-werror --enable-obsolete --prefix=$prefix --program-suffix=-4.4 "
+  if [ -n "$program_suffix_arg" ] ; then gcc44_suffix_arg="${program_suffix_arg}=-4.4" ; fi
+  GCC44_COMMAND="$COMBINED_SRC_DIR/${toolchain_set_id}/configure  CFLAGS='-g -O2 -std=gnu89'  --enable-languages=$gcc44_languages $FLAGS_IF_GDB5 $ARGS_TO_PASS --disable-werror --enable-obsolete --prefix=$prefix $gcc44_suffix_arg "
   echo "COMMAND: $GCC44_COMMAND"
   mkdir -p "${BUILD_DIR}/${toolchain_set_id}" && pushd "${BUILD_DIR}/${toolchain_set_id}" > /dev/null
   eval "$GCC44_COMMAND" || exit 1

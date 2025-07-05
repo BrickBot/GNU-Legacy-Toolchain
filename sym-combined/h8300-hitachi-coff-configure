@@ -3,6 +3,7 @@
 SCRIPT_DIR=$(dirname $0)
 
 DEFAULT_TOOLCHAIN_SETS_ARG="--toolchain-sets=gcc3"
+DEFAULT_PROGRAM_SUFFIX_CONFIG_ARG="--with-program-suffix"
 
 # NLS has issues building on Cygwin.
 # It’s non-critical, so we will skip it when running under Cygwin.
@@ -27,6 +28,14 @@ for ARG in "$@"; do
     --disable-nls | --enable-nls=no)
       # If disable NLS is already specified, don't double-set the argument
       unset DISABLE_NLS
+      ;;
+    --with-program-suffix)
+      # If a program suffix is specified, don't double-set the argument
+      unset DEFAULT_PROGRAM_SUFFIX_CONFIG_ARG
+      ;;
+    --without-program-suffix)
+      # If without program suffix is already specified, ensure the default "with" argument is removed
+      unset DEFAULT_PROGRAM_SUFFIX_CONFIG_ARG
       ;;
   esac
 done
