@@ -1681,9 +1681,8 @@ install-data-local:
 	  $(INSTALL_DATA) $$f $(DESTDIR)$(scriptdir)/$$f ; \
 	done
 
-# We want install to imply install-info as per GNU standards, despite the
-# cygnus option.
-install: install-info
+# We do NOT want install to imply install-info, despite GNU standards.
+install:
 
 # Stuff that should be included in a distribution.  The diststuff
 # target is run by the taz target in ../Makefile.in.

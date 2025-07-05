@@ -138,17 +138,25 @@ pascal.maybe_rts:
 pascal.install_rts-config.inc:
 pascal.maybe_utils:
 pascal.maybe_install-utils:
+pascal.maybe_install-gpc-run:
+pascal.maybe_install-gpc-run-man:
 else
 pascal.install_rts-config.inc: pascal.do_install_rts-config.inc
 pascal.maybe_rts: pascal.rts pascal.maybe_utils
 ifneq (,$(shell $(PC) --version 2>/dev/null))
 pascal.maybe_utils: pascal.utils
 pascal.maybe_install-utils: pascal.install-utils
+pascal.maybe_install-gpc-run: pascal.install-gpc-run
+pascal.maybe_install-gpc-run-man: pascal.install-gpc-run-man
 else
 pascal.maybe_utils:
 	$(warning WARNING: Pascal Compiler $(PC) not found; skipping build of GPC utils)
 pascal.maybe_install-utils:
 	$(warning WARNING: Pascal Compiler "$(PC)" not found; skipping install of GPC utils)
+pascal.maybe_install-gpc-run:
+	$(warning WARNING: Pascal Compiler "$(PC)" not found; skipping install of gpc-run)
+pascal.maybe_install-gpc-run-man:
+	$(warning WARNING: Pascal Compiler "$(PC)" not found; skipping install of gpc-run manual)
 endif
 endif
 
@@ -979,16 +987,22 @@ pascal.install-info-man-dirs:
 
 pascal.install-dir:
 	@echo "Starting: pascal.install-dir"
-	for directory in $(prefix) $(bindir) $(unitsubdir) $(libsubdir)/include $(LIBEXECSUBDIR) \
-	                 $(infodir) $(p_inst_docdir) $(p_inst_demodir) $(p_inst_docdemodir) $(man1dir); do \
+	for directory in $(prefix) $(bindir) $(unitsubdir) $(libsubdir)/include $(LIBEXECSUBDIR); do \
 	  $(srcdir)/p/script/mkdir-p -m a+rx $(DESTDIR)$$directory || exit 1; \
 	done
 	@echo "Finished: pascal.install-dir"
 
+pascal.install-doc-dir:
+	@echo "Starting: pascal.install-doc-dir"
+	for directory in $(infodir) $(p_inst_docdir) $(p_inst_demodir) $(p_inst_docdemodir) $(man1dir); do \
+	  $(srcdir)/p/script/mkdir-p -m a+rx $(DESTDIR)$$directory || exit 1; \
+	done
+	@echo "Finished: pascal.install-doc-dir"
+
 # Install the driver program as $(target)-gpc
 # and also as either gpc (if native) or $(tooldir)/bin/gpc.
-pascal.install-common: pascal.install-dir xgpc$(exeext) gpc-run \
-                       pascal.install-units
+pascal.install-common: pascal.install-dir xgpc$(exeext) pascal.install-units \
+                       pascal.maybe_install-gpc-run
 	@echo "Starting: pascal.install-common"
 	if [ -f gpc-cross$(exeext) ]; then \
 	  rm -f $(DESTDIR)$(bindir)/$(GPC_CROSS_NAME)$(exeext); \
@@ -999,10 +1013,14 @@ pascal.install-common: pascal.install-dir xgpc$(exeext) gpc-run \
 	  $(INSTALL_PROGRAM) xgpc$(exeext) $(DESTDIR)$(bindir)/$(GPC_INSTALL_NAME)$(exeext) && \
 	  chmod a+x $(DESTDIR)$(bindir)/$(GPC_INSTALL_NAME)$(exeext); \
 	fi
+	@echo "Finished: pascal.install-common"
+
+pascal.install-gpc-run: gpc-run
+	@echo "Starting: pascal.install-gpc-run"
 	rm -f $(DESTDIR)$(bindir)/gpc-run
 	$(INSTALL_PROGRAM) gpc-run $(DESTDIR)$(bindir)/gpc-run
 	chmod a+x $(DESTDIR)$(bindir)/gpc-run
-	@echo "Finished: pascal.install-common"
+	@echo "Finished: pascal.install-gpc-run"
 
 pascal.install-utils: pascal.utils
 	@echo "Starting: pascal.install-utils"
@@ -1064,7 +1082,7 @@ pascal.install-units: pascal.install-dir $(srcdir)/p/units/crtc.h $(RTSSRCDIR)/g
 # in `rm -f $(p_inst_docdemodir)/*' or `chmod a-x $(p_inst_docdemodir)/*',
 # probably also (soon) in `cd ./p/docdemos && echo *'
 pascal.install-doc: $(PASCAL_INSTALL_DOC)
-pascal.real-install-doc: pascal.install-dir $(srcdir)/p/README \
+pascal.real-install-doc: pascal.install-doc-dir $(srcdir)/p/README \
  $(srcdir)/p/NEWS $(srcdir)/p/FAQ $(srcdir)/p/AUTHORS \
  $(srcdir)/p/COPYING $(srcdir)/p/COPYING.LIB $(srcdir)/p/COPYING.DEMO $(srcdir)/p/test/README pascal.docdemos
 	@echo "Starting: pascal.real-install-doc"
@@ -1092,7 +1110,7 @@ pascal.real-install-doc: pascal.install-dir $(srcdir)/p/README \
 	fi
 	@echo "Finished: pascal.real-install-doc"
 
-pascal.install-info: pascal.install-info-man-dirs pascal.info
+install-info:: pascal.install-doc pascal.install-info-man-dirs pascal.info
 	@echo "Starting: pascal.install-info"
 	rm -f $(DESTDIR)$(infodir)/gpc.info* $(DESTDIR)$(infodir)/gpcs.info* $(DESTDIR)$(infodir)/gpcs-de.info* $(DESTDIR)$(infodir)/gpcs-hr.info* $(DESTDIR)$(infodir)/gpcs-es.info*
 	for f in `cd $(srcdir)/p/doc/info && echo gpc.info* gpcs*.info*`; do \
@@ -1101,8 +1119,10 @@ pascal.install-info: pascal.install-info-man-dirs pascal.info
 	chmod a-x $(DESTDIR)$(infodir)/gpc.info* $(DESTDIR)$(infodir)/gpcs.info* $(DESTDIR)$(infodir)/gpcs-de.info* $(DESTDIR)$(infodir)/gpcs-hr.info* $(DESTDIR)$(infodir)/gpcs-es.info*
 	@echo "Finished: pascal.install-info"
 
-pascal.install-man: pascal.install-info-man-dirs $(srcdir)/p/doc/en/gpc.1 $(srcdir)/p/doc/generated/gpc-run.1
-	@echo "Starting: pascal.install-man"
+pascal.install-man: pascal.install-gpc-man pascal.maybe_install-gpc-run-man
+
+pascal.install-gpc-man: pascal.install-info-man-dirs $(srcdir)/p/doc/en/gpc.1
+	@echo "Starting: pascal.install-gpc-man"
 	-if [ -f gpc1$(exeext) ]; then \
 	  if [ -f gpc-cross$(exeext) ]; then \
 	    rm -f $(DESTDIR)$(man1dir)/$(GPC_CROSS_NAME)$(man1ext); \
@@ -1116,10 +1136,14 @@ pascal.install-man: pascal.install-info-man-dirs $(srcdir)/p/doc/en/gpc.1 $(srcd
 	else \
 	  true; \
 	fi
+	@echo "Finished: pascal.install-gpc-man"
+
+pascal.install-gpc-run-man: pascal.install-info-man-dirs $(srcdir)/p/doc/generated/gpc-run.1
+	@echo "Starting: pascal.install-gpc-run-man"
 	rm -f $(DESTDIR)$(man1dir)/gpc-run$(man1ext)
 	$(INSTALL_DATA) $(srcdir)/p/doc/generated/gpc-run.1 $(DESTDIR)$(man1dir)/gpc-run$(man1ext)
 	chmod a-x $(DESTDIR)$(man1dir)/gpc-run$(man1ext)
-	@echo "Finished: pascal.install-man"
+	@echo "Finished: pascal.install-gpc-run-man"
 
 pascal.install-hr: pascal.install-info-hr pascal.install-man-hr
 
@@ -1185,8 +1209,8 @@ pascal.install-compiler: pascal.install-dir pascal
 	@echo "Finished: pascal.install-compiler"
 
 pascal.install-normal: pascal.install-common pascal.install-compiler$(GPC_GCC_34_) \
- pascal.maybe_install-utils pascal.install-lib pascal.install-man \
- pascal.install-info pascal.install-units pascal.install-doc
+ pascal.maybe_install-utils pascal.install-lib pascal.install-gpc-man \
+ pascal.maybe_install-gpc-run-man pascal.install-units
 	@echo "Finished: pascal.install-normal"
 
 # This target will install GPC into an existing GCC installation,

@@ -665,7 +665,8 @@ info: info-am
 
 info-am: $(INFO_DEPS)
 
-install-data-am: install-info-am install-man
+# We do NOT want install / install-data-am to imply install-info / install-info-am, despite GNU standards.
+install-data-am: install-man
 
 install-exec-am: install-binPROGRAMS
 
@@ -697,6 +698,7 @@ install-info-am: $(INFO_DEPS)
 	    install-info --info-dir=$(DESTDIR)$(infodir) $(DESTDIR)$(infodir)/$$relfile || :;\
 	  done; \
 	else : ; fi
+
 install-man: install-man1
 
 installcheck-am:

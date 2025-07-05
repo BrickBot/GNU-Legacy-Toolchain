@@ -195,7 +195,10 @@ installdirs:	$(topdir)/support/mkdirs
 		$(SHELL) $(topdir)/support/mkdirs $(DESTDIR)$(htmldir) ; \
 	fi
 
-install:	installdirs
+# We do NOT want install to imply install-info, despite GNU standards.
+install:
+
+install-info:	installdirs
 	if test -f readline.info; then \
 		${INSTALL_DATA} readline.info $(DESTDIR)$(infodir)/readline.info; \
 	else \
