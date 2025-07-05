@@ -26,7 +26,7 @@ but the basic sequence is as follows:
 1. Have a working Linux, Unix, WSL, or Cygwin environment with Bash shell support (currently untested under Mac)
 2. Install build dependencies
    1. See the [Continuous Integration workflow](.github/workflows) for a current dependency list
-   2. If you platform/distro does not include a package for git-restore-mtime ([like Debian does](https://packages.debian.org/search?keywords=git-restore-mtime&searchon=names&suite=stable&section=all)) _and_ you will be cloning from git, install this manually (c.f. the [git-tools project page](https://github.com/MestreLion/git-tools) for both distro package names and manual install instructions).
+   2. If you platform/distro does not include a package for git-restore-mtime ([like Debian does](https://packages.debian.org/search?keywords=git-restore-mtime&searchon=names&suite=stable&section=all)) _and_ you will be cloning from git, install this manually (c.f. the [git-tools project page](https://github.com/MestreLion/git-tools) for both various distro-specific package names and manual install instructions).
 3. Obtain a copy of the source via _either_ of the following means:
    1. Clone from GitHub:  `git clone [--branch <name of branch or tag>] https://github.com/BrickBot/GNU-Legacy-Toolchain.git`  –or–
    2. Download and extract a source archive, such as from one of the [releases](releases)
