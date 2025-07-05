@@ -23,16 +23,20 @@ Quick Start Build Guide
 Build instructions are largely the same as those for GCC, with a few additional steps and options.
 A working example can be seen in the [Continuous Integration workflow](.github/workflows),
 but the basic sequence is as follows:
-1. Have a working Linux, Unix, or WSL environment with Bash shell support (currently untested under Mac or Cygwin)
+1. Have a working Linux, Unix, WSL, or Cygwin environment with Bash shell support (currently untested under Mac)
 2. Install build dependencies
    1. See the [Continuous Integration workflow](.github/workflows) for a current dependency list
    2. If you platform/distro does not include a package for git-restore-mtime ([like Debian does](https://packages.debian.org/search?keywords=git-restore-mtime&searchon=names&suite=stable&section=all)) _and_ you will be cloning from git, install this manually (c.f. the [git-tools project page](https://github.com/MestreLion/git-tools) for both distro package names and manual install instructions).
 3. Obtain a copy of the source via _either_ of the following means:
    1. Clone from GitHub:  `git clone [--branch <name of branch or tag>] https://github.com/BrickBot/GNU-Legacy-Toolchain.git`  –or–
    2. Download and extract a source archive, such as from one of the [releases](releases)
-4. Fix source file timestamps (this should typically only need to be executed once after obtaining the source)
-   1. Execute the script `fix-mtime` that is found in the root of the source tree
-   2. Note that this could take several minutes to complete, depending on the speed of the system
+4. Fix source file timestamps
+   1. If you have downloaded the source \*.tar.gz and extracted via a command like `tar --directory=<destination> --extract --file=<source>.tar.gz`, then the embedded timestamps should be adequate and further action in this regard should be necessary.
+   2. _However_, if you clone the source from Git or obtain via other similar means, you will need to execute the script `fix-mtime` that is found in the root of the source tree.
+   3. **HIGHLY IMPORTANT NOTES**:
+	  1. This script could take several minutes to complete, depending on the speed of the system and file access times.
+	  2. This will potentially to be rerun after switching branches—if a build unexpectedly fails after switching branches, try rerunning.  
+      3. If the disk space is available, consider using `git worktree` instead of switching among Git branches.
 5. Create a folder for building that is _outside_ the source tree
 6. From that build folder, run either `configure` or one of the following use-case-specific wrapper helpers:
    1. `h8300-hitachi-coff-configure`:  For use with COFF targets for the Hitachi H8/300, which defaults to an integrated toolchain based on GCC v3.
@@ -43,6 +47,14 @@ but the basic sequence is as follows:
    1. By default, the install will be to a separate folder from which [Stow](https://www.gnu.org/software/stow/) can then be used to link the files into your system installation.
    2. In this manner, [Stow](https://www.gnu.org/software/stow/) facilitates a cleaner and easier way to manage installs of locally-built software.
 9. Run `make stow` to then link the files into your system installation.
+
+In an explicit, intentional deviation from GNU standards, `install` targets have
+been modified to remove `install-info` targets as prerequisites.  The files
+installed by these `install-info` targets conflict with other, newer files and
+generally only cause problems if included as part of a regular install.  Thus,
+these files are excluded (which also simplifies packaging work).
+
+If wishing to install these files, `make install-info` can still be executed separately.
 
 
 Advanced Options for Configure

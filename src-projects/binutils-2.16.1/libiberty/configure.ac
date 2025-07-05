@@ -532,7 +532,9 @@ libiberty_AC_FUNC_STRNCMP
 
 # Install a library built with a cross compiler in $(tooldir) rather
 # than $(libdir).
-if test -z "${with_cross_host}"; then
+if test "${enable_install_libiberty}" = "no" ; then
+  INSTALL_DEST=none
+elif test -z "${with_cross_host}"; then
   INSTALL_DEST=libdir
 else
   INSTALL_DEST=tooldir

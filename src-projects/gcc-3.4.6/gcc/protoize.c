@@ -37,6 +37,11 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 #undef abort
 #include "version.h"
 
+/* On Cygwin, include io.h for the sake of setmode.  */
+#if (defined(O_BINARY) && defined(__CYGWIN__))
+#include <io.h>
+#endif
+
 /* Include getopt.h for the sake of getopt_long.  */
 #include "getopt.h"
 

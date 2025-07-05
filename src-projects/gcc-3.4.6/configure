@@ -1255,6 +1255,12 @@ case "${target}" in
     ;;
   h8300*-*-*)
     noconfigdirs="$noconfigdirs target-libgloss ${libgcj} target-libf2c"
+    case "${host}" in
+      *-*-cygwin*)
+        # libstdc++-v3 does not build under Cygwin  
+        noconfigdirs="$noconfigdirs target-libstdc++-v3 "
+	    ;;
+    esac
     ;;
   h8500-*-*)
     noconfigdirs="$noconfigdirs target-libstdc++-v3 target-libgloss ${libgcj} target-libf2c"
@@ -2207,7 +2213,7 @@ else
   GCC_FOR_TARGET="\$(USUAL_GCC_FOR_TARGET)"
   BUILD_PREFIX=
   BUILD_PREFIX_1=loser-
-  MAKEINFO="\$(USUAL_MAKEINFO)"
+  MAKEINFO=${MAKEINFO-"\$(USUAL_MAKEINFO)"}
   LEX="\$(USUAL_LEX)"
   YACC="\$(USUAL_YACC)"
 

@@ -23625,6 +23625,7 @@ configure-gcc:
 	WINDRES="$(WINDRES)"; export WINDRES; \
 	OBJCOPY="$(OBJCOPY)"; export OBJCOPY; \
 	OBJDUMP="$(OBJDUMP)"; export OBJDUMP; \
+	MAKEINFO="$(MAKEINFO)"; export MAKEINFO; \
 	SET_GCC_LIB_PATH_CMD="@SET_GCC_LIB_PATH@"; export SET_GCC_LIB_PATH_CMD; \
 	@SET_GCC_LIB_PATH@ \
 	echo Configuring in gcc; \

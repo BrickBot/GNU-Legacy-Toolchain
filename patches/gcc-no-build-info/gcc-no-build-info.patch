@@ -1,0 +1,89 @@
+From 7ec6ff8ead24eb7c07d011371347cf12db11faf5 Mon Sep 17 00:00:00 2001
+From: Christophe Lyon <christophe.lyon@linaro.org>
+Date: Sat, 10 Feb 2024 21:17:08 +0000
+Subject: [PATCH v3] gcc/Makefile.in: Always check info dependencies
+
+BUILD_INFO is currently a byproduct of checking makeinfo
+presence/version.  INSTALL_INFO used to be defined similarly, but was
+removed in 2000 (!) by commit 17db658241d18cf6db59d31bc2d6eac96e9257df
+(svn r38141).
+
+In order to save build time, our CI overrides MAKEINFO=echo, which
+works when invoking 'make all' but not for 'make install' in case some
+info files need an update.
+
+I noticed this while testing a patch posted on the gcc-patches list,
+leading to an error at 'make install' time after updating tm.texi (the
+build reported 'new text' in tm.texi and stopped).  This is because
+'install' depends on 'install-info', which depends on
+$(DESTDIR)$(infodir)/gccint.info (among others).
+
+As discussed, it is better to detect this problem during 'make all'
+rather than 'make install', and we still want to detect it even if
+makeinfo is not available.
+
+This patch makes configure set BUILD_INFO=no-info in case makeinfo is
+missing/too old, which effectively makes the build rules no-ops
+(x$(BUILD_INFO) != xinfo), and updates Makefile.in so that 'info'
+dependencies are still checked.
+
+2024-02-10  Christophe Lyon  <christophe.lyon@linaro.org>
+
+	gcc/
+	* Makefile.in: Add no-info dependency.
+	* configure.ac: Set BUILD_INFO=no-info if makeinfo is not
+	available.
+	* configure: Regenerate.
+---
+ gcc/Makefile.in  | 7 +++++++
+ gcc/configure    | 2 +-
+ gcc/configure.ac | 2 +-
+ 3 files changed, 9 insertions(+), 2 deletions(-)
+
+diff --git a/gcc/Makefile.in b/gcc/Makefile.in
+index 95caa54a52b..a74761b7ab3 100644
+--- a/gcc/Makefile.in
++++ b/gcc/Makefile.in
+@@ -3480,6 +3480,13 @@ install-no-fixedincludes:
+ 
+ doc: $(BUILD_INFO) $(GENERATED_MANPAGES)
+ 
++# If BUILD_INFO is set to no-info by configure, we still want to check
++# 'info' dependencies even the build rules are no-ops because
++# BUILD_INFO != info (see %.info rule)
++ifeq ($(BUILD_INFO),no-info)
++no-info: info
++endif
++
+ INFOFILES = doc/cpp.info doc/gcc.info doc/gccint.info \
+             doc/gccinstall.info doc/cppinternals.info
+ 
+diff --git a/gcc/configure b/gcc/configure
+index 4acb254d830..771b93380bc 100755
+--- a/gcc/configure
++++ b/gcc/configure
+@@ -8835,7 +8835,7 @@ if test $gcc_cv_prog_makeinfo_modern = no; then
+ $as_echo "$as_me: WARNING:
+ *** Makeinfo is missing or too old.
+ *** Info documentation will not be built." >&2;}
+-  BUILD_INFO=
++  BUILD_INFO=no-info
+ else
+   BUILD_INFO=info
+ fi
+diff --git a/gcc/configure.ac b/gcc/configure.ac
+index d2ed14496c1..2855545aaf0 100644
+--- a/gcc/configure.ac
++++ b/gcc/configure.ac
+@@ -1245,7 +1245,7 @@ if test $gcc_cv_prog_makeinfo_modern = no; then
+   AC_MSG_WARN([
+ *** Makeinfo is missing or too old.
+ *** Info documentation will not be built.])
+-  BUILD_INFO=
++  BUILD_INFO=no-info
+ else
+   BUILD_INFO=info
+ fi
+-- 
+2.34.1
+
