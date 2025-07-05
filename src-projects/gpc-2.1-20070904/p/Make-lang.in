@@ -978,12 +978,19 @@ pascal.html-dist: p/stamp-pascal-html
 # Install hooks:
 # gpc1 is installed elsewhere as part of $(COMPILERS).
 
-pascal.install-info-man-dirs:
-	@echo "Starting: pascal.install-info-man-dirs"
-	for directory in $(infodir) $(man1dir); do \
+pascal.install-info-dirs:
+	@echo "Starting: pascal.install-info-dirs"
+	for directory in $(infodir) do \
 	  $(srcdir)/p/script/mkdir-p -m a+rx $(DESTDIR)$$directory || exit 1; \
 	done
-	@echo "Finished: pascal.install-info-man-dirs"
+	@echo "Finished: pascal.install-info-dirs"
+
+pascal.install-man-dirs:
+	@echo "Starting: pascal.install-man-dirs"
+	for directory in $(man1dir); do \
+	  $(srcdir)/p/script/mkdir-p -m a+rx $(DESTDIR)$$directory || exit 1; \
+	done
+	@echo "Finished: pascal.install-man-dirs"
 
 pascal.install-dir:
 	@echo "Starting: pascal.install-dir"
@@ -1110,7 +1117,7 @@ pascal.real-install-doc: pascal.install-doc-dir $(srcdir)/p/README \
 	fi
 	@echo "Finished: pascal.real-install-doc"
 
-install-info:: pascal.install-doc pascal.install-info-man-dirs pascal.info
+install-info:: pascal.install-doc pascal.install-info-dirs pascal.info
 	@echo "Starting: pascal.install-info"
 	rm -f $(DESTDIR)$(infodir)/gpc.info* $(DESTDIR)$(infodir)/gpcs.info* $(DESTDIR)$(infodir)/gpcs-de.info* $(DESTDIR)$(infodir)/gpcs-hr.info* $(DESTDIR)$(infodir)/gpcs-es.info*
 	for f in `cd $(srcdir)/p/doc/info && echo gpc.info* gpcs*.info*`; do \
@@ -1121,7 +1128,7 @@ install-info:: pascal.install-doc pascal.install-info-man-dirs pascal.info
 
 pascal.install-man: pascal.install-gpc-man pascal.maybe_install-gpc-run-man
 
-pascal.install-gpc-man: pascal.install-info-man-dirs $(srcdir)/p/doc/en/gpc.1
+pascal.install-gpc-man: pascal.install-man-dirs $(srcdir)/p/doc/en/gpc.1
 	@echo "Starting: pascal.install-gpc-man"
 	-if [ -f gpc1$(exeext) ]; then \
 	  if [ -f gpc-cross$(exeext) ]; then \
@@ -1138,7 +1145,7 @@ pascal.install-gpc-man: pascal.install-info-man-dirs $(srcdir)/p/doc/en/gpc.1
 	fi
 	@echo "Finished: pascal.install-gpc-man"
 
-pascal.install-gpc-run-man: pascal.install-info-man-dirs $(srcdir)/p/doc/generated/gpc-run.1
+pascal.install-gpc-run-man: pascal.install-man-dirs $(srcdir)/p/doc/generated/gpc-run.1
 	@echo "Starting: pascal.install-gpc-run-man"
 	rm -f $(DESTDIR)$(man1dir)/gpc-run$(man1ext)
 	$(INSTALL_DATA) $(srcdir)/p/doc/generated/gpc-run.1 $(DESTDIR)$(man1dir)/gpc-run$(man1ext)
@@ -1147,14 +1154,14 @@ pascal.install-gpc-run-man: pascal.install-info-man-dirs $(srcdir)/p/doc/generat
 
 pascal.install-hr: pascal.install-info-hr pascal.install-man-hr
 
-pascal.install-info-hr: pascal.install-info-man-dirs pascal.info
+pascal.install-info-hr: pascal.install-info-dirs pascal.info
 	rm -f $(DESTDIR)$(infodir)/gpc-hr.info* $(DESTDIR)$(infodir)/gpcs-hr.info*
 	for f in `cd $(srcdir)/p/doc/info && echo gpc-hr.info* gpcs-hr.info*`; do \
 	  $(INSTALL_DATA) $(srcdir)/p/doc/info/$$f $(DESTDIR)$(infodir)/$$f || exit 1; \
 	done
 	chmod a-x $(DESTDIR)$(infodir)/gpc-hr.info* $(DESTDIR)$(infodir)/gpcs-hr.info*
 
-pascal.install-man-hr: pascal.install-info-man-dirs $(srcdir)/p/doc/hr/gpc.1
+pascal.install-man-hr: pascal.install-man-dirs $(srcdir)/p/doc/hr/gpc.1
 	-if [ -f gpc1$(exeext) ]; then \
 	  if [ -f gpc-cross$(exeext) ]; then \
 	    rm -f $(DESTDIR)$(man1dir)/$(GPC_CROSS_NAME)-hr$(man1ext); \
@@ -1171,7 +1178,7 @@ pascal.install-man-hr: pascal.install-info-man-dirs $(srcdir)/p/doc/hr/gpc.1
 
 pascal.install-es: pascal.install-info-es
 
-pascal.install-info-es: pascal.install-info-man-dirs pascal.info
+pascal.install-info-es: pascal.install-info-dirs pascal.info
 	rm -f $(DESTDIR)$(infodir)/gpc-es.info* $(DESTDIR)$(infodir)/gpcs-es.info*
 	for f in `cd $(srcdir)/p/doc/info && echo gpc-es.info* gpcs-es.info*`; do \
 	  $(INSTALL_DATA) $(srcdir)/p/doc/info/$$f $(DESTDIR)$(infodir)/$$f || exit 1; \
