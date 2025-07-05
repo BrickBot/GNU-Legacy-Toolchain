@@ -17,12 +17,12 @@ echo "Preparing to fix timestamps, which could take several minutes."
   echo "Completed fixing of file modified timestamps using \"git restore-mtime\""
 ) || (
   # Cache the timestamp to use as standard
-  STANDARDIZED_TIMESTAMP=$(date --reference=$SCRIPT_FULL_PATH +%Y%m%d%k%M) && \
+  STANDARDIZED_TIMESTAMP=$(date --reference=$SCRIPT_FULL_PATH +%Y%m%d%H%M) && \
   cd $SCRIPT_DIR/src-projects && \
   for dir in */ ; do
     echo -n "Processing directory $(basename $dir)..." ;
-    find "$dir" -depth -type f -exec touch -t $STANDARDIZED_TIMESTAMP {} \;
-    #find "$dir" -depth -type f -exec echo "File: {}" \; -exec touch -t $STANDARDIZED_TIMESTAMP {} \;
+    find "$dir" -depth -type f -exec touch --no-create -t $STANDARDIZED_TIMESTAMP {} \;
+    #find "$dir" -depth -type f -exec echo "File: {}" \; -exec touch --no-create -t $STANDARDIZED_TIMESTAMP {} \;
 	echo "done."
   done && \
   echo "Completed setting of file modified timestamps to match a standard reference"

@@ -353,6 +353,9 @@ install: install_to_$(INSTALL_DEST) install-subdir
 # default multilib, so we have to take CFLAGS into account as well,
 # since it will be passed the multilib flags.
 MULTIOSDIR = `$(CC) $(CFLAGS) -print-multi-os-directory`
+
+install_to_none:
+
 install_to_libdir: all
 	${mkinstalldirs} $(DESTDIR)$(libdir)/$(MULTIOSDIR)
 	$(INSTALL_DATA) $(TARGETLIB) $(DESTDIR)$(libdir)/$(MULTIOSDIR)/$(TARGETLIB)n

@@ -29,6 +29,23 @@ AC_CHECK_TOOL(RANLIB, ranlib, :)
 AC_FUNC_MMAP
 AC_CHECK_HEADERS(limits.h stddef.h unistd.h)
 
+# We might wish to skip the install of libmmalloc.a.
+AC_ARG_ENABLE(install-libmmalloc,
+[  --enable-install-libmmalloc      Install libmmalloc for end users],
+enable_install_libmmalloc=$enableval,
+enable_install_libmmalloc=no)dnl
+
+case x"$enable_install_libmmalloc" in
+  xno)
+    INSTALL_LIBMMALLOC=no
+    ;;
+  *)
+    INSTALL_LIBMMALLOC=yes
+    ;;
+esac
+
+AC_SUBST(INSTALL_LIBMMALLOC)
+
 BFD_NEED_DECLARATION(sbrk)
 BFD_NEED_DECLARATION(getpagesize)
 
