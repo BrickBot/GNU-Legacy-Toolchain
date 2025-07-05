@@ -1004,8 +1004,8 @@ remote_fileio_func_rename (char *buf)
 		  char newfullpath[PATH_MAX + 1];
 		  int len;
 
-		  cygwin_conv_to_full_posix_path (oldpath, oldfullpath);
-		  cygwin_conv_to_full_posix_path (newpath, newfullpath);
+		  cygwin_conv_path (CCP_WIN_A_TO_POSIX | CCP_ABSOLUTE, oldpath, oldfullpath, PATH_MAX + 1);
+		  cygwin_conv_path (CCP_WIN_A_TO_POSIX | CCP_ABSOLUTE, newpath, newfullpath, PATH_MAX + 1);
 		  len = strlen (oldfullpath);
 		  if (newfullpath[len] == '/'
 		      && !strncmp (oldfullpath, newfullpath, len))

@@ -11,6 +11,8 @@
 ac_help=
 ac_default_prefix=/usr/local
 # Any additions from configure.in:
+ac_help="$ac_help
+  --enable-install-libmmalloc      Install libmamlloc for end users"
 
 # Initialize some variables set by options.
 # The variables have the same names as the options, with
@@ -440,6 +442,25 @@ do
   *) ac_configure_args="$ac_configure_args $ac_arg" ;;
   esac
 done
+
+
+# Check whether --enable-install-libmmalloc or --disable-install-libiberty was given.
+if test "${enable_install_libmmalloc+set}" = set; then
+  enableval="$enable_install_libmmalloc"
+  enable_install_libmmalloc=$enableval
+else
+  enable_install_libmmalloc=no
+fi
+
+case x"$enable_install_libmmalloc" in
+  xno)
+    INSTALL_LIBMMALLOC=no
+    ;;
+  *)
+    INSTALL_LIBMMALLOC=yes
+    ;;
+esac
+
 
 # NLS nuisances.
 # Only set these to C if already set.  These must not be set unconditionally
@@ -1633,6 +1654,7 @@ s%@build_os@%$build_os%g
 s%@AR@%$AR%g
 s%@RANLIB@%$RANLIB%g
 s%@CPP@%$CPP%g
+s%@INSTALL_LIBMMALLOC@%$INSTALL_LIBMMALLOC%g
 
 CEOF
 EOF

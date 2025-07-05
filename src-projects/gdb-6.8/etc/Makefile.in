@@ -64,7 +64,9 @@ PDFFILES = standards.pdf configure.pdf
 HTMLFILES = standards.html configure.html
 
 all: info
-install: install-info
+
+# We do NOT want install to imply install-info, despite GNU standards.
+install:
 
 uninstall:
 

@@ -299,6 +299,14 @@ in [gcc-4.4_4.4.7-8.diff.gz](https://snapshot.debian.org/archive/debian/20140320
 **TODO**: This set for GCC 4.4.7 includes 171 patches to be reviewed and (potentially) applied.
 
 
+GCC Backported Parches
+----------------------
+
+### Skip Building (and Installing) Info Files
+From the [GCC mailing list in February 2024](https://gcc.gnu.org/pipermail/gcc-patches/2024-February/645362.html),
+this small patch enables skipping the building and installing of info files.
+
+
 NewLib 1.19.0
 -------------
 While newlib-1.20.0 was technically the last version to support h8300-\*-coff,
