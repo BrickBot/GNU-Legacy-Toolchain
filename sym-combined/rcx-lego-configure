@@ -2,7 +2,11 @@
 
 SCRIPT_DIR=$(dirname $0)
 
+DEFAULT_NLS_ARG="--disable-nls"
+DEFAULT_LIBIBERTY_INSTALL_ARG="--disable-install-libiberty"
+DEFAULT_LIBMMALLOC_INSTALL_ARG="--disable-install-libmmalloc"
 DEFAULT_TOOLCHAIN_SETS_ARG="--toolchain-sets=gdb5,gcc3"
+DEFAULT_TOOLCHAIN_SETS_NAME_ARG="--toolchain-sets-name=rcx"
 
 
 # Process any command-line arguments
@@ -15,13 +19,44 @@ for ARG in "$@"; do
     --toolchain-sets=*)
       unset DEFAULT_TOOLCHAIN_SETS_ARG
       ;;
+    --toolchain-sets-name=*)
+      unset DEFAULT_TOOLCHAIN_SETS_NAME_ARG
+      ;;
+    --enable-nls | --enable-nls=yes)
+      # If enable NLS is specified, ensure the disable argument is removed
+      unset DISABLE_NLS
+      ;;
+    --disable-nls | --enable-nls=no)
+      # If disable NLS is already specified, don't double-set the argument
+      unset DISABLE_NLS
+      ;;
+    --enable-install-libiberty | --enable-install-libiberty=yes)
+      # If enable libiberty install is specified, ensure the disable argument is removed
+      unset DEFAULT_LIBIBERTY_INSTALL_ARG
+      ;;
+    --disable-install-libiberty | --enable-install-libiberty=no)
+      # If disable libiberty install is already specified, don't double-set the argument
+      unset DEFAULT_LIBIBERTY_INSTALL_ARG
+      ;;
+    --enable-install-libmmalloc | --enable-install-libmmalloc=yes)
+      # If enable libmmalloc install is specified, ensure the disable argument is removed
+      unset DEFAULT_LIBMMALLOC_INSTALL_ARG
+      ;;
+    --disable-install-libmmalloc | --enable-install-libmmalloc=no)
+      # If disable libmmalloc install is already specified, don't double-set the argument
+      unset DEFAULT_LIBMMALLOC_INSTALL_ARG
+      ;;
   esac
 done
 
 
 # Enumerate default H8/300 arguments for configure
 CONFIGURE_ARGS=" \
+  $DEFAULT_NLS_ARG \
+  $DEFAULT_LIBIBERTY_INSTALL_ARG \
+  $DEFAULT_LIBMMALLOC_INSTALL_ARG \
   $DEFAULT_TOOLCHAIN_SETS_ARG \
+  $DEFAULT_TOOLCHAIN_SETS_NAME_ARG \
   $ALL_ARGS"
 
 # For any quoted substrings in variables (such as $ALL_ARGS might have)

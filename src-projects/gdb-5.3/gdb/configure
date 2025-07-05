@@ -6961,9 +6961,6 @@ esac
 if test x$gdb_host = xgo32; then
   TERM_LIB=
 else
-if test x$gdb_cv_os_cygwin = xyes; then
-  TERM_LIB='`if test -r ../libtermcap/libtermcap.a; then echo ../libtermcap/libtermcap.a; else echo -ltermcap; fi`'
-else
   TERM_LIB=
   echo $ac_n "checking for tgetent in -lncurses""... $ac_c" 1>&6
 echo "configure:6970: checking for tgetent in -lncurses" >&5
@@ -6998,6 +6995,7 @@ rm -f conftest*
 LIBS="$ac_save_LIBS"
 
 fi
+
 if eval "test \"`echo '$ac_cv_lib_'$ac_lib_var`\" = yes"; then
   echo "$ac_t""yes" 1>&6
   TERM_LIB=-lncurses
@@ -7210,7 +7208,6 @@ fi
   then
     { echo "configure: error: Could not find a term library" 1>&2; exit 1; }
   fi
-fi
 fi
 
 

@@ -155,7 +155,13 @@ check: test1.c
 # for gdb, perhaps).
 #	./a.out
 
-install:	all install-info
+INSTALL_LIBMMALLOC = @INSTALL_LIBMMALLOC@
+install: install_$(INSTALL_LIBMMALLOC)
+
+install_no:
+
+# We do NOT want install to imply install-info, despite GNU standards.
+install_yes:	all
 		$(INSTALL_DATA) $(TARGETLIB) $(libdir)/$(TARGETLIB)n
 		$(RANLIB) $(libdir)/$(TARGETLIB)n
 		mv -f $(libdir)/$(TARGETLIB)n $(libdir)/$(TARGETLIB)
