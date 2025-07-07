@@ -31,9 +31,9 @@ env:
   # ** NOTE **: On Cygwin, need to create a symlink for libtermcap.a -> libncurses.a
   #  - https://superuser.com/a/1020342
   CYGWIN_BUILD_DEPENDS: git autoconf automake m4 make binutils gcc-core gcc-g++ gcc-objc bison flex libtool gawk gettext gettext-devel gettext-debuginfo texinfo  file libisl-devel libncurses-devel dejagnu  stow
-  CYGWIN_GCC4_BUILD_DEPENDS: libglib2.0-devel libgmp-devel libmpfr-devel libmpc-devel zip unzip
+  CYGWIN_GCC44_BUILD_DEPENDS: libglib2.0-devel libgmp-devel libmpfr-devel libmpc-devel zip unzip
   # Cygwin lacks packages for Mono, so the "gcc44" toolchain set is unsupported unless Mono is built and installed manually
-  CYGWIN_MISSING_DEPENDS:    mono-runtime libmono-2.0-dev
+  CYGWIN_GCC44_MISSING_DEPENDS:    mono-runtime libmono-2.0-devel
   
   # If these older source package releases will not build without disabling Fortify and/or run without buffer overflow errors,
   #    then "make CPPFLAGS=-U_FORTIFY_SOURCE" might be necessary
