@@ -131,6 +131,9 @@ jobs:
     - name: Test install the new build to a sysroot
       run:  cd $BUILD_DIR  &&  echo "Current working directory is '$PWD'"  &&  make install
 
+    - name: List the installed files
+      run:  cd $SYSROOT_DIR  &&  find -depth -type f
+
     # Before archiving, tar the host installation output to preserve file permission
     # c.f. https://github.com/actions/upload-artifact?tab=readme-ov-file#permission-loss
     # To avoid including a "." or other unwanted directory, c.f. https://stackoverflow.com/a/39530409
