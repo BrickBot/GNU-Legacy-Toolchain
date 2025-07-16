@@ -22,14 +22,12 @@ env:
   # openSUSE package-only (no content) search:  https://software.opensuse.org/
   # NOTE: openSUSE appears to lack a package for git-restore-mtime, so this will need to be installed manually
   openSUSE_BUILD_DEPENDS: autoconf gettext-tools automake m4 make binutils gcc gcc-c++ gcc-objc glibc-devel glibc-devel-32bit bison flex libtool gawk gettext-runtime texinfo file libisl23 dejagnu  stow
-  openSUSE_GCC4_BUILD_DEPENDS:  mono-core libmono-2_0-devel glibc-devel gmp-devel mpfr-devel mpc-devel
+  openSUSE_GCC4_BUILD_DEPENDS:  mono-core libmono-2_0-devel glib2-devel glibc-devel gmp-devel mpfr-devel mpc-devel
   # libisl23, which is a version-specific package of ISL, appeasrs to be included as a dependency of other package(s)
   
   # Cygwin package search:  https://cygwin.com/packages/
   # Cygwin package list:    https://cygwin.com/packages/package_list.html
   # Cygwin-official Action: https://github.com/marketplace/actions/install-cygwin-action
-  # ** NOTE **: On Cygwin, need to create a symlink for libtermcap.a -> libncurses.a
-  #  - https://superuser.com/a/1020342
   CYGWIN_BUILD_DEPENDS: git autoconf automake m4 make binutils gcc-core gcc-g++ gcc-objc bison flex libtool gawk gettext gettext-devel gettext-debuginfo texinfo  file libisl-devel libncurses-devel dejagnu  stow tree
   CYGWIN_GCC44_BUILD_DEPENDS: libglib2.0-devel libgmp-devel libmpfr-devel libmpc-devel zip unzip
   # Cygwin lacks packages for Mono, so the "gcc44" toolchain set is unsupported unless Mono is built and installed manually
