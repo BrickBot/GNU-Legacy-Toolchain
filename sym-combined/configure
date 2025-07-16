@@ -59,7 +59,8 @@ for ARG in "${ARGS[@]}" ; do
       # We only need to read this value (if it was provided)
       ;;
     --enable-languages=*)
-      languages="${ARG#*=}"
+      gcc3_languages="${ARG#*=}"
+      gcc44_languages="${ARG#*=}"
       # Don't directly pass this argument along to sub-configures
       unset ARGS[i]
       ;;
