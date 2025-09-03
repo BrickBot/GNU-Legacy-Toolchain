@@ -92,11 +92,11 @@ jobs:
       uses: chetan/git-restore-mtime-action@v2
 
     - name: Update build environment
-      if:   runner.os == 'Linux'
+      if:   contains(matrix.os, 'ubuntu')
       run:  sudo apt-get --assume-yes update
 
     - name: Install build dependencies
-      if:   runner.os == 'Linux'
+      if:   contains(matrix.os, 'ubuntu')
       run:  sudo apt-get --assume-yes install $UBUNTU_BUILD_DEPENDS $UBUNTU_GCC4_BUILD_DEPENDS
 
       # Cygwin action docs – https://github.com/marketplace/actions/install-cygwin-action
