@@ -168,3 +168,7 @@ a combined source folder through which a single, combined build can be executed.
 
 More information on how projects were “mixed and matched” to create combined
 source folders is available in the [`sym-combined`](sym-combined/) folder.
+
+
+### Related Projects or Efforts
+[Debian LEGO Packaging Team](https://wiki.debian.org/LegoDesigners)
