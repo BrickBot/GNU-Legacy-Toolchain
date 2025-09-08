@@ -68,6 +68,25 @@ with patch descriptions [available here](https://udd.debian.org/patches.cgi?src=
 | ❌       | ~~140-deterministic-output.patch~~   | New with v-13 |
 
 
+GCC Multi-Version (3.4.6 and 4.4.7)
+-----------------------------------
+### GCC No Build Info Patch
+This patch was posted to the GCC mailing list on February 10, 2024, by Christophe Lyon
+([link](https://gcc.gnu.org/pipermail/gcc-cvs/2024-February/398609.html)),
+with the intent of always checking info dependencies.  Within this project,
+that patch was leveraged in conjunction with addtional changes
+([c.f. commit: “Provide for skipping the build and install of info files”](https://github.com/BrickBot/GNU-Legacy-Toolchain/commit/4355e1b1c14b56eff932055907c6410e5e35f639))
+to prevent the installation of (outdated) info files that would conflict
+with info files installed by newer GCC versions.
+
+If desired, these info files may still be installed as a separate step via `make install-info`.
+
+| Applied? | Patch File Name         |
+| -------- | ----------------------- |
+| ✔       | gcc-no-build-info.patch |
+
+
+
 GCC 3.4.6
 ---------
 ### GNU GCC Post-Release Patches
