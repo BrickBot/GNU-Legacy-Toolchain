@@ -126,15 +126,17 @@ jobs:
     - name: Execute the build
       run:  cd $BUILD_DIR  &&  echo "Current working directory is '$PWD'"  &&  make $COMMON_MAKE_ALL_ARGS
 
+    # Test the completed build
     - name: Test install the new build to a sysroot
       run:  cd $BUILD_DIR  &&  echo "Current working directory is '$PWD'"  &&  make install
 
     - name: List the files installed to the sysroot
       run:  tree --dirsfirst "$(realpath -s "$SYSROOT_DIR")"
 
-    # Before archiving, tar the host installation output to preserve file permission
-    # c.f. https://github.com/actions/upload-artifact?tab=readme-ov-file#permission-loss
-    # To avoid including a "." or other unwanted directory, c.f. https://stackoverflow.com/a/39530409
+    # Post the build output as an artifact
+      # Before archiving, tar the host installation output to preserve file permission
+      # c.f. https://github.com/actions/upload-artifact?tab=readme-ov-file#permission-loss
+      # To avoid including a "." or other unwanted directory, c.f. https://stackoverflow.com/a/39530409
     - name: Tar the host installation snapshot to preserve file permissions
       run:  find $SYSROOT_DIR -printf "%P\n" | sort | tar --verbose --create --file $OUTPUT_DIR/[${{ matrix.os }}-${{ matrix.platform }}]_${{ matrix.target-system }}-${{ matrix.toolchain-set }}.tar --no-recursion --directory=$SYSROOT_DIR --files-from=-
 
@@ -195,13 +197,48 @@ jobs:
       run:  |
         cd $BUILD_DIR
         echo "Current working directory: $PWD"
-        ../sym-combined/rcx-lego-configure
+        ../sym-combined/rcx-lego-configure  --prefix=$(realpath -L -s ../$SYSROOT_DIR)
 
     - name: Execute the build
       run:  |
         cd $BUILD_DIR
         echo "Current working directory: $PWD"
         make $COMMON_MAKE_ALL_ARGS all
+
+    # Test install the completed build
+    - name: Test install the new build to a sysroot
+      run:  |
+        cd $BUILD_DIR
+        echo "Current working directory is '$PWD'"
+        make install
+
+    - name: List the files installed to the sysroot
+      run:  tree --dirsfirst "$(realpath -s "$SYSROOT_DIR")"
+
+    # Post the build output as an artifact
+      # Before archiving, tar the host installation output to preserve file permission
+      # c.f. https://github.com/actions/upload-artifact?tab=readme-ov-file#permission-loss
+      # To avoid including a "." or other unwanted directory, c.f. https://stackoverflow.com/a/39530409
+    - name: Tar the host installation snapshot to preserve file permissions
+      run:  find $SYSROOT_DIR -printf "%P\n" | sort | tar --verbose --create --file $OUTPUT_DIR/RCX_${{ matrix.os }}.tar --no-recursion --directory=$SYSROOT_DIR --files-from=-
+
+    - name: Archive the host installation snapshot tar file
+      uses: actions/upload-artifact@v4
+      with:
+        name: "RCX_${{ matrix.os }}_${{ github.run_id }}.${{ github.run_number }}.${{ github.run_attempt }}"
+        path: "${{ env.OUTPUT_DIR }}/RCX_${{ matrix.os }}.tar"
+
+    - name: Install the new build using Stow
+      run:  |
+        cd $BUILD_DIR
+        echo "Current working directory is '$PWD'"
+        sudo make stow
+
+    - name: Check always if any version-controlled files were modified
+      run:  git status
+
+    - name: Show always any diffs of version-controlled files
+      run:  git diff
 
 
 #  build_native_job:
