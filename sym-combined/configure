@@ -5,6 +5,8 @@ ALL_TOOLCHAIN_SETS="gdb5 binutils216 gcc3 gcc44"
 gcc3_languages=c,c++,f77,java,objc,treelang,pascal
 gcc44_languages=c,c++,java,cil
 # NOTE: Ada is excluded from the language lists because it cannot bootstrap
+CFLAGS=-g -O2 -flto -std=gnu89
+LDFLAGS=-flto
 
 # Variable declarations and initializations
 COMBINED_SRC_DIR=$(realpath -s $(dirname $0))
@@ -239,7 +241,7 @@ if isIncluded "$toolchain_sets" "GDB5" ; then
   echo "================="
   echo "CONFIGURE: GDB v5"
   if [ -n "$program_suffix_arg" ] ; then gdb5_suffix_arg="${program_suffix_arg}=-5" ; fi
-  GCC3_COMMAND="CFLAGS='-g -O2 -std=gnu89'  $COMBINED_SRC_DIR/${toolchain_set_id}/configure $ARGS_TO_PASS --disable-werror --prefix=$prefix $gdb5_suffix_arg "
+  GCC3_COMMAND="CFLAGS='$CFLAGS' LDFLAGS='$LDFLAGS'  $COMBINED_SRC_DIR/${toolchain_set_id}/configure $ARGS_TO_PASS --disable-werror --prefix=$prefix $gdb5_suffix_arg "
   echo "COMMAND: $GCC3_COMMAND"
   mkdir -p "${BUILD_DIR}/${toolchain_set_id}" && pushd "${BUILD_DIR}/${toolchain_set_id}" > /dev/null
   eval "$GCC3_COMMAND" || exit 1
@@ -255,7 +257,7 @@ if isIncluded "$toolchain_sets" "BINUTILS216" ; then
   echo "================="
   echo "CONFIGURE: BinUtils v2.16"
   if [ -n "$program_suffix_arg" ] ; then binutils216_suffix_arg="${program_suffix_arg}=-2.16.1" ; fi
-  BINUTILS216_COMMAND="CFLAGS='-g -O2 -std=gnu89'  $COMBINED_SRC_DIR/${toolchain_set_id}/configure $ARGS_TO_PASS --prefix=$prefix $binutils216_suffix_arg "
+  BINUTILS216_COMMAND="CFLAGS='$CFLAGS' LDFLAGS='$LDFLAGS'  $COMBINED_SRC_DIR/${toolchain_set_id}/configure $ARGS_TO_PASS --prefix=$prefix $binutils216_suffix_arg "
   echo "COMMAND: $BINUTILS216_COMMAND"
   mkdir -p "${BUILD_DIR}/${toolchain_set_id}" && pushd "${BUILD_DIR}/${toolchain_set_id}" > /dev/null
   eval "$BINUTILS216_COMMAND" || exit 1
@@ -276,7 +278,7 @@ if isIncluded "$toolchain_sets" "GCC3" ; then
   echo "================="
   echo "CONFIGURE: GCC v3"
   if [ -n "$program_suffix_arg" ] ; then gcc3_suffix_arg="${program_suffix_arg}=-3" ; fi
-  GCC3_COMMAND="CFLAGS='-g -O2 -std=gnu89'  $COMBINED_SRC_DIR/${toolchain_set_id}/configure --enable-languages=$gcc3_languages $GCC3_FLAGS_FOR_GDB $ARGS_TO_PASS --prefix=$prefix $gcc3_suffix_arg "
+  GCC3_COMMAND="CFLAGS='$CFLAGS' LDFLAGS='$LDFLAGS'  $COMBINED_SRC_DIR/${toolchain_set_id}/configure --enable-languages=$gcc3_languages $GCC3_FLAGS_FOR_GDB $ARGS_TO_PASS --prefix=$prefix $gcc3_suffix_arg "
   echo "COMMAND: $GCC3_COMMAND"
   mkdir -p "${BUILD_DIR}/${toolchain_set_id}" && pushd "${BUILD_DIR}/${toolchain_set_id}" > /dev/null
   eval "$GCC3_COMMAND" || exit 1
@@ -288,7 +290,7 @@ if isIncluded "$toolchain_sets" "GCC44" ; then
   echo "==================="
   echo "CONFIGURE: GCC v4.4"
   if [ -n "$program_suffix_arg" ] ; then gcc44_suffix_arg="${program_suffix_arg}=-4.4" ; fi
-  GCC44_COMMAND="$COMBINED_SRC_DIR/${toolchain_set_id}/configure  CFLAGS='-g -O2 -std=gnu89'  --enable-languages=$gcc44_languages $FLAGS_IF_GDB5 $ARGS_TO_PASS --disable-werror --enable-obsolete --prefix=$prefix $gcc44_suffix_arg "
+  GCC44_COMMAND="$COMBINED_SRC_DIR/${toolchain_set_id}/configure  CFLAGS='$CFLAGS' LDFLAGS='$LDFLAGS'  --enable-languages=$gcc44_languages $FLAGS_IF_GDB5 $ARGS_TO_PASS --disable-werror --enable-obsolete --prefix=$prefix $gcc44_suffix_arg "
   echo "COMMAND: $GCC44_COMMAND"
   mkdir -p "${BUILD_DIR}/${toolchain_set_id}" && pushd "${BUILD_DIR}/${toolchain_set_id}" > /dev/null
   eval "$GCC44_COMMAND" || exit 1
