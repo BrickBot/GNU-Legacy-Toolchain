@@ -77,13 +77,6 @@ AC_ARG_WITH(target-subdir,
 AC_ARG_WITH(cross-host,
 [  --with-cross-host=HOST  configuring with a cross compiler])
 
-  # Never versions of autoconf add an underscore to these functions.
-  # Prevent future problems ...
-  ifdef([AC_PROG_CC_G],[],[define([AC_PROG_CC_G],defn([_AC_PROG_CC_G]))])
-  ifdef([AC_PROG_CC_GNU],[],[define([AC_PROG_CC_GNU],defn([_AC_PROG_CC_GNU]))])
-  ifdef([AC_PROG_CXX_G],[],[define([AC_PROG_CXX_G],defn([_AC_PROG_CXX_G]))])
-  ifdef([AC_PROG_CXX_GNU],[],[define([AC_PROG_CXX_GNU],defn([_AC_PROG_CXX_GNU]))])
-
 #  AC_PROG_CC
 
 # FIXME: We temporarily define our own version of AC_PROG_CC.  This is
