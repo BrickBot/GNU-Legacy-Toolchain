@@ -1,3 +1,15 @@
+2025-06-05  Matthew Sheets  <https://github.com/BrickBot/GNU-Legacy-Toolchain>
+
+	* Apply Debian patches targeting NewLib 1.18.0 (also applicable to v1.19.0)
+	  - EABI: Set objtype to elf for armel/arm-linux-gnueabi; fixes installation for
+	    this target.  Run autoreconf -fi && rm -rf autom4te.cache
+
+2025-05-09  Matthew Sheets  <https://github.com/BrickBot/GNU-Legacy-Toolchain>
+
+	* Update configure scripts:
+	  - Fix datadir inconsistencies
+	  - GCC 3 and GCC 4.4 pass down datadir (not datarootdir)
+
 2010-12-02  Jayant Sonar  jayant.sonar@kpitcummins.com
 	    Kaushik Phatak  kaushik.phatak@kpitcummins.com
 

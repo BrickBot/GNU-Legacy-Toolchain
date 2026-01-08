@@ -1,3 +1,66 @@
+2025-06-10  Matthew Sheets  <https://github.com/BrickBot/GNU-Legacy-Toolchain>
+
+	* Apply Debian patches that were created for GDB 6.8:
+	  10) Support loading two libthread_db DSOs:
+	      - Specifically in this case, the LinuxThreads and NPTL ones.
+	  25) Pascal support:
+	      - Originally from http://www.math.uni.wroc.pl/~hebisch/gpc/
+	      - Seems this was posted to gdb-patches but never reviewed.
+	        But M2 support added set types just before GDB 6.5, and now
+	        there's not much left of this.
+	  30) Fortran main:
+	      Although the proper way of adding case insensitivity to symbol lookup
+	      is still under discussion, It might be desirable to set the main 
+	      function of Fortran programs to "MAIN__" first.  Because it can at
+	      least let GDB recognize that the language is Fortran after loading a
+	      Fortran executable only.
+	      
+	      Here is the patch to set the main function in Fortran programs to
+	      "MAIN__".  And followed is a patch to verify this.  Tested with g77
+	      and gfortran on x86, and g77 on ppc64.  With the first patch, it
+	      reported PASS; without, report FAIL.  No regression is found in
+	       gdb.fortran testcases.
+	  40) Man page updates for arguments.
+	  45) Updates for bfd mtime:
+	      - Applied upstream after GBD 6.8.
+	  50) Quote symbol name before passing it to break_command:
+	      - Backported from trunk after GDB 6.8.
+	      - This patch itself was dated 2008-03-21.
+	  55) Correct array access in ia64-tdep.c (examine_prologue):
+	      - This patch itself was dated 2008-03-30
+	  60) Initialize storage:
+	      - This patch itself was dated 2008-05-06
+	  65) Fix typo (patch from HEAD):
+	      - This patch itself was dated 2008-05-05
+
+2025-06-05  Matthew Sheets  <https://github.com/BrickBot/GNU-Legacy-Toolchain>
+
+	* Update configure scripts:
+	  - /usr/share/man has superseded /usr/man
+	  - /usr/share/info has superseded /usr/info
+
+2008-05-06  Daniel Jacobowitz  <dan@codesourcery.com>
+
+	* cp-support.c (mangled_name_to_comp): Initialize storage.
+	  (unqualified_name_from_comp): Likewise.
+
+2008-05-05  Andreas Schwab  <schwab@suse.de>
+
+	* m68klinux-nat.c (store_register): Fix typo.
+
+2008-03-30  Daniel Jacobowitz  <dan@codesourcery.com>
+
+	* ia64-tdep.c (examine_prologue): Correct array access.
+
+2008-03-21  Chris Demetriou  <cgd@google.com>
+
+	* symtab.c (rbreak_command): Quote symbol name before passing
+	  it to break_command.
+	* gdb.base/break.exp (rbreak junk): New test for rbreak
+	  "Junk at end of arguments" issue.
+
+** Break in Sequence: Patches above were applied out-of-sequence relative to its date **
+
 2008-03-27  Joel Brobecker  <brobecker@adacore.com>
 
 	* NEWS: Replace "Changes since GDB 6.7" into changes in GDB 6.8".

@@ -1,3 +1,11 @@
+2025-06-23  Matthew Sheets  <https://github.com/BrickBot/GNU-Legacy-Toolchain>
+
+	* Update bfd.info and opncls.texi for newer doc tool versions.
+
+2025-06-02  Matthew Sheets  <https://github.com/BrickBot/GNU-Legacy-Toolchain>
+
+	* Add subsubsection to opencls.texi for bfd_fopen.
+
 2005-06-12  Daniel Jacobowitz  <dan@codesourcery.com>
 
 	Backport from mainline:

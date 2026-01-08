@@ -1,3 +1,21 @@
+2025-06-17  Matthew Sheets  <https://github.com/BrickBot/GNU-Legacy-Toolchain>
+
+	* Apply Debian patches for GDB 5.2 that are still applicable to GDB 5.3
+	  - 2002-04-01 patch updating jmisc.java and jmisc.exp in testsuite
+
+2025-06-12  Matthew Sheets  <https://github.com/BrickBot/GNU-Legacy-Toolchain>
+
+	* Update configure scripts:
+	  - /usr/share/man has superseded /usr/man
+	  - /usr/share/info has superseded /usr/info
+
+2002-04-01  Daniel Jacobowitz  <drow@mvista.com>
+
+	* gdb.java/jmisc.java: Add ``void foo (int len)''.  Call it.
+	* gdb.java/jmisc.exp (ptype jmisc): Update to match.
+
+** Break in Sequence: Out-of-sequence patch dates above preceded inclusion **
+
 2002-11-21  Daniel Jacobowitz  <drow@mvista.com>
 
 	* gdb.base/maint.exp (help maint dump-me): Update with typo fix.

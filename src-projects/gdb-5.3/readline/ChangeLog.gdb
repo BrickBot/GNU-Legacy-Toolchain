@@ -1,3 +1,9 @@
+2025-06-12  Matthew Sheets  <https://github.com/BrickBot/GNU-Legacy-Toolchain>
+
+	* Update configure scripts:
+	  - /usr/share/man has superseded /usr/man
+	  - /usr/share/info has superseded /usr/info
+
 2002-08-23  Andrew Cagney  <ac131313@redhat.com>
 
 	* support/config.guess: Import version 2002-08-23.

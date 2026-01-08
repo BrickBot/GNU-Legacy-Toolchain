@@ -1,3 +1,9 @@
+2025-06-05  Matthew Sheets  <https://github.com/BrickBot/GNU-Legacy-Toolchain>
+
+	* Update configure scripts:
+	  - /usr/share/man has superseded /usr/man
+	  - /usr/share/info has superseded /usr/info
+
 2008-01-25  Janis Johnson  <janis187@us.ibm.com>
 
 	* decCommonSymbols.h: Commit.

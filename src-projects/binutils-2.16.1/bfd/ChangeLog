@@ -1,7 +1,17 @@
+2025-05-09  Matthew Sheets  <https://github.com/BrickBot/GNU-Legacy-Toolchain>
+
+	* Update configure scripts:
+	  - /usr/share/man has superseded /usr/man
+	  - /usr/share/info has superseded /usr/info
+
+2024-08-28  Matthew Sheets  <https://github.com/BrickBot/GNU-Legacy-Toolchain>
+
+	* Address potential overflow issues in ihex.c and srec.c based on FORTIFY.
+
 2007-07-12  Kai Tietz   <kai.tietz@onevision.com>
 
-	Matthew Sheets: Backporting of Kai Teitz's BFD_HOSTPTR_T definition,
-	as packaged with GDB 6.8:
+	Matthew Sheets on 2025-06-02: Backporting of Kai Teitz's BFD_HOSTPTR_T
+	  definition, as packaged with GDB 6.8:
 	* bfd-in.h: (BFD_HOST_64BIT_LONG_LONG): New.
 	(BFD_HOSTPTR_T): Host pointer type for casting a
 	pointer to an integer type.

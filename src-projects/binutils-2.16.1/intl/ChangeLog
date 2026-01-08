@@ -1,3 +1,9 @@
+2025-05-09  Matthew Sheets  <https://github.com/BrickBot/GNU-Legacy-Toolchain>
+
+	* Update configure scripts:
+	  - /usr/share/man has superseded /usr/man
+	  - /usr/share/info has superseded /usr/info
+
 2004-11-30  Tero Niemela  <tero_niemela@yahoo.com>
 
 	* Makefile.in: Change LOCALEDIR to $(datadir)/share.

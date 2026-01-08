@@ -1,3 +1,42 @@
+2025-05-09  Matthew Sheets  <https://github.com/BrickBot/GNU-Legacy-Toolchain>
+
+	* Update configure scripts:
+	  - /usr/share/man has superseded /usr/man
+	  - /usr/share/info has superseded /usr/info
+
+2025-04-11  Matthew Sheets  <https://github.com/BrickBot/GNU-Legacy-Toolchain>
+
+	* Apply Red Hat compatibility patch numbers 42, 48, 50, & 53.
+	  - Includes CXX ABI 1.3.1 patch.
+	  - Includes those listed below from 2005-11-22, 2005-11-23, & 2007-06-08.
+
+2007-06-08  Jatin Nansi  <jnansi@redhat.com>
+
+	* config/locale/ieee_1003.1-2001/codecvt_specializations.h: Make sure
+	_M_int_enc and _M_ext_enc are '\0' terminated.
+
+2005-11-23  Paolo Carlini  <pcarlini@suse.de>
+
+	PR libstdc++/24975 (basic_string)
+	* include/bits/basic_string.h (_Rep::_S_empty_rep): Avoid
+	strict-aliasing warnings.
+
+2005-11-22  Paolo Carlini  <pcarlini@suse.de>
+
+	PR libstdc++/24975
+	* include/bits/stl_set.h (insert(iterator, const value_type&),
+	erase(iterator), erase(iterator, iterator)): Don't break aliasing
+	rules casting to _Rep_iterator&, forward to _Rb_tree facilities.
+	* include/bits/stl_multiset.h (insert(iterator, const value_type&),
+	erase(iterator), erase(iterator, iterator)): Likewise.
+	* include/bits/stl_tree.h (_Rb_tree<>::_M_insert(_Const_Base_ptr,
+	_Const_Base_ptr, const value_type&), insert_unique(const_iterator,
+	const value_type&), insert_equal(const_iterator, const value_type&),
+	erase(const_iterator), erase(const_iterator, const_iterator)): New,
+	_Rb_tree<>::const_iterator counterparts of existing facilities.
+
+** Break in Sequence: Out-of-sequence patch dates above preceded inclusion **
+
 2006-03-05  Release Manager
 
 	* GCC 3.4.6 released.

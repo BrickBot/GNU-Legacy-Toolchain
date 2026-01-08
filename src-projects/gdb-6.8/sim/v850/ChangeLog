@@ -1,3 +1,9 @@
+2025-06-05  Matthew Sheets  <https://github.com/BrickBot/GNU-Legacy-Toolchain>
+
+	* Update configure scripts:
+	  - /usr/share/man has superseded /usr/man
+	  - /usr/share/info has superseded /usr/info
+
 2008-02-05  DJ Delorie  <dj@redhat.com>
 
 	* simops.c (OP_1C007E0): Compensate for 64 bit hosts.

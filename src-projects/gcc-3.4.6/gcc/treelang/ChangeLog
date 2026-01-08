@@ -1,3 +1,7 @@
+2025-05-07  Matthew Sheets  <https://github.com/BrickBot/GNU-Legacy-Toolchain>
+
+	* Address missing/incomplete treelang targets for cross-compiler building.
+
 2006-03-05  Release Manager
 
 	* GCC 3.4.6 released.

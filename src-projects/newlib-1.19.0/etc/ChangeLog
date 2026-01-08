@@ -1,3 +1,7 @@
+2025-05-09  Matthew Sheets  <https://github.com/BrickBot/GNU-Legacy-Toolchain>
+
+	* Update configure scripts: GCC 3 & 4.4 pass down datadir (not datarootdir)
+
 2010-11-20  Ralf Wildenhues  <Ralf.Wildenhues@gmx.de>
 
 	* Makefile.in (install-strip): New target.

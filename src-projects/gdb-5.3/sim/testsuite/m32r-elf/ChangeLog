@@ -1,3 +1,9 @@
+2025-06-12  Matthew Sheets  <https://github.com/BrickBot/GNU-Legacy-Toolchain>
+
+	* Update configure scripts:
+	  - /usr/share/man has superseded /usr/man
+	  - /usr/share/info has superseded /usr/info
+
 Thu Feb 12 19:09:38 1998  Doug Evans  <devans@canuck.cygnus.com>
 
 	* Directory created.

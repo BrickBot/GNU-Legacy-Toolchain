@@ -1,3 +1,207 @@
+2025-05-09  Matthew Sheets  <https://github.com/BrickBot/GNU-Legacy-Toolchain>
+
+	* Update configure scripts:
+	  - /usr/share/man has superseded /usr/man
+	  - /usr/share/info has superseded /usr/info
+
+2025-04-12  Matthew Sheets  <https://github.com/BrickBot/GNU-Legacy-Toolchain>
+
+	* Update gcc/objc/objc-parse.y for compatibility with Bison changes.
+
+2025-04-12  Matthew Sheets  <https://github.com/BrickBot/GNU-Legacy-Toolchain>
+
+	* Apply Red Hat compatibility patch numbers 38 and 47.
+	  - Includes those listed below from 2005-02-09 (middle-end), 2005-02-11,
+	    2005-03-30, 2005-11-22, and 2007-01-05.
+	* Apply Red Hat compatibility patch numbers 7, 11, 12, 17, and 30.
+	  - Includes those listed below from 2005-01-13 (rtl-optimization),
+	    2004-05-27 (middle-end), 2005-05-17 (hashtab recursion), 2005-09-20,
+	    and 2005-05-08.
+	* Apply Red Hat compatibility patch numbers 31, 32, 43, and 44.
+	  - Includes those listed below from 2005-11-30, 2005-12-18 & 2006-04-20
+	    (associated test), 2006-10-27 & 2006-12-08 (associated test), and
+	    2005-11-09 & 2006-12-08 (associated test).
+	* Apply Red Hat compatibility patch numbers 34 and 35.
+	  - Includes those listed below from patch 34 of 2006-02-25
+	    (handle VECTOR_CST)
+	  - Includes those listed below from patch 35 (GCC config) of 2005-05-07,
+	    2004-07-11, and 2004-07-06.
+	* Apply Red Hat compatibility patch numbers 49, 51, and 52.
+	  - Includes those listed below from 2007-04-02, 2007-04-12, & 2007-04-21.
+
+2025-04-11  Matthew Sheets  <https://github.com/BrickBot/GNU-Legacy-Toolchain>
+
+	* Backport to enable basic multiarch support in GCC config.
+	* Add tests for GCC config from Red Hat compatibility patches.
+	* Update *.texi files to conform with more current documentation standards.
+	* Apply the WeakRef updates from the Red Hat compatibility patches.
+	* Add Internal Compiler Error (ICE) exit codes from the Red Hat
+	  compatibility patches.
+
+2025-04-07  Matthew Sheets  <https://github.com/BrickBot/GNU-Legacy-Toolchain>
+
+	* Apply Debian patch to address errors in c-parse.y.
+
+2024-08-28  Matthew Sheets  <https://github.com/BrickBot/GNU-Legacy-Toolchain>
+
+	* Address potential overflow issues in print-tree.c based on FORTIFY.
+
+2007-04-21  Alexandre Oliva  <aoliva@redhat.com>
+
+	* gcse.c (store_killed_in_insn): Handle PARALLELs.
+	(store_killed_in_pat): New.
+	* gcc.dg/movsi-sm-1.c: New.
+
+2007-04-12  Jakub Jelinek  <jakub@redhat.com>
+
+	* fr.po: Use %s rather than %S.
+	* rw.po: Comment out translations with bogus format
+	strings.
+
+2007-04-02  Jakub Jelinek  <jakub@redhat.com>
+
+	* expr.c (expand_expr_real) <case COMPLEX_EXPR>: Force op1
+	into register if target overlaps with op1.
+	* g77.f-torture/execute/20070402.f: New test.
+
+2007-01-05  Jakub Jelinek  <jakub@redhat.com>
+
+	PR c/30360
+	* libgcc2.c (__divdc3): Compare c and d against 0.0 instead of
+	denom against 0.0.
+
+2006-12-08  Jakub Jelinek  <jakub@redhat.com>
+
+	* g++.dg/opt/ifcvt1.C: New test for 2005-11-09.
+
+2006-12-08  Alexandre Oliva  <aoliva@redhat.com>
+
+	* g++.dg/template/array17.C: New test.
+
+2006-10-27  Alexandre Oliva  <aoliva@redhat.com>
+
+	* typeck.c (non_reference): Don't dereference NULL type.
+
+2006-05-05  Jakub Jelinek  <jakub@redhat.com>
+
+	* gcc.dg/tls/opt-12.c: New test.
+
+2006-04-20  Jakub Jelinek  <jakub@redhat.com>
+
+	* gcc.c-torture/execute/20060420-1.c: New test.
+
+2006-02-25  Alexandre Oliva  <aoliva@redhat.com>
+
+	* varasm.c (copy_constant): Handle VECTOR_CST.
+	* gcc.dg/altivec-23.c: New test.
+
+2005-12-18  Alexandre Oliva  <aoliva@redhat.com>
+
+	* optabs.c (expand_vector_binop): Do not use a SUBREG to modify
+	a subword in the output if it matches any of the inputs.
+
+2005-11-30  Alexandre Oliva  <aoliva@redhat.com>
+
+	* gcc.c (find_a_file): Use update_path before access tests.
+	Mostly from Thomas Walker <thomas.walker@morganstanley.com>
+	* prefix.c (update_path): Move dir/../-stripping code to...
+	(maybe_strip_dotdots): New function.  Reorganize.
+
+2005-11-22  Joseph S. Myers  <joseph@codesourcery.com>
+
+	* libgcc-std.ver (GCC_4.2.0): New version.
+	* libgcc2.c (__floatundixf, __floatunditf, __floatundidf,
+	__floatundisf): New functions.
+	* libgcc2.h (__floatundixf, __floatunditf, __floatundidf,
+	__floatundisf): Declare.
+	* mklibgcc.in (lib2funcs): Add _floatundidf, _floatundisf,
+	_floatundixf, and _floatunditf.
+
+2005-11-09  Eric Botcazou  <ebotcazou@adacore.com>
+
+	* ifcvt.c (noce_get_alt_condition): Use prev_nonnote_insn.
+	(noce_try_abs): Negate if the comparison is reversed.
+	Look only one instruction backwards for a REG_EQUAL note.
+	* gcc.dg/ifcvt-fabs-1.c: New test.
+
+2005-09-29  Alexandre Oliva  <aoliva@redhat.com>
+
+	* error.c (dump_type) <UNKNOWN_TYPE>: Print reworded message.
+	* g++.dg/overload/unknown1.C: New.
+
+2005-05-17  Jakub Jelinek  <jakub@redhat.com>
+
+	* varasm.c (struct constant_descriptor_tree): Add hash field.
+	(const_desc_hash): Just return hash field.
+	(const_desc_eq): If hash values are different, return 0 immediately.
+	(output_constant_def): Compute hash field of temporary key, use
+	htab_find_slot_with_hash instead of htab_find_slot.  Set hash in
+	newly built constant descriptor.
+	(lookup_constant_def): Compute hash field of temporary key, use
+	htab_find_with_hash instead of htab_find.
+
+2005-05-08  Roger Sayle  <roger@eyesopen.com>
+
+	PR inline-asm/8788
+	* stmt.c (expand_asm_operands): Avoid calling force_reg on BLKmode
+	  operands.
+	* gcc.dg/pr8788-1.c: New testcase.
+
+2005-05-07  Richard Henderson  <rth@redhat.com>
+
+	PR target/21412
+	* config/rs6000/rs6000.c (rs6000_emit_move): Look for tls addresses
+	with constant offsets.
+
+2005-03-30 Fariborz Jahanian <fjahanian@apple.com>
+
+	* libgcc2.h (__powisf2, __powidf2, __powixf2, __powitf2): Change
+	2nd argument type to int.
+	* libgcc2.c: Change prototype of __powi* functions to use
+	int.
+
+2005-02-11  Richard Henderson  <rth@redhat.com>
+
+	* libgcc2.c (__divsc3, __divdc3, __divxc3, __divtc3,
+	__mulsc3, __muldc3, __mulxc3, __multc3): New.
+	* libgcc2.h: Declare them.
+ 	* libgcc-std.ver: Export them.
+	* mklibgcc.in (lib2funcs): Build them.
+
+2005-02-09  Richard Guenther  <rguenth@gcc.gnu.org>
+
+	PR middle-end/19402
+	* libgcc2.h: Add prototypes for __builtin_powi[lf].
+	* libgcc2.c: Add __builtin_powi[lf] implementation.
+	* mklibgcc.in: Add __builtin_powi[lf] to lib2funcs.
+
+2005-01-13  Jakub Jelinek  <jakub@redhat.com>
+
+	PR rtl-optimization/16104
+	* expr.c (convert_move): Handle vector from resp. to if mode
+	sizes differ.
+
+	* gcc.c-torture/execute/20050113-1.c: New test.
+
+2004-07-11  Ulrich Weigand  <uweigand@de.ibm.com>
+
+	* config/s390/s390.c (legitimize_tls_address): Handle constant offsets
+	added to TLS symbol addresses.
+
+2004-07-06  Richard Henderson  <rth@redhat.com>
+
+	* config/i386/i386.c (legitimize_address): Handle CONST with TLS
+	operand.
+	(ix86_expand_move): Don't call legitimize_pic_address directly.
+
+2004-05-27  Josef Zlomek  <zlomekj@suse.cz>
+
+	PR middle-end/14084
+	* emit-rtl.c (gen_rtx_REG_offset): Adjust the offset according
+	to size of decl.
+
+** Break in Sequence: Out-of-sequence patch dates above preceded inclusion **
+
 2009-11-02  Jason Merrill  <jason@redhat.com>
 
 	* c-parse.in (structsp_attr): Fix for bison 2.4.1 pedantry.

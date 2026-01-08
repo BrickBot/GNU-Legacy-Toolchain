@@ -1,3 +1,7 @@
+2024-08-28  Matthew Sheets  <https://github.com/BrickBot/GNU-Legacy-Toolchain>
+
+	* Address potential overflow issues in ar.h based on FORTIFY.
+
 2004-01-06  Mark Kettenis  <kettenis@gnu.org>
 
 	* stab.def: Add N_PATCH to DO definition.

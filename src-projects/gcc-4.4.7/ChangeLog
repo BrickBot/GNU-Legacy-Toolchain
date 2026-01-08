@@ -1,3 +1,28 @@
+2025-06-20  Matthew Sheets  <https://github.com/BrickBot/GNU-Legacy-Toolchain>
+
+	* configure.ac: Add target-libcilsupport to target_libraries
+
+2025-06-12  Matthew Sheets  <https://github.com/BrickBot/GNU-Legacy-Toolchain>
+
+	* configure[.ac]: Provide for being able to skip Sim and GDB
+	  in a combined GCC build.
+
+2025-06-07  Matthew Sheets  <https://github.com/BrickBot/GNU-Legacy-Toolchain>
+
+	* Add CIL Front End support from the GCC CLI/CIL project
+
+2025-05-09  Matthew Sheets  <https://github.com/BrickBot/GNU-Legacy-Toolchain>
+
+	* Update configure scripts:
+	  - /usr/share/man has superseded /usr/man
+	  - /usr/share/info has superseded /usr/info
+
+2025-04-21  Matthew Sheets  <https://github.com/BrickBot/GNU-Legacy-Toolchain>
+
+	* Convert "struct siginfo" to "siginfo_t"
+	* Convert "struct ucontext" to "ucontext_t"
+	* Update configure[.ac] to exclude libstdc++-v3 when targeting the H8/300.
+
 2012-03-13  Release Manager
 
 	* GCC 4.4.7 released.

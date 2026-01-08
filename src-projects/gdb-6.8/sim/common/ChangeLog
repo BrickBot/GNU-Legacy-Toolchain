@@ -1,3 +1,10 @@
+2025-06-05  Matthew Sheets  <https://github.com/BrickBot/GNU-Legacy-Toolchain>
+
+	* Update configure scripts:
+	  - /usr/share/man has superseded /usr/man
+	  - /usr/share/info has superseded /usr/info
+	* Add missing <string.h> include to gentmap.c
+
 2007-10-11  Jesper Nilsson  <jesper.nilsson@axis.com>
 
 	* callback.c (cb_is_stdin, cb_is_stdout, cb_is_stderr): Add functions.

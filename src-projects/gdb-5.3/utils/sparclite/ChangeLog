@@ -1,3 +1,9 @@
+2025-06-12  Matthew Sheets  <https://github.com/BrickBot/GNU-Legacy-Toolchain>
+
+	* Update configure scripts:
+	  - /usr/share/man has superseded /usr/man
+	  - /usr/share/info has superseded /usr/info
+
 Thu Aug 29 17:09:04 1996  Michael Meissner  <meissner@tiktok.cygnus.com>
 
 	* configure.in (i[345]86-*-*): Recognize i686 for pentium pro.

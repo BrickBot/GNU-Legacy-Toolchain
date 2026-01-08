@@ -1,3 +1,13 @@
+2025-05-09  Matthew Sheets  <https://github.com/BrickBot/GNU-Legacy-Toolchain>
+
+	* Update configure scripts:
+	  - /usr/share/man has superseded /usr/man
+	  - /usr/share/info has superseded /usr/info
+
+2024-08-28  Matthew Sheets  <https://github.com/BrickBot/GNU-Legacy-Toolchain>
+
+	* Address potential overflow issues in prdbg.c based on FORTIFY.
+
 2005-04-20  Daniel Jacobowitz  <dan@codesourcery.com>
 
 	* readelf.c (display_debug_frames): Use data factor for

@@ -1,3 +1,13 @@
+2025-04-11  Matthew Sheets  <https://github.com/BrickBot/GNU-Legacy-Toolchain>
+
+	* Address minor compilation issue in keyword.h.
+
+2024-08-27  Matthew Sheets  <https://github.com/BrickBot/GNU-Legacy-Toolchain>
+
+	* Address compilation error in keyword.[gperf,h].
+	  - remove "static" from hash() declaration.
+	  - remove "__inline" from java_keyword() declaration.
+
 2006-03-05  Release Manager
 
 	* GCC 3.4.6 released.
@@ -14674,7 +14684,7 @@
 	(java_complete_expand_method): Call source_end_java_method if no
 	error were found during completion.
 	(resolve_expression_name): Use IDENTIFIER_LOCAL_VALUE to retrieve
-	locals declaratilon. Handle names found within a class. Return
+	locals declaration. Handle names found within a class. Return
 	error_mark_node when things aren't found.
 	(patch_method_invocation_stmt): Return error_mark_node on failures.
 	(patch_invoke): Removed unused local. Return the correct node.

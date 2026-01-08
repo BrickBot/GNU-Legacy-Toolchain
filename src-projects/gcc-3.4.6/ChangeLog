@@ -1,3 +1,28 @@
+2025-06-12  Matthew Sheets  <https://github.com/BrickBot/GNU-Legacy-Toolchain>
+
+	* configure[.in]: Provide for being able to skip libdecnumber, Sim, & GDB
+	  in a combined GCC build.
+
+2025-06-02  Matthew Sheets  <https://github.com/BrickBot/GNU-Legacy-Toolchain>
+
+	* Fix "--with-gpc-shared" to be consistent with how Makefile.in is regenerated
+	* Update Make and configure files to support libdecnumber:
+	  - configure, configure.in, Makefile.in, and Makefile.def
+
+2025-05-09  Matthew Sheets  <https://github.com/BrickBot/GNU-Legacy-Toolchain>
+
+	* Update configure scripts:
+	  - /usr/share/man has superseded /usr/man
+	  - /usr/share/info has superseded /usr/info
+
+2025-03-31  Matthew Sheets  <https://github.com/BrickBot/GNU-Legacy-Toolchain>
+
+	* Convert "struct siginfo" to "siginfo_t"
+
+2025-03-27  Matthew Sheets  <https://github.com/BrickBot/GNU-Legacy-Toolchain>
+
+	* Convert "struct ucontext" to "ucontext_t"
+
 2006-03-05  Release Manager
 
 	* GCC 3.4.6 released.

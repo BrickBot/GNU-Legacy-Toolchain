@@ -1,3 +1,7 @@
+2024-08-28  Matthew Sheets  <https://github.com/BrickBot/GNU-Legacy-Toolchain>
+
+	* Address potential overflow issues in bad.c based on FORTIFY.
+
 2006-03-05  Release Manager
 
 	* GCC 3.4.6 released.

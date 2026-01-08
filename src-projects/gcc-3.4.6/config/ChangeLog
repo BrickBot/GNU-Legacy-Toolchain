@@ -1,3 +1,7 @@
+2025-04-11  Matthew Sheets  <https://github.com/BrickBot/GNU-Legacy-Toolchain>
+
+	* Backport to enable basic multiarch support.
+
 2006-03-05  Release Manager
 
 	* GCC 3.4.6 released.

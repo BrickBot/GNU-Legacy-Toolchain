@@ -1,3 +1,9 @@
+2025-06-12  Matthew Sheets  <https://github.com/BrickBot/GNU-Legacy-Toolchain>
+
+	* Update configure scripts:
+	  - /usr/share/man has superseded /usr/man
+	  - /usr/share/info has superseded /usr/info
+
 Wed Jul 17 19:36:38 2002  J"orn Rennecke <joern.rennecke@superh.com>
 
 	* Makefile.in (interp.o): Depend on $(srcroot)/include/gdb/sim-sh.h.

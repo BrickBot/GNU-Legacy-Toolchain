@@ -1,3 +1,21 @@
+2025-06-23  Matthew Sheets  <https://github.com/BrickBot/GNU-Legacy-Toolchain>
+
+	* Update gprof.info for newer doc tool versions.
+
+2025-05-09  Matthew Sheets  <https://github.com/BrickBot/GNU-Legacy-Toolchain>
+
+	* Update configure scripts:
+	  - /usr/share/man has superseded /usr/man
+	  - /usr/share/info has superseded /usr/info
+
+2025-05-06  Matthew Sheets  <https://github.com/BrickBot/GNU-Legacy-Toolchain>
+
+	* Fix the rule for %.m in Makefile.am and Makefile.in.
+
+2025-04-22  Matthew Sheets  <https://github.com/BrickBot/GNU-Legacy-Toolchain>
+
+	* Update deprecated SUFFIX-style rules in Makefile.am and Makefile.in.
+
 2005-04-14  Alan Modra  <amodra@bigpond.net.au>
 
 	* corefile.c (core_init): Call bfd_get_synthetic_symtab.
