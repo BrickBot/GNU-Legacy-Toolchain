@@ -1,3 +1,26 @@
+2025-07-05  Matthew Sheets  <https://github.com/BrickBot/GNU-Legacy-Toolchain>
+
+	* Create separate targets for making the info dir
+	  - Modified file:  Makefile.in
+
+2025-07-04  Matthew Sheets  <https://github.com/BrickBot/GNU-Legacy-Toolchain>
+
+	* Do NOT automatically install-info on install (despite GNU standards).
+	  (Installed info files would conflict with files of other GNU versions)
+	  - Modified file: Makefile.in.
+	* Backport GCC patch from 2024 to skip building & installing of info files
+	  (https://gcc.gnu.org/pipermail/gcc-patches/2024-February/645362.html).
+	  - Modified files: configure.ac, configure, Makefile.in
+
+2025-07-03  Matthew Sheets  <https://github.com/BrickBot/GNU-Legacy-Toolchain>
+
+	* gcc.texi: Update formatting for compliance with latest standards.
+	  - Used GCC’s latest version of the file as a guide.
+
+2025-07-01  Matthew Sheets  <https://github.com/BrickBot/GNU-Legacy-Toolchain>
+
+	* Update #includes in protoize.c for current Cygwin compatibility.
+
 2025-05-09  Matthew Sheets  <https://github.com/BrickBot/GNU-Legacy-Toolchain>
 
 	* Update configure scripts:

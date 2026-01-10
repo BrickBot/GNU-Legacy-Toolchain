@@ -1,0 +1,20 @@
+2025-09-03  Matthew Sheets  <https://github.com/BrickBot/GNU-Legacy-Toolchain>
+
+	* Update config.guess and config.sub to the latest (2025-07-10).
+
+2025-07-04  Matthew Sheets  <https://github.com/BrickBot/GNU-Legacy-Toolchain>
+
+	* ltconfig: Update the info output as part of the ltconfig script.
+
+2025-07-03  Matthew Sheets  <https://github.com/BrickBot/GNU-Legacy-Toolchain>
+
+	* ltconfig: Parse the current machine triplet to obtain the OS name.
+
+2025-07-01  Matthew Sheets  <https://github.com/BrickBot/GNU-Legacy-Toolchain>
+
+	* Create a common ltconfig based on GCC 4.4.7’s libjava/classpath project.
+	* Update ltconfig to prevent builds from hanging under Cygwin.
+
+2025-04-21  Matthew Sheets  <https://github.com/BrickBot/GNU-Legacy-Toolchain>
+
+	* Create common config.guess and config.sub files.

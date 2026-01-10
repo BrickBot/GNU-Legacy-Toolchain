@@ -1,3 +1,13 @@
+2025-07-10  Matthew Sheets  <https://github.com/BrickBot/GNU-Legacy-Toolchain>
+
+	* Preserve existing NoConfigDirs when building under Cygwin.
+	  - Modified files: configure.in, configure.
+
+2025-07-04  Matthew Sheets  <https://github.com/BrickBot/GNU-Legacy-Toolchain>
+
+	* Enable passing through of MAKEINFO to subconfigures/submakes.
+	  - Modified files: configure.in, configure, Makefile.in.
+
 2025-06-12  Matthew Sheets  <https://github.com/BrickBot/GNU-Legacy-Toolchain>
 
 	* configure[.in]: Provide for being able to skip libdecnumber, Sim, & GDB

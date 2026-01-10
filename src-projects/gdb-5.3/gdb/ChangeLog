@@ -1,3 +1,9 @@
+2025-07-01  Matthew Sheets  <https://github.com/BrickBot/GNU-Legacy-Toolchain>
+
+	* configure and configure.in:
+	  - Remove outdated Cygwin check
+	  - If building for the H8/300, skip libstdc++-v3
+
 2025-06-17  Matthew Sheets  <https://github.com/BrickBot/GNU-Legacy-Toolchain>
 
 	* Apply Debian patches for GDB 5.2 that are still applicable to GDB 5.3

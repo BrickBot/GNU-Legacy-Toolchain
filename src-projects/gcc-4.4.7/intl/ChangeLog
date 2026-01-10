@@ -1,3 +1,10 @@
+2025-12-29  Matthew Sheets  <https://github.com/BrickBot/GNU-Legacy-Toolchain>
+
+	* Update deprecated Bison %pure_parser directive in plural.y.  In Bison's 
+	  release notes at the link given below, see the section
+	  "Noteworthy changes in release 3.4 (2019-05-19) [stable]"
+      - https://github.com/bincrafters/bison/blob/master/NEWS
+
 2025-05-09  Matthew Sheets  <https://github.com/BrickBot/GNU-Legacy-Toolchain>
 
 	* Update configure scripts:

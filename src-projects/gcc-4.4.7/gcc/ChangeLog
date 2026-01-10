@@ -1,3 +1,12 @@
+2025-07-04  Matthew Sheets  <https://github.com/BrickBot/GNU-Legacy-Toolchain>
+
+	* Do NOT automatically install-info on install (despite GNU standards).
+	  (Installed info files would conflict with files of other GNU versions)
+	  - Modified file: Makefile.in.
+	* Backport GCC patch from 2024 to skip building & installing of info files
+	  (https://gcc.gnu.org/pipermail/gcc-patches/2024-February/645362.html).
+	  - Modified files: configure.ac, configure, Makefile.in
+
 2025-06-07  Matthew Sheets  <https://github.com/BrickBot/GNU-Legacy-Toolchain>
 
 	* Add CIL Front End support from the GCC CLI/CIL project

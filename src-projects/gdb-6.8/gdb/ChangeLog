@@ -1,3 +1,8 @@
+2025-07-01  Matthew Sheets  <https://github.com/BrickBot/GNU-Legacy-Toolchain>
+
+	* Update Cygwin-specific code in remote-fileio.c for current Cygwin
+	  compatibility.
+
 2025-06-10  Matthew Sheets  <https://github.com/BrickBot/GNU-Legacy-Toolchain>
 
 	* Apply Debian patches that were created for GDB 6.8:

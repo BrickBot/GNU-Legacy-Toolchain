@@ -1,3 +1,9 @@
+2025-07-04  Matthew Sheets  <https://github.com/BrickBot/GNU-Legacy-Toolchain>
+
+	* Do NOT automatically install-info on install (despite GNU standards).
+	  (Installed info files would conflict with files of other GNU versions)
+	  - Modified file: Makefile.in.
+
 2002-02-24  Elena Zannoni  <ezannoni@redhat.com>
 
         * ChangeLog.gdb: Renamed from ChangeLog.

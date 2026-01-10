@@ -1,3 +1,9 @@
+2025-07-04  Matthew Sheets  <https://github.com/BrickBot/GNU-Legacy-Toolchain>
+
+	* Do NOT automatically install-info on install (despite GNU standards).
+	  (Installed info files would conflict with files of other GNU versions)
+	  - Modified files: Makefile.in.
+
 2006-04-24  Daniel Jacobowitz  <dan@codesourcery.com>
 
 	Imported readline 5.1, and upstream patches 001-004.

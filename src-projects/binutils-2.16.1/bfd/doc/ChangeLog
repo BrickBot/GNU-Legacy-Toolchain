@@ -1,3 +1,9 @@
+2025-07-04  Matthew Sheets  <https://github.com/BrickBot/GNU-Legacy-Toolchain>
+
+	* Do NOT automatically install-info on install (despite GNU standards).
+	  (Installed info files would conflict with files of other GNU versions)
+	  - Modified files: Makefile.am, Makefile.in.
+
 2025-06-23  Matthew Sheets  <https://github.com/BrickBot/GNU-Legacy-Toolchain>
 
 	* Update bfd.info and opncls.texi for newer doc tool versions.

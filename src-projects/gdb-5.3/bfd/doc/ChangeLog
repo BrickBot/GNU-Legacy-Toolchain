@@ -1,3 +1,9 @@
+2025-07-04  Matthew Sheets  <https://github.com/BrickBot/GNU-Legacy-Toolchain>
+
+	* Do NOT automatically install-info on install (despite GNU standards).
+	  (Installed info files would conflict with files of other GNU versions)
+	  - Modified files: Makefile.am, Makefile.in.
+
 2002-08-29  John David Anglin  <dave@hiauly1.hia.nrc.ca>
 
 	* chew.c (paramstuff, outputdots, perform, bang and usage): Remove

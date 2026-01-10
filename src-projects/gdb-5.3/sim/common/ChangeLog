@@ -1,3 +1,7 @@
+2025-07-07  Matthew Sheets  <https://github.com/BrickBot/GNU-Legacy-Toolchain>
+
+	* Add includes (headers) missing from gentmap.c
+
 2025-06-12  Matthew Sheets  <https://github.com/BrickBot/GNU-Legacy-Toolchain>
 
 	* Update configure scripts:

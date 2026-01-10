@@ -1,3 +1,9 @@
+2025-07-04  Matthew Sheets  <https://github.com/BrickBot/GNU-Legacy-Toolchain>
+
+	* Facilitate optionally skipping the end-user install of libiberty.a
+	  (would conflict with installation of other [e.g. current] GNU versions).
+	  - Modified files: configure.ac, configure, Makefile.in.
+
 2025-05-09  Matthew Sheets  <https://github.com/BrickBot/GNU-Legacy-Toolchain>
 
 	* Update configure scripts:

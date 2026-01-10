@@ -1,5 +1,16 @@
 ChangeLog -- Edit History for GPC, the GNU Pascal Compiler, since version 2.1
 =============================================================================
+2025-07-05  Matthew Sheets  <https://github.com/BrickBot/GNU-Legacy-Toolchain>
+
+	* Create separate targets for making the info dir
+	  - Modified file:  Make-lang.in
+
+2025-07-04  Matthew Sheets  <https://github.com/BrickBot/GNU-Legacy-Toolchain>
+
+	* Separate docs install from main install
+	* If skipping GPC shared, don't install gpc-run
+	- Modified file:  Make-lang.in
+
 2025-06-19  Matthew Sheets  <https://github.com/BrickBot/GNU-Legacy-Toolchain>
 
 	* Enable WITH_SHARED as a GCC configure arg.
