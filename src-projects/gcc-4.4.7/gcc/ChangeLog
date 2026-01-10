@@ -1,3 +1,8 @@
+2026-01-09  Matthew Sheets  <https://github.com/BrickBot/GNU-Legacy-Toolchain>
+
+	* Create separate targets for making the info dir
+	  - Modified file:  Makefile.in
+
 2025-07-04  Matthew Sheets  <https://github.com/BrickBot/GNU-Legacy-Toolchain>
 
 	* Do NOT automatically install-info on install (despite GNU standards).

@@ -4143,9 +4143,11 @@ installdirs:
 	$(mkinstalldirs) $(DESTDIR)$(libexecsubdir)
 	$(mkinstalldirs) $(DESTDIR)$(bindir)
 	$(mkinstalldirs) $(DESTDIR)$(includedir)
-	$(mkinstalldirs) $(DESTDIR)$(infodir)
 	$(mkinstalldirs) $(DESTDIR)$(slibdir)
 	$(mkinstalldirs) $(DESTDIR)$(man1dir)
+
+installdirs-info:
+	$(mkinstalldirs) $(DESTDIR)$(infodir)
 
 installdirs-man7:
 	$(mkinstalldirs) $(DESTDIR)$(man7dir)
@@ -4212,7 +4214,7 @@ install-driver: installdirs xgcc$(exeext)
 # Install the info files.
 # $(INSTALL_DATA) might be a relative pathname, so we can't cd into srcdir
 # to do the install.
-install-info:: doc installdirs install-man7 \
+install-info:: doc installdirs-info install-man7 \
 	$(DESTDIR)$(infodir)/cpp.info \
 	$(DESTDIR)$(infodir)/gcc.info \
 	$(DESTDIR)$(infodir)/cppinternals.info \
