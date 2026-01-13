@@ -333,9 +333,9 @@ config.status: configure
 	CONFIG_SITE=no-such-file CC='$(CC)' AR='$(AR)' CFLAGS='$(CFLAGS)' \
 	CPPFLAGS='$(CPPFLAGS)' $(SHELL) config.status --recheck
 
-${srcdir}/configure: @MAINT@ configure.ac
+$(srcdir)/configure: @MAINT@ $(srcdir)/configure.ac
 	rm -f config.cache
-	cd ${srcdir} && autoconf
+	cd $(srcdir) && autoconf
 
 install: install-libs install-headers
 
