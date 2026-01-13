@@ -68,6 +68,8 @@ test "$AR" || AR=ar
 AC_SUBST(AR)
 AC_PROG_MAKE_SET
 
+AM_MAINTAINER_MODE
+
 dnl This is only because we (horribly) punt the chmod job to the program at
 dnl present.  Note that the result of this test could be wrong in the cross
 dnl case.

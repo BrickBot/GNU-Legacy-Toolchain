@@ -59,6 +59,8 @@ test "$AR" || AR=ar
 AC_SUBST(AR)
 AC_PROG_MAKE_SET
 
+AM_MAINTAINER_MODE
+
 dnl Checks for libraries.
 
 dnl Checks for header files.

@@ -54,6 +54,8 @@ fi
 AC_PROG_INSTALL
 AC_PROG_MAKE_SET
 
+AM_MAINTAINER_MODE
+
 dnl Checks for header files.
 # Sanity check for the cross-compilation case:
 AC_CHECK_HEADER(stdio.h,:,
