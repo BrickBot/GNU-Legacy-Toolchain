@@ -789,6 +789,31 @@ fi
 
 
 
+echo $ac_n "checking whether to enable maintainer-specific portions of Makefiles... $ac_c" 1>&6
+echo "configure:793: checking whether to enable maintainer-specific portions of Makefiles" >&5
+    # Check whether --enable-maintainer-mode or --disable-maintainer-mode was given.
+if test "${enable_maintainer_mode+set}" = set; then
+  enableval="$enable_maintainer_mode"
+  USE_MAINTAINER_MODE=$enableval
+else
+  USE_MAINTAINER_MODE=no
+fi;
+#  echo "configure:801: result: $USE_MAINTAINER_MODE" >&5
+echo "$ac_t""$USE_MAINTAINER_MODE" 1>&6
+
+
+if test $USE_MAINTAINER_MODE = yes; then
+  MAINTAINER_MODE_TRUE=
+  MAINTAINER_MODE_FALSE='#'
+else
+  MAINTAINER_MODE_TRUE='#'
+  MAINTAINER_MODE_FALSE=
+fi
+
+  MAINT=$MAINTAINER_MODE_TRUE
+
+
+
 # Sanity check for the cross-compilation case:
 echo $ac_n "checking how to run the C preprocessor""... $ac_c" 1>&6
 echo "configure:795: checking how to run the C preprocessor" >&5
@@ -1903,6 +1928,9 @@ s%@mandir@%$mandir%g
 s%@CC@%$CC%g
 s%@LIBTOOL@%$LIBTOOL%g
 s%@AR@%$AR%g
+s%@MAINTAINER_MODE_TRUE@%$MAINTAINER_MODE_TRUE%g
+s%@MAINTAINER_MODE_FALSE@%$MAINTAINER_MODE_FALSE%g
+s%@MAINT@%$MAINT%g
 s%@SET_MAKE@%$SET_MAKE%g
 s%@CPP@%$CPP%g
 

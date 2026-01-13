@@ -817,7 +817,7 @@ if test "${with_cross_host+set}" = set; then
 fi
 
 
-  # Never versions of autoconf add an underscore to these functions.
+  # Newer versions of autoconf add an underscore to these functions.
   # Prevent future problems ...
   
   
@@ -1163,6 +1163,31 @@ test -z "$INSTALL_PROGRAM" && INSTALL_PROGRAM='${INSTALL}'
 test -z "$INSTALL_SCRIPT" && INSTALL_SCRIPT='${INSTALL_PROGRAM}'
 
 test -z "$INSTALL_DATA" && INSTALL_DATA='${INSTALL} -m 644'
+
+
+echo $ac_n "checking whether to enable maintainer-specific portions of Makefiles... $ac_c" 1>&6
+echo "configure:1169: checking whether to enable maintainer-specific portions of Makefiles" >&5
+    # Check whether --enable-maintainer-mode or --disable-maintainer-mode was given.
+if test "${enable_maintainer_mode+set}" = set; then
+  enableval="$enable_maintainer_mode"
+  USE_MAINTAINER_MODE=$enableval
+else
+  USE_MAINTAINER_MODE=no
+fi;
+#  echo "configure:1177: result: $USE_MAINTAINER_MODE" >&5
+echo "$ac_t""$USE_MAINTAINER_MODE" 1>&6
+
+
+if test $USE_MAINTAINER_MODE = yes; then
+  MAINTAINER_MODE_TRUE=
+  MAINTAINER_MODE_FALSE='#'
+else
+  MAINTAINER_MODE_TRUE='#'
+  MAINTAINER_MODE_FALSE=
+fi
+
+  MAINT=$MAINTAINER_MODE_TRUE
+
 
 
   # We need AC_EXEEXT to keep automake happy in cygnus mode.  However,
@@ -2696,6 +2721,9 @@ s%@RANLIB@%$RANLIB%g
 s%@INSTALL_PROGRAM@%$INSTALL_PROGRAM%g
 s%@INSTALL_SCRIPT@%$INSTALL_SCRIPT%g
 s%@INSTALL_DATA@%$INSTALL_DATA%g
+s%@MAINTAINER_MODE_TRUE@%$MAINTAINER_MODE_TRUE%g
+s%@MAINTAINER_MODE_FALSE@%$MAINTAINER_MODE_FALSE%g
+s%@MAINT@%$MAINT%g
 s%@EXEEXT@%$EXEEXT%g
 s%@gcc_version@%$gcc_version%g
 s%@gcc_version_trigger@%$gcc_version_trigger%g
