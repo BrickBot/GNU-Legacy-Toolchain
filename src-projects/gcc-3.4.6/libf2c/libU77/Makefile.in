@@ -90,8 +90,9 @@ config.status: configure
 	CONFIG_SITE=no-such-file CC='$(CC)' CFLAGS='$(CFLAGS)' \
 	  CPPFLAGS='$(CPPFLAGS)' $(SHELL) config.status --recheck
 
-${srcdir}/configure: configure.in
-	cd ${srcdir} && autoconf
+$(srcdir)/configure: @MAINT@ $(srcdir)/configure.in
+	rm -f config.cache
+	cd $(srcdir) && autoconf
 
 ${srcdir}/config.hin: stamp-h.in
 ${srcdir}/stamp-h.in: configure.in acconfig.h

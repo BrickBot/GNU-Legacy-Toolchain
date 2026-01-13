@@ -95,9 +95,9 @@ config.status: configure
 	CONFIG_SITE=no-such-file CC='$(CC)' AR='$(AR)' CFLAGS='$(CFLAGS)' \
 	  CPPFLAGS='$(CPPFLAGS)' $(SHELL) config.status --recheck
 
-${srcdir}/configure: configure.in
+$(srcdir)/configure: @MAINT@ $(srcdir)/configure.in
 	rm -f config.cache
-	cd ${srcdir} && autoconf
+	cd $(srcdir) && autoconf
 
 VersionF.lo: Version.c
 	@LIBTOOL@ --mode=compile $(CC) -c $(ALL_CFLAGS) $(srcdir)/Version.c -o $@
