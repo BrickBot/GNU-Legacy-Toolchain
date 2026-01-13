@@ -1,3 +1,8 @@
+2026-01-12  Matthew Sheets  <https://github.com/BrickBot/GNU-Legacy-Toolchain>
+
+	* Add missing maintainer mode support
+	  - Impacted files:  configure.in, configure, Makefile.in
+
 2025-12-29  Matthew Sheets  <https://github.com/BrickBot/GNU-Legacy-Toolchain>
 
 	* aclocal.m4: Remove redefines for deprecated autoconf functions
