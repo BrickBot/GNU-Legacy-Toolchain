@@ -74,7 +74,7 @@ jobs:
     
     steps:
     - name: Get latest from version control
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
       with:
         # git-restore-mtime-bare uses the ref log to find the correct timestamp
         # for each file. This requires a full git history. The default value (1)
@@ -141,7 +141,7 @@ jobs:
       run:  find $SYSROOT_DIR -printf "%P\n" | sort | tar --verbose --create --file $OUTPUT_DIR/[${{ matrix.os }}-${{ matrix.platform }}]_${{ matrix.target-system }}-${{ matrix.toolchain-set }}.tar --no-recursion --directory=$SYSROOT_DIR --files-from=-
 
     - name: Archive the host installation snapshot tar file
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v6
       with:
         name: "[${{ matrix.os }}-${{ matrix.platform }}]_${{ matrix.target-system }}-${{ matrix.toolchain-set }}_${{ github.run_id }}.${{ github.run_number }}.${{ github.run_attempt }}"
         path: "${{ env.OUTPUT_DIR }}/[${{ matrix.os }}-${{ matrix.platform }}]_${{ matrix.target-system }}-${{ matrix.toolchain-set }}.tar"
@@ -172,7 +172,7 @@ jobs:
     
     steps:
     - name: Get latest from version control
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
       with:
         # git-restore-mtime-bare uses the ref log to find the correct timestamp
         # for each file. This requires a full git history. The default value (1)
@@ -223,7 +223,7 @@ jobs:
       run:  find $SYSROOT_DIR -printf "%P\n" | sort | tar --verbose --create --file $OUTPUT_DIR/RCX_${{ matrix.os }}.tar --no-recursion --directory=$SYSROOT_DIR --files-from=-
 
     - name: Archive the host installation snapshot tar file
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v6
       with:
         name: "RCX_${{ matrix.os }}_${{ github.run_id }}.${{ github.run_number }}.${{ github.run_attempt }}"
         path: "${{ env.OUTPUT_DIR }}/RCX_${{ matrix.os }}.tar"
@@ -250,7 +250,7 @@ jobs:
 #
 #    steps:
 #    - name: Get latest from version control
-#      uses: actions/checkout@v4
+#      uses: actions/checkout@v6
 #      with:
 #        # git-restore-mtime-bare uses the ref log to find the correct timestamp
 #        # for each file. This requires a full git history. The default value (1)
@@ -295,7 +295,7 @@ jobs:
 #      run:  find $SYSROOT_DIR -printf "%P\n" | sort | tar --verbose --create --file build/native-gpc_install.tar --no-recursion --directory=$SYSROOT_DIR --files-from=-
 #
 #    - name: Archive the host installation snapshot tar file
-#      uses: actions/upload-artifact@v4
+#      uses: actions/upload-artifact@v6
 #      with:
 #        name: native-gpc_install_[runner~${{ matrix.os }}]_run${{ github.run_id }}.${{ github.run_number }}.${{ github.run_attempt }}
 #        path: build/native-gpc_install.tar
