@@ -2,12 +2,6 @@
 
 # Pre-configured standard options for building a cross compiler
 #   targeting the Hitachi H8/300 processor
-#
-# For a smaller build, consider including the following options:
-#   --without-newlib --disable-nls --disable-libstdc__-v3 --disable-sim --disable-gdb
-#
-# If building GCC3 without GDB, then the following option can also be added:
-#   --disable-libdecnumber
 
 SCRIPT_DIR=$(dirname $0)
 
