@@ -274,12 +274,12 @@ if isIncluded "$toolchain_sets" "BINUTILS216" ; then
 fi
 
 if isIncluded "$toolchain_sets" "GCC3" ; then
-  # If building a separate GDB v5 instead of the combined GDB v6, then we can also skip building libdecnumber with GCC v3
-  if [ "$FLAGS_IF_GDB5" != "" ] ; then
-    # Flags for GDB 5
+  # If not building the combined GDB v6 (e.g., building a separate GDB v5 instead), then we can also skip building libdecnumber with GCC v3
+  if [ "$FLAGS_IF_GDB5" != "" ] || [[ "$ARGS_TO_PASS" == *"--disable-gdb"* ]] || [[ "$ARGS_TO_PASS" == *"--enable-gdb=no"* ]] ; then
+    # Flags for skipping the combined GDB
     GCC3_FLAGS_FOR_GDB="--disable-libdecnumber $FLAGS_IF_GDB5"
   else
-    # Flags for GDB 6
+    # Flags for including the combined GDB 6
     GCC3_FLAGS_FOR_GDB="--disable-werror"
   fi
   
