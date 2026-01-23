@@ -1,14 +1,24 @@
 #!/bin/sh
 
+# Pre-configured standard options for building a cross compiler
+#   targeting the Hitachi H8/300 processor
+#
+# For a smaller build, consider including the following options:
+#   --without-newlib --disable-nls --disable-libstdc__-v3 --disable-sim --disable-gdb
+#
+# If building GCC3 without GDB, then the following option can also be added:
+#   --disable-libdecnumber
+
 SCRIPT_DIR=$(dirname $0)
 
 DEFAULT_TOOLCHAIN_SETS_ARG="--toolchain-sets=gcc3"
 DEFAULT_PROGRAM_SUFFIX_CONFIG_ARG="--with-program-suffix"
+DEFAULT_NEWLIB="--with-newlib"
 
 # NLS has issues building on Cygwin.
 # It’s non-critical, so we will skip it when running under Cygwin.
 if [ "$(uname --operating-system)" = "Cygwin" ] ; then
-  DISABLE_NLS="--disable-nls"
+  DEFAULT_NLS="--disable-nls"
 fi
 
 # Process any command-line arguments
@@ -21,20 +31,20 @@ for ARG in "$@"; do
     --toolchain-sets=*)
       unset DEFAULT_TOOLCHAIN_SETS_ARG
       ;;
-    --enable-nls | --enable-nls=yes)
-      # If enable NLS is specified, ensure the disable argument is removed
-      unset DISABLE_NLS
+    --enable-nls | --enable-nls=yes | --disable-nls | --enable-nls=no)
+      # If NLS is explicitly specified, clear the default NLS argument
+      unset DEFAULT_NLS
       ;;
-    --disable-nls | --enable-nls=no)
-      # If disable NLS is already specified, don't double-set the argument
-      unset DISABLE_NLS
+    --with-newlib | --without-newlib)
+      # If NewLib is explicitly specified, clear the default NewLib argument
+      unset DEFAULT_NEWLIB
       ;;
     --with-program-suffix)
-      # If a program suffix is specified, don't double-set the argument
+      # If a program suffix is already specified, don't double-set the argument
       unset DEFAULT_PROGRAM_SUFFIX_CONFIG_ARG
       ;;
     --without-program-suffix)
-      # If without program suffix is already specified, ensure the default "with" argument is removed
+      # If without program suffix is  specified, ensure the default "with" argument is removed
       unset DEFAULT_PROGRAM_SUFFIX_CONFIG_ARG
       ;;
   esac
@@ -45,12 +55,12 @@ CONFIGURE_ARGS=" \
   --with-gcc \
   --with-gnu-as \
   --with-gnu-ld \
-  --with-newlib \
+  $DEFAULT_NEWLIB \
   --disable-bootstrap \
   --disable-libssp \
   --disable-libada \
   --disable-multilib \
-  $DISABLE_NLS \
+  $DEFAULT_NLS \
   --without-gpc-shared \
   --enable-target-optspace \
   --target=h8300-hitachi-coff \
