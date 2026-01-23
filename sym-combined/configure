@@ -5,6 +5,9 @@
 #
 # For a smaller build, consider including the following options:
 #   --enable-languages=c++ --without-newlib --disable-nls --disable-libstdc__-v3 --disable-sim --disable-gdb
+#
+# For an explanation of --without-headers and --with-newlib options:
+#   https://narkive.com/1CvFT6MZ
 
 # Constants
 ALL_TOOLCHAIN_SETS="gdb5 binutils216 gcc3 gcc44"
