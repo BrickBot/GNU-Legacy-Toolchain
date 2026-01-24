@@ -6780,6 +6780,49 @@ grokdeclarator (tree declarator,
 	    break;
 	    
 	  default:
+	    error ("\
+Current decl type: %T\n\
+Found TREE_CODE:   %d\n\
+ERROR_MARK:        %d\n\
+IDENTIFIER_NODE:   %d\n\
+TREE_LIST:         %d\n\
+TREE_VEC:          %d\n\
+BLOCK:             %d\n\
+VOID_TYPE:         %d\n\
+COND_EXPR:         %d\n\
+BIT_NOT_EXPR:      %d\n\
+ADDR_EXPR:         %d\n\
+ARRAY_REF:         %d\n\
+INDIRECT_REF:      %d\n\
+CALL_EXPR:         %d\n\
+TEMPLATE_ID_EXPR:  %d\n\
+SCOPE_REF:         %d\n\
+TYPE_DECL:         %d\n\
+BASELINK:          %d\n\
+TEMPLATE_DECL:     %d\n\
+C++\n\
+NAMESPACE_DECL:    %d\n\
+",
+decl,
+TREE_CODE (decl),
+ERROR_MARK,
+IDENTIFIER_NODE,
+TREE_LIST,
+TREE_VEC,
+BLOCK,
+VOID_TYPE,
+COND_EXPR,
+BIT_NOT_EXPR,
+ADDR_EXPR,
+ARRAY_REF,
+INDIRECT_REF,
+CALL_EXPR,
+TEMPLATE_ID_EXPR,
+SCOPE_REF,
+TYPE_DECL,
+BASELINK,
+TEMPLATE_DECL,
+NAMESPACE_DECL );
 	    my_friendly_assert (0, 20020917);
 	  }
       }

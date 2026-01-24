@@ -170,5 +170,14 @@ More information on how projects were “mixed and matched” to create combined
 source folders is available in the [`sym-combined`](sym-combined/) folder.
 
 
+### Files with Known Timestamp Interdependencies
+Certain files, if updated, will cause other files to be regenerated.
+Due to various and sundry changes that have occurred over time, those
+files might no longer regenrate correctly with the latest tool versions.
+
+In GPC:
+* configure.in > acconfig.h > (rts/configure and rts/rts-config.in)
+
+
 ### Related Projects or Efforts
 [Debian LEGO Packaging Team](https://wiki.debian.org/LegoDesigners)
