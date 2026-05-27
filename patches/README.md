@@ -43,29 +43,32 @@ with patch descriptions [available here](https://udd.debian.org/patches.cgi?src=
 | ❌       | ~~bts729274~~                        |       |
 
 #### Patches from Debian release v-11 and forward
-Patches maintained commencing with Debian release [2.16.1-11](https://sources.debian.org/src/binutils-h8300-hms/2.16.1-12/debian/patches/),
-with patch descriptions [available here](https://udd.debian.org/patches.cgi?src=binutils-h8300-hms&version=2.16.1-12).
+Patches maintained commencing with Debian release [2.16.1-11](https://sources.debian.org/src/binutils-h8300-hms/2.16.1-12/debian/patches/).
+Patch descriptions are [available here](https://udd.debian.org/patches.cgi?src=binutils-h8300-hms&version=2.16.1-15),
+with new additions noted based on the [changelog](https://salsa.debian.org/debian-lego-team/binutils-h8300-hms/-/blob/master/debian/changelog?ref_type=heads).
 
 **TODO**:
 
 | Applied? | Patch File Name                      | Notes |
 | -------- | ------------------------------------ | ----- |
-| ❌       | ~~000-print-debian-version.patch~~   | Was also included in v-10 |
-| ❌       | ~~006-better-file-error.patch~~      | Was also included in v-10 |
-| ❌       | ~~012-check-ldrunpath-length.patch~~ | Was also included in v-10 |
-| ❌       | ~~128-ln-s-makefiles.patch~~         | Was also included in v-10 |
-| ❌       | ~~129-gas-h8300.patch~~              | Was also included in v-10 |
-| ❌       | ~~130-coff-arm.patch~~               | Was also included in v-10 |
-| ❌       | ~~131-sprintf.patch~~                | Was also included in v-10 |
-| ❌       | ~~132-texinfo-fixes.patch~~          | Was also included in v-10 |
-|          | 133-configure-signatures.patch       | New subsequent to v-10 |
-| ✔       | 134-texinfo-fixes.patch              | New subsequent to v-10 |
-|          | 135-update-autotools.patch           | New subsequent to v-10 |
-|          | 136-ld-libdir.patch                  | New subsequent to v-10 |
-|          | 137-abort-on-invalid-header.patch    | New subsequent to v-10 |
-|          | 138-ldflags.patch                    | New subsequent to v-10 |
-|          | 139-spacepad.patch                   | New subsequent to v-10 |
-| ❌       | ~~140-deterministic-output.patch~~   | New with v-13 |
+|  ❌      | ~~000-print-debian-version.patch~~   | Was `000_print_debian_version` |
+| (✔)     | ~~006-better-file-error.patch~~      | Was `006_better_file_error` |
+| (✔)     | ~~012-check-ldrunpath-length.patch~~ | Was `012_check_ldrunpath_length` |
+| (✔)     | ~~128-ln-s-makefiles.patch~~         | Was `128_ln_s_makefiles` |
+| (✔)     | ~~129-gas-h8300.patch~~              | Was `129_gas_h8300` |
+| (✔)     | ~~130-coff-arm.patch~~               | Was `130_coff_arm` |
+| (✔)     | ~~131-sprintf.patch~~                | Was `131_sprintf` |
+| (✔)     | ~~132-texinfo-fixes.patch~~          | Was `132_texinfo_fixes`; Updated in v-10.1 |
+|          | 133-configure-signatures.patch       | New in v-10.1|
+|  ✔      | 134-texinfo-fixes.patch              | New in v-10.1; Updated in v-11 |
+|          | 135-update-autotools.patch           | New in v-11 |
+|          | 136-ld-libdir.patch                  | New in v-11 |
+|  ❌      | 137-abort-on-invalid-header.patch    | Was `bts729274`; Updated in v-13 |
+|          | 138-ldflags.patch                    | New in v-12; Updated in v-13 |
+|          | 139-spacepad.patch                   | New in v-12; Updated in v-13 |
+|  ❌      | ~~140-deterministic-output.patch~~   | New in v-13 |
+|          | 141-libiberty-getwd.patch            | New in v-14 |
+|          | 142-fix-libiberty-lto.patch          | New in v-15 |
 
 
 GCC Multi-Version (3.4.6 and 4.4.7)
@@ -246,22 +249,21 @@ In Debian release dfsg2-6, patches were renamed ([mapping reference](https://sal
 * [dfsg2-12](https://sources.debian.org/src/gcc-h8300-hms/1%3A3.4.6%2Bdfsg2-12/debian/patches/)
 
 Patch descriptions are [available here](https://udd.debian.org/patches.cgi?src=gcc-h8300-hms&version=1%3A3.4.6%2Bdfsg2-12),
-and new additions are based on the [changelog](https://salsa.debian.org/debian-lego-team/gcc-h8300-hms/-/blob/master/debian/changelog?ref_type=heads).
+with new additions noted based on the [changelog](https://salsa.debian.org/debian-lego-team/gcc-h8300-hms/-/blob/master/debian/changelog?ref_type=heads).
 
 | Applied? | Patch File Name                                   | Notes |
 | -------- | ------------------------------------------------- | ----- |
-| ❌       | ~~000_no_libstdc%2B%2B-v3.patch~~  | Was `000_no_libstdc%2B%2B-v3` |
-| ❌       | ~~001_h8300_64bit.patch~~          | Was `001_h8300_64bit` |
-| ❌       | ~~002_gcc_textdomain.patch~~       | Was `gcc-textdomain.dpatch` |
-| ❌       | ~~003_force_shell.patch~~          | Was `bin_false_fixup` |
-| ❌       | ~~004_do_not_build_doc.patch~~     | Was `debian-changes-1%3A3.4.6%2Bdfsg-1` |
-| ❌       | ~~005_fix_open.patch~~             | Was `fix_ftbs.diff` |
-| ❌       | ~~006_configure_signatures.patch~~ | Was `150-configure-signatures.patch` |
-| ✔       | 007_am_gnu_gettext.patch           | Was `0030-Add-now-mandatory-parameter-to-AM_GNU_GETTEXT.patch` |
+|  ❌      | ~~000_no_libstdc%2B%2B-v3.patch~~  | Was `000_no_libstdc%2B%2B-v3` |
+|  ❌      | ~~001_h8300_64bit.patch~~          | Was `001_h8300_64bit` |
+|  ❌      | ~~002_gcc_textdomain.patch~~       | Was `gcc-textdomain.dpatch` |
+|  ❌      | ~~003_force_shell.patch~~          | Was `bin_false_fixup` |
+|  ❌      | ~~004_do_not_build_doc.patch~~     | Was `debian-changes-1%3A3.4.6%2Bdfsg-1` |
+|  ❌      | ~~005_fix_open.patch~~             | Was `fix_ftbs.diff` |
+|  ❌      | ~~006_configure_signatures.patch~~ | Was `150-configure-signatures.patch` |
+| (✔)     | 007_am_gnu_gettext.patch           | Was `0030-Add-now-mandatory-parameter-to-AM_GNU_GETTEXT.patch` |
 |          | 008_hardening_format.patch         | Was `0032-Fix-format-not-a-string-literal.patch` |
 |          | 009_libiberty_aux_dir.patch        | Was `0033-Remove-AC_CONFIG_AUX_DIR-in-libiberty-configure-temp.patch` |
-| ✔       | 010_fix_bison.patch                | Was `0034-Fix-c-parse.y-build-error.patch` |
-| ✔       | 010_fix_bison.patch                | Was `0034-Fix-c-parse.y-build-error.patch` |
+| (✔)     | 010_fix_bison.patch                | Was `0034-Fix-c-parse.y-build-error.patch` |
 |          | 011_fix_gperf_signature.patch      | New in dfsg2-6  |
 |          | 012_propagate_flags.patch          | New in dfsg2-6  |
 |          | 013_libiberty_getwd.patch          | New in dfsg2-8  |
