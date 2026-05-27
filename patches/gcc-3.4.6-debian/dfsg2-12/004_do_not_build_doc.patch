@@ -1,0 +1,31 @@
+From: Michael Tautschnig <mt@debian.org>
+Date: Fri, 14 Dec 2012 11:57:55 +0000
+Subject: Do not build removed documentation
+
+Forwarded: not-needed
+Bug-Debian: https://bugs.debian.org/695720
+---
+--- gcc-h8300-hms-3.4.6+dfsg.orig/gcc/Makefile.in
++++ gcc-h8300-hms-3.4.6+dfsg/gcc/Makefile.in
+@@ -1069,10 +1069,10 @@ config.status: $(srcdir)/configure $(src
+ # UNSORTED
+ # --------
+ 
+-all.internal: start.encap rest.encap doc
++all.internal: start.encap rest.encap
+ # This is what to compile if making a cross-compiler.
+ all.cross: native gcc-cross cpp$(exeext) specs \
+-	$(LIBGCC) $(EXTRA_PARTS) lang.all.cross doc
++	$(LIBGCC) $(EXTRA_PARTS) lang.all.cross
+ # This is what must be made before installing GCC and converting libraries.
+ start.encap: native xgcc$(exeext) cpp$(exeext) specs \
+ 	xlimits.h lang.start.encap @GENINSRC@ srcextra
+@@ -2870,7 +2870,7 @@ maintainer-clean:
+ # Install the driver last so that the window when things are
+ # broken is small.
+ install: install-common $(INSTALL_HEADERS) $(INSTALL_LIBGCC) \
+-    install-cpp install-man install-info install-@POSUB@ \
++    install-cpp install-@POSUB@ \
+     lang.install-normal install-driver
+ 
+ # Handle cpp installation.

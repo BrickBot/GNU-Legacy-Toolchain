@@ -1,0 +1,18 @@
+From: Michael Tautschnig <mt@debian.org>
+Date: Wed, 8 Jun 2011 22:55:25 +0200
+Subject: Force SHELL to /bin/sh for configure
+
+Forwarded: not-needed
+Bug-Debian: https://bugs.debian.org/607486
+---
+--- gcc-h8300-hms-3.4.6.orig/gcc/fixinc/mkfixinc.sh
++++ gcc-h8300-hms-3.4.6/gcc/fixinc/mkfixinc.sh
+@@ -72,7 +72,7 @@ fi
+ #  OK.  We gotta make the thing.
+ #  make and install either the binary or the default script
+ 
+-defs="SHELL=\"$SHELL\" CC=\"$CC\" CFLAGS=\"$CFLAGS\" LDFLAGS=\"$LDFLAGS\" LIBERTY=\"$LIBERTY\""
++defs="SHELL=\"/bin/sh\" CC=\"$CC\" CFLAGS=\"$CFLAGS\" LDFLAGS=\"$LDFLAGS\" LIBERTY=\"$LIBERTY\""
+ cmd="$MAKE ${defs} install-bin"
+ echo $cmd
+ eval $cmd

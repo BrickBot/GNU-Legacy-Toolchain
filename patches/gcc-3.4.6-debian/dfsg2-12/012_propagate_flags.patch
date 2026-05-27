@@ -1,0 +1,1243 @@
+From: Nicolas Schodet <nico@ni.fr.eu.org>
+Date: Sat, 5 Apr 2025 22:38:03 +0200
+Subject: Propagate build flags to every modules
+
+This is necessary to make sure hardening flags are propagated.
+
+Forwarded: not-needed
+---
+ Makefile.in           | 143 +++++++++++++++++++++++++++++++++++++++++++++++++-
+ Makefile.tpl          |  17 +++++-
+ configure.in          |   8 +++
+ libiberty/Makefile.in |   4 +-
+ 4 files changed, 167 insertions(+), 5 deletions(-)
+
+diff --git a/Makefile.in b/Makefile.in
+index 5d9c327..8e30889 100644
+--- a/Makefile.in
++++ b/Makefile.in
+@@ -144,8 +144,12 @@ PWD_COMMAND = $${PWDCMD-pwd}
+ # environment.
+ CC_FOR_BUILD = @CC_FOR_BUILD@
+ CFLAGS_FOR_BUILD = @CFLAGS_FOR_BUILD@
++CPPFLAGS_FOR_BUILD = @CPPFLAGS_FOR_BUILD@
+ 
+ CXX_FOR_BUILD = $(CXX)
++CXXFLAGS_FOR_BUILD = @CXXFLAGS_FOR_BUILD@
++
++LDFLAGS_FOR_BUILD = @LDFLAGS_FOR_BUILD@
+ 
+ # Special variables passed down in EXTRA_GCC_FLAGS.  They are defined
+ # here so that they can be overridden by Makefile fragments.
+@@ -218,7 +222,8 @@ AR_FLAGS = rc
+ 
+ CC = @CC@
+ CFLAGS = @CFLAGS@
+-LIBCFLAGS = $(CFLAGS)
++CPPFLAGS = @CPPFLAGS@
++LIBCFLAGS = $(CFLAGS) $(CPPFLAGS)
+ 
+ CXX = @CXX@
+ CXXFLAGS = @CXXFLAGS@
+@@ -229,7 +234,7 @@ DLLTOOL = @DLLTOOL@
+ NM = @NM@
+ 
+ LD = @LD@
+-LDFLAGS = 
++LDFLAGS = @LDFLAGS@
+ 
+ RANLIB = @RANLIB@
+ 
+@@ -517,6 +522,9 @@ EXTRA_GCC_FLAGS = \
+ 	'BUILD_PREFIX_1=$(BUILD_PREFIX_1)' \
+ 	"GCC_FOR_TARGET=$(GCC_FOR_TARGET)" \
+ 	"CFLAGS_FOR_BUILD=$(CFLAGS_FOR_BUILD)" \
++	"CPPFLAGS_FOR_BUILD=$(CPPFLAGS_FOR_BUILD)" \
++	"CXXFLAGS_FOR_BUILD=$(CXXFLAGS_FOR_BUILD)" \
++	"LDFLAGS_FOR_BUILD=$(LDFLAGS_FOR_BUILD)" \
+ 	"`echo 'LANGUAGES=$(LANGUAGES)' | sed -e s/.*=$$/XFOO=/`" \
+ 	"`echo 'STMP_FIXPROTO=$(STMP_FIXPROTO)' | sed -e s/.*=$$/XFOO=/`" \
+ 	"`echo 'LIMITS_H_TEST=$(LIMITS_H_TEST)' | sed -e s/.*=$$/XFOO=/`" \
+@@ -17610,6 +17618,7 @@ configure-build-libiberty:
+ 	AS="$(AS_FOR_BUILD)"; export AS; \
+ 	CC="$(CC_FOR_BUILD)"; export CC; \
+ 	CFLAGS="$(CFLAGS_FOR_BUILD)"; export CFLAGS; \
++	CPPFLAGS="$(CPPFLAGS_FOR_BUILD)"; export CPPFLAGS; \
+ 	CONFIG_SHELL="$(SHELL)"; export CONFIG_SHELL; \
+ 	CXX="$(CXX_FOR_BUILD)"; export CXX; \
+ 	CXXFLAGS="$(CXXFLAGS_FOR_BUILD)"; export CXXFLAGS; \
+@@ -17682,6 +17691,7 @@ configure-ash:
+ 	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
+ 	CC="$(CC)"; export CC; \
+ 	CFLAGS="$(CFLAGS)"; export CFLAGS; \
++	CPPFLAGS="$(CPPFLAGS)"; export CPPFLAGS; \
+ 	CONFIG_SHELL="$(SHELL)"; export CONFIG_SHELL; \
+ 	CXX="$(CXX)"; export CXX; \
+ 	CXXFLAGS="$(CXXFLAGS)"; export CXXFLAGS; \
+@@ -17690,6 +17700,7 @@ configure-ash:
+ 	CC_FOR_BUILD="$(CC_FOR_BUILD)"; export CC_FOR_BUILD; \
+ 	DLLTOOL="$(DLLTOOL)"; export DLLTOOL; \
+ 	LD="$(LD)"; export LD; \
++	LDFLAGS="$(LDFLAGS)"; export LDFLAGS; \
+ 	NM="$(NM)"; export NM; \
+ 	RANLIB="$(RANLIB)"; export RANLIB; \
+ 	WINDRES="$(WINDRES)"; export WINDRES; \
+@@ -17749,6 +17760,7 @@ configure-autoconf:
+ 	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
+ 	CC="$(CC)"; export CC; \
+ 	CFLAGS="$(CFLAGS)"; export CFLAGS; \
++	CPPFLAGS="$(CPPFLAGS)"; export CPPFLAGS; \
+ 	CONFIG_SHELL="$(SHELL)"; export CONFIG_SHELL; \
+ 	CXX="$(CXX)"; export CXX; \
+ 	CXXFLAGS="$(CXXFLAGS)"; export CXXFLAGS; \
+@@ -17757,6 +17769,7 @@ configure-autoconf:
+ 	CC_FOR_BUILD="$(CC_FOR_BUILD)"; export CC_FOR_BUILD; \
+ 	DLLTOOL="$(DLLTOOL)"; export DLLTOOL; \
+ 	LD="$(LD)"; export LD; \
++	LDFLAGS="$(LDFLAGS)"; export LDFLAGS; \
+ 	NM="$(NM)"; export NM; \
+ 	RANLIB="$(RANLIB)"; export RANLIB; \
+ 	WINDRES="$(WINDRES)"; export WINDRES; \
+@@ -17816,6 +17829,7 @@ configure-automake:
+ 	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
+ 	CC="$(CC)"; export CC; \
+ 	CFLAGS="$(CFLAGS)"; export CFLAGS; \
++	CPPFLAGS="$(CPPFLAGS)"; export CPPFLAGS; \
+ 	CONFIG_SHELL="$(SHELL)"; export CONFIG_SHELL; \
+ 	CXX="$(CXX)"; export CXX; \
+ 	CXXFLAGS="$(CXXFLAGS)"; export CXXFLAGS; \
+@@ -17824,6 +17838,7 @@ configure-automake:
+ 	CC_FOR_BUILD="$(CC_FOR_BUILD)"; export CC_FOR_BUILD; \
+ 	DLLTOOL="$(DLLTOOL)"; export DLLTOOL; \
+ 	LD="$(LD)"; export LD; \
++	LDFLAGS="$(LDFLAGS)"; export LDFLAGS; \
+ 	NM="$(NM)"; export NM; \
+ 	RANLIB="$(RANLIB)"; export RANLIB; \
+ 	WINDRES="$(WINDRES)"; export WINDRES; \
+@@ -17883,6 +17898,7 @@ configure-bash:
+ 	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
+ 	CC="$(CC)"; export CC; \
+ 	CFLAGS="$(CFLAGS)"; export CFLAGS; \
++	CPPFLAGS="$(CPPFLAGS)"; export CPPFLAGS; \
+ 	CONFIG_SHELL="$(SHELL)"; export CONFIG_SHELL; \
+ 	CXX="$(CXX)"; export CXX; \
+ 	CXXFLAGS="$(CXXFLAGS)"; export CXXFLAGS; \
+@@ -17891,6 +17907,7 @@ configure-bash:
+ 	CC_FOR_BUILD="$(CC_FOR_BUILD)"; export CC_FOR_BUILD; \
+ 	DLLTOOL="$(DLLTOOL)"; export DLLTOOL; \
+ 	LD="$(LD)"; export LD; \
++	LDFLAGS="$(LDFLAGS)"; export LDFLAGS; \
+ 	NM="$(NM)"; export NM; \
+ 	RANLIB="$(RANLIB)"; export RANLIB; \
+ 	WINDRES="$(WINDRES)"; export WINDRES; \
+@@ -17950,6 +17967,7 @@ configure-bfd:
+ 	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
+ 	CC="$(CC)"; export CC; \
+ 	CFLAGS="$(CFLAGS)"; export CFLAGS; \
++	CPPFLAGS="$(CPPFLAGS)"; export CPPFLAGS; \
+ 	CONFIG_SHELL="$(SHELL)"; export CONFIG_SHELL; \
+ 	CXX="$(CXX)"; export CXX; \
+ 	CXXFLAGS="$(CXXFLAGS)"; export CXXFLAGS; \
+@@ -17958,6 +17976,7 @@ configure-bfd:
+ 	CC_FOR_BUILD="$(CC_FOR_BUILD)"; export CC_FOR_BUILD; \
+ 	DLLTOOL="$(DLLTOOL)"; export DLLTOOL; \
+ 	LD="$(LD)"; export LD; \
++	LDFLAGS="$(LDFLAGS)"; export LDFLAGS; \
+ 	NM="$(NM)"; export NM; \
+ 	RANLIB="$(RANLIB)"; export RANLIB; \
+ 	WINDRES="$(WINDRES)"; export WINDRES; \
+@@ -18017,6 +18036,7 @@ configure-opcodes:
+ 	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
+ 	CC="$(CC)"; export CC; \
+ 	CFLAGS="$(CFLAGS)"; export CFLAGS; \
++	CPPFLAGS="$(CPPFLAGS)"; export CPPFLAGS; \
+ 	CONFIG_SHELL="$(SHELL)"; export CONFIG_SHELL; \
+ 	CXX="$(CXX)"; export CXX; \
+ 	CXXFLAGS="$(CXXFLAGS)"; export CXXFLAGS; \
+@@ -18025,6 +18045,7 @@ configure-opcodes:
+ 	CC_FOR_BUILD="$(CC_FOR_BUILD)"; export CC_FOR_BUILD; \
+ 	DLLTOOL="$(DLLTOOL)"; export DLLTOOL; \
+ 	LD="$(LD)"; export LD; \
++	LDFLAGS="$(LDFLAGS)"; export LDFLAGS; \
+ 	NM="$(NM)"; export NM; \
+ 	RANLIB="$(RANLIB)"; export RANLIB; \
+ 	WINDRES="$(WINDRES)"; export WINDRES; \
+@@ -18084,6 +18105,7 @@ configure-binutils:
+ 	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
+ 	CC="$(CC)"; export CC; \
+ 	CFLAGS="$(CFLAGS)"; export CFLAGS; \
++	CPPFLAGS="$(CPPFLAGS)"; export CPPFLAGS; \
+ 	CONFIG_SHELL="$(SHELL)"; export CONFIG_SHELL; \
+ 	CXX="$(CXX)"; export CXX; \
+ 	CXXFLAGS="$(CXXFLAGS)"; export CXXFLAGS; \
+@@ -18092,6 +18114,7 @@ configure-binutils:
+ 	CC_FOR_BUILD="$(CC_FOR_BUILD)"; export CC_FOR_BUILD; \
+ 	DLLTOOL="$(DLLTOOL)"; export DLLTOOL; \
+ 	LD="$(LD)"; export LD; \
++	LDFLAGS="$(LDFLAGS)"; export LDFLAGS; \
+ 	NM="$(NM)"; export NM; \
+ 	RANLIB="$(RANLIB)"; export RANLIB; \
+ 	WINDRES="$(WINDRES)"; export WINDRES; \
+@@ -18151,6 +18174,7 @@ configure-bison:
+ 	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
+ 	CC="$(CC)"; export CC; \
+ 	CFLAGS="$(CFLAGS)"; export CFLAGS; \
++	CPPFLAGS="$(CPPFLAGS)"; export CPPFLAGS; \
+ 	CONFIG_SHELL="$(SHELL)"; export CONFIG_SHELL; \
+ 	CXX="$(CXX)"; export CXX; \
+ 	CXXFLAGS="$(CXXFLAGS)"; export CXXFLAGS; \
+@@ -18159,6 +18183,7 @@ configure-bison:
+ 	CC_FOR_BUILD="$(CC_FOR_BUILD)"; export CC_FOR_BUILD; \
+ 	DLLTOOL="$(DLLTOOL)"; export DLLTOOL; \
+ 	LD="$(LD)"; export LD; \
++	LDFLAGS="$(LDFLAGS)"; export LDFLAGS; \
+ 	NM="$(NM)"; export NM; \
+ 	RANLIB="$(RANLIB)"; export RANLIB; \
+ 	WINDRES="$(WINDRES)"; export WINDRES; \
+@@ -18221,6 +18246,7 @@ configure-byacc:
+ 	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
+ 	CC="$(CC)"; export CC; \
+ 	CFLAGS="$(CFLAGS)"; export CFLAGS; \
++	CPPFLAGS="$(CPPFLAGS)"; export CPPFLAGS; \
+ 	CONFIG_SHELL="$(SHELL)"; export CONFIG_SHELL; \
+ 	CXX="$(CXX)"; export CXX; \
+ 	CXXFLAGS="$(CXXFLAGS)"; export CXXFLAGS; \
+@@ -18229,6 +18255,7 @@ configure-byacc:
+ 	CC_FOR_BUILD="$(CC_FOR_BUILD)"; export CC_FOR_BUILD; \
+ 	DLLTOOL="$(DLLTOOL)"; export DLLTOOL; \
+ 	LD="$(LD)"; export LD; \
++	LDFLAGS="$(LDFLAGS)"; export LDFLAGS; \
+ 	NM="$(NM)"; export NM; \
+ 	RANLIB="$(RANLIB)"; export RANLIB; \
+ 	WINDRES="$(WINDRES)"; export WINDRES; \
+@@ -18291,6 +18318,7 @@ configure-bzip2:
+ 	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
+ 	CC="$(CC)"; export CC; \
+ 	CFLAGS="$(CFLAGS)"; export CFLAGS; \
++	CPPFLAGS="$(CPPFLAGS)"; export CPPFLAGS; \
+ 	CONFIG_SHELL="$(SHELL)"; export CONFIG_SHELL; \
+ 	CXX="$(CXX)"; export CXX; \
+ 	CXXFLAGS="$(CXXFLAGS)"; export CXXFLAGS; \
+@@ -18299,6 +18327,7 @@ configure-bzip2:
+ 	CC_FOR_BUILD="$(CC_FOR_BUILD)"; export CC_FOR_BUILD; \
+ 	DLLTOOL="$(DLLTOOL)"; export DLLTOOL; \
+ 	LD="$(LD)"; export LD; \
++	LDFLAGS="$(LDFLAGS)"; export LDFLAGS; \
+ 	NM="$(NM)"; export NM; \
+ 	RANLIB="$(RANLIB)"; export RANLIB; \
+ 	WINDRES="$(WINDRES)"; export WINDRES; \
+@@ -18358,6 +18387,7 @@ configure-dejagnu:
+ 	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
+ 	CC="$(CC)"; export CC; \
+ 	CFLAGS="$(CFLAGS)"; export CFLAGS; \
++	CPPFLAGS="$(CPPFLAGS)"; export CPPFLAGS; \
+ 	CONFIG_SHELL="$(SHELL)"; export CONFIG_SHELL; \
+ 	CXX="$(CXX)"; export CXX; \
+ 	CXXFLAGS="$(CXXFLAGS)"; export CXXFLAGS; \
+@@ -18366,6 +18396,7 @@ configure-dejagnu:
+ 	CC_FOR_BUILD="$(CC_FOR_BUILD)"; export CC_FOR_BUILD; \
+ 	DLLTOOL="$(DLLTOOL)"; export DLLTOOL; \
+ 	LD="$(LD)"; export LD; \
++	LDFLAGS="$(LDFLAGS)"; export LDFLAGS; \
+ 	NM="$(NM)"; export NM; \
+ 	RANLIB="$(RANLIB)"; export RANLIB; \
+ 	WINDRES="$(WINDRES)"; export WINDRES; \
+@@ -18425,6 +18456,7 @@ configure-diff:
+ 	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
+ 	CC="$(CC)"; export CC; \
+ 	CFLAGS="$(CFLAGS)"; export CFLAGS; \
++	CPPFLAGS="$(CPPFLAGS)"; export CPPFLAGS; \
+ 	CONFIG_SHELL="$(SHELL)"; export CONFIG_SHELL; \
+ 	CXX="$(CXX)"; export CXX; \
+ 	CXXFLAGS="$(CXXFLAGS)"; export CXXFLAGS; \
+@@ -18433,6 +18465,7 @@ configure-diff:
+ 	CC_FOR_BUILD="$(CC_FOR_BUILD)"; export CC_FOR_BUILD; \
+ 	DLLTOOL="$(DLLTOOL)"; export DLLTOOL; \
+ 	LD="$(LD)"; export LD; \
++	LDFLAGS="$(LDFLAGS)"; export LDFLAGS; \
+ 	NM="$(NM)"; export NM; \
+ 	RANLIB="$(RANLIB)"; export RANLIB; \
+ 	WINDRES="$(WINDRES)"; export WINDRES; \
+@@ -18492,6 +18525,7 @@ configure-dosutils:
+ 	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
+ 	CC="$(CC)"; export CC; \
+ 	CFLAGS="$(CFLAGS)"; export CFLAGS; \
++	CPPFLAGS="$(CPPFLAGS)"; export CPPFLAGS; \
+ 	CONFIG_SHELL="$(SHELL)"; export CONFIG_SHELL; \
+ 	CXX="$(CXX)"; export CXX; \
+ 	CXXFLAGS="$(CXXFLAGS)"; export CXXFLAGS; \
+@@ -18500,6 +18534,7 @@ configure-dosutils:
+ 	CC_FOR_BUILD="$(CC_FOR_BUILD)"; export CC_FOR_BUILD; \
+ 	DLLTOOL="$(DLLTOOL)"; export DLLTOOL; \
+ 	LD="$(LD)"; export LD; \
++	LDFLAGS="$(LDFLAGS)"; export LDFLAGS; \
+ 	NM="$(NM)"; export NM; \
+ 	RANLIB="$(RANLIB)"; export RANLIB; \
+ 	WINDRES="$(WINDRES)"; export WINDRES; \
+@@ -18555,6 +18590,7 @@ configure-etc:
+ 	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
+ 	CC="$(CC)"; export CC; \
+ 	CFLAGS="$(CFLAGS)"; export CFLAGS; \
++	CPPFLAGS="$(CPPFLAGS)"; export CPPFLAGS; \
+ 	CONFIG_SHELL="$(SHELL)"; export CONFIG_SHELL; \
+ 	CXX="$(CXX)"; export CXX; \
+ 	CXXFLAGS="$(CXXFLAGS)"; export CXXFLAGS; \
+@@ -18563,6 +18599,7 @@ configure-etc:
+ 	CC_FOR_BUILD="$(CC_FOR_BUILD)"; export CC_FOR_BUILD; \
+ 	DLLTOOL="$(DLLTOOL)"; export DLLTOOL; \
+ 	LD="$(LD)"; export LD; \
++	LDFLAGS="$(LDFLAGS)"; export LDFLAGS; \
+ 	NM="$(NM)"; export NM; \
+ 	RANLIB="$(RANLIB)"; export RANLIB; \
+ 	WINDRES="$(WINDRES)"; export WINDRES; \
+@@ -18622,6 +18659,7 @@ configure-fastjar:
+ 	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
+ 	CC="$(CC)"; export CC; \
+ 	CFLAGS="$(CFLAGS)"; export CFLAGS; \
++	CPPFLAGS="$(CPPFLAGS)"; export CPPFLAGS; \
+ 	CONFIG_SHELL="$(SHELL)"; export CONFIG_SHELL; \
+ 	CXX="$(CXX)"; export CXX; \
+ 	CXXFLAGS="$(CXXFLAGS)"; export CXXFLAGS; \
+@@ -18630,6 +18668,7 @@ configure-fastjar:
+ 	CC_FOR_BUILD="$(CC_FOR_BUILD)"; export CC_FOR_BUILD; \
+ 	DLLTOOL="$(DLLTOOL)"; export DLLTOOL; \
+ 	LD="$(LD)"; export LD; \
++	LDFLAGS="$(LDFLAGS)"; export LDFLAGS; \
+ 	NM="$(NM)"; export NM; \
+ 	RANLIB="$(RANLIB)"; export RANLIB; \
+ 	WINDRES="$(WINDRES)"; export WINDRES; \
+@@ -18692,6 +18731,7 @@ configure-fileutils:
+ 	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
+ 	CC="$(CC)"; export CC; \
+ 	CFLAGS="$(CFLAGS)"; export CFLAGS; \
++	CPPFLAGS="$(CPPFLAGS)"; export CPPFLAGS; \
+ 	CONFIG_SHELL="$(SHELL)"; export CONFIG_SHELL; \
+ 	CXX="$(CXX)"; export CXX; \
+ 	CXXFLAGS="$(CXXFLAGS)"; export CXXFLAGS; \
+@@ -18700,6 +18740,7 @@ configure-fileutils:
+ 	CC_FOR_BUILD="$(CC_FOR_BUILD)"; export CC_FOR_BUILD; \
+ 	DLLTOOL="$(DLLTOOL)"; export DLLTOOL; \
+ 	LD="$(LD)"; export LD; \
++	LDFLAGS="$(LDFLAGS)"; export LDFLAGS; \
+ 	NM="$(NM)"; export NM; \
+ 	RANLIB="$(RANLIB)"; export RANLIB; \
+ 	WINDRES="$(WINDRES)"; export WINDRES; \
+@@ -18759,6 +18800,7 @@ configure-findutils:
+ 	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
+ 	CC="$(CC)"; export CC; \
+ 	CFLAGS="$(CFLAGS)"; export CFLAGS; \
++	CPPFLAGS="$(CPPFLAGS)"; export CPPFLAGS; \
+ 	CONFIG_SHELL="$(SHELL)"; export CONFIG_SHELL; \
+ 	CXX="$(CXX)"; export CXX; \
+ 	CXXFLAGS="$(CXXFLAGS)"; export CXXFLAGS; \
+@@ -18767,6 +18809,7 @@ configure-findutils:
+ 	CC_FOR_BUILD="$(CC_FOR_BUILD)"; export CC_FOR_BUILD; \
+ 	DLLTOOL="$(DLLTOOL)"; export DLLTOOL; \
+ 	LD="$(LD)"; export LD; \
++	LDFLAGS="$(LDFLAGS)"; export LDFLAGS; \
+ 	NM="$(NM)"; export NM; \
+ 	RANLIB="$(RANLIB)"; export RANLIB; \
+ 	WINDRES="$(WINDRES)"; export WINDRES; \
+@@ -18826,6 +18869,7 @@ configure-find:
+ 	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
+ 	CC="$(CC)"; export CC; \
+ 	CFLAGS="$(CFLAGS)"; export CFLAGS; \
++	CPPFLAGS="$(CPPFLAGS)"; export CPPFLAGS; \
+ 	CONFIG_SHELL="$(SHELL)"; export CONFIG_SHELL; \
+ 	CXX="$(CXX)"; export CXX; \
+ 	CXXFLAGS="$(CXXFLAGS)"; export CXXFLAGS; \
+@@ -18834,6 +18878,7 @@ configure-find:
+ 	CC_FOR_BUILD="$(CC_FOR_BUILD)"; export CC_FOR_BUILD; \
+ 	DLLTOOL="$(DLLTOOL)"; export DLLTOOL; \
+ 	LD="$(LD)"; export LD; \
++	LDFLAGS="$(LDFLAGS)"; export LDFLAGS; \
+ 	NM="$(NM)"; export NM; \
+ 	RANLIB="$(RANLIB)"; export RANLIB; \
+ 	WINDRES="$(WINDRES)"; export WINDRES; \
+@@ -18893,6 +18938,7 @@ configure-flex:
+ 	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
+ 	CC="$(CC)"; export CC; \
+ 	CFLAGS="$(CFLAGS)"; export CFLAGS; \
++	CPPFLAGS="$(CPPFLAGS)"; export CPPFLAGS; \
+ 	CONFIG_SHELL="$(SHELL)"; export CONFIG_SHELL; \
+ 	CXX="$(CXX)"; export CXX; \
+ 	CXXFLAGS="$(CXXFLAGS)"; export CXXFLAGS; \
+@@ -18901,6 +18947,7 @@ configure-flex:
+ 	CC_FOR_BUILD="$(CC_FOR_BUILD)"; export CC_FOR_BUILD; \
+ 	DLLTOOL="$(DLLTOOL)"; export DLLTOOL; \
+ 	LD="$(LD)"; export LD; \
++	LDFLAGS="$(LDFLAGS)"; export LDFLAGS; \
+ 	NM="$(NM)"; export NM; \
+ 	RANLIB="$(RANLIB)"; export RANLIB; \
+ 	WINDRES="$(WINDRES)"; export WINDRES; \
+@@ -18963,6 +19010,7 @@ configure-gas:
+ 	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
+ 	CC="$(CC)"; export CC; \
+ 	CFLAGS="$(CFLAGS)"; export CFLAGS; \
++	CPPFLAGS="$(CPPFLAGS)"; export CPPFLAGS; \
+ 	CONFIG_SHELL="$(SHELL)"; export CONFIG_SHELL; \
+ 	CXX="$(CXX)"; export CXX; \
+ 	CXXFLAGS="$(CXXFLAGS)"; export CXXFLAGS; \
+@@ -18971,6 +19019,7 @@ configure-gas:
+ 	CC_FOR_BUILD="$(CC_FOR_BUILD)"; export CC_FOR_BUILD; \
+ 	DLLTOOL="$(DLLTOOL)"; export DLLTOOL; \
+ 	LD="$(LD)"; export LD; \
++	LDFLAGS="$(LDFLAGS)"; export LDFLAGS; \
+ 	NM="$(NM)"; export NM; \
+ 	RANLIB="$(RANLIB)"; export RANLIB; \
+ 	WINDRES="$(WINDRES)"; export WINDRES; \
+@@ -19030,6 +19079,7 @@ configure-gawk:
+ 	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
+ 	CC="$(CC)"; export CC; \
+ 	CFLAGS="$(CFLAGS)"; export CFLAGS; \
++	CPPFLAGS="$(CPPFLAGS)"; export CPPFLAGS; \
+ 	CONFIG_SHELL="$(SHELL)"; export CONFIG_SHELL; \
+ 	CXX="$(CXX)"; export CXX; \
+ 	CXXFLAGS="$(CXXFLAGS)"; export CXXFLAGS; \
+@@ -19038,6 +19088,7 @@ configure-gawk:
+ 	CC_FOR_BUILD="$(CC_FOR_BUILD)"; export CC_FOR_BUILD; \
+ 	DLLTOOL="$(DLLTOOL)"; export DLLTOOL; \
+ 	LD="$(LD)"; export LD; \
++	LDFLAGS="$(LDFLAGS)"; export LDFLAGS; \
+ 	NM="$(NM)"; export NM; \
+ 	RANLIB="$(RANLIB)"; export RANLIB; \
+ 	WINDRES="$(WINDRES)"; export WINDRES; \
+@@ -19097,6 +19148,7 @@ configure-gettext:
+ 	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
+ 	CC="$(CC)"; export CC; \
+ 	CFLAGS="$(CFLAGS)"; export CFLAGS; \
++	CPPFLAGS="$(CPPFLAGS)"; export CPPFLAGS; \
+ 	CONFIG_SHELL="$(SHELL)"; export CONFIG_SHELL; \
+ 	CXX="$(CXX)"; export CXX; \
+ 	CXXFLAGS="$(CXXFLAGS)"; export CXXFLAGS; \
+@@ -19105,6 +19157,7 @@ configure-gettext:
+ 	CC_FOR_BUILD="$(CC_FOR_BUILD)"; export CC_FOR_BUILD; \
+ 	DLLTOOL="$(DLLTOOL)"; export DLLTOOL; \
+ 	LD="$(LD)"; export LD; \
++	LDFLAGS="$(LDFLAGS)"; export LDFLAGS; \
+ 	NM="$(NM)"; export NM; \
+ 	RANLIB="$(RANLIB)"; export RANLIB; \
+ 	WINDRES="$(WINDRES)"; export WINDRES; \
+@@ -19164,6 +19217,7 @@ configure-gnuserv:
+ 	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
+ 	CC="$(CC)"; export CC; \
+ 	CFLAGS="$(CFLAGS)"; export CFLAGS; \
++	CPPFLAGS="$(CPPFLAGS)"; export CPPFLAGS; \
+ 	CONFIG_SHELL="$(SHELL)"; export CONFIG_SHELL; \
+ 	CXX="$(CXX)"; export CXX; \
+ 	CXXFLAGS="$(CXXFLAGS)"; export CXXFLAGS; \
+@@ -19172,6 +19226,7 @@ configure-gnuserv:
+ 	CC_FOR_BUILD="$(CC_FOR_BUILD)"; export CC_FOR_BUILD; \
+ 	DLLTOOL="$(DLLTOOL)"; export DLLTOOL; \
+ 	LD="$(LD)"; export LD; \
++	LDFLAGS="$(LDFLAGS)"; export LDFLAGS; \
+ 	NM="$(NM)"; export NM; \
+ 	RANLIB="$(RANLIB)"; export RANLIB; \
+ 	WINDRES="$(WINDRES)"; export WINDRES; \
+@@ -19231,6 +19286,7 @@ configure-gprof:
+ 	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
+ 	CC="$(CC)"; export CC; \
+ 	CFLAGS="$(CFLAGS)"; export CFLAGS; \
++	CPPFLAGS="$(CPPFLAGS)"; export CPPFLAGS; \
+ 	CONFIG_SHELL="$(SHELL)"; export CONFIG_SHELL; \
+ 	CXX="$(CXX)"; export CXX; \
+ 	CXXFLAGS="$(CXXFLAGS)"; export CXXFLAGS; \
+@@ -19239,6 +19295,7 @@ configure-gprof:
+ 	CC_FOR_BUILD="$(CC_FOR_BUILD)"; export CC_FOR_BUILD; \
+ 	DLLTOOL="$(DLLTOOL)"; export DLLTOOL; \
+ 	LD="$(LD)"; export LD; \
++	LDFLAGS="$(LDFLAGS)"; export LDFLAGS; \
+ 	NM="$(NM)"; export NM; \
+ 	RANLIB="$(RANLIB)"; export RANLIB; \
+ 	WINDRES="$(WINDRES)"; export WINDRES; \
+@@ -19298,6 +19355,7 @@ configure-gzip:
+ 	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
+ 	CC="$(CC)"; export CC; \
+ 	CFLAGS="$(CFLAGS)"; export CFLAGS; \
++	CPPFLAGS="$(CPPFLAGS)"; export CPPFLAGS; \
+ 	CONFIG_SHELL="$(SHELL)"; export CONFIG_SHELL; \
+ 	CXX="$(CXX)"; export CXX; \
+ 	CXXFLAGS="$(CXXFLAGS)"; export CXXFLAGS; \
+@@ -19306,6 +19364,7 @@ configure-gzip:
+ 	CC_FOR_BUILD="$(CC_FOR_BUILD)"; export CC_FOR_BUILD; \
+ 	DLLTOOL="$(DLLTOOL)"; export DLLTOOL; \
+ 	LD="$(LD)"; export LD; \
++	LDFLAGS="$(LDFLAGS)"; export LDFLAGS; \
+ 	NM="$(NM)"; export NM; \
+ 	RANLIB="$(RANLIB)"; export RANLIB; \
+ 	WINDRES="$(WINDRES)"; export WINDRES; \
+@@ -19365,6 +19424,7 @@ configure-hello:
+ 	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
+ 	CC="$(CC)"; export CC; \
+ 	CFLAGS="$(CFLAGS)"; export CFLAGS; \
++	CPPFLAGS="$(CPPFLAGS)"; export CPPFLAGS; \
+ 	CONFIG_SHELL="$(SHELL)"; export CONFIG_SHELL; \
+ 	CXX="$(CXX)"; export CXX; \
+ 	CXXFLAGS="$(CXXFLAGS)"; export CXXFLAGS; \
+@@ -19373,6 +19433,7 @@ configure-hello:
+ 	CC_FOR_BUILD="$(CC_FOR_BUILD)"; export CC_FOR_BUILD; \
+ 	DLLTOOL="$(DLLTOOL)"; export DLLTOOL; \
+ 	LD="$(LD)"; export LD; \
++	LDFLAGS="$(LDFLAGS)"; export LDFLAGS; \
+ 	NM="$(NM)"; export NM; \
+ 	RANLIB="$(RANLIB)"; export RANLIB; \
+ 	WINDRES="$(WINDRES)"; export WINDRES; \
+@@ -19432,6 +19493,7 @@ configure-indent:
+ 	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
+ 	CC="$(CC)"; export CC; \
+ 	CFLAGS="$(CFLAGS)"; export CFLAGS; \
++	CPPFLAGS="$(CPPFLAGS)"; export CPPFLAGS; \
+ 	CONFIG_SHELL="$(SHELL)"; export CONFIG_SHELL; \
+ 	CXX="$(CXX)"; export CXX; \
+ 	CXXFLAGS="$(CXXFLAGS)"; export CXXFLAGS; \
+@@ -19440,6 +19502,7 @@ configure-indent:
+ 	CC_FOR_BUILD="$(CC_FOR_BUILD)"; export CC_FOR_BUILD; \
+ 	DLLTOOL="$(DLLTOOL)"; export DLLTOOL; \
+ 	LD="$(LD)"; export LD; \
++	LDFLAGS="$(LDFLAGS)"; export LDFLAGS; \
+ 	NM="$(NM)"; export NM; \
+ 	RANLIB="$(RANLIB)"; export RANLIB; \
+ 	WINDRES="$(WINDRES)"; export WINDRES; \
+@@ -19499,6 +19562,7 @@ configure-intl:
+ 	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
+ 	CC="$(CC)"; export CC; \
+ 	CFLAGS="$(CFLAGS)"; export CFLAGS; \
++	CPPFLAGS="$(CPPFLAGS)"; export CPPFLAGS; \
+ 	CONFIG_SHELL="$(SHELL)"; export CONFIG_SHELL; \
+ 	CXX="$(CXX)"; export CXX; \
+ 	CXXFLAGS="$(CXXFLAGS)"; export CXXFLAGS; \
+@@ -19507,6 +19571,7 @@ configure-intl:
+ 	CC_FOR_BUILD="$(CC_FOR_BUILD)"; export CC_FOR_BUILD; \
+ 	DLLTOOL="$(DLLTOOL)"; export DLLTOOL; \
+ 	LD="$(LD)"; export LD; \
++	LDFLAGS="$(LDFLAGS)"; export LDFLAGS; \
+ 	NM="$(NM)"; export NM; \
+ 	RANLIB="$(RANLIB)"; export RANLIB; \
+ 	WINDRES="$(WINDRES)"; export WINDRES; \
+@@ -19566,6 +19631,7 @@ configure-tcl:
+ 	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
+ 	CC="$(CC)"; export CC; \
+ 	CFLAGS="$(CFLAGS)"; export CFLAGS; \
++	CPPFLAGS="$(CPPFLAGS)"; export CPPFLAGS; \
+ 	CONFIG_SHELL="$(SHELL)"; export CONFIG_SHELL; \
+ 	CXX="$(CXX)"; export CXX; \
+ 	CXXFLAGS="$(CXXFLAGS)"; export CXXFLAGS; \
+@@ -19574,6 +19640,7 @@ configure-tcl:
+ 	CC_FOR_BUILD="$(CC_FOR_BUILD)"; export CC_FOR_BUILD; \
+ 	DLLTOOL="$(DLLTOOL)"; export DLLTOOL; \
+ 	LD="$(LD)"; export LD; \
++	LDFLAGS="$(LDFLAGS)"; export LDFLAGS; \
+ 	NM="$(NM)"; export NM; \
+ 	RANLIB="$(RANLIB)"; export RANLIB; \
+ 	WINDRES="$(WINDRES)"; export WINDRES; \
+@@ -19633,6 +19700,7 @@ configure-itcl:
+ 	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
+ 	CC="$(CC)"; export CC; \
+ 	CFLAGS="$(CFLAGS)"; export CFLAGS; \
++	CPPFLAGS="$(CPPFLAGS)"; export CPPFLAGS; \
+ 	CONFIG_SHELL="$(SHELL)"; export CONFIG_SHELL; \
+ 	CXX="$(CXX)"; export CXX; \
+ 	CXXFLAGS="$(CXXFLAGS)"; export CXXFLAGS; \
+@@ -19641,6 +19709,7 @@ configure-itcl:
+ 	CC_FOR_BUILD="$(CC_FOR_BUILD)"; export CC_FOR_BUILD; \
+ 	DLLTOOL="$(DLLTOOL)"; export DLLTOOL; \
+ 	LD="$(LD)"; export LD; \
++	LDFLAGS="$(LDFLAGS)"; export LDFLAGS; \
+ 	NM="$(NM)"; export NM; \
+ 	RANLIB="$(RANLIB)"; export RANLIB; \
+ 	WINDRES="$(WINDRES)"; export WINDRES; \
+@@ -19700,6 +19769,7 @@ configure-ld:
+ 	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
+ 	CC="$(CC)"; export CC; \
+ 	CFLAGS="$(CFLAGS)"; export CFLAGS; \
++	CPPFLAGS="$(CPPFLAGS)"; export CPPFLAGS; \
+ 	CONFIG_SHELL="$(SHELL)"; export CONFIG_SHELL; \
+ 	CXX="$(CXX)"; export CXX; \
+ 	CXXFLAGS="$(CXXFLAGS)"; export CXXFLAGS; \
+@@ -19708,6 +19778,7 @@ configure-ld:
+ 	CC_FOR_BUILD="$(CC_FOR_BUILD)"; export CC_FOR_BUILD; \
+ 	DLLTOOL="$(DLLTOOL)"; export DLLTOOL; \
+ 	LD="$(LD)"; export LD; \
++	LDFLAGS="$(LDFLAGS)"; export LDFLAGS; \
+ 	NM="$(NM)"; export NM; \
+ 	RANLIB="$(RANLIB)"; export RANLIB; \
+ 	WINDRES="$(WINDRES)"; export WINDRES; \
+@@ -19767,6 +19838,7 @@ configure-libgui:
+ 	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
+ 	CC="$(CC)"; export CC; \
+ 	CFLAGS="$(CFLAGS)"; export CFLAGS; \
++	CPPFLAGS="$(CPPFLAGS)"; export CPPFLAGS; \
+ 	CONFIG_SHELL="$(SHELL)"; export CONFIG_SHELL; \
+ 	CXX="$(CXX)"; export CXX; \
+ 	CXXFLAGS="$(CXXFLAGS)"; export CXXFLAGS; \
+@@ -19775,6 +19847,7 @@ configure-libgui:
+ 	CC_FOR_BUILD="$(CC_FOR_BUILD)"; export CC_FOR_BUILD; \
+ 	DLLTOOL="$(DLLTOOL)"; export DLLTOOL; \
+ 	LD="$(LD)"; export LD; \
++	LDFLAGS="$(LDFLAGS)"; export LDFLAGS; \
+ 	NM="$(NM)"; export NM; \
+ 	RANLIB="$(RANLIB)"; export RANLIB; \
+ 	WINDRES="$(WINDRES)"; export WINDRES; \
+@@ -19834,6 +19907,7 @@ configure-libiberty:
+ 	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
+ 	CC="$(CC)"; export CC; \
+ 	CFLAGS="$(CFLAGS)"; export CFLAGS; \
++	CPPFLAGS="$(CPPFLAGS)"; export CPPFLAGS; \
+ 	CONFIG_SHELL="$(SHELL)"; export CONFIG_SHELL; \
+ 	CXX="$(CXX)"; export CXX; \
+ 	CXXFLAGS="$(CXXFLAGS)"; export CXXFLAGS; \
+@@ -19842,6 +19916,7 @@ configure-libiberty:
+ 	CC_FOR_BUILD="$(CC_FOR_BUILD)"; export CC_FOR_BUILD; \
+ 	DLLTOOL="$(DLLTOOL)"; export DLLTOOL; \
+ 	LD="$(LD)"; export LD; \
++	LDFLAGS="$(LDFLAGS)"; export LDFLAGS; \
+ 	NM="$(NM)"; export NM; \
+ 	RANLIB="$(RANLIB)"; export RANLIB; \
+ 	WINDRES="$(WINDRES)"; export WINDRES; \
+@@ -19901,6 +19976,7 @@ configure-libtool:
+ 	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
+ 	CC="$(CC)"; export CC; \
+ 	CFLAGS="$(CFLAGS)"; export CFLAGS; \
++	CPPFLAGS="$(CPPFLAGS)"; export CPPFLAGS; \
+ 	CONFIG_SHELL="$(SHELL)"; export CONFIG_SHELL; \
+ 	CXX="$(CXX)"; export CXX; \
+ 	CXXFLAGS="$(CXXFLAGS)"; export CXXFLAGS; \
+@@ -19909,6 +19985,7 @@ configure-libtool:
+ 	CC_FOR_BUILD="$(CC_FOR_BUILD)"; export CC_FOR_BUILD; \
+ 	DLLTOOL="$(DLLTOOL)"; export DLLTOOL; \
+ 	LD="$(LD)"; export LD; \
++	LDFLAGS="$(LDFLAGS)"; export LDFLAGS; \
+ 	NM="$(NM)"; export NM; \
+ 	RANLIB="$(RANLIB)"; export RANLIB; \
+ 	WINDRES="$(WINDRES)"; export WINDRES; \
+@@ -19968,6 +20045,7 @@ configure-m4:
+ 	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
+ 	CC="$(CC)"; export CC; \
+ 	CFLAGS="$(CFLAGS)"; export CFLAGS; \
++	CPPFLAGS="$(CPPFLAGS)"; export CPPFLAGS; \
+ 	CONFIG_SHELL="$(SHELL)"; export CONFIG_SHELL; \
+ 	CXX="$(CXX)"; export CXX; \
+ 	CXXFLAGS="$(CXXFLAGS)"; export CXXFLAGS; \
+@@ -19976,6 +20054,7 @@ configure-m4:
+ 	CC_FOR_BUILD="$(CC_FOR_BUILD)"; export CC_FOR_BUILD; \
+ 	DLLTOOL="$(DLLTOOL)"; export DLLTOOL; \
+ 	LD="$(LD)"; export LD; \
++	LDFLAGS="$(LDFLAGS)"; export LDFLAGS; \
+ 	NM="$(NM)"; export NM; \
+ 	RANLIB="$(RANLIB)"; export RANLIB; \
+ 	WINDRES="$(WINDRES)"; export WINDRES; \
+@@ -20035,6 +20114,7 @@ configure-make:
+ 	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
+ 	CC="$(CC)"; export CC; \
+ 	CFLAGS="$(CFLAGS)"; export CFLAGS; \
++	CPPFLAGS="$(CPPFLAGS)"; export CPPFLAGS; \
+ 	CONFIG_SHELL="$(SHELL)"; export CONFIG_SHELL; \
+ 	CXX="$(CXX)"; export CXX; \
+ 	CXXFLAGS="$(CXXFLAGS)"; export CXXFLAGS; \
+@@ -20043,6 +20123,7 @@ configure-make:
+ 	CC_FOR_BUILD="$(CC_FOR_BUILD)"; export CC_FOR_BUILD; \
+ 	DLLTOOL="$(DLLTOOL)"; export DLLTOOL; \
+ 	LD="$(LD)"; export LD; \
++	LDFLAGS="$(LDFLAGS)"; export LDFLAGS; \
+ 	NM="$(NM)"; export NM; \
+ 	RANLIB="$(RANLIB)"; export RANLIB; \
+ 	WINDRES="$(WINDRES)"; export WINDRES; \
+@@ -20102,6 +20183,7 @@ configure-mmalloc:
+ 	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
+ 	CC="$(CC)"; export CC; \
+ 	CFLAGS="$(CFLAGS)"; export CFLAGS; \
++	CPPFLAGS="$(CPPFLAGS)"; export CPPFLAGS; \
+ 	CONFIG_SHELL="$(SHELL)"; export CONFIG_SHELL; \
+ 	CXX="$(CXX)"; export CXX; \
+ 	CXXFLAGS="$(CXXFLAGS)"; export CXXFLAGS; \
+@@ -20110,6 +20192,7 @@ configure-mmalloc:
+ 	CC_FOR_BUILD="$(CC_FOR_BUILD)"; export CC_FOR_BUILD; \
+ 	DLLTOOL="$(DLLTOOL)"; export DLLTOOL; \
+ 	LD="$(LD)"; export LD; \
++	LDFLAGS="$(LDFLAGS)"; export LDFLAGS; \
+ 	NM="$(NM)"; export NM; \
+ 	RANLIB="$(RANLIB)"; export RANLIB; \
+ 	WINDRES="$(WINDRES)"; export WINDRES; \
+@@ -20165,6 +20248,7 @@ configure-patch:
+ 	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
+ 	CC="$(CC)"; export CC; \
+ 	CFLAGS="$(CFLAGS)"; export CFLAGS; \
++	CPPFLAGS="$(CPPFLAGS)"; export CPPFLAGS; \
+ 	CONFIG_SHELL="$(SHELL)"; export CONFIG_SHELL; \
+ 	CXX="$(CXX)"; export CXX; \
+ 	CXXFLAGS="$(CXXFLAGS)"; export CXXFLAGS; \
+@@ -20173,6 +20257,7 @@ configure-patch:
+ 	CC_FOR_BUILD="$(CC_FOR_BUILD)"; export CC_FOR_BUILD; \
+ 	DLLTOOL="$(DLLTOOL)"; export DLLTOOL; \
+ 	LD="$(LD)"; export LD; \
++	LDFLAGS="$(LDFLAGS)"; export LDFLAGS; \
+ 	NM="$(NM)"; export NM; \
+ 	RANLIB="$(RANLIB)"; export RANLIB; \
+ 	WINDRES="$(WINDRES)"; export WINDRES; \
+@@ -20232,6 +20317,7 @@ configure-perl:
+ 	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
+ 	CC="$(CC)"; export CC; \
+ 	CFLAGS="$(CFLAGS)"; export CFLAGS; \
++	CPPFLAGS="$(CPPFLAGS)"; export CPPFLAGS; \
+ 	CONFIG_SHELL="$(SHELL)"; export CONFIG_SHELL; \
+ 	CXX="$(CXX)"; export CXX; \
+ 	CXXFLAGS="$(CXXFLAGS)"; export CXXFLAGS; \
+@@ -20240,6 +20326,7 @@ configure-perl:
+ 	CC_FOR_BUILD="$(CC_FOR_BUILD)"; export CC_FOR_BUILD; \
+ 	DLLTOOL="$(DLLTOOL)"; export DLLTOOL; \
+ 	LD="$(LD)"; export LD; \
++	LDFLAGS="$(LDFLAGS)"; export LDFLAGS; \
+ 	NM="$(NM)"; export NM; \
+ 	RANLIB="$(RANLIB)"; export RANLIB; \
+ 	WINDRES="$(WINDRES)"; export WINDRES; \
+@@ -20299,6 +20386,7 @@ configure-prms:
+ 	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
+ 	CC="$(CC)"; export CC; \
+ 	CFLAGS="$(CFLAGS)"; export CFLAGS; \
++	CPPFLAGS="$(CPPFLAGS)"; export CPPFLAGS; \
+ 	CONFIG_SHELL="$(SHELL)"; export CONFIG_SHELL; \
+ 	CXX="$(CXX)"; export CXX; \
+ 	CXXFLAGS="$(CXXFLAGS)"; export CXXFLAGS; \
+@@ -20307,6 +20395,7 @@ configure-prms:
+ 	CC_FOR_BUILD="$(CC_FOR_BUILD)"; export CC_FOR_BUILD; \
+ 	DLLTOOL="$(DLLTOOL)"; export DLLTOOL; \
+ 	LD="$(LD)"; export LD; \
++	LDFLAGS="$(LDFLAGS)"; export LDFLAGS; \
+ 	NM="$(NM)"; export NM; \
+ 	RANLIB="$(RANLIB)"; export RANLIB; \
+ 	WINDRES="$(WINDRES)"; export WINDRES; \
+@@ -20366,6 +20455,7 @@ configure-rcs:
+ 	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
+ 	CC="$(CC)"; export CC; \
+ 	CFLAGS="$(CFLAGS)"; export CFLAGS; \
++	CPPFLAGS="$(CPPFLAGS)"; export CPPFLAGS; \
+ 	CONFIG_SHELL="$(SHELL)"; export CONFIG_SHELL; \
+ 	CXX="$(CXX)"; export CXX; \
+ 	CXXFLAGS="$(CXXFLAGS)"; export CXXFLAGS; \
+@@ -20374,6 +20464,7 @@ configure-rcs:
+ 	CC_FOR_BUILD="$(CC_FOR_BUILD)"; export CC_FOR_BUILD; \
+ 	DLLTOOL="$(DLLTOOL)"; export DLLTOOL; \
+ 	LD="$(LD)"; export LD; \
++	LDFLAGS="$(LDFLAGS)"; export LDFLAGS; \
+ 	NM="$(NM)"; export NM; \
+ 	RANLIB="$(RANLIB)"; export RANLIB; \
+ 	WINDRES="$(WINDRES)"; export WINDRES; \
+@@ -20433,6 +20524,7 @@ configure-readline:
+ 	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
+ 	CC="$(CC)"; export CC; \
+ 	CFLAGS="$(CFLAGS)"; export CFLAGS; \
++	CPPFLAGS="$(CPPFLAGS)"; export CPPFLAGS; \
+ 	CONFIG_SHELL="$(SHELL)"; export CONFIG_SHELL; \
+ 	CXX="$(CXX)"; export CXX; \
+ 	CXXFLAGS="$(CXXFLAGS)"; export CXXFLAGS; \
+@@ -20441,6 +20533,7 @@ configure-readline:
+ 	CC_FOR_BUILD="$(CC_FOR_BUILD)"; export CC_FOR_BUILD; \
+ 	DLLTOOL="$(DLLTOOL)"; export DLLTOOL; \
+ 	LD="$(LD)"; export LD; \
++	LDFLAGS="$(LDFLAGS)"; export LDFLAGS; \
+ 	NM="$(NM)"; export NM; \
+ 	RANLIB="$(RANLIB)"; export RANLIB; \
+ 	WINDRES="$(WINDRES)"; export WINDRES; \
+@@ -20500,6 +20593,7 @@ configure-release:
+ 	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
+ 	CC="$(CC)"; export CC; \
+ 	CFLAGS="$(CFLAGS)"; export CFLAGS; \
++	CPPFLAGS="$(CPPFLAGS)"; export CPPFLAGS; \
+ 	CONFIG_SHELL="$(SHELL)"; export CONFIG_SHELL; \
+ 	CXX="$(CXX)"; export CXX; \
+ 	CXXFLAGS="$(CXXFLAGS)"; export CXXFLAGS; \
+@@ -20508,6 +20602,7 @@ configure-release:
+ 	CC_FOR_BUILD="$(CC_FOR_BUILD)"; export CC_FOR_BUILD; \
+ 	DLLTOOL="$(DLLTOOL)"; export DLLTOOL; \
+ 	LD="$(LD)"; export LD; \
++	LDFLAGS="$(LDFLAGS)"; export LDFLAGS; \
+ 	NM="$(NM)"; export NM; \
+ 	RANLIB="$(RANLIB)"; export RANLIB; \
+ 	WINDRES="$(WINDRES)"; export WINDRES; \
+@@ -20559,6 +20654,7 @@ configure-recode:
+ 	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
+ 	CC="$(CC)"; export CC; \
+ 	CFLAGS="$(CFLAGS)"; export CFLAGS; \
++	CPPFLAGS="$(CPPFLAGS)"; export CPPFLAGS; \
+ 	CONFIG_SHELL="$(SHELL)"; export CONFIG_SHELL; \
+ 	CXX="$(CXX)"; export CXX; \
+ 	CXXFLAGS="$(CXXFLAGS)"; export CXXFLAGS; \
+@@ -20567,6 +20663,7 @@ configure-recode:
+ 	CC_FOR_BUILD="$(CC_FOR_BUILD)"; export CC_FOR_BUILD; \
+ 	DLLTOOL="$(DLLTOOL)"; export DLLTOOL; \
+ 	LD="$(LD)"; export LD; \
++	LDFLAGS="$(LDFLAGS)"; export LDFLAGS; \
+ 	NM="$(NM)"; export NM; \
+ 	RANLIB="$(RANLIB)"; export RANLIB; \
+ 	WINDRES="$(WINDRES)"; export WINDRES; \
+@@ -20626,6 +20723,7 @@ configure-sed:
+ 	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
+ 	CC="$(CC)"; export CC; \
+ 	CFLAGS="$(CFLAGS)"; export CFLAGS; \
++	CPPFLAGS="$(CPPFLAGS)"; export CPPFLAGS; \
+ 	CONFIG_SHELL="$(SHELL)"; export CONFIG_SHELL; \
+ 	CXX="$(CXX)"; export CXX; \
+ 	CXXFLAGS="$(CXXFLAGS)"; export CXXFLAGS; \
+@@ -20634,6 +20732,7 @@ configure-sed:
+ 	CC_FOR_BUILD="$(CC_FOR_BUILD)"; export CC_FOR_BUILD; \
+ 	DLLTOOL="$(DLLTOOL)"; export DLLTOOL; \
+ 	LD="$(LD)"; export LD; \
++	LDFLAGS="$(LDFLAGS)"; export LDFLAGS; \
+ 	NM="$(NM)"; export NM; \
+ 	RANLIB="$(RANLIB)"; export RANLIB; \
+ 	WINDRES="$(WINDRES)"; export WINDRES; \
+@@ -20693,6 +20792,7 @@ configure-send-pr:
+ 	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
+ 	CC="$(CC)"; export CC; \
+ 	CFLAGS="$(CFLAGS)"; export CFLAGS; \
++	CPPFLAGS="$(CPPFLAGS)"; export CPPFLAGS; \
+ 	CONFIG_SHELL="$(SHELL)"; export CONFIG_SHELL; \
+ 	CXX="$(CXX)"; export CXX; \
+ 	CXXFLAGS="$(CXXFLAGS)"; export CXXFLAGS; \
+@@ -20701,6 +20801,7 @@ configure-send-pr:
+ 	CC_FOR_BUILD="$(CC_FOR_BUILD)"; export CC_FOR_BUILD; \
+ 	DLLTOOL="$(DLLTOOL)"; export DLLTOOL; \
+ 	LD="$(LD)"; export LD; \
++	LDFLAGS="$(LDFLAGS)"; export LDFLAGS; \
+ 	NM="$(NM)"; export NM; \
+ 	RANLIB="$(RANLIB)"; export RANLIB; \
+ 	WINDRES="$(WINDRES)"; export WINDRES; \
+@@ -20760,6 +20861,7 @@ configure-shellutils:
+ 	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
+ 	CC="$(CC)"; export CC; \
+ 	CFLAGS="$(CFLAGS)"; export CFLAGS; \
++	CPPFLAGS="$(CPPFLAGS)"; export CPPFLAGS; \
+ 	CONFIG_SHELL="$(SHELL)"; export CONFIG_SHELL; \
+ 	CXX="$(CXX)"; export CXX; \
+ 	CXXFLAGS="$(CXXFLAGS)"; export CXXFLAGS; \
+@@ -20768,6 +20870,7 @@ configure-shellutils:
+ 	CC_FOR_BUILD="$(CC_FOR_BUILD)"; export CC_FOR_BUILD; \
+ 	DLLTOOL="$(DLLTOOL)"; export DLLTOOL; \
+ 	LD="$(LD)"; export LD; \
++	LDFLAGS="$(LDFLAGS)"; export LDFLAGS; \
+ 	NM="$(NM)"; export NM; \
+ 	RANLIB="$(RANLIB)"; export RANLIB; \
+ 	WINDRES="$(WINDRES)"; export WINDRES; \
+@@ -20827,6 +20930,7 @@ configure-sid:
+ 	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
+ 	CC="$(CC)"; export CC; \
+ 	CFLAGS="$(CFLAGS)"; export CFLAGS; \
++	CPPFLAGS="$(CPPFLAGS)"; export CPPFLAGS; \
+ 	CONFIG_SHELL="$(SHELL)"; export CONFIG_SHELL; \
+ 	CXX="$(CXX)"; export CXX; \
+ 	CXXFLAGS="$(CXXFLAGS)"; export CXXFLAGS; \
+@@ -20835,6 +20939,7 @@ configure-sid:
+ 	CC_FOR_BUILD="$(CC_FOR_BUILD)"; export CC_FOR_BUILD; \
+ 	DLLTOOL="$(DLLTOOL)"; export DLLTOOL; \
+ 	LD="$(LD)"; export LD; \
++	LDFLAGS="$(LDFLAGS)"; export LDFLAGS; \
+ 	NM="$(NM)"; export NM; \
+ 	RANLIB="$(RANLIB)"; export RANLIB; \
+ 	WINDRES="$(WINDRES)"; export WINDRES; \
+@@ -20894,6 +20999,7 @@ configure-sim:
+ 	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
+ 	CC="$(CC)"; export CC; \
+ 	CFLAGS="$(CFLAGS)"; export CFLAGS; \
++	CPPFLAGS="$(CPPFLAGS)"; export CPPFLAGS; \
+ 	CONFIG_SHELL="$(SHELL)"; export CONFIG_SHELL; \
+ 	CXX="$(CXX)"; export CXX; \
+ 	CXXFLAGS="$(CXXFLAGS)"; export CXXFLAGS; \
+@@ -20902,6 +21008,7 @@ configure-sim:
+ 	CC_FOR_BUILD="$(CC_FOR_BUILD)"; export CC_FOR_BUILD; \
+ 	DLLTOOL="$(DLLTOOL)"; export DLLTOOL; \
+ 	LD="$(LD)"; export LD; \
++	LDFLAGS="$(LDFLAGS)"; export LDFLAGS; \
+ 	NM="$(NM)"; export NM; \
+ 	RANLIB="$(RANLIB)"; export RANLIB; \
+ 	WINDRES="$(WINDRES)"; export WINDRES; \
+@@ -20961,6 +21068,7 @@ configure-tar:
+ 	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
+ 	CC="$(CC)"; export CC; \
+ 	CFLAGS="$(CFLAGS)"; export CFLAGS; \
++	CPPFLAGS="$(CPPFLAGS)"; export CPPFLAGS; \
+ 	CONFIG_SHELL="$(SHELL)"; export CONFIG_SHELL; \
+ 	CXX="$(CXX)"; export CXX; \
+ 	CXXFLAGS="$(CXXFLAGS)"; export CXXFLAGS; \
+@@ -20969,6 +21077,7 @@ configure-tar:
+ 	CC_FOR_BUILD="$(CC_FOR_BUILD)"; export CC_FOR_BUILD; \
+ 	DLLTOOL="$(DLLTOOL)"; export DLLTOOL; \
+ 	LD="$(LD)"; export LD; \
++	LDFLAGS="$(LDFLAGS)"; export LDFLAGS; \
+ 	NM="$(NM)"; export NM; \
+ 	RANLIB="$(RANLIB)"; export RANLIB; \
+ 	WINDRES="$(WINDRES)"; export WINDRES; \
+@@ -21028,6 +21137,7 @@ configure-texinfo:
+ 	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
+ 	CC="$(CC)"; export CC; \
+ 	CFLAGS="$(CFLAGS)"; export CFLAGS; \
++	CPPFLAGS="$(CPPFLAGS)"; export CPPFLAGS; \
+ 	CONFIG_SHELL="$(SHELL)"; export CONFIG_SHELL; \
+ 	CXX="$(CXX)"; export CXX; \
+ 	CXXFLAGS="$(CXXFLAGS)"; export CXXFLAGS; \
+@@ -21036,6 +21146,7 @@ configure-texinfo:
+ 	CC_FOR_BUILD="$(CC_FOR_BUILD)"; export CC_FOR_BUILD; \
+ 	DLLTOOL="$(DLLTOOL)"; export DLLTOOL; \
+ 	LD="$(LD)"; export LD; \
++	LDFLAGS="$(LDFLAGS)"; export LDFLAGS; \
+ 	NM="$(NM)"; export NM; \
+ 	RANLIB="$(RANLIB)"; export RANLIB; \
+ 	WINDRES="$(WINDRES)"; export WINDRES; \
+@@ -21091,6 +21202,7 @@ configure-textutils:
+ 	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
+ 	CC="$(CC)"; export CC; \
+ 	CFLAGS="$(CFLAGS)"; export CFLAGS; \
++	CPPFLAGS="$(CPPFLAGS)"; export CPPFLAGS; \
+ 	CONFIG_SHELL="$(SHELL)"; export CONFIG_SHELL; \
+ 	CXX="$(CXX)"; export CXX; \
+ 	CXXFLAGS="$(CXXFLAGS)"; export CXXFLAGS; \
+@@ -21099,6 +21211,7 @@ configure-textutils:
+ 	CC_FOR_BUILD="$(CC_FOR_BUILD)"; export CC_FOR_BUILD; \
+ 	DLLTOOL="$(DLLTOOL)"; export DLLTOOL; \
+ 	LD="$(LD)"; export LD; \
++	LDFLAGS="$(LDFLAGS)"; export LDFLAGS; \
+ 	NM="$(NM)"; export NM; \
+ 	RANLIB="$(RANLIB)"; export RANLIB; \
+ 	WINDRES="$(WINDRES)"; export WINDRES; \
+@@ -21158,6 +21271,7 @@ configure-time:
+ 	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
+ 	CC="$(CC)"; export CC; \
+ 	CFLAGS="$(CFLAGS)"; export CFLAGS; \
++	CPPFLAGS="$(CPPFLAGS)"; export CPPFLAGS; \
+ 	CONFIG_SHELL="$(SHELL)"; export CONFIG_SHELL; \
+ 	CXX="$(CXX)"; export CXX; \
+ 	CXXFLAGS="$(CXXFLAGS)"; export CXXFLAGS; \
+@@ -21166,6 +21280,7 @@ configure-time:
+ 	CC_FOR_BUILD="$(CC_FOR_BUILD)"; export CC_FOR_BUILD; \
+ 	DLLTOOL="$(DLLTOOL)"; export DLLTOOL; \
+ 	LD="$(LD)"; export LD; \
++	LDFLAGS="$(LDFLAGS)"; export LDFLAGS; \
+ 	NM="$(NM)"; export NM; \
+ 	RANLIB="$(RANLIB)"; export RANLIB; \
+ 	WINDRES="$(WINDRES)"; export WINDRES; \
+@@ -21225,6 +21340,7 @@ configure-uudecode:
+ 	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
+ 	CC="$(CC)"; export CC; \
+ 	CFLAGS="$(CFLAGS)"; export CFLAGS; \
++	CPPFLAGS="$(CPPFLAGS)"; export CPPFLAGS; \
+ 	CONFIG_SHELL="$(SHELL)"; export CONFIG_SHELL; \
+ 	CXX="$(CXX)"; export CXX; \
+ 	CXXFLAGS="$(CXXFLAGS)"; export CXXFLAGS; \
+@@ -21233,6 +21349,7 @@ configure-uudecode:
+ 	CC_FOR_BUILD="$(CC_FOR_BUILD)"; export CC_FOR_BUILD; \
+ 	DLLTOOL="$(DLLTOOL)"; export DLLTOOL; \
+ 	LD="$(LD)"; export LD; \
++	LDFLAGS="$(LDFLAGS)"; export LDFLAGS; \
+ 	NM="$(NM)"; export NM; \
+ 	RANLIB="$(RANLIB)"; export RANLIB; \
+ 	WINDRES="$(WINDRES)"; export WINDRES; \
+@@ -21292,6 +21409,7 @@ configure-wdiff:
+ 	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
+ 	CC="$(CC)"; export CC; \
+ 	CFLAGS="$(CFLAGS)"; export CFLAGS; \
++	CPPFLAGS="$(CPPFLAGS)"; export CPPFLAGS; \
+ 	CONFIG_SHELL="$(SHELL)"; export CONFIG_SHELL; \
+ 	CXX="$(CXX)"; export CXX; \
+ 	CXXFLAGS="$(CXXFLAGS)"; export CXXFLAGS; \
+@@ -21300,6 +21418,7 @@ configure-wdiff:
+ 	CC_FOR_BUILD="$(CC_FOR_BUILD)"; export CC_FOR_BUILD; \
+ 	DLLTOOL="$(DLLTOOL)"; export DLLTOOL; \
+ 	LD="$(LD)"; export LD; \
++	LDFLAGS="$(LDFLAGS)"; export LDFLAGS; \
+ 	NM="$(NM)"; export NM; \
+ 	RANLIB="$(RANLIB)"; export RANLIB; \
+ 	WINDRES="$(WINDRES)"; export WINDRES; \
+@@ -21359,6 +21478,7 @@ configure-zip:
+ 	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
+ 	CC="$(CC)"; export CC; \
+ 	CFLAGS="$(CFLAGS)"; export CFLAGS; \
++	CPPFLAGS="$(CPPFLAGS)"; export CPPFLAGS; \
+ 	CONFIG_SHELL="$(SHELL)"; export CONFIG_SHELL; \
+ 	CXX="$(CXX)"; export CXX; \
+ 	CXXFLAGS="$(CXXFLAGS)"; export CXXFLAGS; \
+@@ -21367,6 +21487,7 @@ configure-zip:
+ 	CC_FOR_BUILD="$(CC_FOR_BUILD)"; export CC_FOR_BUILD; \
+ 	DLLTOOL="$(DLLTOOL)"; export DLLTOOL; \
+ 	LD="$(LD)"; export LD; \
++	LDFLAGS="$(LDFLAGS)"; export LDFLAGS; \
+ 	NM="$(NM)"; export NM; \
+ 	RANLIB="$(RANLIB)"; export RANLIB; \
+ 	WINDRES="$(WINDRES)"; export WINDRES; \
+@@ -21429,6 +21550,7 @@ configure-zlib:
+ 	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
+ 	CC="$(CC)"; export CC; \
+ 	CFLAGS="$(CFLAGS)"; export CFLAGS; \
++	CPPFLAGS="$(CPPFLAGS)"; export CPPFLAGS; \
+ 	CONFIG_SHELL="$(SHELL)"; export CONFIG_SHELL; \
+ 	CXX="$(CXX)"; export CXX; \
+ 	CXXFLAGS="$(CXXFLAGS)"; export CXXFLAGS; \
+@@ -21437,6 +21559,7 @@ configure-zlib:
+ 	CC_FOR_BUILD="$(CC_FOR_BUILD)"; export CC_FOR_BUILD; \
+ 	DLLTOOL="$(DLLTOOL)"; export DLLTOOL; \
+ 	LD="$(LD)"; export LD; \
++	LDFLAGS="$(LDFLAGS)"; export LDFLAGS; \
+ 	NM="$(NM)"; export NM; \
+ 	RANLIB="$(RANLIB)"; export RANLIB; \
+ 	WINDRES="$(WINDRES)"; export WINDRES; \
+@@ -21488,6 +21611,7 @@ configure-gdb:
+ 	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
+ 	CC="$(CC)"; export CC; \
+ 	CFLAGS="$(CFLAGS)"; export CFLAGS; \
++	CPPFLAGS="$(CPPFLAGS)"; export CPPFLAGS; \
+ 	CONFIG_SHELL="$(SHELL)"; export CONFIG_SHELL; \
+ 	CXX="$(CXX)"; export CXX; \
+ 	CXXFLAGS="$(CXXFLAGS)"; export CXXFLAGS; \
+@@ -21496,6 +21620,7 @@ configure-gdb:
+ 	CC_FOR_BUILD="$(CC_FOR_BUILD)"; export CC_FOR_BUILD; \
+ 	DLLTOOL="$(DLLTOOL)"; export DLLTOOL; \
+ 	LD="$(LD)"; export LD; \
++	LDFLAGS="$(LDFLAGS)"; export LDFLAGS; \
+ 	NM="$(NM)"; export NM; \
+ 	RANLIB="$(RANLIB)"; export RANLIB; \
+ 	WINDRES="$(WINDRES)"; export WINDRES; \
+@@ -21555,6 +21680,7 @@ configure-expect:
+ 	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
+ 	CC="$(CC)"; export CC; \
+ 	CFLAGS="$(CFLAGS)"; export CFLAGS; \
++	CPPFLAGS="$(CPPFLAGS)"; export CPPFLAGS; \
+ 	CONFIG_SHELL="$(SHELL)"; export CONFIG_SHELL; \
+ 	CXX="$(CXX)"; export CXX; \
+ 	CXXFLAGS="$(CXXFLAGS)"; export CXXFLAGS; \
+@@ -21563,6 +21689,7 @@ configure-expect:
+ 	CC_FOR_BUILD="$(CC_FOR_BUILD)"; export CC_FOR_BUILD; \
+ 	DLLTOOL="$(DLLTOOL)"; export DLLTOOL; \
+ 	LD="$(LD)"; export LD; \
++	LDFLAGS="$(LDFLAGS)"; export LDFLAGS; \
+ 	NM="$(NM)"; export NM; \
+ 	RANLIB="$(RANLIB)"; export RANLIB; \
+ 	WINDRES="$(WINDRES)"; export WINDRES; \
+@@ -21622,6 +21749,7 @@ configure-guile:
+ 	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
+ 	CC="$(CC)"; export CC; \
+ 	CFLAGS="$(CFLAGS)"; export CFLAGS; \
++	CPPFLAGS="$(CPPFLAGS)"; export CPPFLAGS; \
+ 	CONFIG_SHELL="$(SHELL)"; export CONFIG_SHELL; \
+ 	CXX="$(CXX)"; export CXX; \
+ 	CXXFLAGS="$(CXXFLAGS)"; export CXXFLAGS; \
+@@ -21630,6 +21758,7 @@ configure-guile:
+ 	CC_FOR_BUILD="$(CC_FOR_BUILD)"; export CC_FOR_BUILD; \
+ 	DLLTOOL="$(DLLTOOL)"; export DLLTOOL; \
+ 	LD="$(LD)"; export LD; \
++	LDFLAGS="$(LDFLAGS)"; export LDFLAGS; \
+ 	NM="$(NM)"; export NM; \
+ 	RANLIB="$(RANLIB)"; export RANLIB; \
+ 	WINDRES="$(WINDRES)"; export WINDRES; \
+@@ -21689,6 +21818,7 @@ configure-tk:
+ 	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
+ 	CC="$(CC)"; export CC; \
+ 	CFLAGS="$(CFLAGS)"; export CFLAGS; \
++	CPPFLAGS="$(CPPFLAGS)"; export CPPFLAGS; \
+ 	CONFIG_SHELL="$(SHELL)"; export CONFIG_SHELL; \
+ 	CXX="$(CXX)"; export CXX; \
+ 	CXXFLAGS="$(CXXFLAGS)"; export CXXFLAGS; \
+@@ -21697,6 +21827,7 @@ configure-tk:
+ 	CC_FOR_BUILD="$(CC_FOR_BUILD)"; export CC_FOR_BUILD; \
+ 	DLLTOOL="$(DLLTOOL)"; export DLLTOOL; \
+ 	LD="$(LD)"; export LD; \
++	LDFLAGS="$(LDFLAGS)"; export LDFLAGS; \
+ 	NM="$(NM)"; export NM; \
+ 	RANLIB="$(RANLIB)"; export RANLIB; \
+ 	WINDRES="$(WINDRES)"; export WINDRES; \
+@@ -21756,6 +21887,7 @@ configure-tix:
+ 	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
+ 	CC="$(CC)"; export CC; \
+ 	CFLAGS="$(CFLAGS)"; export CFLAGS; \
++	CPPFLAGS="$(CPPFLAGS)"; export CPPFLAGS; \
+ 	CONFIG_SHELL="$(SHELL)"; export CONFIG_SHELL; \
+ 	CXX="$(CXX)"; export CXX; \
+ 	CXXFLAGS="$(CXXFLAGS)"; export CXXFLAGS; \
+@@ -21764,6 +21896,7 @@ configure-tix:
+ 	CC_FOR_BUILD="$(CC_FOR_BUILD)"; export CC_FOR_BUILD; \
+ 	DLLTOOL="$(DLLTOOL)"; export DLLTOOL; \
+ 	LD="$(LD)"; export LD; \
++	LDFLAGS="$(LDFLAGS)"; export LDFLAGS; \
+ 	NM="$(NM)"; export NM; \
+ 	RANLIB="$(RANLIB)"; export RANLIB; \
+ 	WINDRES="$(WINDRES)"; export WINDRES; \
+@@ -21823,6 +21956,7 @@ configure-libtermcap:
+ 	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
+ 	CC="$(CC)"; export CC; \
+ 	CFLAGS="$(CFLAGS)"; export CFLAGS; \
++	CPPFLAGS="$(CPPFLAGS)"; export CPPFLAGS; \
+ 	CONFIG_SHELL="$(SHELL)"; export CONFIG_SHELL; \
+ 	CXX="$(CXX)"; export CXX; \
+ 	CXXFLAGS="$(CXXFLAGS)"; export CXXFLAGS; \
+@@ -21831,6 +21965,7 @@ configure-libtermcap:
+ 	CC_FOR_BUILD="$(CC_FOR_BUILD)"; export CC_FOR_BUILD; \
+ 	DLLTOOL="$(DLLTOOL)"; export DLLTOOL; \
+ 	LD="$(LD)"; export LD; \
++	LDFLAGS="$(LDFLAGS)"; export LDFLAGS; \
+ 	NM="$(NM)"; export NM; \
+ 	RANLIB="$(RANLIB)"; export RANLIB; \
+ 	WINDRES="$(WINDRES)"; export WINDRES; \
+@@ -21886,6 +22021,7 @@ configure-utils:
+ 	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
+ 	CC="$(CC)"; export CC; \
+ 	CFLAGS="$(CFLAGS)"; export CFLAGS; \
++	CPPFLAGS="$(CPPFLAGS)"; export CPPFLAGS; \
+ 	CONFIG_SHELL="$(SHELL)"; export CONFIG_SHELL; \
+ 	CXX="$(CXX)"; export CXX; \
+ 	CXXFLAGS="$(CXXFLAGS)"; export CXXFLAGS; \
+@@ -21894,6 +22030,7 @@ configure-utils:
+ 	CC_FOR_BUILD="$(CC_FOR_BUILD)"; export CC_FOR_BUILD; \
+ 	DLLTOOL="$(DLLTOOL)"; export DLLTOOL; \
+ 	LD="$(LD)"; export LD; \
++	LDFLAGS="$(LDFLAGS)"; export LDFLAGS; \
+ 	NM="$(NM)"; export NM; \
+ 	RANLIB="$(RANLIB)"; export RANLIB; \
+ 	WINDRES="$(WINDRES)"; export WINDRES; \
+@@ -23331,6 +23468,7 @@ configure-gcc:
+ 	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
+ 	CC="$(CC)"; export CC; \
+ 	CFLAGS="$(CFLAGS)"; export CFLAGS; \
++	CPPFLAGS="$(CPPFLAGS)"; export CPPFLAGS; \
+ 	CONFIG_SHELL="$(SHELL)"; export CONFIG_SHELL; \
+ 	CXX="$(CXX)"; export CXX; \
+ 	CXXFLAGS="$(CXXFLAGS)"; export CXXFLAGS; \
+@@ -23340,6 +23478,7 @@ configure-gcc:
+ 	CC_FOR_BUILD="$(CC_FOR_BUILD)"; export CC_FOR_BUILD; \
+ 	DLLTOOL="$(DLLTOOL)"; export DLLTOOL; \
+ 	LD="$(LD)"; export LD; \
++	LDFLAGS="$(LDFLAGS)"; export LDFLAGS; \
+ 	NM="$(NM)"; export NM; \
+ 	RANLIB="$(RANLIB)"; export RANLIB; \
+ 	WINDRES="$(WINDRES)"; export WINDRES; \
+diff --git a/Makefile.tpl b/Makefile.tpl
+index 85312b4..d628c49 100644
+--- a/Makefile.tpl
++++ b/Makefile.tpl
+@@ -147,8 +147,12 @@ PWD_COMMAND = $${PWDCMD-pwd}
+ # environment.
+ CC_FOR_BUILD = @CC_FOR_BUILD@
+ CFLAGS_FOR_BUILD = @CFLAGS_FOR_BUILD@
++CPPFLAGS_FOR_BUILD = @CPPFLAGS_FOR_BUILD@
+ 
+ CXX_FOR_BUILD = $(CXX)
++CXXFLAGS_FOR_BUILD = @CXXFLAGS_FOR_BUILD@
++
++LDFLAGS_FOR_BUILD = @LDFLAGS_FOR_BUILD@
+ 
+ # Special variables passed down in EXTRA_GCC_FLAGS.  They are defined
+ # here so that they can be overridden by Makefile fragments.
+@@ -221,7 +225,8 @@ AR_FLAGS = rc
+ 
+ CC = @CC@
+ CFLAGS = @CFLAGS@
+-LIBCFLAGS = $(CFLAGS)
++CPPFLAGS = @CPPFLAGS@
++LIBCFLAGS = $(CFLAGS) $(CPPFLAGS)
+ 
+ CXX = @CXX@
+ CXXFLAGS = @CXXFLAGS@
+@@ -232,7 +237,7 @@ DLLTOOL = @DLLTOOL@
+ NM = @NM@
+ 
+ LD = @LD@
+-LDFLAGS = 
++LDFLAGS = @LDFLAGS@
+ 
+ RANLIB = @RANLIB@
+ 
+@@ -460,6 +465,9 @@ EXTRA_GCC_FLAGS = \
+ 	'BUILD_PREFIX_1=$(BUILD_PREFIX_1)' \
+ 	"GCC_FOR_TARGET=$(GCC_FOR_TARGET)" \
+ 	"CFLAGS_FOR_BUILD=$(CFLAGS_FOR_BUILD)" \
++	"CPPFLAGS_FOR_BUILD=$(CPPFLAGS_FOR_BUILD)" \
++	"CXXFLAGS_FOR_BUILD=$(CXXFLAGS_FOR_BUILD)" \
++	"LDFLAGS_FOR_BUILD=$(LDFLAGS_FOR_BUILD)" \
+ 	"`echo 'LANGUAGES=$(LANGUAGES)' | sed -e s/.*=$$/XFOO=/`" \
+ 	"`echo 'STMP_FIXPROTO=$(STMP_FIXPROTO)' | sed -e s/.*=$$/XFOO=/`" \
+ 	"`echo 'LIMITS_H_TEST=$(LIMITS_H_TEST)' | sed -e s/.*=$$/XFOO=/`" \
+@@ -779,6 +787,7 @@ configure-build-[+module+]:
+ 	AS="$(AS_FOR_BUILD)"; export AS; \
+ 	CC="$(CC_FOR_BUILD)"; export CC; \
+ 	CFLAGS="$(CFLAGS_FOR_BUILD)"; export CFLAGS; \
++	CPPFLAGS="$(CPPFLAGS_FOR_BUILD)"; export CPPFLAGS; \
+ 	CONFIG_SHELL="$(SHELL)"; export CONFIG_SHELL; \
+ 	CXX="$(CXX_FOR_BUILD)"; export CXX; \
+ 	CXXFLAGS="$(CXXFLAGS_FOR_BUILD)"; export CXXFLAGS; \
+@@ -851,6 +860,7 @@ configure-[+module+]:
+ 	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
+ 	CC="$(CC)"; export CC; \
+ 	CFLAGS="$(CFLAGS)"; export CFLAGS; \
++	CPPFLAGS="$(CPPFLAGS)"; export CPPFLAGS; \
+ 	CONFIG_SHELL="$(SHELL)"; export CONFIG_SHELL; \
+ 	CXX="$(CXX)"; export CXX; \
+ 	CXXFLAGS="$(CXXFLAGS)"; export CXXFLAGS; \
+@@ -859,6 +869,7 @@ configure-[+module+]:
+ 	CC_FOR_BUILD="$(CC_FOR_BUILD)"; export CC_FOR_BUILD; \
+ 	DLLTOOL="$(DLLTOOL)"; export DLLTOOL; \
+ 	LD="$(LD)"; export LD; \
++	LDFLAGS="$(LDFLAGS)"; export LDFLAGS; \
+ 	NM="$(NM)"; export NM; \
+ 	RANLIB="$(RANLIB)"; export RANLIB; \
+ 	WINDRES="$(WINDRES)"; export WINDRES; \
+@@ -1084,6 +1095,7 @@ configure-gcc:
+ 	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
+ 	CC="$(CC)"; export CC; \
+ 	CFLAGS="$(CFLAGS)"; export CFLAGS; \
++	CPPFLAGS="$(CPPFLAGS)"; export CPPFLAGS; \
+ 	CONFIG_SHELL="$(SHELL)"; export CONFIG_SHELL; \
+ 	CXX="$(CXX)"; export CXX; \
+ 	CXXFLAGS="$(CXXFLAGS)"; export CXXFLAGS; \
+@@ -1093,6 +1105,7 @@ configure-gcc:
+ 	CC_FOR_BUILD="$(CC_FOR_BUILD)"; export CC_FOR_BUILD; \
+ 	DLLTOOL="$(DLLTOOL)"; export DLLTOOL; \
+ 	LD="$(LD)"; export LD; \
++	LDFLAGS="$(LDFLAGS)"; export LDFLAGS; \
+ 	NM="$(NM)"; export NM; \
+ 	RANLIB="$(RANLIB)"; export RANLIB; \
+ 	WINDRES="$(WINDRES)"; export WINDRES; \
+diff --git a/configure.in b/configure.in
+index 4ba2931..0541b0f 100644
+--- a/configure.in
++++ b/configure.in
+@@ -1960,6 +1960,9 @@ esac
+ # Allow the user to override the flags for
+ # our build compiler if desired.
+ CFLAGS_FOR_BUILD=${CFLAGS_FOR_BUILD-${CFLAGS}}
++CPPFLAGS_FOR_BUILD=${CPPFLAGS_FOR_BUILD-${CPPFLAGS}}
++CXXFLAGS_FOR_BUILD=${CXXFLAGS_FOR_BUILD-${CXXFLAGS}}
++LDFLAGS_FOR_BUILD=${LDFLAGS_FOR_BUILD-${LDFLAGS}}
+ 
+ # On Canadian crosses, we'll be searching the right directories for
+ # the previously-installed cross compiler, so don't bother to add
+@@ -2103,7 +2106,12 @@ AC_SUBST(CC)
+ AC_SUBST(CXX)
+ AC_SUBST(CFLAGS)
+ AC_SUBST(CFLAGS_FOR_BUILD)
++AC_SUBST(CPPFLAGS)
++AC_SUBST(CPPFLAGS_FOR_BUILD)
+ AC_SUBST(CXXFLAGS)
++AC_SUBST(CXXFLAGS_FOR_BUILD)
++AC_SUBST(LDFLAGS)
++AC_SUBST(LDFLAGS_FOR_BUILD)
+ AC_SUBST(DEFAULT_YACC)
+ AC_SUBST(DEFAULT_LEX)
+ AC_SUBST(DEFAULT_M4)
+diff --git a/libiberty/Makefile.in b/libiberty/Makefile.in
+index fc86feb..8f35ea7 100644
+--- a/libiberty/Makefile.in
++++ b/libiberty/Makefile.in
+@@ -61,7 +61,8 @@ AR_FLAGS = rc
+ 
+ CC = @CC@
+ CFLAGS = @CFLAGS@
+-LIBCFLAGS = $(CFLAGS)
++CPPFLAGS = @CPPFLAGS@
++LIBCFLAGS = $(CFLAGS) $(CPPFLAGS)
+ RANLIB = @RANLIB@
+ MAKEINFO = @MAKEINFO@
+ PERL = @PERL@
+@@ -85,6 +86,7 @@ FLAGS_TO_PASS = \
+ 	"AR_FLAGS=$(AR_FLAGS)" \
+ 	"CC=$(CC)" \
+ 	"CFLAGS=$(CFLAGS)" \
++	"CPPFLAGS=$(CPPFLAGS)" \
+ 	"DESTDIR=$(DESTDIR)" \
+ 	"LIBCFLAGS=$(LIBCFLAGS)" \
+ 	"EXTRA_OFILES=$(EXTRA_OFILES)" \

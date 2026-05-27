@@ -1,0 +1,26 @@
+From: Nicolas Schodet <nico@ni.fr.eu.org>
+Date: Sat, 8 Mar 2025 17:29:59 +0100
+Subject: Remove AC_CONFIG_AUX_DIR in libiberty configure template
+
+Forwarded: not-needed
+
+This workarounds a problem with autoconf 2.71, and should not be needed
+anyway.
+---
+ libiberty/configure.ac | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/libiberty/configure.ac b/libiberty/configure.ac
+index eb8a99d..f1617ab 100644
+--- a/libiberty/configure.ac
++++ b/libiberty/configure.ac
+@@ -36,7 +36,8 @@ else
+   libiberty_topdir="${srcdir}/.."
+ fi
+ AC_SUBST(libiberty_topdir)
+-AC_CONFIG_AUX_DIR($libiberty_topdir)
++# This does not work with autoconf 2.71, should not be needed.
++#AC_CONFIG_AUX_DIR($libiberty_topdir)
+ 
+ dnl Very limited version of automake's enable-maintainer-mode
+ 

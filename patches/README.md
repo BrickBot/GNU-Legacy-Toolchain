@@ -221,8 +221,8 @@ with patch descriptions [available here](https://udd.debian.org/patches.cgi?src=
 | ❌       | ~~debian-changes-1:3.4.6+dfsg-1~~    |       |
 | ✔       | fix_ftbs.diff                        |       |
 
-#### Patches from Debian release dfsg2-5 and forward
-Commencing with Debian release [dfsg2-5](https://sources.debian.org/src/gcc-h8300-hms/1%3A3.4.6%2Bdfsg2-5/debian/patches/), the number of patches was reduced, while a few new ones were added.
+#### Patches from Debian release dfsg2-5
+In Debian release [dfsg2-5](https://sources.debian.org/src/gcc-h8300-hms/1%3A3.4.6%2Bdfsg2-5/debian/patches/), the number of patches was reduced, while a few new ones were added.
 Patch descriptions for these are [available here](https://udd.debian.org/patches.cgi?src=gcc-h8300-hms&version=1%3A3.4.6%2Bdfsg2-5).
 
 | Applied? | Patch File Name                                   | Notes |
@@ -238,6 +238,35 @@ Patch descriptions for these are [available here](https://udd.debian.org/patches
 |          | 0032-Fix-format-not-a-string-literal.patch                      | New subsequent to dfsg2-4.2 |
 |          | 0033-Remove-AC_CONFIG_AUX_DIR-in-libiberty-configure-temp.patch | New subsequent to dfsg2-4.2 |
 | ✔       | 0034-Fix-c-parse.y-build-error.patch                            | New subsequent to dfsg2-4.2 |
+
+
+#### Patches from Debian release dfsg2-6 – dfsg2-12
+In Debian release dfsg2-6, patches were renamed ([mapping reference](https://salsa.debian.org/debian-lego-team/gcc-h8300-hms/-/commit/7b8cba1e9ad701ce778489ab866d337fa9b40d36)).  Snapshots:
+* [dfsg2-7](https://sources.debian.org/src/gcc-h8300-hms/1%3A3.4.6%2Bdfsg2-7/debian/patches/)
+* [dfsg2-12](https://sources.debian.org/src/gcc-h8300-hms/1%3A3.4.6%2Bdfsg2-12/debian/patches/)
+
+Patch descriptions are [available here](https://udd.debian.org/patches.cgi?src=gcc-h8300-hms&version=1%3A3.4.6%2Bdfsg2-12),
+and new additions are based on the [changelog](https://salsa.debian.org/debian-lego-team/gcc-h8300-hms/-/blob/master/debian/changelog?ref_type=heads).
+
+| Applied? | Patch File Name                                   | Notes |
+| -------- | ------------------------------------------------- | ----- |
+| ❌       | ~~000_no_libstdc%2B%2B-v3.patch~~  | Was `000_no_libstdc%2B%2B-v3` |
+| ❌       | ~~001_h8300_64bit.patch~~          | Was `001_h8300_64bit` |
+| ❌       | ~~002_gcc_textdomain.patch~~       | Was `gcc-textdomain.dpatch` |
+| ❌       | ~~003_force_shell.patch~~          | Was `bin_false_fixup` |
+| ❌       | ~~004_do_not_build_doc.patch~~     | Was `debian-changes-1%3A3.4.6%2Bdfsg-1` |
+| ❌       | ~~005_fix_open.patch~~             | Was `fix_ftbs.diff` |
+| ❌       | ~~006_configure_signatures.patch~~ | Was `150-configure-signatures.patch` |
+| ✔       | 007_am_gnu_gettext.patch           | Was `0030-Add-now-mandatory-parameter-to-AM_GNU_GETTEXT.patch` |
+|          | 008_hardening_format.patch         | Was `0032-Fix-format-not-a-string-literal.patch` |
+|          | 009_libiberty_aux_dir.patch        | Was `0033-Remove-AC_CONFIG_AUX_DIR-in-libiberty-configure-temp.patch` |
+| ✔       | 010_fix_bison.patch                | Was `0034-Fix-c-parse.y-build-error.patch` |
+| ✔       | 010_fix_bison.patch                | Was `0034-Fix-c-parse.y-build-error.patch` |
+|          | 011_fix_gperf_signature.patch      | New in dfsg2-6  |
+|          | 012_propagate_flags.patch          | New in dfsg2-6  |
+|          | 013_libiberty_getwd.patch          | New in dfsg2-8  |
+|          | 014_libiberty_ftbfs.patch          | New in dfsg2-8  |
+|          | 015_fix_libiberty_lto.patch        | New in dfsg2-10 |
 
 
 ### GNU Pascal Compiler (GPC)

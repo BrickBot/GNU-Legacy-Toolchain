@@ -1,0 +1,30 @@
+Description: Fix getwd conflicting type
+ Remove unneeded prototype getcwd and move getwd so that it's only declared if
+ needed.
+Origin: https://gcc.gnu.org/legacy-ml/gcc-patches/2005-05/msg01513.html
+Forwarded: not-needed
+Last-Update: 2005-05-16
+Bug-Debian: https://bugs.debian.org/1114116
+
+--- a/libiberty/getpwd.c
++++ b/libiberty/getpwd.c
+@@ -39,10 +39,6 @@ extern int errno;
+ #include <sys/stat.h>
+ #endif
+ 
+-/* Prototype these in case the system headers don't provide them. */
+-extern char *getpwd ();
+-extern char *getwd ();
+-
+ #include "libiberty.h"
+ 
+ /* Virtually every UN*X system now in common use (except for pre-4.3-tahoe
+@@ -50,6 +46,8 @@ extern char *getwd ();
+    the few exceptions to the general rule here.  */
+ 
+ #if !defined(HAVE_GETCWD) && defined(HAVE_GETWD)
++/* Prototype in case the system headers doesn't provide it. */
++extern char *getwd ();
+ #define getcwd(buf,len) getwd(buf)
+ #endif
+ 

@@ -1,0 +1,16 @@
+000_no_libstdc++-v3.patch
+001_h8300_64bit.patch
+002_gcc_textdomain.patch
+003_force_shell.patch
+004_do_not_build_doc.patch
+005_fix_open.patch
+006_configure_signatures.patch
+007_am_gnu_gettext.patch
+008_hardening_format.patch
+009_libiberty_aux_dir.patch
+010_fix_bison.patch
+011_fix_gperf_signature.patch
+012_propagate_flags.patch
+013_libiberty_getwd.patch
+014_libiberty_ftbfs.patch
+015_fix_libiberty_lto.patch

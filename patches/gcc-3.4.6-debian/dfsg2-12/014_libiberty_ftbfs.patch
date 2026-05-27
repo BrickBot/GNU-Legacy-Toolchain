@@ -1,0 +1,35 @@
+From: Nicolas Schodet <nico@ni.fr.eu.org>
+Date: Sat, 6 Sep 2025 23:56:55 +0200
+Subject: Fix libiberty FTBFS
+
+Forwarded: not-needed
+Bug-Debian: https://bugs.debian.org/1114116
+
+Remove unneeded prototype execv & execvp.
+---
+ libiberty/pex-unix.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
+
+diff --git a/libiberty/pex-unix.c b/libiberty/pex-unix.c
+index 14fe71e..a9d9348 100644
+--- a/libiberty/pex-unix.c
++++ b/libiberty/pex-unix.c
+@@ -44,9 +44,6 @@ extern int errno;
+ #define waitpid(pid, status, flags) wait(status)
+ #endif
+ 
+-extern int execv ();
+-extern int execvp ();
+-
+ int
+ pexecute (program, argv, this_pname, temp_base, errmsg_fmt, errmsg_arg, flags)
+      const char *program;
+@@ -56,7 +53,7 @@ pexecute (program, argv, this_pname, temp_base, errmsg_fmt, errmsg_arg, flags)
+      char **errmsg_fmt, **errmsg_arg;
+      int flags;
+ {
+-  int (*func)() = (flags & PEXECUTE_SEARCH ? execvp : execv);
++  int (*func)(const char *, char * const *) = (flags & PEXECUTE_SEARCH ? execvp : execv);
+   int pid;
+   int pdes[2];
+   int input_desc, output_desc;
