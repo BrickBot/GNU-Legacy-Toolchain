@@ -1,6 +1,8 @@
 From: Michael Tautschnig <mt@debian.org>
+Date: Thu, 23 Nov 2006 21:59:46 +0100
 Subject: On 64bit archs unsigned != unsigned long
 
+Forwarded: not-needed
 ---
  gas/config/tc-h8300.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)

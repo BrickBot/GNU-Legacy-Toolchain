@@ -1,7 +1,9 @@
 From: Michael Tautschnig <mt@debian.org>
+Date: Sun, 23 Jun 2013 13:23:00 +0100
 Subject: Updated to newer texinfo notation
 
-Forwarded: no
+Bug-Debian: https://bugs.debian.org/712319
+Forwarded: not-needed
 Last-Update: 2025-03-12
 ---
  bfd/doc/archive.texi | 2 +-

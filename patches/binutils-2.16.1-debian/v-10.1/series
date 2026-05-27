@@ -14,3 +14,5 @@
 138-ldflags.patch
 139-spacepad.patch
 140-deterministic-output.patch
+141-libiberty-getwd.patch
+142-fix-libiberty-lto.patch

@@ -2,6 +2,7 @@ From: Chris Chimelis <chris@debian.org>
 Subject: Identify this version of binutils as being from Debian
 
 Forwarded: not-needed
+Last-Update: 2005-05-06
 ---
  bfd/Makefile.am | 6 +++---
  2 files changed, 6 insertions(+), 6 deletions(-)

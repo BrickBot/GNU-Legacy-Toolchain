@@ -1,7 +1,10 @@
 From: Michael Tautschnig <mt@debian.org>
+Date: Mon, 4 Dec 2006 22:21:52 +0100
 Subject: Fix alignment error on ARM
 
-Upstream status: A revised version of this patch is included in binutils/HEAD
+Bug-Debian: https://bugs.debian.org/402821
+Forwarded: https://sourceware.org/legacy-ml/binutils/2006-12/msg00030.html
+Applied-Upstream: commit:4fd454c89d63c73fd5e99ce5eb2a3174fcfd4f5d
 ---
  include/coff/external.h | 6 +++---
  1 file changed, 3 insertions(+), 3 deletions(-)

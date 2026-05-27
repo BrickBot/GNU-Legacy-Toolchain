@@ -1,6 +1,7 @@
 From: Jakub Jelinek <jakub@redhat.com>
 Subject: Fix buffer overflow in archive writing
 
+Forwarded: not-needed
 Origin: backport, commit:390c0e4288ca46982c7702ec420d277c021032f4
 
             * libbfd-in.h (_bfd_ar_spacepad): New prototype.

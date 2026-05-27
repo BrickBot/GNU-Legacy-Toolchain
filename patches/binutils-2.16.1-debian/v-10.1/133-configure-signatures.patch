@@ -1,7 +1,8 @@
 From: Petter Reinholdtsen <pere@hungry.com>
 Subject: Fix configure and build problem with newer GCC
 
-Forwarded: no
+Bug-Debian: https://bugs.debian.org/1066236
+Forwarded: not-needed
 Last-Update: 2025-02-14
 
 Make sure main() return int.  Also make sure required prototypes are

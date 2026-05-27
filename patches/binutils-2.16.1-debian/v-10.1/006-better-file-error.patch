@@ -1,8 +1,10 @@
 From: David Kimdon <dwhedon@gordian.com>
+Date: Wed, 19 Sep 2001 16:52:42 -0700
 Subject: Specify which filename is causing an error if the filename is a
  directory
 
-Bug-Debian: http://bugs.debian.org/45832
+Bug-Debian: https://bugs.debian.org/45832
+Forwarded: not-needed
 ---
  bfd/opncls.c | 7 +++++++
  1 file changed, 7 insertions(+)

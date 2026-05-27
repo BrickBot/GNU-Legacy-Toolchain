@@ -1,7 +1,7 @@
 From: Petter Reinholdtsen <pere@debian.org>
 Subject: Update notation to work with texinfo > 5
 
-Forwarded: no
+Forwarded: not-needed
 Last-Update: 2025-03-11
 ---
  gas/doc/as.texinfo    |  6 +++---

@@ -1,7 +1,12 @@
 From: Michael Tautschnig <mt@debian.org>
+Date: Sat, 28 Jun 2014 20:48:21 +0100
 Subject: Abort on invalid header
 
-Bug-Debian: http://bugs.debian.org/729274
+Upstream has made a different change to validate input.
+
+Bug-Debian: https://bugs.debian.org/729274
+Forwarded: not-needed
+Applied-Upstream: commit:75b8939e07dc255a6b075be0fd71b0d03bec1efe
 ---
  bfd/tekhex.c | 1 +
  1 file changed, 1 insertion(+)

@@ -1,8 +1,12 @@
 From: Chris Chimelis <chris@debian.org>
+Date: Wed, 17 Jul 2002 14:23:42 -0400
 Subject: Only generate an RPATH entry if LD_RUN_PATH is not empty,
  for cases where -rpath isn't specified
 
-Bug-Debian: http://bugs.debian.org/151024
+Different patch upstream since 2.34.
+
+Bug-Debian: https://bugs.debian.org/151024
+Forwarded: not-needed
 ---
  ld/emultempl/elf32.em | 4 ++++
  1 file changed, 4 insertions(+)

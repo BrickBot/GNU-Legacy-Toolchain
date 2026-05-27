@@ -1,6 +1,9 @@
 From: Michael Tautschnig <mt@debian.org>
+Date: Tue, 06 Jan 2009 08:41:14 +0000
 Subject: Fixes incompatible use of sprintf as a strcat replacement
 
+Forwarded: not-needed
+Applied-Upstream: commit:4ef2cf8be8a20090d7709672b0227e24172df3b3
 ---
  gas/itbl-ops.c     |  4 ++--
  opcodes/or32-opc.c | 12 ++++++------

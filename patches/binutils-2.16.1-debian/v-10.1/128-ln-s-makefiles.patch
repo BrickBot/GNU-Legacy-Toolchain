@@ -1,4 +1,5 @@
 From: Michael Tautschnig <mt@debian.org>
+Date: Sat, 04 Nov 2006 10:58:47 +0100
 Subject: Use $(LN_S) instead of hardcoded ln for linking between /usr/bin and
  /usr/lib/h8300-hitachi-coff/bin
 

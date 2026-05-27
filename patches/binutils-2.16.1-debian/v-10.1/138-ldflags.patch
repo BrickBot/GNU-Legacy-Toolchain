@@ -2,6 +2,7 @@ From: Nicolas Schodet <nico@ni.fr.eu.org>
 Date: Fri, 21 Mar 2025 00:08:56 +0100
 Subject: Use compilation/linker flags from configure environment
 
+Forwarded: not-needed
 ---
  Makefile.in           | 11 +++++++++--
  Makefile.tpl          | 11 +++++++++--
