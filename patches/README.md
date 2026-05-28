@@ -253,7 +253,7 @@ with new additions noted based on the [changelog](https://salsa.debian.org/debia
 
 | Applied? | Patch File Name                                   | Notes |
 | -------- | ------------------------------------------------- | ----- |
-|  ❌      | ~~000_no_libstdc++-v3.patch~~  | Was `000_no_libstdc%2B%2B-v3` |
+|  ❌      | ~~000_no_libstdc++-v3.patch~~      | Was `000_no_libstdc%2B%2B-v3` |
 | (✔)     | ~~001_h8300_64bit.patch~~          | Was `001_h8300_64bit` |
 | (✔)     | ~~002_gcc_textdomain.patch~~       | Was `gcc-textdomain.dpatch` |
 |  ❌      | ~~003_force_shell.patch~~          | Was `bin_false_fixup` |

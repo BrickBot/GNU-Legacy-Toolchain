@@ -4,7 +4,7 @@ GNU Legacy Toolchain
 &nbsp;
 ![GitHub License](https://img.shields.io/github/license/BrickBot/GNU-Legacy-Toolchain)
 ====================
-A legacy GNU toolchain that includes BinUtils, GCC, GPC, GDB, and NewLib.
+A legacy combined GNU toolchain that includes BinUtils, GCC, GPC, GDB, and NewLib.
 
 Multiple use cases exist for continuing to maintain a legacy toolchain:
 * **COFF targets, such as for the H8/300 Processor**
@@ -75,8 +75,8 @@ each toolchain set is configured to be build with a different program suffix.
 | gdb5,gcc3,gcc44 | (_respective_) | Builds all three.  If combining into a single install, files conflicts not already resolved by the differing toolchain program suffixes are resolved as follows: GCC 4.4 takes precedence over GCC 3, which takes precedence over GDB 5 |
 
 
-Repository Composition Notes
-----------------------------
+Toolchain Components Overview
+-----------------------------
 The primary selection criteria was the last known versions to include support for h8300-\*-coff,
 but this also overlapped well with support for GPC, Fortran77/g77, and the CLI CIL front end.
 
@@ -167,7 +167,7 @@ By appropriately mixing and matching folder versions, it is possible to establis
 a combined source folder through which a single, combined build can be executed.
 
 More information on how projects were “mixed and matched” to create combined
-source folders is available in the [`sym-combined`](sym-combined/) folder.
+source folders can be found in the [`sym-combined`](sym-combined/) folder.
 
 
 ### Files with Known Timestamp Interdependencies
