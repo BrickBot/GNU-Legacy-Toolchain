@@ -48,8 +48,7 @@ env:
   
   # Common arguments for `make all`
   # * Add "--keep-going" to apply this flag to the "make all" commands
-  # * For the jobs arg, use a POSIX-standard version of `nproc`
-  COMMON_MAKE_ALL_ARGS: --jobs=$(getconf _NPROCESSORS_ONLN)
+  COMMON_MAKE_ALL_ARGS:
 
 defaults:
   run:
@@ -125,8 +124,9 @@ jobs:
     - name: Configure the build
       run:  cd $BUILD_DIR  &&  echo "Current working directory is '$PWD'"  &&  ../sym-combined/${{ matrix.target-system }}-configure  --prefix=$(realpath -L -s ../$SYSROOT_DIR)  --toolchain-sets=${{ matrix.toolchain-set }}
 
+    # Execute the build.  For the jobs arg, use a POSIX-standard version of `nproc`.
     - name: Execute the build
-      run:  cd $BUILD_DIR  &&  echo "Current working directory is '$PWD'"  &&  make $COMMON_MAKE_ALL_ARGS
+      run:  cd $BUILD_DIR  &&  echo "Current working directory is '$PWD'"  &&  make $COMMON_MAKE_ALL_ARGS --jobs=$(getconf _NPROCESSORS_ONLN)
 
     # Test the completed build
     - name: Test install the new build to a sysroot
@@ -201,11 +201,12 @@ jobs:
         echo "Current working directory: $PWD"
         ../sym-combined/rcx-lego-configure  --prefix=$(realpath -L -s ../$SYSROOT_DIR)
 
+    # Execute the build.  For the jobs arg, use a POSIX-standard version of `nproc`.
     - name: Execute the build
       run:  |
         cd $BUILD_DIR
         echo "Current working directory: $PWD"
-        make $COMMON_MAKE_ALL_ARGS all
+        make $COMMON_MAKE_ALL_ARGS --jobs=$(getconf _NPROCESSORS_ONLN) all
 
     # Test install the completed build
     - name: Test install the new build to a sysroot
