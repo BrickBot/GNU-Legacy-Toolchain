@@ -610,7 +610,22 @@ p/stamp-docdemos: $(GPC_TEXI_EN)
 	$(srcdir)/p/script/extract-doc-demos -o p/docdemos $(srcdir)/p/doc/*.texi $(srcdir)/p/doc/generated/*.texi $(srcdir)/p/doc/en/*.texi
 	$(STAMP) "$@"
 
-p/gpc.o: $(srcdir)/p/gpc.c $(CONFIG_H) multilib.h Makefile \
+# Headers and flags for GPC specific files.
+GPC_GBE_H=$(CONFIG_H) system.h tree.h input.h rtl.h flags.h output.h expr.h \
+          except.h function.h convert.h toplev.h insn-constants.h insn-flags.h \
+          gcov-iov.h $(GPC_GCC_VERSION_H)
+P_H=$(GPC_GBE_H) p/gpc.h p/plant.h p/p-tree.def p/predef.def \
+          $(srcdir)/p/parse.h p/gbe.h
+ALL_GPC_FLAGS=$(ALL_CFLAGS) $(ALL_CPPFLAGS) $(GPC_ALL_WARNINGS) $(INCLUDES) \
+  -DGPC -DGPC_UNITS_DIR=\"$(unitsubdir)\" -I$(srcdir)/p
+
+# Headers and flags for patched backend files.
+GPC_BE_H=$(GPC_GBE_H) defaults.h machmode.h machmode.def real.h recog.h \
+         regs.h reload.h typeclass.h xcoffout.h \
+         insn-attr.h insn-codes.h insn-config.h
+ALL_GPC_GBE_FLAGS=$(ALL_CFLAGS) $(ALL_CPPFLAGS) $(INCLUDES) -DGPC
+
+p/gpc.o: $(srcdir)/p/gpc.c $(GPC_GBE_H) multilib.h Makefile \
  $(lang_specs_files) $(srcdir)/p/p-version.h specs.h
 	$(CC) -DGPC $(ALL_CFLAGS) $(ALL_CPPFLAGS) $(GPC_ALL_WARNINGS) $(INCLUDES) \
 	$(DRIVER_DEFINES) -c `echo $(srcdir)/p/gpc.c | sed 's,^\./,,'` -o $@
@@ -633,20 +648,6 @@ gpc-run: $(srcdir)/p/script/gpc-run $(VERSION_FILENAME)
 
 $(srcdir)/p/doc/generated/gpc-run.1: $(srcdir)/p/script/gpc-run $(VERSION_FILENAME) $(srcdir)/p/doc/generated/
 	help2man -N "$<" | sed -e s/@version@/$(gpc_version)/ > "$@" || { rm -f "$@"; false; }
-
-# Headers and flags for GPC specific files.
-GPC_GBE_H=$(CONFIG_H) system.h tree.h input.h rtl.h flags.h output.h expr.h \
-          except.h function.h convert.h toplev.h $(GPC_GCC_VERSION_H)
-P_H=$(GPC_GBE_H) p/gpc.h p/plant.h p/p-tree.def p/predef.def \
-          $(srcdir)/p/parse.h p/gbe.h
-ALL_GPC_FLAGS=$(ALL_CFLAGS) $(ALL_CPPFLAGS) $(GPC_ALL_WARNINGS) $(INCLUDES) \
-  -DGPC -DGPC_UNITS_DIR=\"$(unitsubdir)\" -I$(srcdir)/p
-
-# Headers and flags for patched backend files.
-GPC_BE_H=$(GPC_GBE_H) defaults.h machmode.h machmode.def real.h recog.h \
-         regs.h reload.h typeclass.h xcoffout.h \
-         insn-attr.h insn-codes.h insn-config.h insn-flags.h
-ALL_GPC_GBE_FLAGS=$(ALL_CFLAGS) $(ALL_CPPFLAGS) $(INCLUDES) -DGPC
 
 p/gpcpp.o: p/gpcpp.c p/p-version.h p/gpc-options.h p/lang-options.h \
    $(CONFIG_H) system.h p/gpcpp.h

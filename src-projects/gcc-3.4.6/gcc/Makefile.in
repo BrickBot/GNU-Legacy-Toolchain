@@ -2411,7 +2411,7 @@ protoize.o: protoize.c $(srcdir)/../include/getopt.h $(CONFIG_H) $(SYSTEM_H) \
 	  $(srcdir)/protoize.c $(OUTPUT_OPTION))
 
 unprotoize.o: protoize.c $(srcdir)/../include/getopt.h \
-   $(CONFIG_H) $(SYSTEM_H) Makefile version.h
+   $(CONFIG_H) $(SYSTEM_H) $(TM_H) Makefile version.h
 	(SHLIB_LINK='$(SHLIB_LINK)' \
 	SHLIB_MULTILIB='$(SHLIB_MULTILIB)'; \
 	$(CC) -c -DUNPROTOIZE $(ALL_CFLAGS) $(ALL_CPPFLAGS) $(INCLUDES) \

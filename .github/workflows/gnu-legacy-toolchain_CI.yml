@@ -46,8 +46,10 @@ env:
   CHERE_INVOKING: 1
   CYGWIN:         winsymlinks:native
   
-  # Set to "--keep-going" to apply this flag to the "make all" commands
-  COMMON_MAKE_ALL_ARGS: 
+  # Common arguments for `make all`
+  # * Add "--keep-going" to apply this flag to the "make all" commands
+  # * For the jobs arg, use a POSIX-standard version of `nproc`
+  COMMON_MAKE_ALL_ARGS: --jobs=$(getconf _NPROCESSORS_ONLN)
 
 defaults:
   run:
