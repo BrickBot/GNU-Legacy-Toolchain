@@ -1,5 +1,10 @@
 ChangeLog -- Edit History for GPC, the GNU Pascal Compiler, since version 2.1
 =============================================================================
+2026-07-23  Matthew Sheets  <https://github.com/BrickBot/GNU-Legacy-Toolchain>
+
+	* Fix Make dependencies to enable parallel jobs
+	  - Modified file:  Make-lang.in
+
 2025-07-05  Matthew Sheets  <https://github.com/BrickBot/GNU-Legacy-Toolchain>
 
 	* Create separate targets for making the info dir
