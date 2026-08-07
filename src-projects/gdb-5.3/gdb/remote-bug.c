@@ -141,12 +141,12 @@
 // OBSOLETE 
 // OBSOLETE 	  char *buffer = xmalloc (srec_frame);
 // OBSOLETE 
-// OBSOLETE 	  printf_filtered ("%s\t: 0x%4lx .. 0x%4lx  ", s->name, s->vma, s->vma + s->_raw_size);
+// OBSOLETE 	  printf_filtered ("%s\t: 0x%4lx .. 0x%4lx  ", s->name, s->vma, s->vma + s->rawsize);
 // OBSOLETE 	  gdb_flush (gdb_stdout);
-// OBSOLETE 	  for (i = 0; i < s->_raw_size; i += srec_frame)
+// OBSOLETE 	  for (i = 0; i < s->rawsize; i += srec_frame)
 // OBSOLETE 	    {
-// OBSOLETE 	      if (srec_frame > s->_raw_size - i)
-// OBSOLETE 		srec_frame = s->_raw_size - i;
+// OBSOLETE 	      if (srec_frame > s->rawsize - i)
+// OBSOLETE 		srec_frame = s->rawsize - i;
 // OBSOLETE 
 // OBSOLETE 	      bfd_get_section_contents (abfd, s, buffer, i, srec_frame);
 // OBSOLETE 	      bug_write_memory (s->vma + i, buffer, srec_frame);

@@ -2095,20 +2095,20 @@ core_section_load_dll_symbols (bfd * abfd, asection * sect, void *obj)
   if (strncmp (sect->name, ".module", 7))
     return;
 
-  buf = (char *) xmalloc (sect->_raw_size + 1);
+  buf = (char *) xmalloc (sect->rawsize + 1);
   if (!buf)
     {
       printf_unfiltered ("memory allocation failed for %s\n", sect->name);
       goto out;
     }
-  if (!bfd_get_section_contents (abfd, sect, buf, 0, sect->_raw_size))
+  if (!bfd_get_section_contents (abfd, sect, buf, 0, sect->rawsize))
     goto out;
 
   pstatus = (struct win32_pstatus *) buf;
 
   memmove (&base_addr, &(pstatus->data.module_info.base_address), sizeof (base_addr));
   dll_name_size = pstatus->data.module_info.module_name_size;
-  if (offsetof (struct win32_pstatus, data.module_info.module_name) + dll_name_size > sect->_raw_size)
+  if (offsetof (struct win32_pstatus, data.module_info.module_name) + dll_name_size > sect->rawsize)
       goto out;
 
   dll_name = (char *) xmalloc (dll_name_size + 1);

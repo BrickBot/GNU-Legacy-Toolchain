@@ -263,7 +263,7 @@ make_srec (char *srec, CORE_ADDR targ_addr, bfd *abfd, asection *sect,
   if (sect && abfd)
     {
       payload_size = (*maxrecsize - (1 + 1 + 2 + addr_size * 2 + 2)) / 2;
-      payload_size = min (payload_size, sect->_raw_size - sectoff);
+      payload_size = min (payload_size, sect->rawsize - sectoff);
 
       bfd_get_section_contents (abfd, sect, binbuf, sectoff, payload_size);
     }

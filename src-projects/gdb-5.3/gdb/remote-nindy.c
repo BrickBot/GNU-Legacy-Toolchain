@@ -599,13 +599,13 @@
 // OBSOLETE     {
 // OBSOLETE       if (s->flags & SEC_LOAD)
 // OBSOLETE 	{
-// OBSOLETE 	  char *buffer = xmalloc (s->_raw_size);
-// OBSOLETE 	  bfd_get_section_contents (file, s, buffer, 0, s->_raw_size);
+// OBSOLETE 	  char *buffer = xmalloc (s->rawsize);
+// OBSOLETE 	  bfd_get_section_contents (file, s, buffer, 0, s->rawsize);
 // OBSOLETE 	  printf ("Loading section %s, size %x vma %x\n",
 // OBSOLETE 		  s->name,
-// OBSOLETE 		  s->_raw_size,
+// OBSOLETE 		  s->rawsize,
 // OBSOLETE 		  s->vma);
-// OBSOLETE 	  ninMemPut (s->vma, buffer, s->_raw_size);
+// OBSOLETE 	  ninMemPut (s->vma, buffer, s->rawsize);
 // OBSOLETE 	  xfree (buffer);
 // OBSOLETE 	}
 // OBSOLETE     }
