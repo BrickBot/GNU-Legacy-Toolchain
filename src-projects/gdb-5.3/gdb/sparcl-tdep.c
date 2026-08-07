@@ -630,7 +630,7 @@ download (char *target_name, char *args, int from_tty,
 		}
 	    }
 
-	  section_size = bfd_get_section_size_before_reloc (section);
+	  section_size = bfd_get_section_size (section);
 
 	  if (!quiet)
 	    printf_filtered ("[Loading section %s at 0x%x (%d bytes)]\n",

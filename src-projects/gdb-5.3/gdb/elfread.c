@@ -96,12 +96,12 @@ elf_locate_sections (bfd *ignore_abfd, asection *sectp, void *eip)
   if (STREQ (sectp->name, ".debug"))
     {
       ei->dboffset = sectp->filepos;
-      ei->dbsize = bfd_get_section_size_before_reloc (sectp);
+      ei->dbsize = bfd_get_section_size (sectp);
     }
   else if (STREQ (sectp->name, ".line"))
     {
       ei->lnoffset = sectp->filepos;
-      ei->lnsize = bfd_get_section_size_before_reloc (sectp);
+      ei->lnsize = bfd_get_section_size (sectp);
     }
   else if (STREQ (sectp->name, ".stab"))
     {

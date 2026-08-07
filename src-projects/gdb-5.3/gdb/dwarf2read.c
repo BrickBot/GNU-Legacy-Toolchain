@@ -950,52 +950,52 @@ dwarf2_locate_sections (bfd *ignore_abfd, asection *sectp, PTR ignore_ptr)
   if (STREQ (sectp->name, INFO_SECTION))
     {
       dwarf_info_offset = sectp->filepos;
-      dwarf_info_size = bfd_get_section_size_before_reloc (sectp);
+      dwarf_info_size = bfd_get_section_size (sectp);
     }
   else if (STREQ (sectp->name, ABBREV_SECTION))
     {
       dwarf_abbrev_offset = sectp->filepos;
-      dwarf_abbrev_size = bfd_get_section_size_before_reloc (sectp);
+      dwarf_abbrev_size = bfd_get_section_size (sectp);
     }
   else if (STREQ (sectp->name, LINE_SECTION))
     {
       dwarf_line_offset = sectp->filepos;
-      dwarf_line_size = bfd_get_section_size_before_reloc (sectp);
+      dwarf_line_size = bfd_get_section_size (sectp);
     }
   else if (STREQ (sectp->name, PUBNAMES_SECTION))
     {
       dwarf_pubnames_offset = sectp->filepos;
-      dwarf_pubnames_size = bfd_get_section_size_before_reloc (sectp);
+      dwarf_pubnames_size = bfd_get_section_size (sectp);
     }
   else if (STREQ (sectp->name, ARANGES_SECTION))
     {
       dwarf_aranges_offset = sectp->filepos;
-      dwarf_aranges_size = bfd_get_section_size_before_reloc (sectp);
+      dwarf_aranges_size = bfd_get_section_size (sectp);
     }
   else if (STREQ (sectp->name, LOC_SECTION))
     {
       dwarf_loc_offset = sectp->filepos;
-      dwarf_loc_size = bfd_get_section_size_before_reloc (sectp);
+      dwarf_loc_size = bfd_get_section_size (sectp);
     }
   else if (STREQ (sectp->name, MACINFO_SECTION))
     {
       dwarf_macinfo_offset = sectp->filepos;
-      dwarf_macinfo_size = bfd_get_section_size_before_reloc (sectp);
+      dwarf_macinfo_size = bfd_get_section_size (sectp);
     }
   else if (STREQ (sectp->name, STR_SECTION))
     {
       dwarf_str_offset = sectp->filepos;
-      dwarf_str_size = bfd_get_section_size_before_reloc (sectp);
+      dwarf_str_size = bfd_get_section_size (sectp);
     }
   else if (STREQ (sectp->name, FRAME_SECTION))
     {
       dwarf_frame_offset = sectp->filepos;
-      dwarf_frame_size = bfd_get_section_size_before_reloc (sectp);
+      dwarf_frame_size = bfd_get_section_size (sectp);
     }
   else if (STREQ (sectp->name, EH_FRAME_SECTION))
     {
       dwarf_eh_frame_offset = sectp->filepos;
-      dwarf_eh_frame_size = bfd_get_section_size_before_reloc (sectp);
+      dwarf_eh_frame_size = bfd_get_section_size (sectp);
     }
 }
 

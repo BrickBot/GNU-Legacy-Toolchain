@@ -51,7 +51,7 @@ mygeneric_load (bfd *loadfile_bfd)
 	{
 	  bfd_size_type size;
 
-	  size = bfd_get_section_size_before_reloc (s);
+	  size = bfd_get_section_size (s);
 	  if (size > 0)
 	    {
 	      char *buffer;

@@ -316,7 +316,7 @@ sim_prepare_for_program (SIM_DESC sd, struct _bfd* abfd)
             {
               bfd_size_type size;
 
-              size = bfd_get_section_size_before_reloc (s);
+              size = bfd_get_section_size (s);
               if (size > 0)
                 {
                   bfd_vma lma;

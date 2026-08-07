@@ -329,7 +329,7 @@ update_for_binary_section(bfd *abfd,
     return;
 
   /* check/ignore any sections of size zero */
-  section_size = bfd_get_section_size_before_reloc(the_section);
+  section_size = bfd_get_section_size(the_section);
   if (section_size == 0)
     return;
 
