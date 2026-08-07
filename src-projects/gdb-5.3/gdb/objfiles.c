@@ -951,7 +951,7 @@ map_to_file (int fd)
    contains a pointer to the bfd struct sec section.  */
 
 struct obj_section *
-find_pc_sect_section (CORE_ADDR pc, struct sec *section)
+find_pc_sect_section (CORE_ADDR pc, struct bfd_section *section)
 {
   struct obj_section *s;
   struct objfile *objfile;

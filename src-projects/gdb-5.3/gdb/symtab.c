@@ -1760,7 +1760,7 @@ done:
 /* If it's worth the effort, we could be using a binary search.  */
 
 struct symtab_and_line
-find_pc_sect_line (CORE_ADDR pc, struct sec *section, int notcurrent)
+find_pc_sect_line (CORE_ADDR pc, struct bfd_section *section, int notcurrent)
 {
   struct symtab *s;
   register struct linetable *l;
