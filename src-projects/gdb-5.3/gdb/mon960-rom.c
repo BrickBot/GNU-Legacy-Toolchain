@@ -78,7 +78,7 @@ mon960_load (struct serial *desc, char *file, int hashmark)
       {
 	bfd_size_type section_size;
 	printf_filtered ("%s\t: 0x%4x .. 0x%4x  ", s->name, s->vma,
-			 s->vma + s->rawsize);
+			 s->vma + bfd_get_section_size(s));
 	gdb_flush (gdb_stdout);
 	monitor_printf (current_monitor->load, s->vma);
 	if (current_monitor->loadresp)

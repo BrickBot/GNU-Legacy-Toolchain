@@ -212,7 +212,7 @@
 // OBSOLETE   dst_sec *section;
 // OBSOLETE 
 // OBSOLETE /* WARNING WILL ROBINSON!  ACCESSING BFD-PRIVATE DATA HERE!  FIXME!  */
-// OBSOLETE   size = asect->rawsize;
+// OBSOLETE   size = bfd_get_section_size(asect);
 // OBSOLETE   offset = asect->filepos;
 // OBSOLETE   base = asect->vma;
 // OBSOLETE /* End of warning */

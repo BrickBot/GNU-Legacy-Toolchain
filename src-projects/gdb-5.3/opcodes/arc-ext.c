@@ -248,7 +248,7 @@ build_ARC_extmap (text_bfd)
   for (p = text_bfd->sections; p != NULL; p = p->next)
     if (!strcmp (p->name, ".arcextmap"))
       {
-        count = p->rawsize;
+        count = bfd_get_section_size (p);
         arcExtMap = (char *) xmalloc (count);
         if (bfd_get_section_contents (text_bfd, p, (PTR) arcExtMap, 0, count))
           {
