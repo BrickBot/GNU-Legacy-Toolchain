@@ -1017,7 +1017,7 @@ case 15:
 			    { while (TYPE_CODE (current_type) == TYPE_CODE_PTR)
 				current_type = TYPE_TARGET_TYPE (current_type);
 			      current_type = lookup_struct_elt_type (
-				current_type, yyvsp[0].sval.ptr, false); };
+				current_type, yyvsp[0].sval.ptr, 0); };
 			 ;
     break;}
 case 16:
@@ -1363,7 +1363,7 @@ case 59:
 			      if (this_type)
 				current_type = lookup_struct_elt_type (
 				  this_type,
-				  copy_name (yyvsp[0].ssym.stoken), false);
+				  copy_name (yyvsp[0].ssym.stoken), 0);
 			      else
 				current_type = NULL; 
 			    }
