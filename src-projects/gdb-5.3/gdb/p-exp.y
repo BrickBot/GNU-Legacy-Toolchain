@@ -205,7 +205,7 @@ static int search_field;
 
 /* Object pascal */
 %token THIS
-%token <lval> TRUE FALSE
+%token <lval> TRUEKEYWORD FALSEKEYWORD
 
 %left ','
 %left ABOVE_COMMA
@@ -293,7 +293,7 @@ exp	:	exp '.' { search_field = 1; }
 			    { while (TYPE_CODE (current_type) == TYPE_CODE_PTR)
 				current_type = TYPE_TARGET_TYPE (current_type);
 			      current_type = lookup_struct_elt_type (
-				current_type, $4.ptr, false); };
+				current_type, $4.ptr, 0); };
 			 } ; 
 exp	:	exp '['
 			/* We need to save the current_type value */
@@ -426,13 +426,13 @@ exp	:	exp ASSIGN exp
 			{ write_exp_elt_opcode (BINOP_ASSIGN); }
 	;
 
-exp	:	TRUE
+exp	:	TRUEKEYWORD
 			{ write_exp_elt_opcode (OP_BOOL);
 			  write_exp_elt_longcst ((LONGEST) $1);
 			  write_exp_elt_opcode (OP_BOOL); }
 	;
 
-exp	:	FALSE
+exp	:	FALSEKEYWORD
 			{ write_exp_elt_opcode (OP_BOOL);
 			  write_exp_elt_longcst ((LONGEST) $1);
 			  write_exp_elt_opcode (OP_BOOL); }
@@ -649,7 +649,7 @@ variable:	name_not_typename
 			      if (this_type)
 				current_type = lookup_struct_elt_type (
 				  this_type,
-				  copy_name ($1.stoken), false);
+				  copy_name ($1.stoken), 0);
 			      else
 				current_type = NULL; 
 			    }
@@ -1349,14 +1349,14 @@ yylex ()
       if (STREQ (uptokstart, "FALSE"))
 	{
           yylval.lval = 0;
-          return FALSE;
+          return FALSEKEYWORD;
         }
       break;
     case 4:
       if (STREQ (uptokstart, "TRUE"))
 	{
           yylval.lval = 1;
-  	  return TRUE;
+  	  return TRUEKEYWORD;
         }
       if (STREQ (uptokstart, "SELF"))
         {

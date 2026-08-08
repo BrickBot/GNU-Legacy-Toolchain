@@ -481,7 +481,7 @@ xfer_memory (CORE_ADDR memaddr, char *myaddr, int len, int write,
 	     struct mem_attrib *attrib,
 	     struct target_ops *target)
 {
-  boolean res;
+  int res;
   struct section_table *p;
   CORE_ADDR nextsectaddr, memend;
   asection *section = NULL;
