@@ -48,7 +48,7 @@ env:
   
   # Common arguments for `make all`
   # * Add "--keep-going" to apply this flag to the "make all" commands
-  COMMON_MAKE_ALL_ARGS:
+  COMMON_MAKE_ALL_ARGS:  --output-sync=target
 
 defaults:
   run:
