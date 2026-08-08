@@ -1,3 +1,13 @@
+2025-08-07  Matthew Sheets  <https://github.com/BrickBot/GNU-Legacy-Toolchain>
+
+	* Backporting of changes from GDB 6 for forward compatibility with newer
+        versions of BFD (e.g., BinUtil 2.16.1.  Based on a patch by Alan Modra
+        <amodra@bigpond.net.au> dated 2004-06-15 in later GDB version ChangeLogs.
+      - Use bfd_get_section_size instead of bfd_get_section_size_before_reloc
+        or _raw_size.
+      - Replace _raw_size:  (none in sim/common)
+      - Replace bfd_get_section_size_before_reloc():  common/sim-load.c
+
 2025-07-07  Matthew Sheets  <https://github.com/BrickBot/GNU-Legacy-Toolchain>
 
 	* Add includes (headers) missing from gentmap.c

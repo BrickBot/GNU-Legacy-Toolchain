@@ -1,3 +1,17 @@
+2025-08-07  Matthew Sheets  <https://github.com/BrickBot/GNU-Legacy-Toolchain>
+
+	* Backporting of changes from GDB 6 for forward compatibility with newer
+        versions of BFD (e.g., BinUtil 2.16.1.  Based on a patch by Alan Modra
+        <amodra@bigpond.net.au> dated 2004-06-15 in later GDB version ChangeLogs.
+      - Use bfd_get_section_size instead of bfd_get_section_size_before_reloc
+        or _raw_size.
+      - Replace _raw_size:  dscrec.c, dstread.c, mon960-rom.c, remote-bug.c,
+          remote-mips.c, remote-nindy.c, w89k-rom.c, win32-nat.c, and
+          opcodes/arc-ext.c
+      - Replace bfd_get_section_size_before_reloc():  dsrec.c, dwarf2read.c,
+          elfread.c, gcore.c, mipsread.c, remote-e7000.c, remote.c,
+          sparcl-tdep.c, symfile.c, tracepoint.c, gdbserver/low-sim.c
+
 2025-07-01  Matthew Sheets  <https://github.com/BrickBot/GNU-Legacy-Toolchain>
 
 	* configure and configure.in:
