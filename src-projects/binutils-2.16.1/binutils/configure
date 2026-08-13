@@ -5569,7 +5569,7 @@ do
 	  ;;
 	esac
 	case $targ in
-	*-*-hms*) BUILD_SRCONV='$(SRCONV_PROG)' ;;
+	*-*-hms* | h8300-*-coff*) BUILD_SRCONV='$(SRCONV_PROG)' ;;
 	esac
 	case $targ in
 	arm-epoc-pe*)

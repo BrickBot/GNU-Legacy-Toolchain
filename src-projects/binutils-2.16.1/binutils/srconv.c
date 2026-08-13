@@ -1713,7 +1713,7 @@ prescan (struct coff_ofile *tree)
     }
 }
 
-char *program_name;
+extern char *program_name;
 
 static void
 show_usage (FILE *file, int status)

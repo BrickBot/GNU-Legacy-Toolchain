@@ -10,12 +10,12 @@
 
 case "${targ}" in
     powerpc-*-aix5* | rs6000-*-aix5*)
-	targ_emul=aix 
-	targ_emul_vector=bin_aix5_emulation 
+        targ_emul=aix 
+        targ_emul_vector=bin_aix5_emulation 
         ;;
 
     powerpc-*-aix4.3* | rs6000-*-aix4.3*)
-	targ_emul=aix 
+        targ_emul=aix 
         targ_emul_vector=bin_aix_emulation 
         ;;
 

@@ -1,3 +1,7 @@
+2026-08-12  Matthew Sheets  <https://github.com/BrickBot/GNU-Legacy-Toolchain>
+
+	* Re-enable and fix the build & install of utilities for Hitachi chips.
+
 2025-07-04  Matthew Sheets  <https://github.com/BrickBot/GNU-Legacy-Toolchain>
 
 	* Do NOT automatically install-info on install (despite GNU standards).
