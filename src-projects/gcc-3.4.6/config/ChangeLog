@@ -1,4 +1,4 @@
-2025-04-11  Matthew Sheets  <https://github.com/BrickBot/GNU-Legacy-Toolchain>
+2026-08-12  Matthew Sheets  <https://github.com/BrickBot/GNU-Legacy-Toolchain>
 
 	* gettext-sister.m4: Renamed from gettext.m4 to align with newer versions
 		in other projects
