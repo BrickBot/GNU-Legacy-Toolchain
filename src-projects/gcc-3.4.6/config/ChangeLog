@@ -1,5 +1,12 @@
 2025-04-11  Matthew Sheets  <https://github.com/BrickBot/GNU-Legacy-Toolchain>
 
+	* gettext-sister.m4: Renamed from gettext.m4 to align with newer versions
+		in other projects
+	* Original change in other projects:
+		- 2004-09-22  Kelley Cook  <kcook@gcc.gnu.org>
+
+2025-04-11  Matthew Sheets  <https://github.com/BrickBot/GNU-Legacy-Toolchain>
+
 	* Backport to enable basic multiarch support.
 
 2006-03-05  Release Manager

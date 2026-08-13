@@ -1,6 +1,6 @@
 sinclude(../config/acx.m4)
 sinclude(../config/accross.m4)
-sinclude(../config/gettext.m4)
+sinclude(../config/gettext-sister.m4)
 sinclude(../config/progtest.m4)
 
 dnl See if stdbool.h properly defines bool and true/false.
