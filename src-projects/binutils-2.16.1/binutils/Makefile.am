@@ -241,6 +241,7 @@ defparse.h: defparse.c
 nlmheader.h: nlmheader.c
 rcparse.h: rcparse.c
 sysinfo.h: sysinfo.c
+sysroff.h: sysroff.c
 
 srconv_SOURCES = srconv.c coffgrok.c $(BULIBS)
 
@@ -542,8 +543,8 @@ arparse.o: arparse.c ../bfd/bfd.h $(INCDIR)/ansidecl.h \
   $(INCDIR)/fopen-same.h arsup.h
 arlex.o: arlex.c $(INCDIR)/ansidecl.h $(INCDIR)/libiberty.h \
   arparse.h
-sysroff.o: sysroff.c
-sysinfo.o: sysinfo.c
+sysroff.o: sysroff.c sysroff.h
+sysinfo.o: sysinfo.c sysinfo.h
 syslex.o: syslex.c config.h sysinfo.h
 defparse.o: defparse.c ../bfd/bfd.h $(INCDIR)/ansidecl.h \
   $(INCDIR)/symcat.h bucomm.h config.h $(INCDIR)/bin-bugs.h \
