@@ -279,7 +279,7 @@ EXTRA_DIST = arparse.c arparse.h arlex.c nlmheader.c sysinfo.c sysinfo.h \
 
 diststuff: $(EXTRA_DIST) info
 
-DISTCLEANFILES = sysinfo sysroff.c sysroff.h \
+DISTCLEANFILES = sysinfo$(EXEEXT_FOR_BUILD) sysroff.c sysroff.h \
 	site.exp site.bak
 
 Makefile: $(BFDDIR)/configure.in
@@ -331,7 +331,7 @@ dep-am: DEP
 
 ###
 
-MOSTLYCLEANFILES = sysinfo binutils.log binutils.sum abcdefgh*
+MOSTLYCLEANFILES = sysinfo$(EXEEXT_FOR_BUILD) binutils.log binutils.sum abcdefgh*
 mostlyclean-local:
 	-rm -rf tmpdir
 
@@ -509,7 +509,7 @@ srconv.o: srconv.c ../bfd/bfd.h $(INCDIR)/ansidecl.h \
   $(INCDIR)/symcat.h bucomm.h config.h $(INCDIR)/bin-bugs.h \
   $(INCDIR)/fopen-same.h sysroff.h coffgrok.h $(INCDIR)/libiberty.h \
   $(INCDIR)/coff/internal.h $(BFDDIR)/libcoff.h $(INCDIR)/bfdlink.h \
-  sysroff.c
+  sysroff.h sysroff.c
 stabs.o: stabs.c ../bfd/bfd.h $(INCDIR)/ansidecl.h \
   $(INCDIR)/symcat.h bucomm.h config.h $(INCDIR)/bin-bugs.h \
   $(INCDIR)/fopen-same.h $(INCDIR)/libiberty.h $(INCDIR)/safe-ctype.h \
