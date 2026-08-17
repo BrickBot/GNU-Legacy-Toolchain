@@ -40,7 +40,7 @@
 #define YYLEX_PARAM	&((struct parse_args *) arg)->cp
 #define YYPARSE_PARAM	arg
 %}
-%pure_parser
+%define api.pure
 %expect 7
 
 %union {

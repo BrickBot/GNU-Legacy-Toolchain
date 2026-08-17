@@ -452,7 +452,7 @@ static GTY(()) tree src_parse_roots[1];
 #include "lex.c"
 %}
 
-%pure_parser
+%define api.pure
 
 /* Things defined here have to match the order of what's in the
    binop_lookup table.  */

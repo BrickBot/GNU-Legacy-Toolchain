@@ -139,7 +139,7 @@ extern int flag_assert;
 #include "lex.c"
 %}
 
-%pure_parser
+%define api.pure
 
 /* Things defined here have to match the order of what's in the
    binop_lookup table.  */

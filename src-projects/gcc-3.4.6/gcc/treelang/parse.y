@@ -97,7 +97,7 @@ static struct prod_token_parm_item *current_function=NULL;
 %}
 
 /* Not %raw - seems to have bugs.  */
-%token_table
+%token-table
 
 /* Punctuation.  */
 %token RIGHT_BRACE
