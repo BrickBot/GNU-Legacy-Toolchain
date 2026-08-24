@@ -5,8 +5,8 @@ SCRIPT_DIR=$(dirname $0)
 DEFAULT_NLS_ARG="--disable-nls"
 DEFAULT_LIBIBERTY_INSTALL_ARG="--disable-install-libiberty"
 DEFAULT_LIBMMALLOC_INSTALL_ARG="--disable-install-libmmalloc"
+DEFAULT_TOOLCHAIN_SETS_ARG="--toolchain-sets=gdb5,gcc3"
 DEFAULT_TOOLCHAIN_SETS_NAME_ARG="--toolchain-sets-name=rcx"
-DEFAULT_TOOLCHAIN_SETS_ARG="--toolchain-sets=gcc3"
 DEFAULT_PROGRAM_SUFFIX_CONFIG_ARG="--without-program-suffix"
 
 
