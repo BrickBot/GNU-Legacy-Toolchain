@@ -210,13 +210,34 @@ addr2line_SOURCES = addr2line.c budemang.c $(BULIBS)
 #	-rm -f $(STRIP_PROG)
 #	-ln $(OBJCOPY_PROG) $(STRIP_PROG)
 
-sysroff.c: sysinfo$(EXEEXT_FOR_BUILD) sysroff.info 
+# Generate both sysroff.c and sysroff.h together atomically
+# NOTE: Because sysroff.c is _not_ generated atomicallay, Make can (and will)
+#   incorrectly assume that dependencies on sysroff.c have been met when in
+#   fact sysroff.c has only been partially generated.  In turn, this has led
+#   to intermittent or random compilation failures when attempting to build
+#   based on a sysroff.c file that has been only partially generated.
+#
+# To ensure complete file generation, we implement the following measures:
+#   1. Combine generation of sysroff.c and sysroff.h into a single target
+#   2. Complete generation of sysroff.c before starting generation of sysroff.h
+#      (since the generation of sysroff.h is atomic)
+#   3. Mark sysroff.c as a dependency of sysroff.h, to ensure that Make does
+#      not proceed too soon to targets that depend on sysroff.c or sysroff.h
+#      (This is implemented in the target section immediately following.)
+sysroff.c sysroff.h: sysinfo$(EXEEXT_FOR_BUILD) sysroff.info
 	./sysinfo$(EXEEXT_FOR_BUILD) -c <$(srcdir)/sysroff.info >sysroff.c
 	./sysinfo$(EXEEXT_FOR_BUILD) -i <$(srcdir)/sysroff.info >>sysroff.c
 	./sysinfo$(EXEEXT_FOR_BUILD) -g <$(srcdir)/sysroff.info >>sysroff.c
-
-sysroff.h: sysinfo$(EXEEXT_FOR_BUILD) sysroff.info
 	./sysinfo$(EXEEXT_FOR_BUILD) -d <$(srcdir)/sysroff.info >sysroff.h
+
+# We need these for parallel make.
+#    (Note the sysroff inclusion per item #3 in the sysroff comments above)
+arparse.h: arparse.c
+defparse.h: defparse.c
+nlmheader.h: nlmheader.c
+rcparse.h: rcparse.c
+sysinfo.h: sysinfo.c
+sysroff.h: sysroff.c
 
 sysinfo$(EXEEXT_FOR_BUILD): sysinfo.o syslex.o
 	$(CC_FOR_BUILD) $(CFLAGS) $(LDFLAGS) -o $@ sysinfo.o syslex.o
@@ -234,14 +255,6 @@ sysinfo.o:
 	else \
 	  $(CC_FOR_BUILD) -c -I. $(AM_CFLAGS) $(CFLAGS) $(srcdir)/sysinfo.c ; \
 	fi
-
-# We need these for parallel make.
-arparse.h: arparse.c
-defparse.h: defparse.c
-nlmheader.h: nlmheader.c
-rcparse.h: rcparse.c
-sysinfo.h: sysinfo.c
-sysroff.h: sysroff.c
 
 srconv_SOURCES = srconv.c coffgrok.c $(BULIBS)
 
