@@ -48,7 +48,7 @@ env:
   
   # Common arguments for `make all`
   # * Add "--keep-going" to apply this flag to the "make all" commands
-  COMMON_MAKE_ALL_ARGS:  "--output-sync=target"
+  COMMON_MAKE_ALL_ARGS:  
 
 defaults:
   run:
@@ -126,7 +126,7 @@ jobs:
 
     # Execute the build.  For the jobs arg, use a POSIX-standard version of `nproc`.
     - name: Execute the build
-      run:  cd $BUILD_DIR  &&  echo "Current working directory is '$PWD'"  &&  make $COMMON_MAKE_ALL_ARGS --jobs=$(getconf _NPROCESSORS_ONLN)
+      run:  cd $BUILD_DIR  &&  echo "Current working directory is '$PWD'"  &&  make $COMMON_MAKE_ALL_ARGS --jobs=$(getconf _NPROCESSORS_ONLN) --output-sync=target
 
     # Test the completed build
     - name: Test install the new build to a sysroot
@@ -209,7 +209,7 @@ jobs:
       run:  |
         cd $BUILD_DIR
         echo "Current working directory: $PWD"
-        make $COMMON_MAKE_ALL_ARGS --jobs=$(getconf _NPROCESSORS_ONLN) all
+        make $COMMON_MAKE_ALL_ARGS --jobs=$(getconf _NPROCESSORS_ONLN) --output-sync=target
 
     # Test install the completed build
     - name: Test install the new build to a sysroot

@@ -1022,19 +1022,19 @@ sysinfo$(EXEEXT_FOR_BUILD): sysinfo.o syslex.o
 
 syslex.o:
 	if [ -r syslex.c ]; then \
-	  @echo "Autogen Status: Using generated syslex.c in build directory" ; \
+	  echo "Autogen Status: Using generated syslex.c in build directory" ; \
 	  $(CC_FOR_BUILD) -c -I. $(AM_CFLAGS) $(CFLAGS)  syslex.c  ; \
 	else \
-	  @echo "Autogen Status: Using existing syslex.c in source directory" ; \
+	  echo "Autogen Status: Using existing syslex.c in source directory" ; \
 	  $(CC_FOR_BUILD) -c -I. -I$(srcdir) $(AM_CFLAGS) $(CFLAGS) $(srcdir)/syslex.c ;\
 	fi
 
 sysinfo.o:
 	if [ -r sysinfo.c ]; then \
-	  @echo "Autogen Status: Using generated sysinfo.c in build directory" ; \
+	  echo "Autogen Status: Using generated sysinfo.c in build directory" ; \
 	  $(CC_FOR_BUILD) -c -I. $(AM_CFLAGS) $(CFLAGS)  sysinfo.c  ; \
 	else \
-	  @echo "Autogen Status: Using existing sysinfo.c in source directory" ; \
+	  echo "Autogen Status: Using existing sysinfo.c in source directory" ; \
 	  $(CC_FOR_BUILD) -c -I. $(AM_CFLAGS) $(CFLAGS) $(srcdir)/sysinfo.c ; \
 	fi
 
