@@ -218,26 +218,28 @@ addr2line_SOURCES = addr2line.c budemang.c $(BULIBS)
 #   based on a sysroff.c file that has been only partially generated.
 #
 # To ensure complete file generation, we implement the following measures:
-#   1. Combine generation of sysroff.c and sysroff.h into a single target
-#   2. Complete generation of sysroff.c before starting generation of sysroff.h
+#   1. Generate sysroff.c and sysroff.h in separate targets
+#   2. Output sysroff.c to a temp file that is then renamed at completion to sysroff.c
+#   3. Complete generation of sysroff.c before starting generation of sysroff.h
 #      (since the generation of sysroff.h is atomic)
-#   3. Mark sysroff.c as a dependency of sysroff.h, to ensure that Make does
+#   4. Mark sysroff.c as a dependency of sysroff.h, to ensure that Make does
 #      not proceed too soon to targets that depend on sysroff.c or sysroff.h
 #      (This is implemented in the target section immediately following.)
-sysroff.c sysroff.h: sysinfo$(EXEEXT_FOR_BUILD) sysroff.info
-	./sysinfo$(EXEEXT_FOR_BUILD) -c <$(srcdir)/sysroff.info >sysroff.c
-	./sysinfo$(EXEEXT_FOR_BUILD) -i <$(srcdir)/sysroff.info >>sysroff.c
-	./sysinfo$(EXEEXT_FOR_BUILD) -g <$(srcdir)/sysroff.info >>sysroff.c
-	./sysinfo$(EXEEXT_FOR_BUILD) -d <$(srcdir)/sysroff.info >sysroff.h
+sysroff.c: sysinfo$(EXEEXT_FOR_BUILD) sysroff.info
+	./sysinfo$(EXEEXT_FOR_BUILD) -c <$(srcdir)/sysroff.info >  sysroff.c.partial
+	./sysinfo$(EXEEXT_FOR_BUILD) -i <$(srcdir)/sysroff.info >> sysroff.c.partial
+	./sysinfo$(EXEEXT_FOR_BUILD) -g <$(srcdir)/sysroff.info >> sysroff.c.partial
+	mv --force sysroff.c.partial sysroff.c
+
+sysroff.h: sysinfo$(EXEEXT_FOR_BUILD) sysroff.info sysroff.c
+	./sysinfo$(EXEEXT_FOR_BUILD) -d <$(srcdir)/sysroff.info >  sysroff.h
 
 # We need these for parallel make.
-#    (Note the sysroff inclusion per item #3 in the sysroff comments above)
 arparse.h: arparse.c
 defparse.h: defparse.c
 nlmheader.h: nlmheader.c
 rcparse.h: rcparse.c
 sysinfo.h: sysinfo.c
-sysroff.h: sysroff.c
 
 sysinfo$(EXEEXT_FOR_BUILD): sysinfo.o syslex.o
 	$(CC_FOR_BUILD) $(CFLAGS) $(LDFLAGS) -o $@ sysinfo.o syslex.o
