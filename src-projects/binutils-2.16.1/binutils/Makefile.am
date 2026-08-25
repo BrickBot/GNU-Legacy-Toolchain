@@ -221,19 +221,21 @@ addr2line_SOURCES = addr2line.c budemang.c $(BULIBS)
 #   1. Generate sysroff.c and sysroff.h in separate targets
 #   2. Conditionally chain the multiple sysinfo commands, which also creates a
 #      single output redirect for the chained set
-#   3. Output sysroff.c to a temp file that is then renamed at completion to sysroff.c
-#   4. Complete generation of sysroff.c before starting generation of sysroff.h
+#   3. Output contents generated for sysroff.c to a temp file
+#   4. If the temp file exists and has a non-zero size, rename to sysroff.c
+#   5. Complete generation of sysroff.c before starting generation of sysroff.h
 #      (since the generation of sysroff.h is atomic)
-#   5. Mark sysroff.c as a dependency of sysroff.h, to ensure that Make does
+#   6. Mark sysroff.c as a dependency of sysroff.h, to ensure that Make does
 #      not proceed too soon to targets that depend on sysroff.c or sysroff.h
 #      (This is implemented in the target section immediately following.)
 sysroff.c: sysinfo$(EXEEXT_FOR_BUILD) sysroff.info
 	rm --force sysroff.c.gen sysroff.c
-	./sysinfo$(EXEEXT_FOR_BUILD) -c <$(srcdir)/sysroff.info && \
+	( \
+		./sysinfo$(EXEEXT_FOR_BUILD) -c <$(srcdir)/sysroff.info && \
 		./sysinfo$(EXEEXT_FOR_BUILD) -i <$(srcdir)/sysroff.info && \
 		./sysinfo$(EXEEXT_FOR_BUILD) -g <$(srcdir)/sysroff.info  \
-		> sysroff.c.gen
-	mv --force sysroff.c.gen sysroff.c
+	) > sysroff.c.gen
+	if [ -s sysroff.c.gen ] ; then mv --force sysroff.c.gen sysroff.c ; fi
 
 sysroff.h: sysinfo$(EXEEXT_FOR_BUILD) sysroff.info sysroff.c
 	./sysinfo$(EXEEXT_FOR_BUILD) -d <$(srcdir)/sysroff.info >  sysroff.h
