@@ -226,6 +226,7 @@ addr2line_SOURCES = addr2line.c budemang.c $(BULIBS)
 #      not proceed too soon to targets that depend on sysroff.c or sysroff.h
 #      (This is implemented in the target section immediately following.)
 sysroff.c: sysinfo$(EXEEXT_FOR_BUILD) sysroff.info
+	rm --force sysroff.c.partial sysroff.c
 	./sysinfo$(EXEEXT_FOR_BUILD) -c <$(srcdir)/sysroff.info >  sysroff.c.partial
 	./sysinfo$(EXEEXT_FOR_BUILD) -i <$(srcdir)/sysroff.info >> sysroff.c.partial
 	./sysinfo$(EXEEXT_FOR_BUILD) -g <$(srcdir)/sysroff.info >> sysroff.c.partial
@@ -524,7 +525,7 @@ srconv.o: srconv.c ../bfd/bfd.h $(INCDIR)/ansidecl.h \
   $(INCDIR)/symcat.h bucomm.h config.h $(INCDIR)/bin-bugs.h \
   $(INCDIR)/fopen-same.h sysroff.h coffgrok.h $(INCDIR)/libiberty.h \
   $(INCDIR)/coff/internal.h $(BFDDIR)/libcoff.h $(INCDIR)/bfdlink.h \
-  sysroff.h sysroff.c
+  sysroff.c sysroff.h
 stabs.o: stabs.c ../bfd/bfd.h $(INCDIR)/ansidecl.h \
   $(INCDIR)/symcat.h bucomm.h config.h $(INCDIR)/bin-bugs.h \
   $(INCDIR)/fopen-same.h $(INCDIR)/libiberty.h $(INCDIR)/safe-ctype.h \
@@ -537,7 +538,7 @@ strings.o: strings.c ../bfd/bfd.h $(INCDIR)/ansidecl.h \
 sysdump.o: sysdump.c ../bfd/bfd.h $(INCDIR)/ansidecl.h \
   $(INCDIR)/symcat.h bucomm.h config.h $(INCDIR)/bin-bugs.h \
   $(INCDIR)/fopen-same.h $(INCDIR)/safe-ctype.h $(INCDIR)/libiberty.h \
-  sysroff.h sysroff.c
+  sysroff.c sysroff.h
 version.o: version.c ../bfd/bfd.h $(INCDIR)/ansidecl.h \
   $(INCDIR)/symcat.h ../bfd/bfdver.h bucomm.h config.h \
   $(INCDIR)/bin-bugs.h $(INCDIR)/fopen-same.h
