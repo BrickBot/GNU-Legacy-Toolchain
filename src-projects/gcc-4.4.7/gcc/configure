@@ -20743,9 +20743,7 @@ gcc_cv_gas_patch_version=`expr "$gcc_cv_gas_version" : "VERSION=[0-9]*\.[0-9]*\.
 case $gcc_cv_gas_patch_version in
   "") gcc_cv_gas_patch_version="0" ;;
 esac
-gcc_cv_gas_vers=`expr \( \( $gcc_cv_gas_major_version \* 1000 \) \
-			    + $gcc_cv_gas_minor_version \) \* 1000 \
-			    + $gcc_cv_gas_patch_version`
+gcc_cv_gas_vers=`expr '(' '(' "$gcc_cv_gas_major_version" '*' 1000 ')' '+' "$gcc_cv_gas_minor_version" ')' '*' 1000 '+' "$gcc_cv_gas_patch_version"`
 
   in_tree_gas_is_elf=no
   if grep 'obj_format = elf' ../gas/Makefile > /dev/null \
@@ -21099,7 +21097,7 @@ if test "${gcc_cv_as_balign_and_p2align+set}" = set; then
 else
   gcc_cv_as_balign_and_p2align=no
     if test $in_tree_gas = yes; then
-    if test $gcc_cv_gas_vers -ge `expr \( \( 2 \* 1000 \) + 6 \) \* 1000 + 0`
+    if test $gcc_cv_gas_vers -ge `expr '(' '(' 2 '*' 1000 ')' '+' 6 ')' '*' 1000 '+' 0`
   then gcc_cv_as_balign_and_p2align=yes
 fi
   elif test x$gcc_cv_as != x; then
@@ -21137,7 +21135,7 @@ if test "${gcc_cv_as_max_skip_p2align+set}" = set; then
 else
   gcc_cv_as_max_skip_p2align=no
     if test $in_tree_gas = yes; then
-    if test $gcc_cv_gas_vers -ge `expr \( \( 2 \* 1000 \) + 8 \) \* 1000 + 0`
+    if test $gcc_cv_gas_vers -ge `expr '(' '(' 2 '*' 1000 ')' '+' 8 ')' '*' 1000 '+' 0`
   then gcc_cv_as_max_skip_p2align=yes
 fi
   elif test x$gcc_cv_as != x; then
@@ -21174,7 +21172,7 @@ if test "${gcc_cv_as_literal16+set}" = set; then
 else
   gcc_cv_as_literal16=no
     if test $in_tree_gas = yes; then
-    if test $gcc_cv_gas_vers -ge `expr \( \( 2 \* 1000 \) + 8 \) \* 1000 + 0`
+    if test $gcc_cv_gas_vers -ge `expr '(' '(' 2 '*' 1000 ')' '+' 8 ')' '*' 1000 '+' 0`
   then gcc_cv_as_literal16=yes
 fi
   elif test x$gcc_cv_as != x; then
@@ -21212,7 +21210,7 @@ else
   gcc_cv_as_subsection_m1=no
     if test $in_tree_gas = yes; then
     if test $in_tree_gas_is_elf = yes \
-  && test $gcc_cv_gas_vers -ge `expr \( \( 2 \* 1000 \) + 9 \) \* 1000 + 0`
+  && test $gcc_cv_gas_vers -ge `expr '(' '(' 2 '*' 1000 ')' '+' 9 ')' '*' 1000 '+' 0`
   then gcc_cv_as_subsection_m1=yes
 fi
   elif test x$gcc_cv_as != x; then
@@ -21260,7 +21258,7 @@ if test "${gcc_cv_as_weak+set}" = set; then
 else
   gcc_cv_as_weak=no
     if test $in_tree_gas = yes; then
-    if test $gcc_cv_gas_vers -ge `expr \( \( 2 \* 1000 \) + 2 \) \* 1000 + 0`
+    if test $gcc_cv_gas_vers -ge `expr '(' '(' 2 '*' 1000 ')' '+' 2 ')' '*' 1000 '+' 0`
   then gcc_cv_as_weak=yes
 fi
   elif test x$gcc_cv_as != x; then
@@ -21297,7 +21295,7 @@ if test "${gcc_cv_as_weakref+set}" = set; then
 else
   gcc_cv_as_weakref=no
     if test $in_tree_gas = yes; then
-    if test $gcc_cv_gas_vers -ge `expr \( \( 2 \* 1000 \) + 17 \) \* 1000 + 0`
+    if test $gcc_cv_gas_vers -ge `expr '(' '(' 2 '*' 1000 ')' '+' 17 ')' '*' 1000 '+' 0`
   then gcc_cv_as_weakref=yes
 fi
   elif test x$gcc_cv_as != x; then
@@ -21334,7 +21332,7 @@ if test "${gcc_cv_as_nsubspa_comdat+set}" = set; then
 else
   gcc_cv_as_nsubspa_comdat=no
     if test $in_tree_gas = yes; then
-    if test $gcc_cv_gas_vers -ge `expr \( \( 2 \* 1000 \) + 15 \) \* 1000 + 91`
+    if test $gcc_cv_gas_vers -ge `expr '(' '(' 2 '*' 1000 ')' '+' 15 ')' '*' 1000 '+' 91`
   then gcc_cv_as_nsubspa_comdat=yes
 fi
   elif test x$gcc_cv_as != x; then
@@ -21380,7 +21378,7 @@ else
   gcc_cv_as_hidden=no
     if test $in_tree_gas = yes; then
     if test $in_tree_gas_is_elf = yes \
-  && test $gcc_cv_gas_vers -ge `expr \( \( 2 \* 1000 \) + 13 \) \* 1000 + 0`
+  && test $gcc_cv_gas_vers -ge `expr '(' '(' 2 '*' 1000 ')' '+' 13 ')' '*' 1000 '+' 0`
   then gcc_cv_as_hidden=yes
 fi
   elif test x$gcc_cv_as != x; then
@@ -21551,7 +21549,7 @@ else
   gcc_cv_as_leb128=no
     if test $in_tree_gas = yes; then
     if test $in_tree_gas_is_elf = yes \
-  && test $gcc_cv_gas_vers -ge `expr \( \( 2 \* 1000 \) + 11 \) \* 1000 + 0`
+  && test $gcc_cv_gas_vers -ge `expr '(' '(' 2 '*' 1000 ')' '+' 11 ')' '*' 1000 '+' 0`
   then gcc_cv_as_leb128=yes
 fi
   elif test x$gcc_cv_as != x; then
@@ -21804,7 +21802,7 @@ else
   gcc_cv_as_eh_frame=no
     if test $in_tree_gas = yes; then
     if test $in_tree_gas_is_elf = yes \
-  && test $gcc_cv_gas_vers -ge `expr \( \( 2 \* 1000 \) + 12 \) \* 1000 + 0`
+  && test $gcc_cv_gas_vers -ge `expr '(' '(' 2 '*' 1000 ')' '+' 12 ')' '*' 1000 '+' 0`
   then gcc_cv_as_eh_frame=yes
 fi
   elif test x$gcc_cv_as != x; then
@@ -21907,7 +21905,7 @@ else
   gcc_cv_as_shf_merge=no
     if test $in_tree_gas = yes; then
     if test $in_tree_gas_is_elf = yes \
-  && test $gcc_cv_gas_vers -ge `expr \( \( 2 \* 1000 \) + 12 \) \* 1000 + 0`
+  && test $gcc_cv_gas_vers -ge `expr '(' '(' 2 '*' 1000 ')' '+' 12 ')' '*' 1000 '+' 0`
   then gcc_cv_as_shf_merge=yes
 fi
   elif test x$gcc_cv_as != x; then
@@ -21939,7 +21937,7 @@ else
   gcc_cv_as_shf_merge=no
     if test $in_tree_gas = yes; then
     if test $in_tree_gas_is_elf = yes \
-  && test $gcc_cv_gas_vers -ge `expr \( \( 2 \* 1000 \) + 12 \) \* 1000 + 0`
+  && test $gcc_cv_gas_vers -ge `expr '(' '(' 2 '*' 1000 ')' '+' 12 ')' '*' 1000 '+' 0`
   then gcc_cv_as_shf_merge=yes
 fi
   elif test x$gcc_cv_as != x; then
@@ -21977,7 +21975,7 @@ else
   gcc_cv_as_comdat_group=no
     if test $in_tree_gas = yes; then
     if test $in_tree_gas_is_elf = yes \
-  && test $gcc_cv_gas_vers -ge `expr \( \( 2 \* 1000 \) + 16 \) \* 1000 + 0`
+  && test $gcc_cv_gas_vers -ge `expr '(' '(' 2 '*' 1000 ')' '+' 16 ')' '*' 1000 '+' 0`
   then gcc_cv_as_comdat_group=yes
 fi
   elif test x$gcc_cv_as != x; then
@@ -22011,7 +22009,7 @@ else
   gcc_cv_as_comdat_group_percent=no
     if test $in_tree_gas = yes; then
     if test $in_tree_gas_is_elf = yes \
-  && test $gcc_cv_gas_vers -ge `expr \( \( 2 \* 1000 \) + 16 \) \* 1000 + 0`
+  && test $gcc_cv_gas_vers -ge `expr '(' '(' 2 '*' 1000 ')' '+' 16 ')' '*' 1000 '+' 0`
   then gcc_cv_as_comdat_group_percent=yes
 fi
   elif test x$gcc_cv_as != x; then
@@ -22431,7 +22429,7 @@ if test "${gcc_cv_as_tls+set}" = set; then
 else
   gcc_cv_as_tls=no
     if test $in_tree_gas = yes; then
-    if test $gcc_cv_gas_vers -ge `expr \( \( $tls_first_major \* 1000 \) + $tls_first_minor \) \* 1000 + 0`
+    if test $gcc_cv_gas_vers -ge `expr '(' '(' "$tls_first_major" '*' 1000 ')' '+' "$tls_first_minor" ')' '*' 1000 '+' 0`
   then gcc_cv_as_tls=yes
 fi
   elif test x$gcc_cv_as != x; then
@@ -22538,7 +22536,7 @@ if test "${gcc_cv_as_alpha_explicit_relocs+set}" = set; then
 else
   gcc_cv_as_alpha_explicit_relocs=no
     if test $in_tree_gas = yes; then
-    if test $gcc_cv_gas_vers -ge `expr \( \( 2 \* 1000 \) + 12 \) \* 1000 + 0`
+    if test $gcc_cv_gas_vers -ge `expr '(' '(' 2 '*' 1000 ')' '+' 12 ')' '*' 1000 '+' 0`
   then gcc_cv_as_alpha_explicit_relocs=yes
 fi
   elif test x$gcc_cv_as != x; then
@@ -22586,7 +22584,7 @@ if test "${gcc_cv_as_alpha_jsrdirect_relocs+set}" = set; then
 else
   gcc_cv_as_alpha_jsrdirect_relocs=no
     if test $in_tree_gas = yes; then
-    if test $gcc_cv_gas_vers -ge `expr \( \( 2 \* 1000 \) + 16 \) \* 1000 + 90`
+    if test $gcc_cv_gas_vers -ge `expr '(' '(' 2 '*' 1000 ')' '+' 16 ')' '*' 1000 '+' 90`
   then gcc_cv_as_alpha_jsrdirect_relocs=yes
 fi
   elif test x$gcc_cv_as != x; then
@@ -22628,7 +22626,7 @@ if test "${gcc_cv_as_cris_no_mul_bug+set}" = set; then
 else
   gcc_cv_as_cris_no_mul_bug=no
     if test $in_tree_gas = yes; then
-    if test $gcc_cv_gas_vers -ge `expr \( \( 2 \* 1000 \) + 15 \) \* 1000 + 91`
+    if test $gcc_cv_gas_vers -ge `expr '(' '(' 2 '*' 1000 ')' '+' 15 ')' '*' 1000 '+' 91`
   then gcc_cv_as_cris_no_mul_bug=yes
 fi
   elif test x$gcc_cv_as != x; then
@@ -22873,7 +22871,7 @@ if test "${gcc_cv_as_ix86_pe_secrel32+set}" = set; then
 else
   gcc_cv_as_ix86_pe_secrel32=no
     if test $in_tree_gas = yes; then
-    if test $gcc_cv_gas_vers -ge `expr \( \( 2 \* 1000 \) + 15 \) \* 1000 + 91`
+    if test $gcc_cv_gas_vers -ge `expr '(' '(' 2 '*' 1000 ')' '+' 15 ')' '*' 1000 '+' 91`
   then gcc_cv_as_ix86_pe_secrel32=yes
 fi
   elif test x$gcc_cv_as != x; then
@@ -22919,7 +22917,7 @@ if test "${gcc_cv_as_ix86_filds_fists+set}" = set; then
 else
   gcc_cv_as_ix86_filds_fists=no
     if test $in_tree_gas = yes; then
-    if test $gcc_cv_gas_vers -ge `expr \( \( 2 \* 1000 \) + 9 \) \* 1000 + 0`
+    if test $gcc_cv_gas_vers -ge `expr '(' '(' 2 '*' 1000 ')' '+' 9 ')' '*' 1000 '+' 0`
   then gcc_cv_as_ix86_filds_fists=yes
 fi
   elif test x$gcc_cv_as != x; then
@@ -23130,7 +23128,7 @@ if test "${gcc_cv_as_ix86_gotoff_in_data+set}" = set; then
 else
   gcc_cv_as_ix86_gotoff_in_data=no
     if test $in_tree_gas = yes; then
-    if test $gcc_cv_gas_vers -ge `expr \( \( 2 \* 1000 \) + 11 \) \* 1000 + 0`
+    if test $gcc_cv_gas_vers -ge `expr '(' '(' 2 '*' 1000 ')' '+' 11 ')' '*' 1000 '+' 0`
   then gcc_cv_as_ix86_gotoff_in_data=yes
 fi
   elif test x$gcc_cv_as != x; then
@@ -23206,7 +23204,7 @@ if test "${gcc_cv_as_ia64_ltoffx_ldxmov_relocs+set}" = set; then
 else
   gcc_cv_as_ia64_ltoffx_ldxmov_relocs=no
     if test $in_tree_gas = yes; then
-    if test $gcc_cv_gas_vers -ge `expr \( \( 2 \* 1000 \) + 14 \) \* 1000 + 0`
+    if test $gcc_cv_gas_vers -ge `expr '(' '(' 2 '*' 1000 ')' '+' 14 ')' '*' 1000 '+' 0`
   then gcc_cv_as_ia64_ltoffx_ldxmov_relocs=yes
 fi
   elif test x$gcc_cv_as != x; then
@@ -23292,7 +23290,7 @@ if test "${gcc_cv_as_powerpc_mfcrf+set}" = set; then
 else
   gcc_cv_as_powerpc_mfcrf=no
     if test $in_tree_gas = yes; then
-    if test $gcc_cv_gas_vers -ge `expr \( \( 2 \* 1000 \) + 14 \) \* 1000 + 0`
+    if test $gcc_cv_gas_vers -ge `expr '(' '(' 2 '*' 1000 ')' '+' 14 ')' '*' 1000 '+' 0`
   then gcc_cv_as_powerpc_mfcrf=yes
 fi
   elif test x$gcc_cv_as != x; then
@@ -23338,7 +23336,7 @@ if test "${gcc_cv_as_powerpc_popcntb+set}" = set; then
 else
   gcc_cv_as_powerpc_popcntb=no
     if test $in_tree_gas = yes; then
-    if test $gcc_cv_gas_vers -ge `expr \( \( 2 \* 1000 \) + 17 \) \* 1000 + 0`
+    if test $gcc_cv_gas_vers -ge `expr '(' '(' 2 '*' 1000 ')' '+' 17 ')' '*' 1000 '+' 0`
   then gcc_cv_as_powerpc_popcntb=yes
 fi
   elif test x$gcc_cv_as != x; then
@@ -23384,7 +23382,7 @@ if test "${gcc_cv_as_powerpc_fprnd+set}" = set; then
 else
   gcc_cv_as_powerpc_fprnd=no
     if test $in_tree_gas = yes; then
-    if test $gcc_cv_gas_vers -ge `expr \( \( 2 \* 1000 \) + 17 \) \* 1000 + 0`
+    if test $gcc_cv_gas_vers -ge `expr '(' '(' 2 '*' 1000 ')' '+' 17 ')' '*' 1000 '+' 0`
   then gcc_cv_as_powerpc_fprnd=yes
 fi
   elif test x$gcc_cv_as != x; then
@@ -23430,7 +23428,7 @@ if test "${gcc_cv_as_powerpc_mfpgpr+set}" = set; then
 else
   gcc_cv_as_powerpc_mfpgpr=no
     if test $in_tree_gas = yes; then
-    if test $gcc_cv_gas_vers -ge `expr \( \( 9 \* 1000 \) + 99 \) \* 1000 + 0`
+    if test $gcc_cv_gas_vers -ge `expr '(' '(' 9 '*' 1000 ')' '+' 99 ')' '*' 1000 '+' 0`
   then gcc_cv_as_powerpc_mfpgpr=yes
 fi
   elif test x$gcc_cv_as != x; then
@@ -23480,7 +23478,7 @@ if test "${gcc_cv_as_powerpc_rel16+set}" = set; then
 else
   gcc_cv_as_powerpc_rel16=no
     if test $in_tree_gas = yes; then
-    if test $gcc_cv_gas_vers -ge `expr \( \( 2 \* 1000 \) + 17 \) \* 1000 + 0`
+    if test $gcc_cv_gas_vers -ge `expr '(' '(' 2 '*' 1000 ')' '+' 17 ')' '*' 1000 '+' 0`
   then gcc_cv_as_powerpc_rel16=yes
 fi
   elif test x$gcc_cv_as != x; then
@@ -23526,7 +23524,7 @@ if test "${gcc_cv_as_powerpc_cmpb+set}" = set; then
 else
   gcc_cv_as_powerpc_cmpb=no
     if test $in_tree_gas = yes; then
-    if test $gcc_cv_gas_vers -ge `expr \( \( 9 \* 1000 \) + 99 \) \* 1000 + 0`
+    if test $gcc_cv_gas_vers -ge `expr '(' '(' 9 '*' 1000 ')' '+' 99 ')' '*' 1000 '+' 0`
   then gcc_cv_as_powerpc_cmpb=yes
 fi
   elif test x$gcc_cv_as != x; then
@@ -23572,7 +23570,7 @@ if test "${gcc_cv_as_powerpc_dfp+set}" = set; then
 else
   gcc_cv_as_powerpc_dfp=no
     if test $in_tree_gas = yes; then
-    if test $gcc_cv_gas_vers -ge `expr \( \( 9 \* 1000 \) + 99 \) \* 1000 + 0`
+    if test $gcc_cv_gas_vers -ge `expr '(' '(' 9 '*' 1000 ')' '+' 99 ')' '*' 1000 '+' 0`
   then gcc_cv_as_powerpc_dfp=yes
 fi
   elif test x$gcc_cv_as != x; then
@@ -23618,7 +23616,7 @@ if test "${gcc_cv_as_powerpc_vsx+set}" = set; then
 else
   gcc_cv_as_powerpc_vsx=no
     if test $in_tree_gas = yes; then
-    if test $gcc_cv_gas_vers -ge `expr \( \( 9 \* 1000 \) + 99 \) \* 1000 + 0`
+    if test $gcc_cv_gas_vers -ge `expr '(' '(' 9 '*' 1000 ')' '+' 99 ')' '*' 1000 '+' 0`
   then gcc_cv_as_powerpc_vsx=yes
 fi
   elif test x$gcc_cv_as != x; then
@@ -23655,7 +23653,7 @@ if test "${gcc_cv_as_powerpc_gnu_attribute+set}" = set; then
 else
   gcc_cv_as_powerpc_gnu_attribute=no
     if test $in_tree_gas = yes; then
-    if test $gcc_cv_gas_vers -ge `expr \( \( 2 \* 1000 \) + 18 \) \* 1000 + 0`
+    if test $gcc_cv_gas_vers -ge `expr '(' '(' 2 '*' 1000 ')' '+' 18 ')' '*' 1000 '+' 0`
   then gcc_cv_as_powerpc_gnu_attribute=yes
 fi
   elif test x$gcc_cv_as != x; then
@@ -23694,7 +23692,7 @@ if test "${gcc_cv_as_mips_explicit_relocs+set}" = set; then
 else
   gcc_cv_as_mips_explicit_relocs=no
     if test $in_tree_gas = yes; then
-    if test $gcc_cv_gas_vers -ge `expr \( \( 2 \* 1000 \) + 14 \) \* 1000 + 0`
+    if test $gcc_cv_gas_vers -ge `expr '(' '(' 2 '*' 1000 ')' '+' 14 ')' '*' 1000 '+' 0`
   then gcc_cv_as_mips_explicit_relocs=yes
 fi
   elif test x$gcc_cv_as != x; then
@@ -23729,7 +23727,7 @@ if test "${gcc_cv_as_mips_no_shared+set}" = set; then
 else
   gcc_cv_as_mips_no_shared=no
     if test $in_tree_gas = yes; then
-    if test $gcc_cv_gas_vers -ge `expr \( \( 2 \* 1000 \) + 16 \) \* 1000 + 0`
+    if test $gcc_cv_gas_vers -ge `expr '(' '(' 2 '*' 1000 ')' '+' 16 ')' '*' 1000 '+' 0`
   then gcc_cv_as_mips_no_shared=yes
 fi
   elif test x$gcc_cv_as != x; then
@@ -23766,7 +23764,7 @@ if test "${gcc_cv_as_mips_gnu_attribute+set}" = set; then
 else
   gcc_cv_as_mips_gnu_attribute=no
     if test $in_tree_gas = yes; then
-    if test $gcc_cv_gas_vers -ge `expr \( \( 2 \* 1000 \) + 18 \) \* 1000 + 0`
+    if test $gcc_cv_gas_vers -ge `expr '(' '(' 2 '*' 1000 ')' '+' 18 ')' '*' 1000 '+' 0`
   then gcc_cv_as_mips_gnu_attribute=yes
 fi
   elif test x$gcc_cv_as != x; then
@@ -23803,7 +23801,7 @@ if test "${gcc_cv_as_mips_dtprelword+set}" = set; then
 else
   gcc_cv_as_mips_dtprelword=no
     if test $in_tree_gas = yes; then
-    if test $gcc_cv_gas_vers -ge `expr \( \( 2 \* 1000 \) + 18 \) \* 1000 + 0`
+    if test $gcc_cv_gas_vers -ge `expr '(' '(' 2 '*' 1000 ')' '+' 18 ')' '*' 1000 '+' 0`
   then gcc_cv_as_mips_dtprelword=yes
 fi
   elif test x$gcc_cv_as != x; then
@@ -23889,7 +23887,7 @@ else
   gcc_cv_as_dwarf2_debug_line=no
     if test $in_tree_gas = yes; then
     if test $in_tree_gas_is_elf = yes \
-  && test $gcc_cv_gas_vers -ge `expr \( \( 2 \* 1000 \) + 11 \) \* 1000 + 0`
+  && test $gcc_cv_gas_vers -ge `expr '(' '(' 2 '*' 1000 ')' '+' 11 ')' '*' 1000 '+' 0`
   then gcc_cv_as_dwarf2_debug_line=yes
 fi
   elif test x$gcc_cv_as != x; then
@@ -23966,7 +23964,7 @@ else
   gcc_cv_as_gdwarf2_flag=no
     if test $in_tree_gas = yes; then
     if test $in_tree_gas_is_elf = yes \
-  && test $gcc_cv_gas_vers -ge `expr \( \( 2 \* 1000 \) + 11 \) \* 1000 + 0`
+  && test $gcc_cv_gas_vers -ge `expr '(' '(' 2 '*' 1000 ')' '+' 11 ')' '*' 1000 '+' 0`
   then gcc_cv_as_gdwarf2_flag=yes
 fi
   elif test x$gcc_cv_as != x; then
@@ -24004,7 +24002,7 @@ else
   gcc_cv_as_gstabs_flag=no
     if test $in_tree_gas = yes; then
     if test $in_tree_gas_is_elf = yes \
-  && test $gcc_cv_gas_vers -ge `expr \( \( 2 \* 1000 \) + 11 \) \* 1000 + 0`
+  && test $gcc_cv_gas_vers -ge `expr '(' '(' 2 '*' 1000 ')' '+' 11 ')' '*' 1000 '+' 0`
   then gcc_cv_as_gstabs_flag=yes
 fi
   elif test x$gcc_cv_as != x; then
@@ -24052,7 +24050,7 @@ if test "${gcc_cv_as_debug_prefix_map_flag+set}" = set; then
 else
   gcc_cv_as_debug_prefix_map_flag=no
     if test $in_tree_gas = yes; then
-    if test $gcc_cv_gas_vers -ge `expr \( \( 2 \* 1000 \) + 18 \) \* 1000 + 0`
+    if test $gcc_cv_gas_vers -ge `expr '(' '(' 2 '*' 1000 ')' '+' 18 ')' '*' 1000 '+' 0`
   then gcc_cv_as_debug_prefix_map_flag=yes
 fi
   elif test x$gcc_cv_as != x; then
@@ -24123,7 +24121,7 @@ if test "${gcc_cv_as_line_zero+set}" = set; then
 else
   gcc_cv_as_line_zero=no
   if test $in_tree_gas = yes; then
-    if test $gcc_cv_gas_vers -ge `expr \( \( 2 \* 1000 \) + 16 \) \* 1000 + 91`
+    if test $gcc_cv_gas_vers -ge `expr '(' '(' 2 '*' 1000 ')' '+' 16 ')' '*' 1000 '+' 91`
   then gcc_cv_as_line_zero=yes
 fi
   elif test "x$gcc_cv_as" != x; then
