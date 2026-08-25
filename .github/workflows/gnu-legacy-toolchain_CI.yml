@@ -92,13 +92,13 @@ jobs:
       if:   runner.os == 'Windows'
       uses: chetan/git-restore-mtime-action@v2
 
-    - name: Update build environment
+    - name: Update OS environment
       if:   contains(matrix.os, 'ubuntu')
-      run:  sudo apt-get --assume-yes update
+      run:  sudo apt --assume-yes update && sudo apt --assume-yes full-upgrade && sudo apt --assume-yes autoremove
 
     - name: Install build dependencies
       if:   contains(matrix.os, 'ubuntu')
-      run:  sudo apt-get --assume-yes install $UBUNTU_BUILD_DEPENDS $UBUNTU_GCC4_BUILD_DEPENDS
+      run:  sudo apt --assume-yes install $UBUNTU_BUILD_DEPENDS $UBUNTU_GCC4_BUILD_DEPENDS
 
       # Cygwin action docs – https://github.com/marketplace/actions/install-cygwin-action
     - name: Setup Cygwin Environment
@@ -181,11 +181,14 @@ jobs:
         # creates a shallow checkout.
         fetch-depth: 0
 
-    - name: Update build environment
-      run:  sudo apt-get --assume-yes update
+    - name: Update OS environment
+      run:  |
+        sudo apt --assume-yes update
+        sudo apt --assume-yes full-upgrade
+        sudo apt --assume-yes autoremove
 
     - name: Install build dependencies
-      run:  sudo apt-get --assume-yes install $UBUNTU_BUILD_DEPENDS
+      run:  sudo apt --assume-yes install $UBUNTU_BUILD_DEPENDS
 
       # Fix timestamps (needed to prevent some files from attempting to regenerate and failing during build)
     - name: Restore source timestamps
