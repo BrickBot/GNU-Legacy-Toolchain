@@ -687,9 +687,7 @@ gcc_cv_gas_patch_version=`expr "$gcc_cv_gas_version" : "VERSION=[[0-9]]*\.[[0-9]
 case $gcc_cv_gas_patch_version in
   "") gcc_cv_gas_patch_version="0" ;;
 esac
-gcc_cv_gas_vers=`expr \( \( $gcc_cv_gas_major_version \* 1000 \) \
-			    + $gcc_cv_gas_minor_version \) \* 1000 \
-			    + $gcc_cv_gas_patch_version`
+gcc_cv_gas_vers=`expr '(' '(' "$gcc_cv_gas_major_version" '*' 1000 ')' '+' "$gcc_cv_gas_minor_version" ')' '*' 1000 '+' "$gcc_cv_gas_patch_version"`
 ]) []dnl # _gcc_COMPUTE_GAS_VERSION
 
 dnl # gcc_GAS_VERSION_GTE_IFELSE([elf,] major, minor, patchlevel,
@@ -705,7 +703,7 @@ AC_DEFUN([_gcc_GAS_VERSION_GTE_IFELSE],
 [ifelse([$1], elf,
  [if test $in_tree_gas_is_elf = yes \
   &&],
- [if]) test $gcc_cv_gas_vers -ge `expr \( \( $2 \* 1000 \) + $3 \) \* 1000 + $4`
+ [if]) test $gcc_cv_gas_vers -ge `expr '(' '(' "$2" '*' 1000 ')' '+' "$3" ')' '*' 1000 '+' "$4"`
   then dnl
 ifelse([$5],,:,[$5])[]dnl
 ifelse([$6],,,[
