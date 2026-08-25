@@ -219,8 +219,8 @@ addr2line_SOURCES = addr2line.c budemang.c $(BULIBS)
 #
 # To ensure complete file generation, we implement the following measures:
 #   1. Generate sysroff.c and sysroff.h in separate targets
-#   2. Aggregate the multiple sysinfo commands in a common subshell with a
-#      single output redirect for the whole subshell
+#   2. Conditionally chain the multiple sysinfo commands, which also creates a
+#      single output redirect for the chained set
 #   3. Output sysroff.c to a temp file that is then renamed at completion to sysroff.c
 #   4. Complete generation of sysroff.c before starting generation of sysroff.h
 #      (since the generation of sysroff.h is atomic)
@@ -229,11 +229,10 @@ addr2line_SOURCES = addr2line.c budemang.c $(BULIBS)
 #      (This is implemented in the target section immediately following.)
 sysroff.c: sysinfo$(EXEEXT_FOR_BUILD) sysroff.info
 	rm --force sysroff.c.gen sysroff.c
-	( \
-		./sysinfo$(EXEEXT_FOR_BUILD) -c <$(srcdir)/sysroff.info && \
+	./sysinfo$(EXEEXT_FOR_BUILD) -c <$(srcdir)/sysroff.info && \
 		./sysinfo$(EXEEXT_FOR_BUILD) -i <$(srcdir)/sysroff.info && \
 		./sysinfo$(EXEEXT_FOR_BUILD) -g <$(srcdir)/sysroff.info  \
-	) > sysroff.c.gen
+		> sysroff.c.gen
 	mv --force sysroff.c.gen sysroff.c
 
 sysroff.h: sysinfo$(EXEEXT_FOR_BUILD) sysroff.info sysroff.c
