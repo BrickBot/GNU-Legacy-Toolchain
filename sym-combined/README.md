@@ -49,7 +49,7 @@ which is then used as the source folder for builds.
 | gas          | binutils   | 2.16.1                       | 2.16.1             | 2.16.1               |
 | gcc          | gcc        | —                            | 3.4.6              | 4.4.7                |
 | gcc/p        | GPC        | —                            | 2.1-20070904       | 2.1-20070904         |
-| gdb          | gdb        | —                            | 6.8                | 6.8                  |
+| gdb          | gdb        | —                            | 5.3                | 6.8                  |
 | gnattools    | gdb        | —                            | —                  | 6.8                  |
 | gprof        | binutils   | 2.16.1                       | 2.16.1             | 2.16.1               |
 | include      | GCC (libs) | 4.4.7                        | 4.4.7              | 4.4.7                |
@@ -72,7 +72,7 @@ which is then used as the source folder for builds.
 | newlib       | newlib     | —                            | 1.19.0             | 1.19.0               |
 | opcodes      | binutils   | 2.16.1                       | 2.16.1             | 2.16.1               |
 | readline     | gdb        | —                            | 6.8                | 6.8                  |
-| sim          | gdb        | —                            | 6.8                | 6.8                  |
+| sim          | gdb        | —                            | 5.3                | 6.8                  |
 | texinfo      | binutils   | 2.16.1                       | 2.16.1             | 2.16.1               |
 | zlib         | GCC (libs) | —                            | 4.4.7              | 4.4.7                |
 

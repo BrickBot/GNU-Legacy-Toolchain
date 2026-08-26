@@ -63,14 +63,14 @@ jobs:
         os:            [ "ubuntu-latest", "windows-latest" ]
         platform:      [ "x86_64", "x86" ]
         target-system: [ "h8300-hitachi-coff" ]
-        toolchain-set: [ "binutils216", "gdb5", "gcc3", "gdb5,gcc3", "gcc44", "gdb5,gcc3,gcc44", ]
+        toolchain-set: [ "binutils216", "gdb5", "gcc3", "gcc44", "gcc3,gcc44", ]
         exclude:
           - os:            ubuntu-latest
             platform:      x86
           - os:            windows-latest
             toolchain-set: gcc44
           - os:            windows-latest
-            toolchain-set: gdb5,gcc3,gcc44
+            toolchain-set: gcc3,gcc44
     runs-on:  ${{ matrix.os }}
     
     steps:
@@ -165,8 +165,6 @@ jobs:
   # For quicker continuous integration feedback, run just the RCX-configured build as a job
   build_cross_RCX_job:
     name:     Build GCC v3 w/GDB v5 for the RCX on ${{ matrix.os }}
-    env:
-      Toolchain: gdb5,gcc3
     runs-on:  ${{ matrix.os }}
     strategy:
       matrix:
