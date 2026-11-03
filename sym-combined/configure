@@ -264,6 +264,9 @@ if isIncluded "$toolchain_sets" "GDB5" ; then
 fi
 
 # This step is only for a stand-alone BinUtils install and is _NOT_ for use when also building/installing one of the GCC toolchains
+# ALTERNATE to build just BinUtils from a combined GCC directory?
+#  (--enable-languages= or --disable-gcc ?) --disable-bootstrap --disable-sim --disable-gdb --disable-readline --disable-libdecnumber
+# A Make-based approach:  "make binutils"
 if isIncluded "$toolchain_sets" "BINUTILS216" ; then
   toolchain_set_id=binutils216
   echo "================="
