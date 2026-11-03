@@ -266,8 +266,8 @@ with new additions noted based on the [changelog](https://salsa.debian.org/debia
 | (✔)     | 010_fix_bison.patch                | Was `0034-Fix-c-parse.y-build-error.patch` |
 |          | 011_fix_gperf_signature.patch      | New in dfsg2-6  |
 |          | 012_propagate_flags.patch          | New in dfsg2-6  |
-|          | 013_libiberty_getwd.patch          | New in dfsg2-8  |
-|          | 014_libiberty_ftbfs.patch          | New in dfsg2-8  |
+| N/A      | 013_libiberty_getwd.patch          | New in dfsg2-8; not applicable to libiberty from GCC 4.4.7 |
+| N/A      | 014_libiberty_ftbfs.patch          | New in dfsg2-8; not applicable to libiberty from GCC 4.4.7 |
 |          | 015_fix_libiberty_lto.patch        | New in dfsg2-10 |
 
 

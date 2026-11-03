@@ -13,7 +13,7 @@ Multiple use cases exist for continuing to maintain a legacy toolchain:
 * **Common Language Infrastructure (CLI) Common Intermediate Language (CIL) Front End**
 
 While primary goal of this respository is to build a cross-toolchain targeting Hitachi/Renesas H8/300 processors with the COFF format, this should work for other targets as well.
-Though this H8/300 target has colloquially been referred to as h8300-hitachi-hms, it is more properly identified as
+Though this H8/300 target has colloquially been referred to as h8300-hitachi-hms, it is now more properly identified as
 h8300-hitachi-coff ([ref 1](https://tracker.debian.org/pkg/gcc-h8300-hms), [ref 2](https://sources.debian.org/src/gcc-h8300-hms/1%3A3.4.6%2Bdfsg2-4.2/debian/rules/#L30),
 [object file format info](https://maskray.me/blog/2024-01-14-exploring-object-file-formats)).
 
@@ -39,12 +39,12 @@ but the basic sequence is as follows:
       3. If the disk space is available, consider using `git worktree` instead of switching among Git branches.
 5. Create a folder for building that is _outside_ the source tree
 6. From that build folder, run either `configure` or one of the following use-case-specific wrapper helpers:
-   1. `h8300-hitachi-coff-configure`:  For use with COFF targets for the Hitachi H8/300, which defaults to an integrated toolchain based on GCC v3.
+   1. `h8300-hitachi-coff-configure`:  For use with COFF targets for the Hitachi H8/300, which defaults to an integrated toolchain based on GCC v3 and GDB v6.
        The target `h8300-hitachi-elf` is additionally enabled, which adds `elf32-h8300` support to tools such as `objcopy`.
-   2. `rcx-lego-configure`:  Created for use with the LEGO MindStorms RCX, which defaults to an integrated toolchain based on the above but with a separate GDB v5 instead.
+   2. `rcx-lego-configure`:  An extension of the `h8300-hitachi-coff-configure` script created for use with the LEGO MindStorms RCX, which defaults to an integrated toolchain based GCC v3 and GDB v5 (instead of GDB v6).
 7. Run `make`
 8. Run `make install` to copy the files into an installation structure.
-   1. By default, the install will be to a separate folder from which [Stow](https://www.gnu.org/software/stow/) can then be used to link the files into your system installation.
+   1. By default, the install will be to a package-specific folder under `/opt/stow`, from which [Stow](https://www.gnu.org/software/stow/) can then be used to link the files into your system installation.
    2. In this manner, [Stow](https://www.gnu.org/software/stow/) facilitates a cleaner and easier way to manage installs of locally-built software.
 9. Run `make stow` to then link the files into your system installation.
 
@@ -90,7 +90,7 @@ but this also overlapped well with support for GPC, Fortran77/g77, and the CLI C
 | [GPC](https://www.gnu-pascal.de/gpc/h-index.html)      | 2.1-20070904 | 2007-09-04 | See the links and included README files for further details. ³ |
 | [NewLib](https://sourceware.org/newlib/)  | 1.19.0 | [2010-12-16](https://sourceware.org/newlib/) ⁴ | Version 1.20.0 introduces [incompatibilities with libiberty](https://gcc-patches.gcc.gnu.narkive.com/zeSeZ9N8/newlib-vs-libiberty-mismatch-breaks-build-re-patch-export-psignal-on-all-platforms#post1).  Versions 2.0 and later fail to build if targeting h8300-\*-coff. <br/> NewLib is required to build libstdc++-v3 for targets such as h8300-hitachi-coff; otherwise, `configure` checks will fail with a “No support for this host/target combination” message. |
 | [GDB](https://sourceware.org/gdb/)      | 5.3      | [released 2002-12-12](https://sourceware.org/gdb/schedule/) | While a few later versions still supported h8300-\*-coff targets, the debugging capabilities built into BrickEmu (an emulator for the LEGO MindStorms RCX) are based on a built-in GDB server that implements the GDB 5 protocol. |
-| [GDB](https://sourceware.org/gdb/)      | 6.8      | [released 2008-02-29](https://sourceware.org/gdb/schedule/) | This version of GDB best aligns with the other packages in the GCC toolchain, in that it is able to be included in a combined toolchain build.  (Neither GDB 5.3 nor GDB 7.12.1 are able to be built that way.) |
+| [GDB](https://sourceware.org/gdb/)      | 6.8      | [released 2008-02-29](https://sourceware.org/gdb/schedule/) | While best aligning with the other packages in the GCC toolchain in that it is most readily able to be included in a combined toolchain build, targets such as h8300-hitachi-coff are not as well supported compared to GDB 5.  (GDB 7.12.1 is currently unable to be built that way.) |
 | [GDB](https://sourceware.org/gdb/)      | 7.12.1   | [released 2017-01-21](https://sourceware.org/gdb/schedule/) | While GDB 7.12.1 seems to indicate that h8300-\*-\*-coff targets are supported (note lack of support for h8300-\*-\*-coff [covered by the "h8300-\*-\*-\*" case] in bfd/config.bfd in later versions), compatibility has not been fully validated, as it was released well after h8300-\*-coff support had been dropped from other packages (for example, BinUtils and GDB are both developed in a single, common source repository). |
 
  ¹ BinUtils:  Release date based on the ChangeLog files for bfd, gas, and ld.
@@ -114,6 +114,13 @@ but this also overlapped well with support for GPC, Fortran77/g77, and the CLI C
  ⁴ NewLib:  Release history link opens in a subframe; at the site,
      navigate to [Download](https://sourceware.org/newlib/download.html) > [Snapshots](https://sourceware.org/ftp/newlib/index.html) to view the release timeline history subframe.
 
+ ⁵ GDB and Debugging:
+  + GDB 6.8 fails to debug the h8300-hitachi-coff target with “Cannot find bounds of current function” messages.
+  + GDB 6.7 removed DWARF-1 support while retaining DWARF-2 and DWARF-3 support.
+  + GDB 6.4 release notes initially stated that H8/300 support was removed, but this was [confirmed to be erroneous and corrected](https://sourceware.org/pipermail/gdb/2005-December/024617.html).
+  + Debugging formats:
+    - Not all targets support the DWARF-2 debug target; unfortunately, h8300-hitachi-coff is among those unsupported targets.
+    - When using a GCC targeting the h8300-hitachi-coff with the `-gdwarf-2` debugging option, compilation fails with the message, “target system does not support the "dwarf-2" debug format”
 
 
 ### GCC 3.4.6 versus GCC 4.4.7
