@@ -6,7 +6,7 @@
 SCRIPT_DIR=$(dirname $0)
 
 DEFAULT_TOOLCHAIN_SETS_ARG="--toolchain-sets=gcc3"
-DEFAULT_PROGRAM_SUFFIX_CONFIG_ARG="--with-program-suffix"
+DEFAULT_PROGRAM_SUFFIX_CONFIG_ARG="--without-program-suffix"
 DEFAULT_NEWLIB="--with-newlib"
 
 # NLS has issues building on Cygwin.
