@@ -26,7 +26,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 #include <strings.h>
 #endif
 #endif
-#include "sysinfo.h"
+#include "./sysinfo.h"
 char *word;
 int number;
 int unit;
