@@ -1,5 +1,4 @@
 #!/bin/sh
-
 # A configure script with presets intended for use with the
 #   Hitachi H8/300-based LEGO MindStorms RCX.
 
