@@ -235,7 +235,7 @@ sysroff.c: sysinfo$(EXEEXT_FOR_BUILD) sysroff.info
 	) > "$@"
 
 sysroff.h: sysinfo$(EXEEXT_FOR_BUILD) sysroff.info sysroff.c
-	./sysinfo$(EXEEXT_FOR_BUILD) -d <$(srcdir)/sysroff.info >  sysroff.h
+	./sysinfo$(EXEEXT_FOR_BUILD) -d <$(srcdir)/sysroff.info >  "$@"
 
 # We need these for parallel make.
 arparse.h: arparse.c
@@ -252,8 +252,8 @@ syslex.o:
 	  echo "Autogen Status: Using generated syslex.c in build directory" ; \
 	  $(CC_FOR_BUILD) -c -I. $(AM_CFLAGS) $(CFLAGS)  syslex.c  ; \
 	else \
-	  echo "Autogen Status: Using existing syslex.c in source directory" ; \
-	  $(CC_FOR_BUILD) -c -I. -I$(srcdir) $(AM_CFLAGS) $(CFLAGS) $(srcdir)/syslex.c ;\
+	  echo "Autogen Status: Using existing syslex.c in source directory '$(srcdir)'" ; \
+	  $(CC_FOR_BUILD) -c -I$(srcdir) -I. $(AM_CFLAGS) $(CFLAGS) $(srcdir)/syslex.c ;\
 	fi
 
 sysinfo.o:
@@ -261,8 +261,8 @@ sysinfo.o:
 	  echo "Autogen Status: Using generated sysinfo.c in build directory" ; \
 	  $(CC_FOR_BUILD) -c -I. $(AM_CFLAGS) $(CFLAGS)  sysinfo.c  ; \
 	else \
-	  echo "Autogen Status: Using existing sysinfo.c in source directory" ; \
-	  $(CC_FOR_BUILD) -c -I. $(AM_CFLAGS) $(CFLAGS) $(srcdir)/sysinfo.c ; \
+	  echo "Autogen Status: Using existing sysinfo.c in source directory '$(srcdir)'" ; \
+	  $(CC_FOR_BUILD) -c -I$(srcdir) $(AM_CFLAGS) $(CFLAGS) $(srcdir)/sysinfo.c ; \
 	fi
 
 srconv_SOURCES = srconv.c coffgrok.c $(BULIBS)
