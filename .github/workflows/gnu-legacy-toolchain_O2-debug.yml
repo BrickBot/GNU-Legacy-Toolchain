@@ -1,0 +1,172 @@
+name: GNU GCC 15 -O2 Optimization Failure Testing
+
+on:
+  workflow_dispatch:
+
+env:
+  # Debian package search:  https://www.debian.org/distrib/packages
+  UBUNTU_BUILD_DEPENDS: git-restore-mtime autoconf autopoint automake m4 make binutils gcc g++ gobjc gcc-multilib bison flex libtool gawk gettext texinfo file libisl-dev dejagnu  stow
+  UBUNTU_GCC4_BUILD_DEPENDS: libglib2.0-dev libgmp-dev libmpfr-dev libmpc-dev zip unzip mono-runtime libmono-2.0-dev
+  # after adding i386 multiarch via `sudo dpkg --add-architecture i386`
+  UBUNTU_MULTIARCH_i386_BUILD_DEPENDS:  libc6:i386 libc6-dev:i386 linux-libc-dev:i386
+  
+  # RPM package search:  https://rpm.pbone.net/search_simple_2
+  # openSUSE package-only (no content) search:  https://software.opensuse.org/
+  # NOTE: openSUSE appears to lack a package for git-restore-mtime, so this will need to be installed manually
+  openSUSE_BUILD_DEPENDS: autoconf gettext-tools automake m4 make binutils gcc gcc-c++ gcc-objc glibc-devel glibc-devel-32bit bison flex libtool gawk gettext-runtime texinfo file libisl23 dejagnu  stow
+  openSUSE_GCC4_BUILD_DEPENDS:  mono-core libmono-2_0-devel glib2-devel glibc-devel gmp-devel mpfr-devel mpc-devel
+  # libisl23, which is a version-specific package of ISL, appeasrs to be included as a dependency of other package(s)
+  
+  # Cygwin package search:  https://cygwin.com/packages/
+  # Cygwin package list:    https://cygwin.com/packages/package_list.html
+  # Cygwin-official Action: https://github.com/marketplace/actions/install-cygwin-action
+  CYGWIN_BUILD_DEPENDS: autoconf automake m4 make binutils gcc-core gcc-g++ gcc-objc bison flex libtool gawk gettext gettext-devel gettext-debuginfo texinfo  file libisl-devel libncurses-devel dejagnu  stow tree
+  CYGWIN_GCC44_BUILD_DEPENDS: libglib2.0-devel libgmp-devel libmpfr-devel libmpc-devel zip unzip
+  # Cygwin lacks packages for Mono, so the "gcc44" toolchain set is unsupported unless Mono is built and installed manually
+  CYGWIN_GCC44_MISSING_DEPENDS:    mono-runtime libmono-2.0-devel
+  
+  # If these older source package releases will not build without disabling Fortify and/or run without buffer overflow errors,
+  #    then "make CPPFLAGS=-U_FORTIFY_SOURCE" might be necessary
+  #    Passing that to this older configure might not work, as should otherwise seem doable per
+  #    the link https://www.gnu.org/software/automake/manual/html_node/Flag-Variables-Ordering.html
+
+  BUILD_DIR:   build
+  OUTPUT_DIR:  outputs
+  SYSROOT_DIR: sysroot
+  
+  # Prevent the Cygwin profile script from doing an automatic `cd ${HOME}`
+  CHERE_INVOKING: 1
+  CYGWIN:         winsymlinks:native
+  
+  # Common arguments for `make all`
+  # * Add "--keep-going" to apply this flag to the "make all" commands
+  COMMON_MAKE_ALL_ARGS:  
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  # For quicker continuous integration feedback, run just the RCX-configured build as a job
+  build_cross_RCX_job:
+    name:     Build GCC v3 w/GDB v5 for the RCX with ${{ matrix.optimization }}
+    runs-on:  ubuntu-latest
+    strategy:
+      matrix:
+        # GNU GCC optimization reference - https://gcc.gnu.org/onlinedocs/gcc/Optimize-Options.html
+        optimization:
+          - "-falign-functions  -falign-jumps"
+          - "-falign-labels  -falign-loops"
+          - "-fcaller-saves"
+          - "-fcode-hoisting"
+          - "-fcrossjumping"
+          - "-fcse-follow-jumps  -fcse-skip-blocks"
+          - "-fdelete-null-pointer-checks -fdep-fusion"
+          - "-fdevirtualize  -fdevirtualize-speculatively"
+          - "-fduplicate-switch-dispatch"
+          - "-fexpensive-optimizations"
+          - "-ffinite-loops"
+          - "-fgcse  -fgcse-lm"
+          - "-fhoist-adjacent-loads"
+          - "-finline-functions"
+          - "-finline-small-functions"
+          - "-findirect-inlining"
+          - "-fipa-bit-cp  -fipa-cp  -fipa-icf"
+          - "-fipa-ra  -fipa-sra  -fipa-vrp"
+          - "-fisolate-erroneous-paths-dereference"
+          - "-flra-remat"
+          - "-foptimize-crc"
+          - "-foptimize-sibling-calls"
+          - "-foptimize-strlen"
+          - "-fpartial-inlining"
+          - "-fpeephole2"
+          - "-freorder-blocks-algorithm=stc"
+          - "-freorder-blocks-and-partition  -freorder-functions"
+          - "-frerun-cse-after-loop"
+          - "-fschedule-insns  -fschedule-insns2"
+          - "-fsched-interblock  -fsched-spec"
+          - "-fspeculatively-call-stored-functions"
+          - "-fstore-merging"
+          - "-fstrict-aliasing"
+          - "-fthread-jumps"
+          - "-ftree-builtin-call-dce"
+          - "-ftree-loop-vectorize"
+          - "-ftree-pre"
+          - "-ftree-slp-vectorize"
+          - "-ftree-switch-conversion  -ftree-tail-merge"
+          - "-ftree-vrp"
+          - "-fvect-cost-model=very-cheap"
+    
+    steps:
+    - name: Get latest from version control
+      uses: actions/checkout@v6
+      with:
+        # git-restore-mtime-bare uses the ref log to find the correct timestamp
+        # for each file. This requires a full git history. The default value (1)
+        # creates a shallow checkout.
+        fetch-depth: 0
+
+    - name: Update OS environment
+      run:  |
+        sudo apt --assume-yes update
+        sudo apt --assume-yes full-upgrade
+        sudo apt --assume-yes autoremove
+
+    - name: Install build dependencies
+      run:  sudo apt --assume-yes install $UBUNTU_BUILD_DEPENDS
+
+      # Fix timestamps (needed to prevent some files from attempting to regenerate and failing during build)
+    - name: Restore source timestamps
+      run:  ./fix-mtime
+
+    - name: Setup the build directory
+      run:  mkdir -p  $BUILD_DIR  $OUTPUT_DIR
+
+    # Run the build steps
+    - name: Configure the build
+      run:  |
+        cd $BUILD_DIR
+        echo "Current working directory: $PWD"
+        OPTIMIZATION_FLAGS="-O1 ${{ matrix.optimization }}" ../sym-combined/rcx-lego-coff-configure  --prefix=$(realpath -L -s ../$SYSROOT_DIR)
+
+    # Execute the build.  For the jobs arg, use a POSIX-standard version of `nproc`.
+    - name: Execute the build
+      run:  |
+        cd $BUILD_DIR
+        echo "Current working directory: $PWD"
+        make $COMMON_MAKE_ALL_ARGS --jobs=$(getconf _NPROCESSORS_ONLN) --output-sync=recurse
+
+    # Test install the completed build
+    - name: Test install the new build to a sysroot
+      run:  |
+        cd $BUILD_DIR
+        echo "Current working directory is '$PWD'"
+        make install
+
+    - name: List the files installed to the sysroot
+      run:  tree --dirsfirst "$(realpath -s "$SYSROOT_DIR")"
+
+    # Post the build output as an artifact
+      # Before archiving, tar the host installation output to preserve file permission
+      # c.f. https://github.com/actions/upload-artifact?tab=readme-ov-file#permission-loss
+      # To avoid including a "." or other unwanted directory, c.f. https://stackoverflow.com/a/39530409
+    - name: Tar the host installation snapshot to preserve file permissions
+      run:  find $SYSROOT_DIR -printf "%P\n" | sort | tar --verbose --create --file $OUTPUT_DIR/RCX.tar --no-recursion --directory=$SYSROOT_DIR --files-from=-
+
+    #- name: Archive the host installation snapshot tar file
+    #  uses: actions/upload-artifact@v6
+    #  with:
+    #    name: "RCX_${{ matrix.os }}_${{ github.run_id }}.${{ github.run_number }}.${{ github.run_attempt }}"
+    #    path: "${{ env.OUTPUT_DIR }}/RCX_${{ matrix.os }}.tar"
+
+    - name: Install the new build using Stow
+      run:  |
+        cd $BUILD_DIR
+        echo "Current working directory is '$PWD'"
+        sudo make stow
+
+    - name: Check always if any version-controlled files were modified
+      run:  git status
+
+    - name: Show always any diffs of version-controlled files
+      run:  git diff
