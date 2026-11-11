@@ -16,10 +16,11 @@ gcc44_languages=c,c++,java,cil
 # NOTE: Ada is excluded from the language lists because it cannot bootstrap
 
 # Defaults
+DEFAULT_OPTIMIZATION_FLAGS="-O1"
 DEFAULT_PREFIX_ROOT=/opt/stow
 
 # Link-time optimization flag to LD also needs to know which -O flag was used
-OPTIMIZATION_FLAGS="-O2"
+OPTIMIZATION_FLAGS=${OPTIMIZATION_FLAGS:-"$DEFAULT_OPTIMIZATION_FLAGS"}
 CFLAGS="-g $OPTIMIZATION_FLAGS -std=gnu89"
 LDFLAGS="$OPTIMIZATION_FLAGS"
 BUILD_FLAGS="CFLAGS='$CFLAGS'"
