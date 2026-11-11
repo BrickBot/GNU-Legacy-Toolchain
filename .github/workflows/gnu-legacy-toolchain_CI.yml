@@ -167,6 +167,7 @@ jobs:
     name:     Build GCC v3 w/GDB v5 for the RCX on ${{ matrix.os }}
     runs-on:  ${{ matrix.os }}
     strategy:
+      fail-fast:       false
       matrix:
         os: [ ubuntu-latest ]
     

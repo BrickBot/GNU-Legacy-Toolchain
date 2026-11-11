@@ -52,6 +52,7 @@ jobs:
     name:     Test `-O2 ${{ matrix.optimization }}`
     runs-on:  ubuntu-latest
     strategy:
+      fail-fast:       false
       matrix:
         # GNU GCC optimization reference - https://gcc.gnu.org/onlinedocs/gcc/Optimize-Options.html
         optimization:
