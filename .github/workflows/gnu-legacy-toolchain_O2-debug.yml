@@ -48,8 +48,8 @@ defaults:
 
 jobs:
   # For quicker continuous integration feedback, run just the RCX-configured build as a job
-  build_cross_RCX_job:
-    name:     Build GCC v3 w/GDB v5 for the RCX with ${{ matrix.optimization }}
+  build_optimization_test_matrix:
+    name:     Test `-O2 ${{ matrix.optimization }}`
     runs-on:  ubuntu-latest
     strategy:
       matrix:
