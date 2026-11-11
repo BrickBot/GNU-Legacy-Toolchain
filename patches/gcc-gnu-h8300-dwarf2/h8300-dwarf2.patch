@@ -1,0 +1,182 @@
+From 186746591a3724f982c19e7c56a35cace0cdab5c Mon Sep 17 00:00:00 2001
+From: DJ Delorie <dj@redhat.com>
+Date: Wed, 14 Oct 2009 22:30:48 -0400
+Subject: [PATCH] h8300.c (F): New.
+
+Add support for dwarf2 debug info but without changing unwinding.
+* config/h8300/h8300.c (F): New.
+(Fpa): New.
+(h8300_emit_stack_adjustment): Call them.
+(push): Likewise.
+(h8300_push_pop): Likewise.
+(h8300_expand_prologue): Likewise.
+* config/h8300/h8300.h (DWARF2_DEBUGGING_INFO): Define.
+(MUST_USE_SJLJ_EXCEPTIONS): Define.
+(INCOMING_RETURN_ADDR_RTX): Define.
+(INCOMING_FRAME_SP_OFFSET): Define.
+(DWARF_CIE_DATA_ALIGNMENT): Define.
+
+From-SVN: r152795
+---
+ gcc/ChangeLog            | 14 ++++++++++
+ gcc/config/h8300/h8300.c | 60 +++++++++++++++++++++++++++++++---------
+ gcc/config/h8300/h8300.h | 11 ++++++++
+ 3 files changed, 72 insertions(+), 13 deletions(-)
+
+diff --git a/gcc/ChangeLog b/gcc/ChangeLog
+index a186123f8304d..a161100ac55de 100644
+--- a/gcc/ChangeLog
++++ b/gcc/ChangeLog
+@@ -1,3 +1,17 @@
++2009-10-14  DJ Delorie  <dj@redhat.com>
++	
++	* config/h8300/h8300.c (F): New.
++	(Fpa): New.
++	(h8300_emit_stack_adjustment): Call them.
++	(push): Likewise.
++	(h8300_push_pop): Likewise.
++	(h8300_expand_prologue): Likewise.
++	* config/h8300/h8300.h (DWARF2_DEBUGGING_INFO): Define.
++	(MUST_USE_SJLJ_EXCEPTIONS): Define.
++	(INCOMING_RETURN_ADDR_RTX): Define.
++	(INCOMING_FRAME_SP_OFFSET): Define.
++	(DWARF_CIE_DATA_ALIGNMENT): Define.
++
+ 2009-10-14  Jakub Jelinek  <jakub@redhat.com>
+ 
+ 	* stor-layout.c (place_field): Don't emit -Wpadded warnings for
+diff --git a/gcc/config/h8300/h8300.c b/gcc/config/h8300/h8300.c
+index 404595405f378..7bb1e7a6c5c6e 100644
+--- a/gcc/config/h8300/h8300.c
++++ b/gcc/config/h8300/h8300.c
+@@ -507,6 +507,32 @@ byte_reg (rtx x, int b)
+ 	   && call_used_regs[regno]					\
+ 	   && !current_function_is_leaf)))
+ 
++/* We use this to wrap all emitted insns in the prologue.  */
++static rtx
++F (rtx x)
++{
++  RTX_FRAME_RELATED_P (x) = 1;
++  return x;
++}
++
++/* Mark all the subexpressions of the PARALLEL rtx PAR as
++   frame-related.  Return PAR.
++
++   dwarf2out.c:dwarf2out_frame_debug_expr ignores sub-expressions of a
++   PARALLEL rtx other than the first if they do not have the
++   FRAME_RELATED flag set on them.  */
++static rtx
++Fpa (rtx par)
++{
++  int len = XVECLEN (par, 0);
++  int i;
++
++  for (i = 0; i < len; i++)
++    F (XVECEXP (par, 0, i));
++
++  return par;
++}
++
+ /* Output assembly language to FILE for the operation OP with operand size
+    SIZE to adjust the stack pointer.  */
+ 
+@@ -526,22 +552,27 @@ h8300_emit_stack_adjustment (int sign, HOST_WIDE_INT size)
+       && !(cfun->static_chain_decl != NULL && sign < 0))
+     {
+       rtx r3 = gen_rtx_REG (Pmode, 3);
+-      emit_insn (gen_movhi (r3, GEN_INT (sign * size)));
+-      emit_insn (gen_addhi3 (stack_pointer_rtx,
+-			     stack_pointer_rtx, r3));
++      F (emit_insn (gen_movhi (r3, GEN_INT (sign * size))));
++      F (emit_insn (gen_addhi3 (stack_pointer_rtx,
++				stack_pointer_rtx, r3)));
+     }
+   else
+     {
+       /* The stack adjustment made here is further optimized by the
+ 	 splitter.  In case of H8/300, the splitter always splits the
+-	 addition emitted here to make the adjustment
+-	 interrupt-safe.  */
++	 addition emitted here to make the adjustment interrupt-safe.
++	 FIXME: We don't always tag those, because we don't know what
++	 the splitter will do.  */
+       if (Pmode == HImode)
+-	emit_insn (gen_addhi3 (stack_pointer_rtx,
+-			       stack_pointer_rtx, GEN_INT (sign * size)));
++	{
++	  rtx x = emit_insn (gen_addhi3 (stack_pointer_rtx,
++					 stack_pointer_rtx, GEN_INT (sign * size)));
++	  if (size < 4)
++	    F (x);
++	}
+       else
+-	emit_insn (gen_addsi3 (stack_pointer_rtx,
+-			       stack_pointer_rtx, GEN_INT (sign * size)));
++	F (emit_insn (gen_addsi3 (stack_pointer_rtx,
++				  stack_pointer_rtx, GEN_INT (sign * size))));
+     }
+ }
+ 
+@@ -591,7 +622,7 @@ push (int rn)
+     x = gen_push_h8300hs_advanced (reg);
+   else
+     x = gen_push_h8300hs_normal (reg);
+-  x = emit_insn (x);
++  x = F (emit_insn (x));
+   REG_NOTES (x) = gen_rtx_EXPR_LIST (REG_INC, stack_pointer_rtx, 0);
+ }
+ 
+@@ -634,7 +665,7 @@ h8300_push_pop (int regno, int nregs, int pop_p, int return_p)
+ {
+   int i, j;
+   rtvec vec;
+-  rtx sp, offset;
++  rtx sp, offset, x;
+ 
+   /* See whether we can use a simple push or pop.  */
+   if (!return_p && nregs == 1)
+@@ -685,7 +716,10 @@ h8300_push_pop (int regno, int nregs, int pop_p, int return_p)
+   RTVEC_ELT (vec, i + j) = gen_rtx_SET (VOIDmode, sp,
+ 					gen_rtx_PLUS (Pmode, sp, offset));
+ 
+-  emit_insn (gen_rtx_PARALLEL (VOIDmode, vec));
++  x = gen_rtx_PARALLEL (VOIDmode, vec);
++  if (!pop_p)
++    x = Fpa (x);
++  emit_insn (x);
+ }
+ 
+ /* Return true if X has the value sp + OFFSET.  */
+@@ -820,7 +854,7 @@ h8300_expand_prologue (void)
+     {
+       /* Push fp.  */
+       push (HARD_FRAME_POINTER_REGNUM);
+-      emit_move_insn (hard_frame_pointer_rtx, stack_pointer_rtx);
++      F (emit_move_insn (hard_frame_pointer_rtx, stack_pointer_rtx));
+     }
+ 
+   /* Push the rest of the registers in ascending order.  */
+diff --git a/gcc/config/h8300/h8300.h b/gcc/config/h8300/h8300.h
+index e0f0ea62f4e7a..9757afc2de3c4 100644
+--- a/gcc/config/h8300/h8300.h
++++ b/gcc/config/h8300/h8300.h
+@@ -147,6 +147,17 @@ extern const char * const *h8_reg_names;
+ /* Show we can debug even without a frame pointer.  */
+ /* #define CAN_DEBUG_WITHOUT_FP */
+ 
++/* We want dwarf2 info available to gdb...  */
++#define DWARF2_DEBUGGING_INFO        1
++/* ... but we don't actually support full dwarf2 Exception Handling.  */
++#define MUST_USE_SJLJ_EXCEPTIONS 1
++
++/* The return address is pushed on the stack.  */
++#define INCOMING_RETURN_ADDR_RTX   gen_rtx_MEM (Pmode, gen_rtx_REG (Pmode, STACK_POINTER_REGNUM))
++#define INCOMING_FRAME_SP_OFFSET   (POINTER_SIZE / 8)
++
++#define DWARF_CIE_DATA_ALIGNMENT	2
++
+ /* Define this if addresses of constant functions
+    shouldn't be put through pseudo regs where they can be cse'd.
+    Desirable on machines where ordinary constants are expensive

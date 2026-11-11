@@ -73,6 +73,24 @@ with new additions noted based on the [changelog](https://salsa.debian.org/debia
 
 GCC Multi-Version (3.4.6 and 4.4.7)
 -----------------------------------
+### Modernization Compatibility Patches
+* ✔ [Convert `struct ucontext` to `ucontext_t`](https://github.com/BrickBot/GNU-Legacy-Toolchain/issues/8) and `struct siginfo` to `siginfo_t`
+  + Changes in more recent releases:
+    - `struct ucontext` has been replaced by `ucontext_t`
+    - `struct siginfo`  has been replaced by `siginfo_t`
+  + Both GCC 3.4.6 and 4.4.7 need to be updated accordingly in order to build for impacted targeted systems (e.g. not needed for targeting h8300-hitachi-coff but is needed for running on x86-64).
+  + Patches
+    - [More comprehensive patch](https://patchwork.ozlabs.org/project/gcc/patch/alpine.DEB.2.20.1706271356170.15648@digraph.polyomino.org.uk/#1713139)
+      * [Later patch discussion](https://gcc.gnu.org/pipermail/gcc-patches/2025-February/676093.html)
+    - [Basic patch for x86-64 PCs](https://github.com/hebisch/gpc/blob/master/p/diffs/ucontext.diff)
+      * c.f. [GPC ReadMe](https://github.com/hebisch/gpc)
+
+| Applied to GCC 3.4.6? | Applied to GCC 4.4.7? | Change |
+| --------------------- | --------------------- | ---------------------------------- |
+|  ✔                   |  ✔                   | `struct siginfo` to `siginfo_t`   |
+|  ✔                   |  ✔                   | `struct ucontext` to `ucontext_t` |
+
+
 ### GCC No Build Info Patch
 This patch was posted to the GCC mailing list on February 10, 2024, by Christophe Lyon
 ([link](https://gcc.gnu.org/pipermail/gcc-cvs/2024-February/398609.html)),
@@ -84,10 +102,47 @@ with info files installed by newer GCC versions.
 
 If desired, these info files may still be installed as a separate step via `make install-info`.
 
-| Applied? | Patch File Name         |
-| -------- | ----------------------- |
-|  ✔      | gcc-no-build-info.patch |
+| Applied to GCC 3.4.6? | Applied to GCC 4.4.7? | Patch File Name         |
+| --------------------- | --------------------- | ----------------------- |
+|  ✔                   |  ✔                   | gcc-no-build-info.patch |
 
+
+### GNU DWARF2 Debugging Format Support for H8/300 (Backport)
+While GCC 3.4.6 provides some support for the DWARF2 debugging format, such support was not implemented for all platforms (including the Hitachi H8/300).
+This patch dated Wednesday, October 14, 2009, adds DWARF2 debug info support for the Hitachi H8/300 but _without_ changing unwinding
+or supporting full Dwarf2 exception handling (`MUST_USE_SJLJ_EXCEPTIONS`).
+
+This patch was first included in the GCC 4.5 series (which is the one immediately _after_ the last series to support COFF—GCC 4.4).  Compare:
+* https://github.com/gcc-mirror/gcc/blob/releases/gcc-4.4/gcc/config/h8300/h8300.h
+* https://github.com/gcc-mirror/gcc/blob/releases/gcc-4.5/gcc/config/h8300/h8300.h
+
+A discussion thread related to this patch notes an edge case for the H8/300 that would need further attention but that should not impact the H and S models.
+In particular, this pertains to split handling of “insns” that are marked frame-related.
+> I [_the patch author_] chose to just not always tag that to-be-split insn, because
+it's difficult to determine in advance what the splitter will do.
+The only way I got that code to trigger was to define an interrupt
+function anyway, which one normally wouldn't debug with gdb.
+
+> It would appear that split_adds_subs doesn't optimize one 
+case -- the J constraint where you modify the top 8-bits of the 
+register.
+
+…following which there is a back-and-forth discussion of what might be interrupt safe and which concluded with the following:
+> All this for some debugging support.  At this point, I think I'd
+rather FIXME that line and go with everything else; that gives full
+debugging for H and S families, without messing with the H8/300 logic.
+
+The “FIXME” approach is what was implemented, and that “FIXME” persists to at least the time of this writing:
+* [GNU GCC Thread Start](https://gcc.gnu.org/pipermail/gcc-patches/2009-October/272116.html)
+* Commit 1867465 (ID 186746591a3724f982c19e7c56a35cace0cdab5c)
+  + [On GNU Git](https://gcc.gnu.org/git/?p=gcc.git;a=commitdiff;h=186746591a3724f982c19e7c56a35cace0cdab5c)
+  + [On GitHub Mirror](https://github.com/gcc-mirror/gcc/commit/186746591a3724f982c19e7c56a35cace0cdab5c)
+  + [As a patch via GitHub](https://github.com/gcc-mirror/gcc/commit/186746591a3724f982c19e7c56a35cace0cdab5c.patch)
+* [The “FIXME” still lingering as of at least GCC 16.2.0](https://github.com/gcc-mirror/gcc/blob/releases/gcc-16.2.0/gcc/config/h8300/h8300.cc)
+
+| Applied to GCC 3.4.6? | Applied to GCC 4.4.7? | Patch File Name    |
+| --------------------- | --------------------- | -------------------|
+|                       |  ✔                   | h8300-dwarf2.patch |
 
 
 GCC 3.4.6
@@ -100,16 +155,6 @@ Subsequent to the final release of GCC 3 ([v3.4.6 on March 6, 2006](https://gcc.
 | -------- | --------------- | ----- |
 |  ❌      | ~~m32r~~        | Three patches—all released later in 2006—pertain to m32r support but are superseded by more comprehensive patches from Debian (c.f. the Debian patch section). |
 |  ❌      | ~~bison~~       | The fourth patch—from 2009—provides a fix for compatibility with bison 2.4.1.  Superseded by the more recent pair of Bison patches from the Red Hat compatibility patches and Debian patches. |
-
-### Modernization Compatibility Patches
-* ✔ [Convert `struct ucontext` to `ucontext_t`](https://github.com/BrickBot/GNU-Legacy-Toolchain/issues/8)
-  + `struct ucontext` has been replaced by `ucontext_t` in more recent releases.
-  + GCC 3.4.6 needs to be updated accordingly in order to build for impacted targeted systems (e.g. not needed for targeting h8300-hitachi-coff but is needed for targeting x86-64).
-  + Patches
-    - [More comprehensive patch](https://patchwork.ozlabs.org/project/gcc/patch/alpine.DEB.2.20.1706271356170.15648@digraph.polyomino.org.uk/#1713139)
-      * [Later patch discussion](https://gcc.gnu.org/pipermail/gcc-patches/2025-February/676093.html)
-    - [Basic patch for x86-64 PCs](https://github.com/hebisch/gpc/blob/master/p/diffs/ucontext.diff)
-      * c.f. [GPC ReadMe](https://github.com/hebisch/gpc)
 
 
 ### Red Hat

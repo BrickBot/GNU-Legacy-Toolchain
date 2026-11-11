@@ -1,3 +1,24 @@
+2026-11-11  Matthew Sheets  <https://github.com/BrickBot/GNU-Legacy-Toolchain>
+
+	* Backport of the following patch adding DWARF2 support for the h8300,
+	  which was first included in GCC 4.5.  References:
+	  - https://gcc.gnu.org/pipermail/gcc-patches/2009-October/272116.html
+	  - https://gcc.gnu.org/git/?p=gcc.git;a=commitdiff;h=186746591a3724f982c19e7c56a35cace0cdab5c
+
+	2009-10-14  DJ Delorie  <dj@redhat.com>
+	
+	* config/h8300/h8300.c (F): New.
+	(Fpa): New.
+	(h8300_emit_stack_adjustment): Call them.
+	(push): Likewise.
+	(h8300_push_pop): Likewise.
+	(h8300_expand_prologue): Likewise.
+	* config/h8300/h8300.h (DWARF2_DEBUGGING_INFO): Define.
+	(MUST_USE_SJLJ_EXCEPTIONS): Define.
+	(INCOMING_RETURN_ADDR_RTX): Define.
+	(INCOMING_FRAME_SP_OFFSET): Define.
+	(DWARF_CIE_DATA_ALIGNMENT): Define.
+
 2026-07-23  Matthew Sheets  <https://github.com/BrickBot/GNU-Legacy-Toolchain>
 
 	* Fix Make dependencies to enable parallel jobs
