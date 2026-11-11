@@ -9,14 +9,22 @@
 # For an explanation of --without-headers and --with-newlib options:
 #   https://narkive.com/1CvFT6MZ
 
-# Constants
+# ========= #
+# Constants #
+# ========= #
+
 ALL_TOOLCHAIN_SETS="gdb5 binutils216 gcc3 gcc44"
 gcc3_languages=c,c++,f77,java,objc,treelang,pascal
 gcc44_languages=c,c++,java,cil
 # NOTE: Ada is excluded from the language lists because it cannot bootstrap
 
-# Defaults
-DEFAULT_OPTIMIZATION_FLAGS="-O1"
+
+# ======== #
+# Defaults #
+# ======== #
+
+# Need to include `-fno-tree-pre` due to bug in GCC 15
+DEFAULT_OPTIMIZATION_FLAGS="-O2 -fno-tree-pre"
 DEFAULT_PREFIX_ROOT=/opt/stow
 
 # Link-time optimization flag to LD also needs to know which -O flag was used
