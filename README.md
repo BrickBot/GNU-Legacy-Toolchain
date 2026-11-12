@@ -183,7 +183,7 @@ Due to various and sundry changes that have occurred over time, those
 files might no longer regenrate correctly with the latest tool versions.
 
 In GPC:
-* configure.in > acconfig.h > (rts/configure and rts/rts-config.in)
+* rts/configure.in > rts/acconfig.h > (rts/configure and rts/rts-config.in)
 
 
 ### Related Projects or Efforts
