@@ -11072,8 +11072,6 @@ char shl_load ();
     something starting with __ and the normal name is an alias.  */
 #if defined (__stub_shl_load) || defined (__stub___shl_load)
 choke me
-#else
-char (*f) () = shl_load;
 #endif
 #ifdef __cplusplus
 }
@@ -11082,7 +11080,7 @@ char (*f) () = shl_load;
 int
 main ()
 {
-return f != shl_load;
+return shl_load ();
   ;
   return 0;
 }
@@ -11242,8 +11240,6 @@ char dlopen ();
     something starting with __ and the normal name is an alias.  */
 #if defined (__stub_dlopen) || defined (__stub___dlopen)
 choke me
-#else
-char (*f) () = dlopen;
 #endif
 #ifdef __cplusplus
 }
@@ -11252,7 +11248,7 @@ char (*f) () = dlopen;
 int
 main ()
 {
-return f != dlopen;
+return dlopen ();
   ;
   return 0;
 }
@@ -18484,8 +18480,6 @@ char $ac_func ();
     something starting with __ and the normal name is an alias.  */
 #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
 choke me
-#else
-char (*f) () = $ac_func;
 #endif
 #ifdef __cplusplus
 }
@@ -18494,7 +18488,7 @@ char (*f) () = $ac_func;
 int
 main ()
 {
-return f != $ac_func;
+return $ac_func ();
   ;
   return 0;
 }
@@ -21393,8 +21387,6 @@ char gethostbyname ();
     something starting with __ and the normal name is an alias.  */
 #if defined (__stub_gethostbyname) || defined (__stub___gethostbyname)
 choke me
-#else
-char (*f) () = gethostbyname;
 #endif
 #ifdef __cplusplus
 }
@@ -21403,7 +21395,7 @@ char (*f) () = gethostbyname;
 int
 main ()
 {
-return f != gethostbyname;
+return gethostbyname ();
   ;
   return 0;
 }
@@ -21647,8 +21639,6 @@ char connect ();
     something starting with __ and the normal name is an alias.  */
 #if defined (__stub_connect) || defined (__stub___connect)
 choke me
-#else
-char (*f) () = connect;
 #endif
 #ifdef __cplusplus
 }
@@ -21657,7 +21647,7 @@ char (*f) () = connect;
 int
 main ()
 {
-return f != connect;
+return connect ();
   ;
   return 0;
 }
@@ -21820,8 +21810,6 @@ char remove ();
     something starting with __ and the normal name is an alias.  */
 #if defined (__stub_remove) || defined (__stub___remove)
 choke me
-#else
-char (*f) () = remove;
 #endif
 #ifdef __cplusplus
 }
@@ -21830,7 +21818,7 @@ char (*f) () = remove;
 int
 main ()
 {
-return f != remove;
+return remove ();
   ;
   return 0;
 }
@@ -21993,8 +21981,6 @@ char shmat ();
     something starting with __ and the normal name is an alias.  */
 #if defined (__stub_shmat) || defined (__stub___shmat)
 choke me
-#else
-char (*f) () = shmat;
 #endif
 #ifdef __cplusplus
 }
@@ -22003,7 +21989,7 @@ char (*f) () = shmat;
 int
 main ()
 {
-return f != shmat;
+return shmat ();
   ;
   return 0;
 }
@@ -30099,8 +30085,6 @@ char $ac_func ();
     something starting with __ and the normal name is an alias.  */
 #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
 choke me
-#else
-char (*f) () = $ac_func;
 #endif
 #ifdef __cplusplus
 }
@@ -30109,7 +30093,7 @@ char (*f) () = $ac_func;
 int
 main ()
 {
-return f != $ac_func;
+return $ac_func ();
   ;
   return 0;
 }

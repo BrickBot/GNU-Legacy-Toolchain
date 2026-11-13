@@ -9952,8 +9952,6 @@ char shl_load ();
     something starting with __ and the normal name is an alias.  */
 #if defined (__stub_shl_load) || defined (__stub___shl_load)
 choke me
-#else
-char (*f) () = shl_load;
 #endif
 #ifdef __cplusplus
 }
@@ -9962,7 +9960,7 @@ char (*f) () = shl_load;
 int
 main ()
 {
-return f != shl_load;
+return shl_load ();
   ;
   return 0;
 }
@@ -10112,8 +10110,6 @@ char dlopen ();
     something starting with __ and the normal name is an alias.  */
 #if defined (__stub_dlopen) || defined (__stub___dlopen)
 choke me
-#else
-char (*f) () = dlopen;
 #endif
 #ifdef __cplusplus
 }
@@ -10122,7 +10118,7 @@ char (*f) () = dlopen;
 int
 main ()
 {
-return f != dlopen;
+return dlopen ();
   ;
   return 0;
 }
@@ -17451,8 +17447,6 @@ char $ac_func ();
     something starting with __ and the normal name is an alias.  */
 #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
 choke me
-#else
-char (*f) () = $ac_func;
 #endif
 #ifdef __cplusplus
 }
@@ -17461,7 +17455,7 @@ char (*f) () = $ac_func;
 int
 main ()
 {
-return f != $ac_func;
+return $ac_func ();
   ;
   return 0;
 }
