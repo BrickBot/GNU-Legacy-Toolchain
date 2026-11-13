@@ -1,3 +1,14 @@
+2026-11-13  Matthew Sheets  <https://github.com/BrickBot/GNU-Legacy-Toolchain>
+
+	* Backport of the following patch needed to enable link-time optimization.
+	  Reference for original patch:
+	  - https://github.com/gcc-mirror/gcc/commit/0e0f02ff9237738aabcb7466953d62641b9ab1d5
+
+	2010-10-26  Ralf Wildenhues  <Ralf.Wildenhues@gmx.de>
+
+	* aclocal.m4 (AC_LANG_FUNC_LINK_TRY(C)): Delete.
+	* configure: Regenerate.
+
 2025-07-04  Matthew Sheets  <https://github.com/BrickBot/GNU-Legacy-Toolchain>
 
 	* Facilitate optionally skipping the end-user install of libiberty.a

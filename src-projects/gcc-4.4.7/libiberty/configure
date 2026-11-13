@@ -5559,17 +5559,23 @@ _ACEOF
 cat confdefs.h >>conftest.$ac_ext
 cat >>conftest.$ac_ext <<_ACEOF
 /* end confdefs.h.  */
+/* Define $ac_func to an innocuous variant, in case <limits.h> declares $ac_func.
+   For example, HP-UX 11i <limits.h> declares gettimeofday.  */
+#define $ac_func innocuous_$ac_func
+
 /* System header to define __stub macros and hopefully few prototypes,
     which can conflict with char $ac_func (); below.
     Prefer <limits.h> to <assert.h> if __STDC__ is defined, since
-    <limits.h> exists even on freestanding compilers.  Under hpux,
-    including <limits.h> includes <sys/time.h> and causes problems
-    checking for functions defined therein.  */
-#if defined (__STDC__) && !defined (_HPUX_SOURCE)
+    <limits.h> exists even on freestanding compilers.  */
+
+#ifdef __STDC__
 # include <limits.h>
 #else
 # include <assert.h>
 #endif
+
+#undef $ac_func
+
 /* Override any gcc2 internal prototype to avoid an error.  */
 #ifdef __cplusplus
 extern "C"
@@ -5583,8 +5589,6 @@ char $ac_func ();
     something starting with __ and the normal name is an alias.  */
 #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
 choke me
-#else
-char (*f) () = $ac_func;
 #endif
 #ifdef __cplusplus
 }
@@ -5593,7 +5597,7 @@ char (*f) () = $ac_func;
 int
 main ()
 {
-return f != $ac_func;
+return $ac_func ();
   ;
   return 0;
 }
@@ -6754,17 +6758,23 @@ _ACEOF
 cat confdefs.h >>conftest.$ac_ext
 cat >>conftest.$ac_ext <<_ACEOF
 /* end confdefs.h.  */
+/* Define $ac_func to an innocuous variant, in case <limits.h> declares $ac_func.
+   For example, HP-UX 11i <limits.h> declares gettimeofday.  */
+#define $ac_func innocuous_$ac_func
+
 /* System header to define __stub macros and hopefully few prototypes,
     which can conflict with char $ac_func (); below.
     Prefer <limits.h> to <assert.h> if __STDC__ is defined, since
-    <limits.h> exists even on freestanding compilers.  Under hpux,
-    including <limits.h> includes <sys/time.h> and causes problems
-    checking for functions defined therein.  */
-#if defined (__STDC__) && !defined (_HPUX_SOURCE)
+    <limits.h> exists even on freestanding compilers.  */
+
+#ifdef __STDC__
 # include <limits.h>
 #else
 # include <assert.h>
 #endif
+
+#undef $ac_func
+
 /* Override any gcc2 internal prototype to avoid an error.  */
 #ifdef __cplusplus
 extern "C"
@@ -6778,8 +6788,6 @@ char $ac_func ();
     something starting with __ and the normal name is an alias.  */
 #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
 choke me
-#else
-char (*f) () = $ac_func;
 #endif
 #ifdef __cplusplus
 }
@@ -6788,7 +6796,7 @@ char (*f) () = $ac_func;
 int
 main ()
 {
-return f != $ac_func;
+return $ac_func ();
   ;
   return 0;
 }
@@ -6893,17 +6901,23 @@ _ACEOF
 cat confdefs.h >>conftest.$ac_ext
 cat >>conftest.$ac_ext <<_ACEOF
 /* end confdefs.h.  */
+/* Define $ac_func to an innocuous variant, in case <limits.h> declares $ac_func.
+   For example, HP-UX 11i <limits.h> declares gettimeofday.  */
+#define $ac_func innocuous_$ac_func
+
 /* System header to define __stub macros and hopefully few prototypes,
     which can conflict with char $ac_func (); below.
     Prefer <limits.h> to <assert.h> if __STDC__ is defined, since
-    <limits.h> exists even on freestanding compilers.  Under hpux,
-    including <limits.h> includes <sys/time.h> and causes problems
-    checking for functions defined therein.  */
-#if defined (__STDC__) && !defined (_HPUX_SOURCE)
+    <limits.h> exists even on freestanding compilers.  */
+
+#ifdef __STDC__
 # include <limits.h>
 #else
 # include <assert.h>
 #endif
+
+#undef $ac_func
+
 /* Override any gcc2 internal prototype to avoid an error.  */
 #ifdef __cplusplus
 extern "C"
@@ -6917,8 +6931,6 @@ char $ac_func ();
     something starting with __ and the normal name is an alias.  */
 #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
 choke me
-#else
-char (*f) () = $ac_func;
 #endif
 #ifdef __cplusplus
 }
@@ -6927,7 +6939,7 @@ char (*f) () = $ac_func;
 int
 main ()
 {
-return f != $ac_func;
+return $ac_func ();
   ;
   return 0;
 }
@@ -7115,17 +7127,23 @@ _ACEOF
 cat confdefs.h >>conftest.$ac_ext
 cat >>conftest.$ac_ext <<_ACEOF
 /* end confdefs.h.  */
+/* Define $ac_func to an innocuous variant, in case <limits.h> declares $ac_func.
+   For example, HP-UX 11i <limits.h> declares gettimeofday.  */
+#define $ac_func innocuous_$ac_func
+
 /* System header to define __stub macros and hopefully few prototypes,
     which can conflict with char $ac_func (); below.
     Prefer <limits.h> to <assert.h> if __STDC__ is defined, since
-    <limits.h> exists even on freestanding compilers.  Under hpux,
-    including <limits.h> includes <sys/time.h> and causes problems
-    checking for functions defined therein.  */
-#if defined (__STDC__) && !defined (_HPUX_SOURCE)
+    <limits.h> exists even on freestanding compilers.  */
+
+#ifdef __STDC__
 # include <limits.h>
 #else
 # include <assert.h>
 #endif
+
+#undef $ac_func
+
 /* Override any gcc2 internal prototype to avoid an error.  */
 #ifdef __cplusplus
 extern "C"
@@ -7139,8 +7157,6 @@ char $ac_func ();
     something starting with __ and the normal name is an alias.  */
 #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
 choke me
-#else
-char (*f) () = $ac_func;
 #endif
 #ifdef __cplusplus
 }
@@ -7149,7 +7165,7 @@ char (*f) () = $ac_func;
 int
 main ()
 {
-return f != $ac_func;
+return $ac_func ();
   ;
   return 0;
 }
@@ -7461,17 +7477,23 @@ _ACEOF
 cat confdefs.h >>conftest.$ac_ext
 cat >>conftest.$ac_ext <<_ACEOF
 /* end confdefs.h.  */
+/* Define $ac_func to an innocuous variant, in case <limits.h> declares $ac_func.
+   For example, HP-UX 11i <limits.h> declares gettimeofday.  */
+#define $ac_func innocuous_$ac_func
+
 /* System header to define __stub macros and hopefully few prototypes,
     which can conflict with char $ac_func (); below.
     Prefer <limits.h> to <assert.h> if __STDC__ is defined, since
-    <limits.h> exists even on freestanding compilers.  Under hpux,
-    including <limits.h> includes <sys/time.h> and causes problems
-    checking for functions defined therein.  */
-#if defined (__STDC__) && !defined (_HPUX_SOURCE)
+    <limits.h> exists even on freestanding compilers.  */
+
+#ifdef __STDC__
 # include <limits.h>
 #else
 # include <assert.h>
 #endif
+
+#undef $ac_func
+
 /* Override any gcc2 internal prototype to avoid an error.  */
 #ifdef __cplusplus
 extern "C"
@@ -7485,8 +7507,6 @@ char $ac_func ();
     something starting with __ and the normal name is an alias.  */
 #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
 choke me
-#else
-char (*f) () = $ac_func;
 #endif
 #ifdef __cplusplus
 }
@@ -7495,7 +7515,7 @@ char (*f) () = $ac_func;
 int
 main ()
 {
-return f != $ac_func;
+return $ac_func ();
   ;
   return 0;
 }
@@ -7573,17 +7593,23 @@ _ACEOF
 cat confdefs.h >>conftest.$ac_ext
 cat >>conftest.$ac_ext <<_ACEOF
 /* end confdefs.h.  */
+/* Define $ac_func to an innocuous variant, in case <limits.h> declares $ac_func.
+   For example, HP-UX 11i <limits.h> declares gettimeofday.  */
+#define $ac_func innocuous_$ac_func
+
 /* System header to define __stub macros and hopefully few prototypes,
     which can conflict with char $ac_func (); below.
     Prefer <limits.h> to <assert.h> if __STDC__ is defined, since
-    <limits.h> exists even on freestanding compilers.  Under hpux,
-    including <limits.h> includes <sys/time.h> and causes problems
-    checking for functions defined therein.  */
-#if defined (__STDC__) && !defined (_HPUX_SOURCE)
+    <limits.h> exists even on freestanding compilers.  */
+
+#ifdef __STDC__
 # include <limits.h>
 #else
 # include <assert.h>
 #endif
+
+#undef $ac_func
+
 /* Override any gcc2 internal prototype to avoid an error.  */
 #ifdef __cplusplus
 extern "C"
@@ -7597,8 +7623,6 @@ char $ac_func ();
     something starting with __ and the normal name is an alias.  */
 #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
 choke me
-#else
-char (*f) () = $ac_func;
 #endif
 #ifdef __cplusplus
 }
@@ -7607,7 +7631,7 @@ char (*f) () = $ac_func;
 int
 main ()
 {
-return f != $ac_func;
+return $ac_func ();
   ;
   return 0;
 }
@@ -7806,17 +7830,23 @@ _ACEOF
 cat confdefs.h >>conftest.$ac_ext
 cat >>conftest.$ac_ext <<_ACEOF
 /* end confdefs.h.  */
+/* Define $ac_func to an innocuous variant, in case <limits.h> declares $ac_func.
+   For example, HP-UX 11i <limits.h> declares gettimeofday.  */
+#define $ac_func innocuous_$ac_func
+
 /* System header to define __stub macros and hopefully few prototypes,
     which can conflict with char $ac_func (); below.
     Prefer <limits.h> to <assert.h> if __STDC__ is defined, since
-    <limits.h> exists even on freestanding compilers.  Under hpux,
-    including <limits.h> includes <sys/time.h> and causes problems
-    checking for functions defined therein.  */
-#if defined (__STDC__) && !defined (_HPUX_SOURCE)
+    <limits.h> exists even on freestanding compilers.  */
+
+#ifdef __STDC__
 # include <limits.h>
 #else
 # include <assert.h>
 #endif
+
+#undef $ac_func
+
 /* Override any gcc2 internal prototype to avoid an error.  */
 #ifdef __cplusplus
 extern "C"
@@ -7830,8 +7860,6 @@ char $ac_func ();
     something starting with __ and the normal name is an alias.  */
 #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
 choke me
-#else
-char (*f) () = $ac_func;
 #endif
 #ifdef __cplusplus
 }
@@ -7840,7 +7868,7 @@ char (*f) () = $ac_func;
 int
 main ()
 {
-return f != $ac_func;
+return $ac_func ();
   ;
   return 0;
 }
@@ -8972,17 +9000,23 @@ _ACEOF
 cat confdefs.h >>conftest.$ac_ext
 cat >>conftest.$ac_ext <<_ACEOF
 /* end confdefs.h.  */
+/* Define $ac_func to an innocuous variant, in case <limits.h> declares $ac_func.
+   For example, HP-UX 11i <limits.h> declares gettimeofday.  */
+#define $ac_func innocuous_$ac_func
+
 /* System header to define __stub macros and hopefully few prototypes,
     which can conflict with char $ac_func (); below.
     Prefer <limits.h> to <assert.h> if __STDC__ is defined, since
-    <limits.h> exists even on freestanding compilers.  Under hpux,
-    including <limits.h> includes <sys/time.h> and causes problems
-    checking for functions defined therein.  */
-#if defined (__STDC__) && !defined (_HPUX_SOURCE)
+    <limits.h> exists even on freestanding compilers.  */
+
+#ifdef __STDC__
 # include <limits.h>
 #else
 # include <assert.h>
 #endif
+
+#undef $ac_func
+
 /* Override any gcc2 internal prototype to avoid an error.  */
 #ifdef __cplusplus
 extern "C"
@@ -8996,8 +9030,6 @@ char $ac_func ();
     something starting with __ and the normal name is an alias.  */
 #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
 choke me
-#else
-char (*f) () = $ac_func;
 #endif
 #ifdef __cplusplus
 }
@@ -9006,7 +9038,7 @@ char (*f) () = $ac_func;
 int
 main ()
 {
-return f != $ac_func;
+return $ac_func ();
   ;
   return 0;
 }

@@ -6867,7 +6867,7 @@ char (*f) () = $ac_func;
 int
 main ()
 {
-return f != $ac_func;
+return $ac_func ();
   ;
   return 0;
 }
@@ -7586,7 +7586,7 @@ char (*f) () = $ac_func;
 int
 main ()
 {
-return f != $ac_func;
+return $ac_func ();
   ;
   return 0;
 }
@@ -9284,8 +9284,6 @@ char __cxa_atexit ();
     something starting with __ and the normal name is an alias.  */
 #if defined (__stub___cxa_atexit) || defined (__stub_____cxa_atexit)
 choke me
-#else
-char (*f) () = __cxa_atexit;
 #endif
 #ifdef __cplusplus
 }
@@ -9294,7 +9292,7 @@ char (*f) () = __cxa_atexit;
 int
 main ()
 {
-return f != __cxa_atexit;
+return __cxa_atexit ();
   ;
   return 0;
 }
