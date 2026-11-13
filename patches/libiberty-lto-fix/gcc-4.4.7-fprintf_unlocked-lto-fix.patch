@@ -1,0 +1,140 @@
+Subject: gcc: fix AC_CHECK_FUNCS link test so it is not folded away by -flto
+
+Autoconf's AC_CHECK_FUNCS test compares a global function pointer to
+the function itself ("return f != FUNC;").  Under -flto that comparison
+is constant-folded and the reference to FUNC is dropped, so the test
+passes even when the function is absent.  For fprintf_unlocked, which
+glibc lacks, this defines HAVE_FPRINTF_UNLOCKED; system.h then maps
+fprintf to fprintf_unlocked and host tools such as gen-protos fail to
+link.  Override AC_LANG_FUNC_LINK_TRY(C) in aclocal.m4 to call the
+function, as later Autoconf releases do, and update the generated tests
+in configure to match.
+---
+--- a/gcc/configure
++++ b/gcc/configure
+@@ -10200,8 +10200,6 @@
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -10210,7 +10208,7 @@
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -10681,8 +10679,6 @@
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_mmap) || defined (__stub___mmap)
+ choke me
+-#else
+-char (*f) () = mmap;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -10691,7 +10687,7 @@
+ int
+ main ()
+ {
+-return f != mmap;
++return mmap ();
+   ;
+   return 0;
+ }
+@@ -11071,8 +11067,6 @@
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -11081,7 +11075,7 @@
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -13452,8 +13446,6 @@
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub___cxa_atexit) || defined (__stub_____cxa_atexit)
+ choke me
+-#else
+-char (*f) () = __cxa_atexit;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -13462,7 +13454,7 @@
+ int
+ main ()
+ {
+-return f != __cxa_atexit;
++return __cxa_atexit ();
+   ;
+   return 0;
+ }
+@@ -19856,8 +19848,6 @@
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_shl_load) || defined (__stub___shl_load)
+ choke me
+-#else
+-char (*f) () = shl_load;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -19866,7 +19856,7 @@
+ int
+ main ()
+ {
+-return f != shl_load;
++return shl_load ();
+   ;
+   return 0;
+ }
+@@ -20016,8 +20006,6 @@
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_dlopen) || defined (__stub___dlopen)
+ choke me
+-#else
+-char (*f) () = dlopen;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -20026,7 +20014,7 @@
+ int
+ main ()
+ {
+-return f != dlopen;
++return dlopen ();
+   ;
+   return 0;
+ }
+@@ -24529,8 +24517,6 @@
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub___stack_chk_fail) || defined (__stub_____stack_chk_fail)
+ choke me
+-#else
+-char (*f) () = __stack_chk_fail;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -24539,7 +24525,7 @@
+ int
+ main ()
+ {
+-return f != __stack_chk_fail;
++return __stack_chk_fail ();
+   ;
+   return 0;
+ }

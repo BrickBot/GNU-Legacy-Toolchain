@@ -8,12 +8,21 @@ glibc lacks, this defines HAVE_FPRINTF_UNLOCKED; system.h then maps
 fprintf to fprintf_unlocked and host tools such as gen-protos fail to
 link.  Override AC_LANG_FUNC_LINK_TRY(C) in aclocal.m4 to call the
 function, as later Autoconf releases do, and update the generated tests
-in configure to match.
+in configure to match, for gcc and libstdc++-v3.
 ---
 diff --git a/gcc/configure b/gcc/configure
 --- a/gcc/configure
 +++ b/gcc/configure
-@@ -6867,7 +6867,7 @@ char (*f) () = $ac_func;
+@@ -6857,8 +6857,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -6867,7 +6865,7 @@ char (*f) () = $ac_func;
  int
  main ()
  {
@@ -22,7 +31,16 @@ diff --git a/gcc/configure b/gcc/configure
    ;
    return 0;
  }
-@@ -7586,7 +7586,7 @@ char (*f) () = $ac_func;
+@@ -7576,8 +7574,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -7586,7 +7582,7 @@ char (*f) () = $ac_func;
  int
  main ()
  {
@@ -31,7 +49,7 @@ diff --git a/gcc/configure b/gcc/configure
    ;
    return 0;
  }
-@@ -9284,8 +9284,6 @@ char __cxa_atexit ();
+@@ -9284,8 +9280,6 @@ char __cxa_atexit ();
      something starting with __ and the normal name is an alias.  */
  #if defined (__stub___cxa_atexit) || defined (__stub_____cxa_atexit)
  choke me
@@ -40,12 +58,6531 @@ diff --git a/gcc/configure b/gcc/configure
  #endif
  #ifdef __cplusplus
  }
-@@ -9294,7 +9292,7 @@ char (*f) () = __cxa_atexit;
+@@ -9294,7 +9288,7 @@ char (*f) () = __cxa_atexit;
  int
  main ()
  {
 -return f != __cxa_atexit;
 +return __cxa_atexit ();
+   ;
+   return 0;
+ }
+diff --git a/libstdc++-v3/configure b/libstdc++-v3/configure
+--- a/libstdc++-v3/configure
++++ b/libstdc++-v3/configure
+@@ -8465,8 +8465,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -8475,7 +8473,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -8652,8 +8650,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -8662,7 +8658,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -8842,8 +8838,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -8852,7 +8846,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -9029,8 +9023,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -9039,7 +9031,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -9219,8 +9211,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -9229,7 +9219,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -9406,8 +9396,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -9416,7 +9404,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -9592,8 +9580,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -9602,7 +9588,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -9775,8 +9761,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -9785,7 +9769,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -9961,8 +9945,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -9971,7 +9953,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -10144,8 +10126,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -10154,7 +10134,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -10334,8 +10314,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -10344,7 +10322,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -10521,8 +10499,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -10531,7 +10507,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -10711,8 +10687,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -10721,7 +10695,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -10898,8 +10872,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -10908,7 +10880,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -11084,8 +11056,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -11094,7 +11064,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -11267,8 +11237,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -11277,7 +11245,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -11461,8 +11429,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -11471,7 +11437,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -11642,8 +11608,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -11652,7 +11616,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -11831,8 +11795,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -11841,7 +11803,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -12018,8 +11980,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -12028,7 +11988,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -12208,8 +12168,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -12218,7 +12176,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -12395,8 +12353,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -12405,7 +12361,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -12585,8 +12541,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -12595,7 +12549,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -12772,8 +12726,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -12782,7 +12734,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -12958,8 +12910,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -12968,7 +12918,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -13141,8 +13091,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -13151,7 +13099,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -13331,8 +13279,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -13341,7 +13287,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -13518,8 +13464,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -13528,7 +13472,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -13704,8 +13648,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -13714,7 +13656,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -13887,8 +13829,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -13897,7 +13837,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -14073,8 +14013,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -14083,7 +14021,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -14256,8 +14194,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -14266,7 +14202,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -14442,8 +14378,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -14452,7 +14386,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -14625,8 +14559,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -14635,7 +14567,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -14811,8 +14743,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -14821,7 +14751,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -14994,8 +14924,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -15004,7 +14932,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -15184,8 +15112,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -15194,7 +15120,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -15371,8 +15297,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -15381,7 +15305,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -15561,8 +15485,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -15571,7 +15493,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -15748,8 +15670,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -15758,7 +15678,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -15934,8 +15854,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -15944,7 +15862,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -16117,8 +16035,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -16127,7 +16043,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -16303,8 +16219,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -16313,7 +16227,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -16486,8 +16400,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -16496,7 +16408,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -16676,8 +16588,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -16686,7 +16596,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -16863,8 +16773,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -16873,7 +16781,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -17049,8 +16957,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -17059,7 +16965,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -17232,8 +17138,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -17242,7 +17146,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -17422,8 +17326,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -17432,7 +17334,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -17609,8 +17511,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -17619,7 +17519,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -17803,8 +17703,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -17813,7 +17711,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -17984,8 +17882,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -17994,7 +17890,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -18173,8 +18069,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -18183,7 +18077,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -18360,8 +18254,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -18370,7 +18262,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -18550,8 +18442,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -18560,7 +18450,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -18737,8 +18627,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -18747,7 +18635,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -18923,8 +18811,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -18933,7 +18819,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -19106,8 +18992,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -19116,7 +19000,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -19292,8 +19176,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -19302,7 +19184,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -19475,8 +19357,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -19485,7 +19365,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -19665,8 +19545,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -19675,7 +19553,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -19852,8 +19730,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -19862,7 +19738,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -20042,8 +19918,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -20052,7 +19926,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -20229,8 +20103,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -20239,7 +20111,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -20415,8 +20287,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -20425,7 +20295,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -20598,8 +20468,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -20608,7 +20476,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -20784,8 +20652,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -20794,7 +20660,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -20967,8 +20833,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -20977,7 +20841,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -21153,8 +21017,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -21163,7 +21025,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -21336,8 +21198,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -21346,7 +21206,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -21522,8 +21382,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -21532,7 +21390,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -21705,8 +21563,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -21715,7 +21571,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -21895,8 +21751,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -21905,7 +21759,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -22082,8 +21936,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -22092,7 +21944,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -22272,8 +22124,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -22282,7 +22132,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -22459,8 +22309,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -22469,7 +22317,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -22645,8 +22493,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -22655,7 +22501,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -22828,8 +22674,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -22838,7 +22682,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -23014,8 +22858,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -23024,7 +22866,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -23197,8 +23039,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -23207,7 +23047,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -23387,8 +23227,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -23397,7 +23235,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -23574,8 +23412,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -23584,7 +23420,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -23760,8 +23596,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -23770,7 +23604,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -23943,8 +23777,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -23953,7 +23785,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -24133,8 +23965,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -24143,7 +23973,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -24320,8 +24150,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -24330,7 +24158,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -24515,8 +24343,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -24525,7 +24351,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -24696,8 +24522,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -24706,7 +24530,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -24889,8 +24713,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -24899,7 +24721,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -25070,8 +24892,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -25080,7 +24900,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -27334,8 +27154,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -27344,7 +27162,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -27444,8 +27262,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -27454,7 +27270,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -27554,8 +27370,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -27564,7 +27378,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -27665,8 +27479,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -27675,7 +27487,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -28265,8 +28077,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -28275,7 +28085,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -28426,8 +28236,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -28436,7 +28244,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -28543,8 +28351,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -28553,7 +28359,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -29035,8 +28841,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -29045,7 +28849,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -29256,8 +29060,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -29266,7 +29068,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -29439,8 +29241,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -29449,7 +29249,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -30698,8 +30498,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -30708,7 +30506,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -31566,8 +31364,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -31576,7 +31372,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -31753,8 +31549,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -31763,7 +31557,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -31943,8 +31737,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -31953,7 +31745,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -32130,8 +31922,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -32140,7 +31930,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -32320,8 +32110,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -32330,7 +32118,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -32507,8 +32295,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -32517,7 +32303,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -32693,8 +32479,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -32703,7 +32487,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -32876,8 +32660,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -32886,7 +32668,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -33062,8 +32844,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -33072,7 +32852,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -33245,8 +33025,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -33255,7 +33033,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -33435,8 +33213,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -33445,7 +33221,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -33622,8 +33398,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -33632,7 +33406,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -33812,8 +33586,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -33822,7 +33594,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -33999,8 +33771,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -34009,7 +33779,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -34185,8 +33955,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -34195,7 +33963,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -34368,8 +34136,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -34378,7 +34144,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -34562,8 +34328,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -34572,7 +34336,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -34743,8 +34507,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -34753,7 +34515,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -34932,8 +34694,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -34942,7 +34702,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -35119,8 +34879,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -35129,7 +34887,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -35309,8 +35067,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -35319,7 +35075,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -35496,8 +35252,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -35506,7 +35260,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -35686,8 +35440,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -35696,7 +35448,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -35873,8 +35625,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -35883,7 +35633,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -36059,8 +35809,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -36069,7 +35817,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -36242,8 +35990,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -36252,7 +35998,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -36432,8 +36178,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -36442,7 +36186,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -36619,8 +36363,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -36629,7 +36371,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -36805,8 +36547,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -36815,7 +36555,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -36988,8 +36728,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -36998,7 +36736,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -37174,8 +36912,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -37184,7 +36920,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -37357,8 +37093,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -37367,7 +37101,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -37543,8 +37277,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -37553,7 +37285,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -37726,8 +37458,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -37736,7 +37466,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -37912,8 +37642,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -37922,7 +37650,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -38095,8 +37823,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -38105,7 +37831,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -38285,8 +38011,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -38295,7 +38019,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -38472,8 +38196,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -38482,7 +38204,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -38662,8 +38384,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -38672,7 +38392,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -38849,8 +38569,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -38859,7 +38577,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -39035,8 +38753,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -39045,7 +38761,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -39218,8 +38934,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -39228,7 +38942,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -39404,8 +39118,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -39414,7 +39126,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -39587,8 +39299,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -39597,7 +39307,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -39777,8 +39487,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -39787,7 +39495,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -39964,8 +39672,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -39974,7 +39680,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -40150,8 +39856,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -40160,7 +39864,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -40333,8 +40037,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -40343,7 +40045,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -40523,8 +40225,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -40533,7 +40233,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -40710,8 +40410,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -40720,7 +40418,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -40904,8 +40602,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -40914,7 +40610,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -41085,8 +40781,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -41095,7 +40789,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -41274,8 +40968,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -41284,7 +40976,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -41461,8 +41153,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -41471,7 +41161,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -41651,8 +41341,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -41661,7 +41349,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -41838,8 +41526,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -41848,7 +41534,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -42024,8 +41710,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -42034,7 +41718,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -42207,8 +41891,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -42217,7 +41899,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -42393,8 +42075,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -42403,7 +42083,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -42576,8 +42256,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -42586,7 +42264,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -42766,8 +42444,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -42776,7 +42452,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -42953,8 +42629,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -42963,7 +42637,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -43143,8 +42817,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -43153,7 +42825,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -43330,8 +43002,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -43340,7 +43010,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -43516,8 +43186,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -43526,7 +43194,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -43699,8 +43367,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -43709,7 +43375,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -43885,8 +43551,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -43895,7 +43559,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -44068,8 +43732,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -44078,7 +43740,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -44254,8 +43916,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -44264,7 +43924,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -44437,8 +44097,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -44447,7 +44105,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -44623,8 +44281,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -44633,7 +44289,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -44806,8 +44462,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -44816,7 +44470,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -44996,8 +44650,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -45006,7 +44658,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -45183,8 +44835,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -45193,7 +44843,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -45373,8 +45023,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -45383,7 +45031,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -45560,8 +45208,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -45570,7 +45216,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -45746,8 +45392,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -45756,7 +45400,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -45929,8 +45573,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -45939,7 +45581,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -46115,8 +45757,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -46125,7 +45765,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -46298,8 +45938,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -46308,7 +45946,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -46488,8 +46126,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -46498,7 +46134,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -46675,8 +46311,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -46685,7 +46319,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -46861,8 +46495,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -46871,7 +46503,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -47044,8 +46676,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -47054,7 +46684,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -47234,8 +46864,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -47244,7 +46872,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -47421,8 +47049,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -47431,7 +47057,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -47616,8 +47242,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -47626,7 +47250,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -47797,8 +47421,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -47807,7 +47429,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -47990,8 +47612,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -48000,7 +47620,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -48171,8 +47791,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -48181,7 +47799,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -50435,8 +50053,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -50445,7 +50061,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -50545,8 +50161,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -50555,7 +50169,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -50655,8 +50269,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -50665,7 +50277,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -50766,8 +50378,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -50776,7 +50386,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -51366,8 +50976,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -51376,7 +50984,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -51527,8 +51135,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -51537,7 +51143,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -51644,8 +51250,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -51654,7 +51258,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -52136,8 +51740,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -52146,7 +51748,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -52357,8 +51959,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -52367,7 +51967,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -52540,8 +52140,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -52550,7 +52148,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -53828,8 +53426,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -53838,7 +53434,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -54015,8 +53611,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -54025,7 +53619,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -54205,8 +53799,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -54215,7 +53807,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -54392,8 +53984,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -54402,7 +53992,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -54582,8 +54172,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -54592,7 +54180,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -54769,8 +54357,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -54779,7 +54365,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -54955,8 +54541,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -54965,7 +54549,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -55138,8 +54722,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -55148,7 +54730,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -55324,8 +54906,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -55334,7 +54914,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -55507,8 +55087,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -55517,7 +55095,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -55697,8 +55275,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -55707,7 +55283,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -55884,8 +55460,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -55894,7 +55468,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -56074,8 +55648,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -56084,7 +55656,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -56261,8 +55833,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -56271,7 +55841,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -56447,8 +56017,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -56457,7 +56025,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -56630,8 +56198,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -56640,7 +56206,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -56824,8 +56390,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -56834,7 +56398,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -57005,8 +56569,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -57015,7 +56577,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -57194,8 +56756,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -57204,7 +56764,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -57381,8 +56941,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -57391,7 +56949,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -57571,8 +57129,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -57581,7 +57137,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -57758,8 +57314,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -57768,7 +57322,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -57948,8 +57502,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -57958,7 +57510,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -58135,8 +57687,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -58145,7 +57695,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -58321,8 +57871,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -58331,7 +57879,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -58504,8 +58052,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -58514,7 +58060,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -58694,8 +58240,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -58704,7 +58248,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -58881,8 +58425,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -58891,7 +58433,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -59067,8 +58609,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -59077,7 +58617,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -59250,8 +58790,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -59260,7 +58798,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -59436,8 +58974,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -59446,7 +58982,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -59619,8 +59155,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -59629,7 +59163,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -59805,8 +59339,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -59815,7 +59347,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -59988,8 +59520,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -59998,7 +59528,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -60174,8 +59704,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -60184,7 +59712,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -60357,8 +59885,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -60367,7 +59893,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -60547,8 +60073,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -60557,7 +60081,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -60734,8 +60258,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -60744,7 +60266,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -60924,8 +60446,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -60934,7 +60454,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -61111,8 +60631,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -61121,7 +60639,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -61297,8 +60815,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -61307,7 +60823,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -61480,8 +60996,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -61490,7 +61004,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -61666,8 +61180,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -61676,7 +61188,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -61849,8 +61361,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -61859,7 +61369,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -62039,8 +61549,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -62049,7 +61557,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -62226,8 +61734,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -62236,7 +61742,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -62412,8 +61918,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -62422,7 +61926,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -62595,8 +62099,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -62605,7 +62107,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -62785,8 +62287,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -62795,7 +62295,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -62972,8 +62472,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -62982,7 +62480,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -63166,8 +62664,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -63176,7 +62672,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -63347,8 +62843,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -63357,7 +62851,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -63536,8 +63030,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -63546,7 +63038,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -63723,8 +63215,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -63733,7 +63223,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -63913,8 +63403,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -63923,7 +63411,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -64100,8 +63588,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -64110,7 +63596,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -64286,8 +63772,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -64296,7 +63780,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -64469,8 +63953,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -64479,7 +63961,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -64655,8 +64137,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -64665,7 +64145,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -64838,8 +64318,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -64848,7 +64326,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -65028,8 +64506,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -65038,7 +64514,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -65215,8 +64691,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -65225,7 +64699,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -65405,8 +64879,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -65415,7 +64887,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -65592,8 +65064,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -65602,7 +65072,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -65778,8 +65248,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -65788,7 +65256,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -65961,8 +65429,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -65971,7 +65437,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -66147,8 +65613,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -66157,7 +65621,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -66330,8 +65794,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -66340,7 +65802,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -66516,8 +65978,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -66526,7 +65986,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -66699,8 +66159,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -66709,7 +66167,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -66885,8 +66343,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -66895,7 +66351,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -67068,8 +66524,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -67078,7 +66532,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -67258,8 +66712,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -67268,7 +66720,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -67445,8 +66897,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -67455,7 +66905,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -67635,8 +67085,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -67645,7 +67093,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -67822,8 +67270,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -67832,7 +67278,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -68008,8 +67454,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -68018,7 +67462,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -68191,8 +67635,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -68201,7 +67643,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -68377,8 +67819,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -68387,7 +67827,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -68560,8 +68000,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -68570,7 +68008,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -68750,8 +68188,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -68760,7 +68196,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -68937,8 +68373,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -68947,7 +68381,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -69123,8 +68557,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -69133,7 +68565,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -69306,8 +68738,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -69316,7 +68746,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -69496,8 +68926,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -69506,7 +68934,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -69683,8 +69111,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -69693,7 +69119,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -69878,8 +69304,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -69888,7 +69312,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -70059,8 +69483,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -70069,7 +69491,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -70252,8 +69674,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -70262,7 +69682,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -70433,8 +69853,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -70443,7 +69861,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -72697,8 +72115,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -72707,7 +72123,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -72807,8 +72223,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -72817,7 +72231,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -72917,8 +72331,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -72927,7 +72339,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -73028,8 +72440,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -73038,7 +72448,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -73628,8 +73038,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -73638,7 +73046,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -73789,8 +73197,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -73799,7 +73205,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -73906,8 +73312,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -73916,7 +73320,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -74398,8 +73802,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -74408,7 +73810,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -74619,8 +74021,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -74629,7 +74029,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -74802,8 +74202,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -74812,7 +74210,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -75411,8 +74809,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -75421,7 +74817,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -75521,8 +74917,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -75531,7 +74925,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -75631,8 +75025,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -75641,7 +75033,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -75742,8 +75134,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -75752,7 +75142,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -76342,8 +75732,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -76352,7 +75740,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -76503,8 +75891,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -76513,7 +75899,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -76620,8 +76006,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -76630,7 +76014,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -77112,8 +76496,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -77122,7 +76504,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -77779,8 +77161,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -77789,7 +77169,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -77889,8 +77269,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -77899,7 +77277,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -77999,8 +77377,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -78009,7 +77385,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -78110,8 +77486,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -78120,7 +77494,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -78710,8 +78084,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -78720,7 +78092,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -78871,8 +78243,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -78881,7 +78251,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -78988,8 +78358,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -78998,7 +78366,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -79480,8 +78848,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -79490,7 +78856,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -80023,8 +79389,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -80033,7 +79397,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -80133,8 +79497,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -80143,7 +79505,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -80243,8 +79605,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -80253,7 +79613,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -80354,8 +79714,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -80364,7 +79722,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -80954,8 +80312,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -80964,7 +80320,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -81115,8 +80471,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -81125,7 +80479,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -81232,8 +80586,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -81242,7 +80594,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -81724,8 +81076,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -81734,7 +81084,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -83035,8 +82385,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -83045,7 +82393,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -83145,8 +82493,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -83155,7 +82501,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -83255,8 +82601,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -83265,7 +82609,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -83366,8 +82710,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -83376,7 +82718,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -83966,8 +83308,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -83976,7 +83316,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -84127,8 +83467,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -84137,7 +83475,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -84244,8 +83582,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -84254,7 +83590,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -84736,8 +84072,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -84746,7 +84080,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -85232,8 +84566,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -85242,7 +84574,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -85342,8 +84674,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -85352,7 +84682,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -85452,8 +84782,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -85462,7 +84790,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -85563,8 +84891,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -85573,7 +84899,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -86163,8 +85489,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -86173,7 +85497,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -86324,8 +85648,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -86334,7 +85656,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -86441,8 +85763,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -86451,7 +85771,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -86933,8 +86253,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -86943,7 +86261,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -87320,8 +86638,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -87330,7 +86646,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -87430,8 +86746,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -87440,7 +86754,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -87540,8 +86854,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -87550,7 +86862,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -87651,8 +86963,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -87661,7 +86971,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -88251,8 +87561,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -88261,7 +87569,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -88412,8 +87720,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -88422,7 +87728,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -88529,8 +87835,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -88539,7 +87843,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -89021,8 +88325,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -89031,7 +88333,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -89966,8 +89268,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -89976,7 +89276,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -90127,8 +89427,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -90137,7 +89435,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -90244,8 +89542,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -90254,7 +89550,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -90736,8 +90032,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -90746,7 +90040,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -91375,8 +90669,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -91385,7 +90677,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -91485,8 +90777,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -91495,7 +90785,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -91595,8 +90885,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -91605,7 +90893,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -91706,8 +90994,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -91716,7 +91002,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -92306,8 +91592,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -92316,7 +91600,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -92467,8 +91751,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -92477,7 +91759,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -92584,8 +91866,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -92594,7 +91874,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -93076,8 +92356,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -93086,7 +92364,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -94481,8 +93759,6 @@ char $ac_func ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub_$ac_func) || defined (__stub___$ac_func)
+ choke me
+-#else
+-char (*f) () = $ac_func;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -94491,7 +93767,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
    ;
    return 0;
  }
