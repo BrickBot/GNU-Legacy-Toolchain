@@ -24,14 +24,14 @@ gcc44_languages=c,c++,java,cil
 # ======== #
 
 # Need to include `-fno-tree-pre` due to bug in GCC 15
-DEFAULT_OPTIMIZATION_FLAGS="-O2 -fno-tree-pre"
+DEFAULT_OPTIMIZATION_FLAGS="-O2 -fno-tree-pre -flto"
 DEFAULT_PREFIX_ROOT=/opt/stow
 
 # Link-time optimization flag to LD also needs to know which -O flag was used
 OPTIMIZATION_FLAGS=${OPTIMIZATION_FLAGS:-"$DEFAULT_OPTIMIZATION_FLAGS"}
-CFLAGS="-g $OPTIMIZATION_FLAGS -std=gnu89"
+CFLAGS="-std=gnu89 -g $OPTIMIZATION_FLAGS"
 LDFLAGS="$OPTIMIZATION_FLAGS"
-BUILD_FLAGS="CFLAGS='$CFLAGS'"
+BUILD_FLAGS="CFLAGS='$CFLAGS' LDFLAGS='$LDFLAGS'"
 
 # Variable declarations and initializations
 COMBINED_SRC_DIR=$(realpath -s $(dirname $0))
