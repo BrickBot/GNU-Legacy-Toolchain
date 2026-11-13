@@ -7,6 +7,25 @@ Please note that these patches do _not_ reflect the only changes to the code.  O
 address various build issues and can be reviewed in the commit history.
 
 
+Libiberty
+---------
+Copies of Libiberty are included in multiple source projects.
+
+### Link-Time Optimization (LTO) Enablement Patch
+An outdated test was causing builds with `-flto` (enabling link-time optimization) to fail.
+This patch was backported from GCC.
+* https://github.com/gcc-mirror/gcc/commit/0e0f02ff9237738aabcb7466953d62641b9ab1d5
+
+Additional details:
+* https://github.com/BrickBot/GNU-Legacy-Toolchain/issues/13
+
+| Applied to Binutils 2.16.1? | Applied to GCC 3.4.6? | Applied to GCC 4.4.7? | Applied to GDB 6.8? | Patch File Name         |
+| --------------------------- | --------------------- | --------------------- | ------------------- | ----------------------- |
+|   ✔                        |  ✔                   |  ✔                  |  ✔                 | \*-libiberty-lto-fix.patch |
+|                             |  ✔                   |                       |                     | \*-fprintf_unlocked-lto-fix.patch |
+
+
+
 Binutils 2.16.1
 ---------------
 ### BFD from GDB 6.8

@@ -1,0 +1,51 @@
+Subject: gcc: fix AC_CHECK_FUNCS link test so it is not folded away by -flto
+
+Autoconf 2.59's AC_CHECK_FUNCS test compares a global function pointer to
+the function itself ("return f != FUNC;").  Under -flto that comparison
+is constant-folded and the reference to FUNC is dropped, so the test
+passes even when the function is absent.  For fprintf_unlocked, which
+glibc lacks, this defines HAVE_FPRINTF_UNLOCKED; system.h then maps
+fprintf to fprintf_unlocked and host tools such as gen-protos fail to
+link.  Override AC_LANG_FUNC_LINK_TRY(C) in aclocal.m4 to call the
+function, as later Autoconf releases do, and update the generated tests
+in configure to match.
+---
+diff --git a/gcc/configure b/gcc/configure
+--- a/gcc/configure
++++ b/gcc/configure
+@@ -6867,7 +6867,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -7586,7 +7586,7 @@ char (*f) () = $ac_func;
+ int
+ main ()
+ {
+-return f != $ac_func;
++return $ac_func ();
+   ;
+   return 0;
+ }
+@@ -9284,8 +9284,6 @@ char __cxa_atexit ();
+     something starting with __ and the normal name is an alias.  */
+ #if defined (__stub___cxa_atexit) || defined (__stub_____cxa_atexit)
+ choke me
+-#else
+-char (*f) () = __cxa_atexit;
+ #endif
+ #ifdef __cplusplus
+ }
+@@ -9294,7 +9292,7 @@ char (*f) () = __cxa_atexit;
+ int
+ main ()
+ {
+-return f != __cxa_atexit;
++return __cxa_atexit ();
+   ;
+   return 0;
+ }
