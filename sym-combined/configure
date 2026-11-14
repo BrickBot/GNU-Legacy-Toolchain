@@ -18,6 +18,14 @@ gcc3_languages=c,c++,f77,java,objc,treelang,pascal
 gcc44_languages=c,c++,java,cil
 # NOTE: Ada is excluded from the language lists because it cannot bootstrap
 
+# Variable declarations and initializations
+COMBINED_SRC_DIR=$(realpath -s $(dirname $0))
+BUILD_DIR=$PWD
+
+MAKEFILE_PATH=$BUILD_DIR/Makefile
+
+ARG_DELIM=,
+
 
 # ======== #
 # Defaults #
@@ -27,19 +35,33 @@ gcc44_languages=c,c++,java,cil
 DEFAULT_OPTIMIZATION_FLAGS="-O2 -fno-tree-pre -flto"
 DEFAULT_PREFIX_ROOT=/opt/stow
 
-# Link-time optimization flag to LD also needs to know which -O flag was used
-OPTIMIZATION_FLAGS=${OPTIMIZATION_FLAGS:-"$DEFAULT_OPTIMIZATION_FLAGS"}
+# When passing th eLink-Time Optimization flag to LD, it also needs to know which -O flag was used
+if [ -z "$OPTIMIZATION_FLAGS" ] ; then
+  OPTIMIZATION_FLAGS="$DEFAULT_OPTIMIZATION_FLAGS"
+
+  # Add the `-ffat-lto-objects` option if 
+  if [ "$(uname --operating-system | tr [:upper:] [:lower:])" = "cygwin" ] ; then
+    OPTIMIZATION_FLAGS="$OPTIMIZATION_FLAGS -ffat-lto-objects"
+  fi
+fi
+
+# Runtime check if the toolchain supports Link-Time Optimization (LTO),
+#   but unfortunately hardcodes tool names.
+#   Might an Autotools update address this?
+#(
+#  LTO_PROBE_NAME="lto_probe"
+#  cd "$(mktemp -d)"
+#  echo "int ${LTO_PROBE_NAME}(void) { return 7; }" > $LTO_PROBE_NAME.c
+#  gcc -flto -c $LTO_PROBE_NAME.c
+#  ar rc lib$LTO_PROBE_NAME.a $LTO_PROBE_NAME.o
+#  ranlib lib$LTO_PROBE_NAME.a
+#  nm lib$LTO_PROBE_NAME.a | grep $LTO_PROBE_NAME
+#)
+
 CFLAGS="-std=gnu89 -g $OPTIMIZATION_FLAGS"
 LDFLAGS="$OPTIMIZATION_FLAGS"
 BUILD_FLAGS="CFLAGS='$CFLAGS' LDFLAGS='$LDFLAGS'"
 
-# Variable declarations and initializations
-COMBINED_SRC_DIR=$(realpath -s $(dirname $0))
-BUILD_DIR=$PWD
-
-MAKEFILE_PATH=$BUILD_DIR/Makefile
-
-ARG_DELIM=,
 
 
 # ========= #
