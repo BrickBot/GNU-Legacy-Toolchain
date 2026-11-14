@@ -247,8 +247,11 @@ sysinfo.h: sysinfo.c
 sysinfo$(EXEEXT_FOR_BUILD): sysinfo.o syslex.o
 	$(CC_FOR_BUILD) $(CFLAGS) $(LDFLAGS) -o $@ sysinfo.o syslex.o
 
+# Use the build dir only if all generated files are there; otherwise use srcdir only.
+SRCONV_SRC_IN_BUILD_DIR = [ -r sysinfo.c ] && [ -r sysinfo.h ] && [ -r syslex.c ]
+
 syslex.o:
-	if [ -r syslex.c ]; then \
+	if $(SRCONV_SRC_IN_BUILD_DIR) ; then \
 	  echo "Autogen Status: Using generated syslex.c in build directory" ; \
 	  $(CC_FOR_BUILD) -c -I. $(AM_CFLAGS) $(CFLAGS)  syslex.c  ; \
 	else \
@@ -257,7 +260,7 @@ syslex.o:
 	fi
 
 sysinfo.o:
-	if [ -r sysinfo.c ]; then \
+	if $(SRCONV_SRC_IN_BUILD_DIR) ; then \
 	  echo "Autogen Status: Using generated sysinfo.c in build directory" ; \
 	  $(CC_FOR_BUILD) -c -I. $(AM_CFLAGS) $(CFLAGS)  sysinfo.c  ; \
 	else \
